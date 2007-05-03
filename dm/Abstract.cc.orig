@@ -1,0 +1,203 @@
+#define DM_Abstract_CC
+#include "Abstract.hh"
+
+
+namespace dm
+{
+
+
+
+/* ************************************************************************** */
+/* **********   Factory   *************************************************** */
+/* ************************************************************************** */
+#ifdef DM_Abstract_TT
+
+
+
+/* ************************************************************************** */
+/**
+ *  Konstruktorius.
+ */
+template<class SA>
+Factory<SA>::Factory()
+{
+    // Nothing to do.
+}
+
+
+
+/* ************************************************************************** */
+/**
+ *  Konstruktorius.
+ */
+template<class SA>
+Factory<SA>::~Factory()
+{
+    // Nothing to do.
+}
+
+
+
+#endif
+/* ************************************************************************** */
+/* **********   Model   ***************************************************** */
+/* ************************************************************************** */
+#ifdef DM_Abstract_TT
+
+
+
+template<class SA, int x, int y>
+Model<SA, x, y>::Model(
+    Factory<SA> *factory,
+    Dimension   *dimH[x],
+    Dimension   *dimV[y]
+)
+{
+    this->factory = factory;
+    this->dimH = dimH;
+    this->dimV = dimV;
+
+    for (int i = 0; i < x; i++)
+    {
+        for (int j = 0; j < y; j++)
+        {
+            area[i][j] = factory->newArea(dimH[i], dimV[j]);
+        }
+    }
+
+    for (i = 0; i < x; i++)
+    {
+        for (j = 0; j <= y; j++)
+        {
+            boundH[i][j] = factory->newBound(
+                dimH[j],
+                j == 0 ? 0 : area[i][j-1],
+                i == y ? 0 : area[i][j]
+            );
+        }
+    }
+}
+
+
+
+template<class SA, int x, int y>
+Model<SA, x, y>::~Model()
+{
+
+}
+
+
+
+#endif
+/* ************************************************************************** */
+/* **********   Area   ****************************************************** */
+/* ************************************************************************** */
+#ifdef DM_Abstract_TT
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Area<SA>::Area(
+    Dimension *dimX,
+    Dimension *dimY
+)
+{
+    this->dimX = dimX;
+    this->dimY = dimY;
+}
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Area<SA>::~Area()
+{
+    // Nothing to do.
+}
+
+
+
+#endif
+/* ************************************************************************** */
+/* **********   Bound   ***************************************************** */
+/* ************************************************************************** */
+#ifdef DM_Abstract_TT
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Bound<SA>::Bound(
+    Dimension *dim,
+    Area<SA> *prev,
+    Area<SA> *next
+)
+{
+    this->dim = dim;
+    this->prev = prev;
+    this->next = next;
+}
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Bound<SA>::~Bound()
+{
+    // Nothing to do.
+}
+
+
+
+#endif
+/* ************************************************************************** */
+/* **********   Corner   **************************************************** */
+/* ************************************************************************** */
+#ifdef DM_Abstract_TT
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Corner<SA>::Corner(
+    Bound<SA> *top,
+    Bound<SA> *right,
+    Bound<SA> *bottom,
+    Bound<SA> *left
+)
+{
+    this->top    = top;
+    this->right  = right;
+    this->bottom = bottom;
+    this->left   = left;
+}
+
+
+
+/**
+ *  TODO: Document.
+ */
+template<class SA>
+Corner<SA>::~Corner()
+{
+    // Nothing to do.
+}
+
+
+
+#endif
+/* ************************************************************************** */
+/* ************************************************************************** */
+/* ************************************************************************** */
+}   // namespace dm
