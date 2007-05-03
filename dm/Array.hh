@@ -5,6 +5,11 @@
 
 namespace dm
 {
+class ArrayModelFactory;
+class ArrayArea;
+class ArrayBound;
+class ArrayCorner;
+
 
 
 /* ************************************************************************** */
@@ -12,31 +17,35 @@ namespace dm
 /**
  *  Kuria Array tipo duomenu strukturas.
  */
-template<class SA>
-class ArrayFactory : public Factory<SA>
+class ArrayModelFactory : public ModelFactory
 {
 public:
-    ArrayFactory();
-    virtual ~ArrayFactory();
+    ArrayModelFactory() : ModelFactory() {}
+    virtual ~ArrayModelFactory() {}
 
-    virtual Area<SA>* newArea(
-        Dimension *dimX,
-        Dimension *dimY
-    );
+    /// Kuria nauja sriti.
+    virtual Area* newArea(
+            PointFactory*   pointFactory,
+            Dimension*      dimX,
+            Dimension*      dimY
+        );
 
-    virtual Bound<SA>* newBound(
-        Dimension *dim,
-        Area<SA> *prev,
-        Area<SA> *next
-    );
+    /// Kuria nauja krasta.
+    virtual Bound* newBound(
+            PointFactory*   pointFactory,
+            Dimension*      dim,
+            Area*           prev,
+            Area*           next
+        );
 
-    virtual Corner<SA>* newCorner(
-        Bound<SA> *top,
-        Bound<SA> *right,
-        Bound<SA> *bottom,
-        Bound<SA> *left
-    );
-
+    /// Kuria nauja kampa.
+    virtual Corner* newCorner(
+            PointFactory*   pointFactory,
+            Bound*          top,
+            Bound*          right,
+            Bound*          bottom,
+            Bound*          left
+        );
 
 };
 
@@ -47,35 +56,39 @@ public:
 /**
  *  Srities vidus, realizuotas masyvais.
  */
-template<class SA>
-class ArrayArea : public Area<SA> {
+class ArrayArea : public Area {
 protected:
-    SA **data;  ///< Dvimatis masyvas.
+    Point ***data;  ///< Dvimatis masyvas.
     int sizeX;
     int sizeY;
     int posX;
     int posY;
 
 public:
+
+    /// Konstruktorius.
     ArrayArea(
-        Dimension *dimX,
-        Dimension *dimY
-    );
+            PointFactory*   pointFactory,
+            Dimension*      dimX,
+            Dimension*      dimY
+        );
+
+    /// Destruktorius.
     virtual ~ArrayArea();
 
-    virtual int  moveTop();
-    virtual int  moveRight();
-    virtual int  moveBottom();
-    virtual int  moveLeft();
-    virtual void moveToColStart();
-    virtual void moveToColEnd();
-    virtual void moveToRowStart();
-    virtual void moveToRowEnd();
-    virtual SA&  getTop();
-    virtual SA&  getRight();
-    virtual SA&  getBottom();
-    virtual SA&  getLeft();
-    virtual SA&  getCurrent();
+    virtual int  moveTop()          { return --posY; }
+    virtual int  moveRight()        { return sizeX - 1 - ++posX; }
+    virtual int  moveBottom()       { return sizeY - 1 - ++posY; }
+    virtual int  moveLeft()         { return --posX; }
+    virtual void moveToColStart()   { posY = 0; }
+    virtual void moveToColEnd()     { posY = sizeY - 1; }
+    virtual void moveToRowStart()   { posX = 0; }
+    virtual void moveToRowEnd()     { posX = sizeY - 1; }
+    virtual Point* getTop()         { return data[posX][posY - 1]; }
+    virtual Point* getRight()       { return data[posX + 1][posY]; }
+    virtual Point* getBottom()      { return data[posX][posY + 1]; }
+    virtual Point* getLeft()        { return data[posX - 1][posY]; }
+    virtual Point* getCurrent()     { return data[posX][posY]; }
 
 };
 
@@ -86,18 +99,29 @@ public:
 /**
  *  Sriciu sandura, realizuota masyvais.
  */
-template<class SA>
-class ArrayBound : public Bound<SA> {
+class ArrayBound : public Bound {
 protected:
-    SA *data;   ///< Vienmatis masyvas.
+    Point **data;   ///< Vienmatis masyvas.
+    int size;
+    int pos;
 
 public:
     ArrayBound(
-        Dimension *dim,
-        Area<SA> *prev,
-        Area<SA> *next
-    );
+            PointFactory*   pointFactory,
+            Dimension*      dim,
+            Area*           prev,
+            Area*           next
+        );
+
     virtual ~ArrayBound();
+
+    virtual int  moveNext()     { return --pos; }
+    virtual int  movePrev()     { return size - 1 - ++pos; }
+    virtual void moveToStart()  { pos = 0; }
+    virtual void moveToEnd()    { pos = size - 1; }
+    virtual Point* getNext()    { return data[pos + 1]; }
+    virtual Point* getPrev()    { return data[pos - 1]; }
+    virtual Point* getCurrent() { return data[pos]; }
 
 };
 
@@ -108,20 +132,21 @@ public:
 /**
  *  Sriciu susidurimo kampas, realizuotas masyvais (nera cia masyvu :) ).
  */
-template<class SA>
-class ArrayCorner : public Corner<SA> {
+class ArrayCorner : public Corner {
 protected:
-    SA data;
+    Point* data;
 
 public:
     ArrayCorner(
-        Bound<SA> *top,
-        Bound<SA> *right,
-        Bound<SA> *bottom,
-        Bound<SA> *left
+            PointFactory*   pointFactory,
+            Bound*          top,
+            Bound*          right,
+            Bound*          bottom,
+            Bound*          left
     );
     virtual ~ArrayCorner();
 
+    virtual Point * getCurrent() { return data; }
 };
 
 
@@ -129,15 +154,4 @@ public:
 /* ************************************************************************** */
 /* ************************************************************************** */
 }   // namespace dm
-
-
-
-//
-//  Include template definitions.
-//
-#ifndef DM_Array_CC
-#define DM_Array_TT
-#include "Array.cc"
-#endif
-
 #endif

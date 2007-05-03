@@ -1,71 +1,47 @@
 #ifndef DM_Abstract_HH
 #define DM_Abstract_HH
 #include <list>
-
-
-
-namespace dm
-{
-
-template<class D>
-class Factory;
-
-template<class SA, int x, int y>
-class Model;
-
-template<class D>
-class Area;
-
-template<class D>
-class Bound;
-
-template<class D>
-class Corner;
-
-}
-
-
-
-/* ************************************************************************** */
 #include "../Model.hh"
-#include "../sa/Abstract.hh"
-/* ************************************************************************** */
 namespace dm
 {
+/* ************************************************************************** */
+/* ************************************************************************** */
+class Point;
+class PointFactory;
+class Model;
+class ModelFactory;
+class Area;
+class Bound;
+class Corner;
 
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
- *  Gamykla, kurianti objektus, sudaroancius mdoelio duomenu struktura.
+ *  Vieno tasko duomenys modelyje.
  */
-template<class SA>
-class Factory
+class Point
 {
 public:
-    Factory();
-    virtual ~Factory();
-
-    virtual Area<SA>* newArea(
-        Dimension *dimX,
-        Dimension *dimY
-    ) = 0;
-
-    virtual Bound<SA>* newBound(
-        Dimension *dim,
-        Area<SA> *prev,
-        Area<SA> *next
-    ) = 0;
-
-    virtual Corner<SA>* newCorner(
-        Bound<SA> *top,
-        Bound<SA> *right,
-        Bound<SA> *bottom,
-        Bound<SA> *left
-    ) = 0;
-
+    virtual ~Point() {}
+    virtual double getSubstance(int substanceNr) = 0;
 };
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Tasku gamintoju interfeisas.
+ */
+class PointFactory
+{
+public:
+    virtual ~PointFactory() {}
+    virtual Point* newPoint() = 0;
+};
+
 
 
 /* ************************************************************************** */
@@ -73,24 +49,75 @@ public:
 /**
  *  Klase atitinkanti biojutiklio duomenu modeli.
  */
-template<class SA, int x, int y>
 class Model
 {
-    Factory<SA>*    factory;
-    Dimension*      dimH[x];
-    Dimension*      dimV[y];
-    Area<SA>*       area[x][y];
-    Bound<SA>*      boundH[x][y + 1];
-    Bound<SA>*      boundV[x + 1][y];
-    Corner<SA>*     corner[x + 1][y + 1];
+protected:
+    typedef std::list<Dimension*> DimensionList;
+    ModelFactory* modelFactory;
+    int         partsH;     ///< X size
+    int         partsV;     ///< Y size
+    Dimension** dimH;       ///< Dimensions (by X)
+    Dimension** dimV;       ///< Dimensions (by Y)
+    Area***     area;       ///< 2D Array   [x][y]
+    Bound***    boundH;     ///< 2D Array   [x][y+1]
+    Bound***    boundV;     ///< 2D Array   [x+1][y]
+    Corner***   corner;     ///< 2D Array   [x+1][y+1]
 
 public:
+    /// Kosntruktorius.
     Model(
-        Factory<SA>* factory,
-        Dimension*   (&dimH)[x],
-        Dimension*   (&dimV)[y]
+        PointFactory*   pointFactory,
+        ModelFactory*   modelFactory,
+        int             partsH,
+        int             partsV,
+        DimensionList&  dimH,
+        DimensionList&  dimV
     );
+
+    /// Destruktorius.
     virtual ~Model();
+
+};
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Gamykla, kurianti objektus, sudaroancius mdoelio duomenu struktura.
+ */
+class ModelFactory
+{
+public:
+
+    /// Konstruktorius.
+    ModelFactory() {};
+
+    /// Destruktorius.
+    virtual ~ModelFactory() {};
+
+    /// Kuria nauja srities duomenu struktura.
+    virtual Area* newArea(
+        PointFactory*   pointFactory,
+        Dimension*      dimX,
+        Dimension*      dimY
+    ) = 0;
+
+    /// Kuria nauja krasto duomenu struktura.
+    virtual Bound* newBound(
+        PointFactory*   pointFactory,
+        Dimension*      dim,
+        Area*           prev,
+        Area*           next
+    ) = 0;
+
+    /// Kuria nauja kampo duomenu struktura.
+    virtual Corner* newCorner(
+        PointFactory*   pointFactory,
+        Bound*          top,
+        Bound*          right,
+        Bound*          bottom,
+        Bound*          left
+    ) = 0;
 
 };
 
@@ -104,24 +131,27 @@ public:
  *  nusirodo tada, kai jie kuriami (krastai). Jie patys nurodo sriciai,
  *  kad jie bus jos krastai.
  */
-template<class SA>
 class Area
 {
-    friend class Bound<SA>;
+    friend class Bound;
 protected:
     Dimension *dimX;        ///< Dimensija pagal erdves X koordinate
     Dimension *dimY;        ///< Dimensija pagal erdves Y koordinate
-    Bound<SA> *boundTop;    ///< Srities krastas is virsaus.
-    Bound<SA> *boundRight;  ///< Srities krastas is desines.
-    Bound<SA> *boundBottom; ///< Srities krastas is apacios.
-    Bound<SA> *boundleft;   ///< Srities krastas is kaires.
+    Bound     *boundTop;    ///< Srities krastas is virsaus.
+    Bound     *boundRight;  ///< Srities krastas is desines.
+    Bound     *boundBottom; ///< Srities krastas is apacios.
+    Bound     *boundleft;   ///< Srities krastas is kaires.
 
 public:
     Area(
-        Dimension *dimX,
-        Dimension *dimY
-    );
-    virtual ~Area();
+            Dimension*      dimX,
+            Dimension*      dimY
+        )
+    {
+        this->dimX = dimX;
+        this->dimY = dimY;
+    }
+    virtual ~Area() {}
 
     virtual int  moveTop() = 0;
     virtual int  moveRight() = 0;
@@ -131,11 +161,11 @@ public:
     virtual void moveToColEnd() = 0;
     virtual void moveToRowStart() = 0;
     virtual void moveToRowEnd() = 0;
-    virtual SA&  getTop() = 0;
-    virtual SA&  getRight() = 0;
-    virtual SA&  getBottom() = 0;
-    virtual SA&  getLeft() = 0;
-    virtual SA&  getCurrent() = 0;
+    virtual Point* getTop() = 0;
+    virtual Point* getRight() = 0;
+    virtual Point* getBottom() = 0;
+    virtual Point* getLeft() = 0;
+    virtual Point* getCurrent() = 0;
 
 };
 
@@ -146,23 +176,34 @@ public:
 /**
  *  Sriciu krastai / sanduros, abstrakti realizacija.
  */
-template<class SA>
 class Bound
 {
-    friend class Corner<SA>;
+    friend class Corner;
 protected:
-    Dimension *dim;
-    Area<SA> *prev;
-    Area<SA> *next;
+    Dimension*  dim;
+    Area*       prev;
+    Area*       next;
 
 public:
     Bound(
-        Dimension *dim,
-        Area<SA> *prev,
-        Area<SA> *next
-    );
-    virtual ~Bound();
+            Dimension*      dim,
+            Area*           prev,
+            Area*           next
+        )
+    {
+        this->dim = dim;
+        this->prev = prev;
+        this->next = next;
+    }
+    virtual ~Bound() {}
 
+    virtual int  moveNext() = 0;
+    virtual int  movePrev() = 0;
+    virtual void moveToStart() = 0;
+    virtual void moveToEnd() = 0;
+    virtual Point* getNext() = 0;
+    virtual Point* getPrev() = 0;
+    virtual Point* getCurrent() = 0;
 };
 
 
@@ -172,24 +213,30 @@ public:
 /**
  *  Kampo (kuriame susiduria keturios sritys) abstrakti realizacija.
  */
-template<class SA>
 class Corner
 {
 protected:
-    Bound<SA> *top;
-    Bound<SA> *right;
-    Bound<SA> *bottom;
-    Bound<SA> *left;
+    Bound *top;
+    Bound *right;
+    Bound *bottom;
+    Bound *left;
 
 public:
     Corner(
-        Bound<SA> *top,
-        Bound<SA> *right,
-        Bound<SA> *bottom,
-        Bound<SA> *left
-    );
-    virtual ~Corner();
+            Bound*          top,
+            Bound*          right,
+            Bound*          bottom,
+            Bound*          left
+        )
+    {
+        this->top    = top;
+        this->right  = right;
+        this->bottom = bottom;
+        this->left   = left;
+    }
+    virtual ~Corner() {}
 
+    virtual Point * getCurrent() = 0;
 };
 
 
@@ -197,15 +244,4 @@ public:
 /* ************************************************************************** */
 /* ************************************************************************** */
 }  // namespace dm
-
-
-
-//
-//  Include template definitions.
-//
-#ifndef DM_Abstract_CC
-#define DM_Abstract_TT
-#include "Abstract.cc"
-#endif
-
 #endif

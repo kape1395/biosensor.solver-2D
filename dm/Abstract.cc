@@ -1,238 +1,147 @@
 #define DM_Abstract_CC
 #include "Abstract.hh"
 
-
 namespace dm
 {
 
 
 
 /* ************************************************************************** */
-/* **********   Factory   *************************************************** */
-/* ************************************************************************** */
-#ifdef DM_Abstract_TT
-
-
-
 /* ************************************************************************** */
 /**
  *  Konstruktorius.
  */
-template<class SA>
-Factory<SA>::Factory()
-{
-    // Nothing to do.
-}
-
-
-
-/* ************************************************************************** */
-/**
- *  Konstruktorius.
- */
-template<class SA>
-Factory<SA>::~Factory()
-{
-    // Nothing to do.
-}
-
-
-
-#endif
-/* ************************************************************************** */
-/* **********   Model   ***************************************************** */
-/* ************************************************************************** */
-#ifdef DM_Abstract_TT
-
-
-
-/* ************************************************************************** */
-/**
- *  Konstruktorius.
- */
-template<class SA, int x, int y>
-Model<SA, x, y>::Model(
-    Factory<SA> *factory,
-    Dimension*  (&dimH)[x],
-    Dimension*  (&dimV)[y]
+Model::Model(
+    PointFactory*   pointFactory,
+    ModelFactory*   modelFactory,
+    int             partsH,
+    int             partsV,
+    DimensionList&  dimH,
+    DimensionList&  dimV
 )
 {
-    this->factory = factory;
+    this->modelFactory = modelFactory;
+    this->partsH  = partsH;
+    this->partsV  = partsV;
 
-    for (int i = 0; i < x; i++)
-        this->dimH[i] = dimH[i];
+    this->dimH = new Dimension*[dimH.size()];
+    this->dimV = new Dimension*[dimV.size()];
+    {
+        int i;
 
-    for (int j = 0; j < y; j++)
-        this->dimV[j] = dimV[j];
+        i = 0;
+        for (DimensionList::iterator it = dimH.begin(); it != dimH.end(); it++, i++)
+            this->dimH[i] = *it;
 
-    for (int i = 0; i < x; i++)
-        for (int j = 0; j < y; j++)
-            area[i][j] = factory->newArea(dimH[i], dimV[j]);
+        i = 0;
+        for (DimensionList::iterator it = dimV.begin(); it != dimV.end(); it++, i++)
+            this->dimV[i] = *it;
+    }
 
-    for (int i = 0; i < x; i++)
-        for (int j = 0; j <= y; j++)
-            boundH[i][j] = factory->newBound(
-                               dimH[i],
-                               j == 0 ? 0 : area[i][j - 1],
-                               j == y ? 0 : area[i][j]
+
+    area = new Area**[this->partsH];
+    for (int i = 0; i < partsH; i++)
+    {
+        area[i] = new Area*[partsV];
+        for (int j = 0; j < partsV; j++)
+            area[i][j] = modelFactory->newArea(pointFactory, this->dimH[i], this->dimV[j]);
+    }
+
+
+    boundH = new Bound**[partsH];
+    for (int i = 0; i < partsH; i++)
+    {
+        boundH[i] = new Bound*[partsV + 1];
+        for (int j = 0; j <= partsV; j++)
+            boundH[i][j] = modelFactory->newBound(
+                               pointFactory, 
+                               this->dimH[i],
+                               j == 0      ? 0 : area[i][j - 1],
+                               j == partsV ? 0 : area[i][j]
                            );
+    }
 
-    for (int i = 0; i <= x; i++)
-        for (int j = 0; j < y; j++)
-            boundV[i][j] = factory->newBound(
-                               dimV[i],
-                               i == 0 ? 0 : area[i - 1][j],
-                               i == x ? 0 : area[i][j]
-                           );
 
-    for (int i = 0; i <= x; i++)
-        for (int j = 0; j <= y; j++)
-            corner[i][j] = factory->newCorner(
-                                j == 0 ? 0 : boundV[i][j - 1],
-                                i == x ? 0 : boundH[i][j],
-                                j == y ? 0 : boundV[i][j],
-                                i == 0 ? 0 : boundH[i - 1][j]
+    boundV = new Bound**[partsH + 1];
+    for (int i = 0; i <= partsH; i++)
+    {
+        boundV[i] = new Bound*[partsV];
+        for (int j = 0; j < partsV; j++)
+            boundV[i][j] = modelFactory->newBound(
+                               pointFactory,
+                               this->dimV[j],
+                               i == 0      ? 0 : area[i - 1][j],
+                               i == partsH ? 0 : area[i][j]
                            );
+    }
+
+
+    corner = new Corner**[partsH + 1];
+    for (int i = 0; i <= partsH; i++)
+    {
+        corner[i] = new Corner*[partsV + 1];
+        for (int j = 0; j <= partsV; j++)
+            corner[i][j] = modelFactory->newCorner(
+                                pointFactory,
+                                j == 0      ? 0 : boundV[i][j - 1],
+                                i == partsH ? 0 : boundH[i][j],
+                                j == partsV ? 0 : boundV[i][j],
+                                i == 0      ? 0 : boundH[i - 1][j]
+                           );
+    }
 }
 
 
 
 /* ************************************************************************** */
+/* ************************************************************************** */
 /**
  *  Konstruktorius.
  */
-template<class SA, int x, int y>
-Model<SA, x, y>::~Model()
+Model::~Model()
 {
-    for (int i = 0; i <= x; i++)
-        for (int j = 0; j <= y; j++)
+
+    for (int i = 0; i <= partsH; i++)
+    {
+        for (int j = 0; j <= partsV; j++)
             delete corner[i][j];
+        delete[] corner[i];
+    }
+    delete[] corner;
 
-    for (int i = 0; i < x; i++)
-        for (int j = 0; j <= y; j++)
+
+    for (int i = 0; i < partsH; i++)
+    {
+        for (int j = 0; j <= partsV; j++)
             delete boundH[i][j];
+        delete[] boundH[i];
+    }
+    delete[] boundH;
 
-    for (int i = 0; i <= x; i++)
-        for (int j = 0; j < y; j++)
+
+    for (int i = 0; i <= partsH; i++)
+    {
+        for (int j = 0; j < partsV; j++)
             delete boundV[i][j];
+        delete[] boundV[i];
+    }
+    delete[] boundV;
 
-    for (int i = 0; i < x; i++)
-        for (int j = 0; j < y; j++)
+
+    for (int i = 0; i < partsH; i++)
+    {
+        for (int j = 0; j < partsV; j++)
             delete area[i][j];
+        delete[] area[i];
+    }
+    delete[] area;
+
+    delete[] dimH;
+    delete[] dimV;
 }
 
 
 
-#endif
-/* ************************************************************************** */
-/* **********   Area   ****************************************************** */
-/* ************************************************************************** */
-#ifdef DM_Abstract_TT
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Area<SA>::Area(
-    Dimension *dimX,
-    Dimension *dimY
-)
-{
-    this->dimX = dimX;
-    this->dimY = dimY;
-}
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Area<SA>::~Area()
-{
-    // Nothing to do.
-}
-
-
-
-#endif
-/* ************************************************************************** */
-/* **********   Bound   ***************************************************** */
-/* ************************************************************************** */
-#ifdef DM_Abstract_TT
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Bound<SA>::Bound(
-    Dimension *dim,
-    Area<SA> *prev,
-    Area<SA> *next
-)
-{
-    this->dim = dim;
-    this->prev = prev;
-    this->next = next;
-}
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Bound<SA>::~Bound()
-{
-    // Nothing to do.
-}
-
-
-
-#endif
-/* ************************************************************************** */
-/* **********   Corner   **************************************************** */
-/* ************************************************************************** */
-#ifdef DM_Abstract_TT
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Corner<SA>::Corner(
-    Bound<SA> *top,
-    Bound<SA> *right,
-    Bound<SA> *bottom,
-    Bound<SA> *left
-)
-{
-    this->top    = top;
-    this->right  = right;
-    this->bottom = bottom;
-    this->left   = left;
-}
-
-
-
-/**
- *  TODO: Document.
- */
-template<class SA>
-Corner<SA>::~Corner()
-{
-    // Nothing to do.
-}
-
-
-
-#endif
-/* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
 }   // namespace dm

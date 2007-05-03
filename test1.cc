@@ -3,7 +3,10 @@
 #include "dm/Array.hh"
 #include "sa/BasicExplicit.hh"
 #include <iostream>
+#include <list>
 
+class TestPoint : public dm::Point { virtual double getSubstance(int substanceNr) { return 0; } };
+class TestPointFactory : public dm::PointFactory { virtual dm::Point* newPoint() { return new TestPoint(); } };
 
 int main()
 {
@@ -11,36 +14,40 @@ int main()
 
 
     {
-        Dimension *dimH[2];
-        Dimension *dimV[2];
-        dimH[0] = new ConstantDimension(Dimension::HORIZONTAL,  0.0, 1E-3, 100);
-        dimH[1] = new ConstantDimension(Dimension::HORIZONTAL, 1E-3, 1E-3, 100);
-        dimV[0] = new ConstantDimension(Dimension::VERTICAL,    0.0, 1E-3, 100);
-        dimV[1] = new ConstantDimension(Dimension::VERTICAL,   1E-3, 1E-3, 100);
+        std::list<Dimension*> dimH;
+        std::list<Dimension*> dimV;
+        dimH.push_back(new ConstantDimension(Dimension::HORIZONTAL,  0.0, 1E-3, 100));
+        dimH.push_back(new ConstantDimension(Dimension::HORIZONTAL, 1E-3, 1E-3, 100));
+        dimV.push_back(new ConstantDimension(Dimension::VERTICAL,    0.0, 1E-3, 100));
+        dimV.push_back(new ConstantDimension(Dimension::VERTICAL,   1E-3, 1E-3, 100));
 
 
-        dm::Factory<sa::basicexplicit::PointData> *factory =
-                new dm::ArrayFactory<sa::basicexplicit::PointData>();
-
-        dm::Model<sa::basicexplicit::PointData, 2, 2>* model =
-                new dm::Model<sa::basicexplicit::PointData, 2, 2>(factory, dimH, dimV);
+        dm::PointFactory* pointFactory = new TestPointFactory();
+        dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
+        dm::Model* model = new dm::Model(
+                pointFactory,
+                modelFactory,
+                dimH.size(), dimV.size(),
+                dimH, dimV
+            );
 
         // DO SOMETHING - Start.
-        
-        sa:Solver solver = new sa::basixecplicit::Solver(model);
+
+        sa::Solver* solver = new sa::basicexplicit::Solver(model);
         solver->solve();
-        
+        delete solver;
+
         // DO SOMETHING - Done.
 
         delete model;
-        delete factory;
+        delete modelFactory;
+        delete pointFactory;
 
 
-        for ( int i = 0; i < 2; i++ )
-            delete dimH[i];
 
-        for ( int j = 0; j < 2; j++ )
-            delete dimV[j];
+        for ( ; dimH.size() > 0; delete *dimH.begin(), dimH.pop_front());
+        for ( ; dimV.size() > 0; delete *dimV.begin(), dimV.pop_front());
+
     }
 
 

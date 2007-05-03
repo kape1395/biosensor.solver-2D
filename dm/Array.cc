@@ -1,25 +1,38 @@
-// Template definitions must be in header, when using GCC
-// >> warning: keyword ‘export’ not implemented, and will be ignored
-#define DM_Array_CC
 #include "Array.hh"
 namespace dm
 {
 
 
-/* ************************************************************************** */
-/* **********   ArrayFactory   ********************************************** */
-/* ************************************************************************** */
-#ifdef DM_Array_TT
-
-
-/* ************************************************************************** */
-/**
- *  Konstruktorius.
- */
-template<class SA>
-ArrayFactory<SA>::ArrayFactory() : Factory<SA>()
+Area* ArrayModelFactory::newArea(
+        PointFactory*   pointFactory,
+        Dimension*      dimX,
+        Dimension*      dimY
+    )
 {
-    // Nothing to do.
+    return new ArrayArea(pointFactory, dimX, dimY);
+}
+
+
+Bound* ArrayModelFactory::newBound(
+        PointFactory*   pointFactory,
+        Dimension*      dim,
+        Area*           prev,
+        Area*           next
+    )
+{
+    return new ArrayBound(pointFactory, dim, prev, next);
+}
+
+
+Corner* ArrayModelFactory::newCorner(
+        PointFactory*   pointFactory,
+        Bound*          top,
+        Bound*          right,
+        Bound*          bottom,
+        Bound*          left
+    )
+{
+    return new ArrayCorner(pointFactory, top, right, bottom, left);
 }
 
 
@@ -28,88 +41,23 @@ ArrayFactory<SA>::ArrayFactory() : Factory<SA>()
 /**
  *  Konstruktorius.
  */
-template<class SA>
-ArrayFactory<SA>::~ArrayFactory()
-{
-    // Nothing to do.
-}
-
-
-
-/* ************************************************************************** */
-/**
- *  Sukuria nauja Area objekta.
- */
-template<class SA>
-Area<SA>* ArrayFactory<SA>::newArea(
-    Dimension *dimX,
-    Dimension *dimY
-)
-{
-    return new ArrayArea<SA>(dimX, dimY);
-}
-
-
-
-/* ************************************************************************** */
-/**
- *  Sukuria nauja Bound objekta.
- */
-template<class SA>
-Bound<SA>* ArrayFactory<SA>::newBound(
-    Dimension *dim,
-    Area<SA> *prev,
-    Area<SA> *next
-)
-{
-    return new ArrayBound<SA>(dim, prev, next);
-}
-
-
-
-/* ************************************************************************** */
-/**
- *  Sukuria nauja Corner objekta.
- */
-template<class SA>
-Corner<SA>* ArrayFactory<SA>::newCorner(
-    Bound<SA> *top,
-    Bound<SA> *right,
-    Bound<SA> *bottom,
-    Bound<SA> *left
-)
-{
-    return new ArrayCorner<SA>(top, right, bottom, left);
-}
-
-
-#endif
-/* ************************************************************************** */
-/* **********   ArrayArea   ************************************************* */
-/* ************************************************************************** */
-#ifdef DM_Array_TT
-
-
-
-/* ************************************************************************** */
-/**
- *  Konstruktorius.
- */
-template<class SA>
-ArrayArea<SA>::ArrayArea(
-    Dimension *dimX,
-    Dimension *dimY
-) : Area<SA>(dimX, dimY)
+ArrayArea::ArrayArea(
+            PointFactory*   pointFactory,
+            Dimension*      dimX,
+            Dimension*      dimY
+) : Area(dimX, dimY)
 {
     sizeX = dimX->getPointCount();
     sizeY = dimY->getPointCount();
     posX = 0;
     posY = 0;
 
-    data = new SA*[sizeX];
+    data = new Point**[sizeX];
     for (int i = 0; i < sizeX; i++)
     {
-        data[i] = new SA[sizeY];
+        data[i] = new Point*[sizeY];
+        for (int j = 0; j < sizeY; j++)
+            data[i][j] = pointFactory->newPoint();
     }
 }
 
@@ -119,114 +67,17 @@ ArrayArea<SA>::ArrayArea(
 /**
  *  Destruktorius.
  */
-template<class SA>
-ArrayArea<SA>::~ArrayArea()
+ArrayArea::~ArrayArea()
 {
     for (int i = 0; i < sizeX; i++)
     {
+        for (int j = 0; j < sizeY; j++)
+            delete data[i][j];
         delete[] data[i];
     }
     delete[] data;
 }
 
-
-template<class SA>
-int ArrayArea<SA>::moveTop()
-{
-    return --posY;
-}
-
-
-template<class SA>
-int ArrayArea<SA>::moveRight()
-{
-    return sizeX - 1 - ++posX;
-}
-
-
-template<class SA>
-int ArrayArea<SA>::moveBottom()
-{
-    return sizeY - 1 - ++posY;
-}
-
-
-template<class SA>
-int ArrayArea<SA>::moveLeft()
-{
-    return --posX;
-}
-
-
-template<class SA>
-void ArrayArea<SA>::moveToColStart()
-{
-    posY = 0;
-}
-
-
-template<class SA>
-void ArrayArea<SA>::moveToColEnd()
-{
-    posY = sizeY - 1;
-}
-
-
-template<class SA>
-void ArrayArea<SA>::moveToRowStart()
-{
-    posX = 0;
-}
-
-
-template<class SA>
-void ArrayArea<SA>::moveToRowEnd()
-{
-    posX = sizeY - 1;
-}
-
-
-template<class SA>
-SA& ArrayArea<SA>::getTop()
-{
-    return data[posX][posY - 1];
-}
-
-
-template<class SA>
-SA& ArrayArea<SA>::getRight()
-{
-    return data[posX + 1][posY];
-}
-
-
-template<class SA>
-SA& ArrayArea<SA>::getBottom()
-{
-    return data[posX][posY + 1];
-}
-
-
-template<class SA>
-SA& ArrayArea<SA>::getLeft()
-{
-    return data[posX - 1][posY];
-}
-
-
-template<class SA>
-SA& ArrayArea<SA>::getCurrent()
-{
-    return data[posX][posY];
-}
-
-
-
-#endif
-/* ************************************************************************** */
-/* **********   ArrayBound   ************************************************ */
-/* ************************************************************************** */
-#ifdef DM_Array_TT
 
 
 
@@ -234,14 +85,19 @@ SA& ArrayArea<SA>::getCurrent()
 /**
  *  Kosntruktorius.
  */
-template <class SA>
-ArrayBound<SA>::ArrayBound(
-    Dimension *dim,
-    Area<SA> *prev,
-    Area<SA> *next
-) : Bound<SA>(dim, prev, next)
+ArrayBound::ArrayBound(
+            PointFactory*   pointFactory,
+            Dimension*      dim,
+            Area*           prev,
+            Area*           next
+    ) : Bound(dim, prev, next)
 {
-    data = new SA[dim->getPointCount()];
+    size = dim->getPointCount();
+    pos = 0;
+
+    data = new Point*[size];
+    for (int i = 0; i < size; i++)
+        data[i] = pointFactory->newPoint();
 }
 
 
@@ -250,34 +106,28 @@ ArrayBound<SA>::ArrayBound(
 /**
  *  Konstruktorius.
  */
-template <class SA>
-ArrayBound<SA>::~ArrayBound()
+ArrayBound::~ArrayBound()
 {
+    for (int i = 0; i < size; i++)
+        delete data[i];
     delete[] data;
 }
 
 
-#endif
-/* ************************************************************************** */
-/* **********   ArrayCorner   *********************************************** */
-/* ************************************************************************** */
-#ifdef DM_Array_TT
-
-
 
 /* ************************************************************************** */
 /**
  *  Konstruktorius.
  */
-template <class SA>
-ArrayCorner<SA>::ArrayCorner(
-    Bound<SA> *top,
-    Bound<SA> *right,
-    Bound<SA> *bottom,
-    Bound<SA> *left
-) : Corner<SA>(top, right, bottom, left)
+ArrayCorner::ArrayCorner(
+            PointFactory*   pointFactory,
+            Bound*          top,
+            Bound*          right,
+            Bound*          bottom,
+            Bound*          left
+    ) : Corner(top, right, bottom, left)
 {
-    // Nothing to do.
+    data = pointFactory->newPoint();
 }
 
 
@@ -286,16 +136,13 @@ ArrayCorner<SA>::ArrayCorner(
 /**
  *  Konstruktorius.
  */
-template <class SA>
-ArrayCorner<SA>::~ArrayCorner()
+ArrayCorner::~ArrayCorner()
 {
-    // Nothing to do.
+    delete data;
 }
 
 
 
-#endif
-/* ************************************************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
 }   // namespace dm
