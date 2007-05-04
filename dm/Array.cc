@@ -4,33 +4,33 @@ namespace dm
 
 
 Area* ArrayModelFactory::newArea(
-        PointFactory*   pointFactory,
-        Dimension*      dimX,
-        Dimension*      dimY
-    )
+    PointFactory*   pointFactory,
+    Dimension*      dimX,
+    Dimension*      dimY
+)
 {
     return new ArrayArea(pointFactory, dimX, dimY);
 }
 
 
 Bound* ArrayModelFactory::newBound(
-        PointFactory*   pointFactory,
-        Dimension*      dim,
-        Area*           prev,
-        Area*           next
-    )
+    PointFactory*   pointFactory,
+    Dimension*      dim,
+    Area*           prev,
+    Area*           next
+)
 {
     return new ArrayBound(pointFactory, dim, prev, next);
 }
 
 
 Corner* ArrayModelFactory::newCorner(
-        PointFactory*   pointFactory,
-        Bound*          top,
-        Bound*          right,
-        Bound*          bottom,
-        Bound*          left
-    )
+    PointFactory*   pointFactory,
+    Bound*          top,
+    Bound*          right,
+    Bound*          bottom,
+    Bound*          left
+)
 {
     return new ArrayCorner(pointFactory, top, right, bottom, left);
 }
@@ -42,9 +42,9 @@ Corner* ArrayModelFactory::newCorner(
  *  Konstruktorius.
  */
 ArrayArea::ArrayArea(
-            PointFactory*   pointFactory,
-            Dimension*      dimX,
-            Dimension*      dimY
+    PointFactory*   pointFactory,
+    Dimension*      dimX,
+    Dimension*      dimY
 ) : Area(dimX, dimY)
 {
     sizeX = dimX->getPointCount();
@@ -86,11 +86,11 @@ ArrayArea::~ArrayArea()
  *  Kosntruktorius.
  */
 ArrayBound::ArrayBound(
-            PointFactory*   pointFactory,
-            Dimension*      dim,
-            Area*           prev,
-            Area*           next
-    ) : Bound(dim, prev, next)
+    PointFactory*   pointFactory,
+    Dimension*      dim,
+    Area*           prev,
+    Area*           next
+) : Bound(dim, prev, next)
 {
     size = dim->getPointCount();
     pos = 0;
@@ -120,12 +120,12 @@ ArrayBound::~ArrayBound()
  *  Konstruktorius.
  */
 ArrayCorner::ArrayCorner(
-            PointFactory*   pointFactory,
-            Bound*          top,
-            Bound*          right,
-            Bound*          bottom,
-            Bound*          left
-    ) : Corner(top, right, bottom, left)
+    PointFactory*   pointFactory,
+    Bound*          top,
+    Bound*          right,
+    Bound*          bottom,
+    Bound*          left
+) : Corner(top, right, bottom, left)
 {
     data = pointFactory->newPoint();
 }

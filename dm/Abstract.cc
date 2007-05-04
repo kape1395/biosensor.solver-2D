@@ -54,7 +54,7 @@ Model::Model(
         boundH[i] = new Bound*[partsV + 1];
         for (int j = 0; j <= partsV; j++)
             boundH[i][j] = modelFactory->newBound(
-                               pointFactory, 
+                               pointFactory,
                                this->dimH[i],
                                j == 0      ? 0 : area[i][j - 1],
                                j == partsV ? 0 : area[i][j]
@@ -82,11 +82,11 @@ Model::Model(
         corner[i] = new Corner*[partsV + 1];
         for (int j = 0; j <= partsV; j++)
             corner[i][j] = modelFactory->newCorner(
-                                pointFactory,
-                                j == 0      ? 0 : boundV[i][j - 1],
-                                i == partsH ? 0 : boundH[i][j],
-                                j == partsV ? 0 : boundV[i][j],
-                                i == 0      ? 0 : boundH[i - 1][j]
+                               pointFactory,
+                               j == 0      ? 0 : boundV[i][j - 1],
+                               i == partsH ? 0 : boundH[i][j],
+                               j == partsV ? 0 : boundV[i][j],
+                               i == 0      ? 0 : boundH[i - 1][j]
                            );
     }
 }

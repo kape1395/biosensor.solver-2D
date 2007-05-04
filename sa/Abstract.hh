@@ -25,7 +25,8 @@ class Solver;
 class SolveListener
 {
 public:
-    virtual ~SolveListener() {}
+    virtual ~SolveListener()
+    {}
     virtual void solveEventOccured(Solver *solver) = 0;
 };
 

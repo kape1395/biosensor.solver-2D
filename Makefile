@@ -8,7 +8,7 @@ obj_dm  = dm/Abstract.o dm/Array.o dm/Linked.o
 objects = $(target).o Model.o Config.o $(obj_sa) $(obj_dm)
 
 
-.PHONY: clean execs docs
+.PHONY: clean execs docs format
 	
 	
 execs: $(target)
@@ -29,3 +29,6 @@ $(objects): %.o: %.cc %.hh
 	$(CXX) -c $(CXXFLAGS) $< $(CPPFLAGS) -o $@
 	
 	
+format:
+	astyle --style=ansi *.cc *.hh dm/*.cc dm/*.hh sa/*.cc sa/*.hh
+

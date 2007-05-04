@@ -1,5 +1,4 @@
 #include "Abstract.hh"
 
 namespace sa
-{
-}   //  namespace sa
+    {}   //  namespace sa

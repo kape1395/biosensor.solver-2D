@@ -5,8 +5,20 @@
 #include <iostream>
 #include <list>
 
-class TestPoint : public dm::Point { virtual double getSubstance(int substanceNr) { return 0; } };
-class TestPointFactory : public dm::PointFactory { virtual dm::Point* newPoint() { return new TestPoint(); } };
+class TestPoint : public dm::Point
+{
+    virtual double getSubstance(int substanceNr)
+    {
+        return 0;
+    }
+};
+class TestPointFactory : public dm::PointFactory
+{
+    virtual dm::Point* newPoint()
+    {
+        return new TestPoint();
+    }
+};
 
 int main()
 {
@@ -25,11 +37,11 @@ int main()
         dm::PointFactory* pointFactory = new TestPointFactory();
         dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
         dm::Model* model = new dm::Model(
-                pointFactory,
-                modelFactory,
-                dimH.size(), dimV.size(),
-                dimH, dimV
-            );
+                               pointFactory,
+                               modelFactory,
+                               dimH.size(), dimV.size(),
+                               dimH, dimV
+                           );
 
         // DO SOMETHING - Start.
 

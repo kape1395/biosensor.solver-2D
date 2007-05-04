@@ -8,14 +8,19 @@ namespace sa
 namespace basicexplicit
 {
 
+// TODO: Cia padaryti isreikstine schema.
+// TODO: I Model strukturas ideti biojutiklio parametrus.
 
 
 class Solver : public sa::Solver
 {
 public:
-    Solver(dm::Model* data) : sa::Solver(data) {}
-    virtual ~Solver() {}
-    virtual void solve() {}
+    Solver(dm::Model* data) : sa::Solver(data)
+    {}
+    virtual ~Solver()
+    {}
+    virtual void solve()
+    {}
 };
 
 

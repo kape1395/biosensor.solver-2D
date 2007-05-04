@@ -24,7 +24,8 @@ class Corner;
 class Point
 {
 public:
-    virtual ~Point() {}
+    virtual ~Point()
+    {}
     virtual double getSubstance(int substanceNr) = 0;
 };
 
@@ -38,7 +39,8 @@ public:
 class PointFactory
 {
 public:
-    virtual ~PointFactory() {}
+    virtual ~PointFactory()
+    {}
     virtual Point* newPoint() = 0;
 };
 
@@ -90,10 +92,12 @@ class ModelFactory
 public:
 
     /// Konstruktorius.
-    ModelFactory() {};
+    ModelFactory()
+    {};
 
     /// Destruktorius.
-    virtual ~ModelFactory() {};
+    virtual ~ModelFactory()
+    {};
 
     /// Kuria nauja srities duomenu struktura.
     virtual Area* newArea(
@@ -144,14 +148,15 @@ protected:
 
 public:
     Area(
-            Dimension*      dimX,
-            Dimension*      dimY
-        )
+        Dimension*      dimX,
+        Dimension*      dimY
+    )
     {
         this->dimX = dimX;
         this->dimY = dimY;
     }
-    virtual ~Area() {}
+    virtual ~Area()
+    {}
 
     virtual int  moveTop() = 0;
     virtual int  moveRight() = 0;
@@ -186,16 +191,17 @@ protected:
 
 public:
     Bound(
-            Dimension*      dim,
-            Area*           prev,
-            Area*           next
-        )
+        Dimension*      dim,
+        Area*           prev,
+        Area*           next
+    )
     {
         this->dim = dim;
         this->prev = prev;
         this->next = next;
     }
-    virtual ~Bound() {}
+    virtual ~Bound()
+    {}
 
     virtual int  moveNext() = 0;
     virtual int  movePrev() = 0;
@@ -223,18 +229,19 @@ protected:
 
 public:
     Corner(
-            Bound*          top,
-            Bound*          right,
-            Bound*          bottom,
-            Bound*          left
-        )
+        Bound*          top,
+        Bound*          right,
+        Bound*          bottom,
+        Bound*          left
+    )
     {
         this->top    = top;
         this->right  = right;
         this->bottom = bottom;
         this->left   = left;
     }
-    virtual ~Corner() {}
+    virtual ~Corner()
+    {}
 
     virtual Point * getCurrent() = 0;
 };
