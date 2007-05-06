@@ -1,83 +1,26 @@
 #include "Config.hh"
 
 
-// TODO: IMPLEMENT!!!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-namespace cfg
+cfg::Config::~Config()
 {
-Config::~Config()
-{
-    for (std::list<Dimension*>::iterator it = dimensions.begin(); it != dimensions.end(); ++it)
-        delete *it;
-    dimensions.clear();
- 
-    for (std::list<Substance*>::iterator it = substances.begin(); it != substances.end(); ++it)
-        delete *it;
-    substances.clear();
- 
-    for (std::list<Reaction*>::iterator it = reactions.begin(); it != reactions.end(); ++it)
-        delete *it;
-    reactions.clear();
- 
-    for (std::list<Area*>::iterator it = areas.begin(); it != areas.end(); ++it)
-        delete *it;
-    areas.clear();
+    for ( ; substances     .size() > 0; delete *substances     .begin(), substances     .pop_front());
+    for ( ; reactions      .size() > 0; delete *reactions      .begin(), reactions      .pop_front());
+    for ( ; mediums        .size() > 0; delete *mediums        .begin(), mediums        .pop_front());
+    for ( ; dimensionXParts.size() > 0; delete *dimensionXParts.begin(), dimensionXParts.pop_front());
+    for ( ; dimensionYParts.size() > 0; delete *dimensionYParts.begin(), dimensionYParts.pop_front());
+    for ( ; areas          .size() > 0; delete *areas          .begin(), areas          .pop_front());
+    for ( ; bounds         .size() > 0; delete *bounds         .begin(), bounds         .pop_front());
 }
-Config::Dimension::~ Dimension()
+
+
+cfg::Medium::~Medium()
 {
-    for (std::list<Part*>::iterator it = parts.begin(); it != parts.end(); ++it)
-        delete *it;
-    parts.clear();
+    for ( ; diffusions.size() > 0; delete *diffusions.begin(), diffusions.pop_front());
 }
-Config::Dimension::Part::~Part()
-{}
-Config::Substance::~ Substance()
-{}
-Config::Reaction::~Reaction()
+
+
+cfg::Bound::~Bound()
 {
-    for (std::list<Substance*>::iterator it = substances.begin(); it != substances.end(); ++it)
-        delete *it;
-    substances.clear();
+    for ( ; conditions.size() > 0; delete *conditions.begin(), conditions.pop_front());
 }
-Config::Reaction::Substance::~ Substance()
-{}
-Config::Area::~Area()
-{
-    for (std::list<Substance*>::iterator it = substances.begin(); it != substances.end(); ++it)
-        delete *it;
-    substances.clear();
- 
-    for (std::list<Reaction*>::iterator it = reactions.begin(); it != reactions.end(); ++it)
-        delete *it;
-    reactions.clear();
-}
-Config::Area::Substance::~Substance()
-{}
-Config::Area::Reaction::~Reaction()
-{}
- 
-}   // namespace cfg
-*/
+

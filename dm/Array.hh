@@ -27,6 +27,7 @@ public:
 
     /// Kuria nauja sriti.
     virtual Area* newArea(
+        cfg::Area*      configuration,
         PointFactory*   pointFactory,
         Dimension*      dimX,
         Dimension*      dimY
@@ -34,6 +35,7 @@ public:
 
     /// Kuria nauja krasta.
     virtual Bound* newBound(
+        cfg::Bound*     configuration,
         PointFactory*   pointFactory,
         Dimension*      dim,
         Area*           prev,
@@ -71,6 +73,7 @@ public:
 
     /// Konstruktorius.
     ArrayArea(
+        cfg::Area*      configuration,
         PointFactory*   pointFactory,
         Dimension*      dimX,
         Dimension*      dimY
@@ -150,6 +153,7 @@ protected:
 
 public:
     ArrayBound(
+        cfg::Bound*     configuration,
         PointFactory*   pointFactory,
         Dimension*      dim,
         Area*           prev,

@@ -12,6 +12,7 @@ namespace dm
  *  Konstruktorius.
  */
 Model::Model(
+    cfg::Config*    configuration,
     PointFactory*   pointFactory,
     ModelFactory*   modelFactory,
     int             partsH,
@@ -20,6 +21,7 @@ Model::Model(
     DimensionList&  dimV
 )
 {
+    this->configuration = configuration;
     this->modelFactory = modelFactory;
     this->partsH  = partsH;
     this->partsV  = partsV;
@@ -44,7 +46,22 @@ Model::Model(
     {
         area[i] = new Area*[partsV];
         for (int j = 0; j < partsV; j++)
-            area[i][j] = modelFactory->newArea(pointFactory, this->dimH[i], this->dimV[j]);
+        {
+            cfg::Area* config = 0;
+            std::list<cfg::Area*>::iterator it = configuration->getAreas().begin();
+            for ( ; it != configuration->getAreas().end(); it++)
+                if ((*it)->getPositionX() == i && (*it)->getPositionY() == j)
+                {
+                    config = *it;
+                    break;
+                }
+            area[i][j] = modelFactory->newArea(
+                             config,
+                             pointFactory,
+                             this->dimH[i],
+                             this->dimV[j]
+                         );
+        }
     }
 
 
@@ -53,12 +70,29 @@ Model::Model(
     {
         boundH[i] = new Bound*[partsV + 1];
         for (int j = 0; j <= partsV; j++)
+        {
+            cfg::Bound* config = 0;
+            std::list<cfg::Bound*>::iterator it = configuration->getBounds().begin();
+            for ( ; it != configuration->getBounds().end(); it++)
+                if (
+                    ((*it)->getPositionX() == i &&
+                     (*it)->getPositionY() == j &&
+                     (*it)->getSide() == cfg::Bound::TOP) ||
+                    ((*it)->getPositionX() == i &&
+                     (*it)->getPositionY() == j - 1 &&
+                     (*it)->getSide() == cfg::Bound::BOTTOM))
+                {
+                    config = *it;
+                    break;
+                }
             boundH[i][j] = modelFactory->newBound(
+                               config,
                                pointFactory,
                                this->dimH[i],
                                j == 0      ? 0 : area[i][j - 1],
                                j == partsV ? 0 : area[i][j]
                            );
+        }
     }
 
 
@@ -67,12 +101,29 @@ Model::Model(
     {
         boundV[i] = new Bound*[partsV];
         for (int j = 0; j < partsV; j++)
+        {
+            cfg::Bound* config = 0;
+            std::list<cfg::Bound*>::iterator it = configuration->getBounds().begin();
+            for ( ; it != configuration->getBounds().end(); it++)
+                if (
+                    ((*it)->getPositionX() == i &&
+                     (*it)->getPositionY() == j &&
+                     (*it)->getSide() == cfg::Bound::LEFT) ||
+                    ((*it)->getPositionX() == i - 1 &&
+                     (*it)->getPositionY() == j &&
+                     (*it)->getSide() == cfg::Bound::RIGHT))
+                {
+                    config = *it;
+                    break;
+                }
             boundV[i][j] = modelFactory->newBound(
+                               config,
                                pointFactory,
                                this->dimV[j],
                                i == 0      ? 0 : area[i - 1][j],
                                i == partsH ? 0 : area[i][j]
                            );
+        }
     }
 
 

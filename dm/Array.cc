@@ -4,23 +4,25 @@ namespace dm
 
 
 Area* ArrayModelFactory::newArea(
+    cfg::Area*      configuration,
     PointFactory*   pointFactory,
     Dimension*      dimX,
     Dimension*      dimY
 )
 {
-    return new ArrayArea(pointFactory, dimX, dimY);
+    return new ArrayArea(configuration, pointFactory, dimX, dimY);
 }
 
 
 Bound* ArrayModelFactory::newBound(
+    cfg::Bound*     configuration,
     PointFactory*   pointFactory,
     Dimension*      dim,
     Area*           prev,
     Area*           next
 )
 {
-    return new ArrayBound(pointFactory, dim, prev, next);
+    return new ArrayBound(configuration, pointFactory, dim, prev, next);
 }
 
 
@@ -42,10 +44,11 @@ Corner* ArrayModelFactory::newCorner(
  *  Konstruktorius.
  */
 ArrayArea::ArrayArea(
+    cfg::Area*      configuration,
     PointFactory*   pointFactory,
     Dimension*      dimX,
     Dimension*      dimY
-) : Area(dimX, dimY)
+) : Area(configuration, dimX, dimY)
 {
     sizeX = dimX->getPointCount();
     sizeY = dimY->getPointCount();
@@ -86,11 +89,12 @@ ArrayArea::~ArrayArea()
  *  Kosntruktorius.
  */
 ArrayBound::ArrayBound(
+    cfg::Bound*     configuration,
     PointFactory*   pointFactory,
     Dimension*      dim,
     Area*           prev,
     Area*           next
-) : Bound(dim, prev, next)
+) : Bound(configuration, dim, prev, next)
 {
     size = dim->getPointCount();
     pos = 0;

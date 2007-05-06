@@ -2,6 +2,7 @@
 #define DM_Abstract_HH
 #include <list>
 #include "../Model.hh"
+#include "../Config.hh"
 namespace dm
 {
 /* ************************************************************************** */
@@ -55,6 +56,7 @@ class Model
 {
 protected:
     typedef std::list<Dimension*> DimensionList;
+    cfg::Config*  configuration;
     ModelFactory* modelFactory;
     int         partsH;     ///< X size
     int         partsV;     ///< Y size
@@ -68,6 +70,7 @@ protected:
 public:
     /// Kosntruktorius.
     Model(
+        cfg::Config*    configuration,
         PointFactory*   pointFactory,
         ModelFactory*   modelFactory,
         int             partsH,
@@ -78,6 +81,42 @@ public:
 
     /// Destruktorius.
     virtual ~Model();
+
+
+    virtual int getPartsH()
+    {
+        return partsH;
+    }
+
+    virtual int getPartsV()
+    {
+        return partsV;
+    }
+
+    virtual Area*** getArea()
+    {
+        return area;
+    }
+
+    virtual Bound *** getBoundH()
+    {
+        return boundH;
+    }
+
+    virtual Bound *** getBoundV()
+    {
+        return boundV;
+    }
+
+    virtual Corner *** getCorner()
+    {
+        return corner;
+    }
+
+    virtual cfg::Config* getConfiguration()
+    {
+        return configuration;
+    }
 
 };
 
@@ -101,6 +140,7 @@ public:
 
     /// Kuria nauja srities duomenu struktura.
     virtual Area* newArea(
+        cfg::Area*      configuration,
         PointFactory*   pointFactory,
         Dimension*      dimX,
         Dimension*      dimY
@@ -108,6 +148,7 @@ public:
 
     /// Kuria nauja krasto duomenu struktura.
     virtual Bound* newBound(
+        cfg::Bound*     configuration,
         PointFactory*   pointFactory,
         Dimension*      dim,
         Area*           prev,
@@ -139,6 +180,7 @@ class Area
 {
     friend class Bound;
 protected:
+    cfg::Area* configuration;
     Dimension *dimX;        ///< Dimensija pagal erdves X koordinate
     Dimension *dimY;        ///< Dimensija pagal erdves Y koordinate
     Bound     *boundTop;    ///< Srities krastas is virsaus.
@@ -148,10 +190,12 @@ protected:
 
 public:
     Area(
-        Dimension*      dimX,
-        Dimension*      dimY
+        cfg::Area*  configuration,
+        Dimension*  dimX,
+        Dimension*  dimY
     )
     {
+        this->configuration = configuration;
         this->dimX = dimX;
         this->dimY = dimY;
     }
@@ -172,6 +216,11 @@ public:
     virtual Point* getLeft() = 0;
     virtual Point* getCurrent() = 0;
 
+    virtual cfg::Area* getConfiguration()
+    {
+        return configuration;
+    }
+
 };
 
 
@@ -185,17 +234,20 @@ class Bound
 {
     friend class Corner;
 protected:
+    cfg::Bound* configuration;
     Dimension*  dim;
     Area*       prev;
     Area*       next;
 
 public:
     Bound(
-        Dimension*      dim,
-        Area*           prev,
-        Area*           next
+        cfg::Bound* configuration,
+        Dimension*  dim,
+        Area*       prev,
+        Area*       next
     )
     {
+        this->configuration = configuration;
         this->dim = dim;
         this->prev = prev;
         this->next = next;
@@ -210,6 +262,12 @@ public:
     virtual Point* getNext() = 0;
     virtual Point* getPrev() = 0;
     virtual Point* getCurrent() = 0;
+
+    virtual cfg::Bound* getConfiguration()
+    {
+        return configuration;
+    }
+
 };
 
 
@@ -244,6 +302,7 @@ public:
     {}
 
     virtual Point * getCurrent() = 0;
+
 };
 
 

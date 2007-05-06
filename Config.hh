@@ -10,7 +10,7 @@ namespace cfg
 class Config;
 class Substance;
 class Reaction;
-class Material;
+class Medium;
 class MichaelisMentenReaction;
 class DimensionPart;
 class ConstantDimensionPart;
@@ -29,13 +29,13 @@ class Bound;
  *      <substance name="S"/>
  *      <substance name="P"/>
  *      <reaction name="R1" type="MichaelisMenten" substrate="S" product="P" V_max="1E-8" K_M="1E-8"/>
- *      <material name="Enzyme">
+ *      <medium name="Enzyme">
  *          <diffusion substance="S" coefficient="1E-6"/>
  *          <diffusion substance="S" coefficient="1E-6"/>
  *          <reaction name="R1"/>
- *      </material>
- *      <material name="PerforatedMembrane">
- *      </material>
+ *      </medium>
+ *      <medium name="PerforatedMembrane">
+ *      </medium>
  *      <dimensionX>
  *          <part lenght="1E-3" type="Constant" stepCount="1000"/>
  *          <part lenght="1E-5" type="Bilinear" startStep="0.0001" factor="0.01"/>
@@ -44,10 +44,10 @@ class Bound;
  *          <part lenght="1E-5" type="Bilinear" startStep="0.0001" factor="0.01"/>
  *          <part lenght="1E-5" type="Constant" stepCount="1000"/>
  *      </dimensionY>
- *      <area position="0 0" material="Enzyme"/>
- *      <area position="1 0" material="PerforatedMembrane"/>
- *      <area position="0 1" material="Enzyme"/>
- *      <area position="1 1" material="Enzyme"/>
+ *      <area position="0 0" medium="Enzyme"/>
+ *      <area position="1 0" medium="PerforatedMembrane"/>
+ *      <area position="0 1" medium="Enzyme"/>
+ *      <area position="1 1" medium="Enzyme"/>
  *      <bound position="0 0 top">
  *          <condition substance="S" type="Constant" concentration="7E-5"/>
  *          <condition substance="P" type="Constant" concentration="0.0"/>
@@ -77,18 +77,55 @@ class Bound;
  */
 class Config
 {
-public:
+protected:
     std::list<Substance*>       substances;
     std::list<Reaction*>        reactions;
-    std::list<Material*>        materials;
+    std::list<Medium*>          mediums;
     std::list<DimensionPart*>   dimensionXParts;
     std::list<DimensionPart*>   dimensionYParts;
     std::list<Area*>            areas;
     std::list<Bound*>           bounds;
 
 public:
-    Config();
+    Config()
+    {}
+
     virtual ~Config();
+
+    virtual std::list<Substance*>& getSubstances()
+    {
+        return substances;
+    }
+
+    virtual std::list<Reaction*>& getReactions()
+    {
+        return reactions;
+    }
+
+    virtual std::list<Medium*>& getMediums()
+    {
+        return mediums;
+    }
+
+    virtual std::list<DimensionPart*>& getDimensionXParts()
+    {
+        return dimensionXParts;
+    }
+
+    virtual std::list<DimensionPart*>& getDimensionYParts()
+    {
+        return dimensionYParts;
+    }
+
+    virtual std::list<Area*>& getAreas()
+    {
+        return areas;
+    }
+
+    virtual std::list<Bound*>& getBounds()
+    {
+        return bounds;
+    }
 
 };
 
@@ -107,9 +144,18 @@ protected:
 public:
     Substance(
         std::string name
-    );
-    virtual ~Substance();
-    virtual std::string getName();
+    )
+    {
+        this->name = name;
+    }
+
+    virtual ~Substance()
+    {}
+
+    virtual std::string& getName()
+    {
+        return name;
+    }
 
 };
 
@@ -128,9 +174,18 @@ protected:
 public:
     Reaction(
         std::string name
-    );
-    virtual ~Reaction();
-    virtual std::string& getName();
+    )
+    {
+        this->name = name;
+    }
+
+    virtual ~Reaction()
+    {}
+
+    virtual std::string& getName()
+    {
+        return name;
+    }
 
 };
 
@@ -157,12 +212,36 @@ public:
         Substance   *product,
         double      V_max,
         double      K_M
-    );
-    virtual ~MichaelisMentenReaction();
-    virtual Substance*  getSubstrate();
-    virtual Substance*  getProduct();
-    virtual double      getV_max();
-    virtual double      getK_M();
+    ) : Reaction(name)
+    {
+        this->substrate = substrate;
+        this->product   = product;
+        this->V_max     = V_max;
+        this->K_M       = K_M;
+    }
+
+    virtual ~MichaelisMentenReaction()
+    {}
+
+    virtual Substance* getSubstrate()
+    {
+        return substrate;
+    }
+
+    virtual Substance* getProduct()
+    {
+        return product;
+    }
+
+    virtual double getV_max()
+    {
+        return V_max;
+    }
+
+    virtual double getK_M()
+    {
+        return K_M;
+    }
 
 };
 
@@ -173,11 +252,10 @@ public:
 /**
  *  Medziaga, esanti kiokioje nors biojutiklio srityje.
  */
-class Material
+class Medium
 {
 public:
     class Diffusion;
-    class Reaction;
 
 protected:
     std::string             name;
@@ -185,51 +263,59 @@ protected:
     std::list<Reaction*>    reactions;
 
 public:
-    Material(
-        std::string name
-    );
-    virtual ~Material();
-    virtual std::string getName();
-    virtual std::list<Diffusion*> getDiffusions();
-    virtual std::list<Reaction*> getReactions();
+    Medium(std::string name)
+    {
+        this->name = name;
+    }
+
+    virtual ~Medium();
+
+    virtual std::string& getName()
+    {
+        return name;
+    }
+
+    virtual std::list<Diffusion*>& getDiffusions()
+    {
+        return diffusions;
+    }
+
+    virtual std::list<Reaction*>& getReactions()
+    {
+        return reactions;
+    }
+
 };
 
 
 /**
  *  Substancijos difuzija medziagoje.
  */
-class Material::Diffusion
+class Medium::Diffusion
 {
 protected:
-    std::string substance;
-    double      coefficient;
+    Substance* substance;
+    double     coefficient;
 
 public:
-    Diffusion(
-        std::string substance,
-        double      coefficient
-    );
-    virtual ~Diffusion();
-    virtual std::string getSubstance();
-    virtual double      getCoefficient();
+    Diffusion(Substance* substance, double coefficient)
+    {
+        this->substance   = substance;
+        this->coefficient = coefficient;
+    }
 
-};
+    virtual ~Diffusion()
+    {}
 
+    virtual Substance* getSubstance()
+    {
+        return substance;
+    }
 
-/**
- *  Reakcija vykstanti medziagoje.
- */
-class Material::Reaction
-{
-protected:
-    std::string substance;
-
-public:
-    Reaction(
-        std::string name
-    );
-    virtual ~Reaction();
-    virtual std::string getName();
+    virtual double getCoefficient()
+    {
+        return coefficient;
+    }
 
 };
 
@@ -248,9 +334,19 @@ protected:
 public:
     DimensionPart(
         double length
-    );
-    virtual ~DimensionPart();
-    virtual double getLength();
+    )
+    {
+        this->length = length;
+    }
+
+    virtual ~DimensionPart()
+    {}
+
+    virtual double getLength()
+    {
+        return length;
+    }
+
 };
 
 
@@ -266,12 +362,19 @@ protected:
     int stepCount;
 
 public:
-    ConstantDimensionPart(
-        double length,
-        int    stepCount
-    );
-    virtual ~ConstantDimensionPart();
-    virtual int getStepCount();
+    ConstantDimensionPart(double length, int stepCount) : DimensionPart(length)
+    {
+        this->stepCount = stepCount;
+    }
+
+    virtual ~ConstantDimensionPart()
+    {}
+
+    virtual int getStepCount()
+    {
+        return stepCount;
+    }
+
 };
 
 
@@ -292,10 +395,24 @@ public:
         double length,
         double startStep,
         double factor
-    );
-    virtual ~BilinearDimensionPart();
-    virtual double getStartStep();
-    virtual double getFactor();
+    ) : DimensionPart(length)
+    {
+        this->startStep = startStep;
+        this->factor    = factor;
+    }
+
+    virtual ~BilinearDimensionPart()
+    {}
+
+    virtual double getStartStep()
+    {
+        return startStep;
+    }
+
+    virtual double getFactor()
+    {
+        return factor;
+    }
 
 };
 
@@ -309,17 +426,39 @@ public:
 class Area
 {
 protected:
-    int         position[2];
-    std::string material;
+    int     positionX;
+    int     positionY;
+    Medium* medium;
 
 public:
     Area(
-        int         position[2],
-        std::string material
-    );
-    virtual ~Area();
-    virtual int* getPosition();
-    virtual std::string getMaterial();
+        int     positionX,
+        int     positionY,
+        Medium* medium
+    )
+    {
+        this->positionX = positionX;
+        this->positionY = positionY;
+        this->medium    = medium;
+    }
+
+    virtual ~Area()
+    {}
+
+    virtual int getPositionX()
+    {
+        return positionX;
+    }
+
+    virtual int getPositionY()
+    {
+        return positionY;
+    }
+
+    virtual Medium* getMedium()
+    {
+        return medium;
+    }
 
 };
 
@@ -338,19 +477,47 @@ public:
     class ConstantCondition;
     class ElectrodeCondition;
     class MergeCondition;
-    enum SIDE {top, right, bottom, left};
+    enum SIDE {TOP, RIGHT, BOTTOM, LEFT};
 
 protected:
-    int position[3];    // x, y, SIDE
+    int positionX;
+    int positionY;
+    int side;
     std::list<Condition*> conditions;
 
 public:
     Bound(
-        int positions[3]
-    );
+        int positionX,
+        int positionY,
+        int side
+    )
+    {
+        this->positionX = positionX;
+        this->positionY = positionY;
+        this->side      = side;
+    }
+
     virtual ~Bound();
-    virtual int* getPosition();
-    virtual std::list<Condition*> getConditions();
+
+    virtual int getPositionX()
+    {
+        return positionX;
+    }
+
+    virtual int getPositionY()
+    {
+        return positionY;
+    }
+
+    virtual int getSide()
+    {
+        return side;
+    }
+
+    virtual std::list<Condition*>& getConditions()
+    {
+        return conditions;
+    }
 
 };
 
@@ -361,14 +528,23 @@ public:
 class Bound::Condition
 {
 protected:
-    std::string substance;
+    Substance* substance;
 
 public:
     Condition(
-        std::string substance
-    );
-    virtual ~Condition();
-    virtual std::string getSubstance();
+        Substance* substance
+    )
+    {
+        this->substance = substance;
+    }
+
+    virtual ~Condition()
+    {}
+
+    virtual Substance* getSubstance()
+    {
+        return substance;
+    }
 
 };
 
@@ -382,9 +558,12 @@ protected:
 
 public:
     WallCondition(
-        std::string substance
-    );
-    virtual ~WallCondition();
+        Substance* substance
+    ) : Condition(substance)
+    {}
+
+    virtual ~WallCondition()
+    {}
 
 };
 
@@ -399,11 +578,20 @@ protected:
 
 public:
     ConstantCondition(
-        std::string substance,
+        Substance* substance,
         double concentration
-    );
-    virtual ~ConstantCondition();
-    virtual double getConcentration();
+    ) : Condition(substance)
+    {
+        this->concentration = concentration;
+    }
+
+    virtual ~ConstantCondition()
+    {}
+
+    virtual double getConcentration()
+    {
+        return concentration;
+    }
 
 };
 
@@ -417,9 +605,12 @@ protected:
 
 public:
     ElectrodeCondition(
-        std::string substance
-    );
-    virtual ~ElectrodeCondition();
+        Substance* substance
+    ) : Condition(substance)
+    {}
+
+    virtual ~ElectrodeCondition()
+    {}
 
 };
 
@@ -433,9 +624,12 @@ protected:
 
 public:
     MergeCondition(
-        std::string substance
-    );
-    virtual ~MergeCondition();
+        Substance* substance
+    ) : Condition(substance)
+    {}
+
+    virtual ~MergeCondition()
+    {}
 
 };
 
