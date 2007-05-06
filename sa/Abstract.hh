@@ -1,9 +1,9 @@
 /// \file
 /// \todo Nezinau dar tiksliai, kaip cia ka padaryti...
 ///
-#ifndef SA_Abstract_HH
-#define SA_Abstract_HH
-#include "../dm/Abstract.hh"
+#ifndef SA_AbstractSA_HH
+#define SA_AbstractSA_HH
+#include "../dm/AbstractDM.hh"
 #include <list>
 
 

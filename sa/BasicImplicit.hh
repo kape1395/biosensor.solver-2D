@@ -1,6 +1,6 @@
-#ifndef SA_BasicImplicit_HH
-#define SA_BasicImplicit_HH
-#include "../dm/Abstract.hh"
+#ifndef SA_BasicImplicitSA_HH
+#define SA_BasicImplicitSA_HH
+#include "../dm/AbstractDM.hh"
 
 
 

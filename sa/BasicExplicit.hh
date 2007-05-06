@@ -1,7 +1,7 @@
-#ifndef SA_BasicExplicit_HH
-#define SA_BasicExplicit_HH
-#include "Abstract.hh"
-#include "../dm/Abstract.hh"
+#ifndef SA_BasicExplicitSA_HH
+#define SA_BasicExplicitSA_HH
+#include "AbstractSA.hh"
+#include "../dm/AbstractDM.hh"
 #include <map>
 
 namespace sa

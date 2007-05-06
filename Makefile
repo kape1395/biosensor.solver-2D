@@ -3,8 +3,8 @@ CXXFLAGS = -x c++ -ansi -Wall -pedantic -ggdb
 CPPFLAGS =
 
 target  = test1
-obj_sa  = sa/Abstract.o sa/BasicExplicit.o sa/BasicImplicit.o
-obj_dm  = dm/Abstract.o dm/Array.o dm/Linked.o
+obj_sa  = sa/AbstractSA.o sa/BasicExplicitSA.o sa/BasicImplicitSA.o
+obj_dm  = dm/AbstractDM.o dm/ArrayDM.o dm/LinkedDM.o
 objects = $(target).o Model.o Config.o $(obj_sa) $(obj_dm)
 
 

@@ -1,4 +1,4 @@
-#include "Abstract.hh"
+#include "AbstractSA.hh"
 
 namespace sa
     {}   //  namespace sa

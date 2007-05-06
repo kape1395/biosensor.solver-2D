@@ -1,9 +1,4 @@
-#define DM_Abstract_CC
-#include "Abstract.hh"
-
-namespace dm
-{
-
+#include "AbstractDM.hh"
 
 
 /* ************************************************************************** */
@@ -11,7 +6,7 @@ namespace dm
 /**
  *  Konstruktorius.
  */
-Model::Model(
+dm::Model::Model(
     cfg::Config*    configuration,
     PointFactory*   pointFactory,
     ModelFactory*   modelFactory,
@@ -49,7 +44,7 @@ Model::Model(
         {
             cfg::Area* config = 0;
             std::list<cfg::Area*>::iterator it = configuration->getAreas().begin();
-            while (it != configuration->getAreas().end())
+            for ( ; it != configuration->getAreas().end(); it++)
                 if ((*it)->getPositionX() == i && (*it)->getPositionY() == j)
                 {
                     config = *it;
@@ -73,13 +68,13 @@ Model::Model(
         {
             cfg::Bound* config = 0;
             std::list<cfg::Bound*>::iterator it = configuration->getBounds().begin();
-            while (it != configuration->getBounds().end())
+            for ( ; it != configuration->getBounds().end(); it++)
                 if (
                     ((*it)->getPositionX() == i &&
                      (*it)->getPositionY() == j &&
                      (*it)->getSide() == cfg::Bound::TOP) ||
                     ((*it)->getPositionX() == i &&
-                     (*it)->getPositionY() == j-1 &&
+                     (*it)->getPositionY() == j - 1 &&
                      (*it)->getSide() == cfg::Bound::BOTTOM))
                 {
                     config = *it;
@@ -101,13 +96,29 @@ Model::Model(
     {
         boundV[i] = new Bound*[partsV];
         for (int j = 0; j < partsV; j++)
+        {
+            cfg::Bound* config = 0;
+            std::list<cfg::Bound*>::iterator it = configuration->getBounds().begin();
+            for ( ; it != configuration->getBounds().end(); it++)
+                if (
+                    ((*it)->getPositionX() == i &&
+                     (*it)->getPositionY() == j &&
+                     (*it)->getSide() == cfg::Bound::LEFT) ||
+                    ((*it)->getPositionX() == i - 1 &&
+                     (*it)->getPositionY() == j &&
+                     (*it)->getSide() == cfg::Bound::RIGHT))
+                {
+                    config = *it;
+                    break;
+                }
             boundV[i][j] = modelFactory->newBound(
-                               0,                           // FIXME 0
+                               config,
                                pointFactory,
                                this->dimV[j],
                                i == 0      ? 0 : area[i - 1][j],
                                i == partsH ? 0 : area[i][j]
                            );
+        }
     }
 
 
@@ -133,7 +144,7 @@ Model::Model(
 /**
  *  Konstruktorius.
  */
-Model::~Model()
+dm::Model::~Model()
 {
 
     for (int i = 0; i <= partsH; i++)
@@ -179,4 +190,3 @@ Model::~Model()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-}   // namespace dm

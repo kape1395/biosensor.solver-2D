@@ -1,6 +1,6 @@
 #include "test1.hh"
-#include "dm/Abstract.hh"
-#include "dm/Array.hh"
+#include "dm/AbstractDM.hh"
+#include "dm/ArrayDM.hh"
 #include "sa/BasicExplicit.hh"
 #include "Config.hh"
 #include <iostream>

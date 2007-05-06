@@ -1,5 +1,5 @@
-#ifndef DM_Abstract_HH
-#define DM_Abstract_HH
+#ifndef DM_AbstractDM_HH
+#define DM_AbstractDM_HH
 #include <list>
 #include "../Model.hh"
 #include "../Config.hh"
