@@ -15,7 +15,7 @@ execs: $(target)
 	
 	
 clean:
-	rm -f $(objects) $(target)
+	rm -vfr $(objects) $(target) build/*
 	
 docs:
 	mkdir -p build/doc

@@ -181,6 +181,7 @@ class Area
     friend class Bound;
 protected:
     cfg::Area* configuration;
+    void*      solver;
     Dimension *dimX;        ///< Dimensija pagal erdves X koordinate
     Dimension *dimY;        ///< Dimensija pagal erdves Y koordinate
     Bound     *boundTop;    ///< Srities krastas is virsaus.
@@ -221,6 +222,16 @@ public:
         return configuration;
     }
 
+    virtual void* getSolver()
+    {
+        return solver;
+    }
+
+    virtual void setSolver(void* solver)
+    {
+        this->solver = solver;
+    }
+
 };
 
 
@@ -235,6 +246,7 @@ class Bound
     friend class Corner;
 protected:
     cfg::Bound* configuration;
+    void*       solver;
     Dimension*  dim;
     Area*       prev;
     Area*       next;
@@ -268,6 +280,16 @@ public:
         return configuration;
     }
 
+    virtual void* getSolver()
+    {
+        return solver;
+    }
+
+    virtual void setSolver(void* solver)
+    {
+        this->solver = solver;
+    }
+
 };
 
 
@@ -280,10 +302,11 @@ public:
 class Corner
 {
 protected:
-    Bound *top;
-    Bound *right;
-    Bound *bottom;
-    Bound *left;
+    Bound* top;
+    Bound* right;
+    Bound* bottom;
+    Bound* left;
+    void*  solver;
 
 public:
     Corner(
@@ -302,6 +325,16 @@ public:
     {}
 
     virtual Point * getCurrent() = 0;
+
+    virtual void* getSolver()
+    {
+        return solver;
+    }
+
+    virtual void setSolver(void* solver)
+    {
+        this->solver = solver;
+    }
 
 };
 

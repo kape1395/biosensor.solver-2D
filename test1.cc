@@ -1,7 +1,8 @@
 #include "test1.hh"
 #include "dm/AbstractDM.hh"
 #include "dm/ArrayDM.hh"
-#include "sa/BasicExplicit.hh"
+#include "sa/AbstractSA.hh"
+#include "sa/BasicExplicitSA.hh"
 #include "Config.hh"
 #include <iostream>
 #include <list>

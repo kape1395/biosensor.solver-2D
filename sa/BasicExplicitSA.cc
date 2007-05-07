@@ -11,30 +11,33 @@
  */
 sa::basicexplicit::Solver::Solver(dm::Model* data) : sa::Solver(data)
 {
-    /*
-    solvers = new void**[data->getPartsH() * 2 + 1];
-    for (int i = 0; i < data->getPartsH() * 2 + 1; i++)
-        solvers[i] = new void*[data->getPartsV() * 2 + 1];
-
-
-    for (int i = 0; i < data->getPartsH(); i++)
-        for (int j = 0; j < data->getPartsV(); j++)
-        {
-            dm::Area area = data->getAreas()[i][j];
-
-        }
-    */
-    // TODO: Sudelioti solver`ius pagal konfiguracija.
-
     for (int i = 0; i < data->getPartsH(); i++)
         for (int j = 0; j < data->getPartsV(); j++)
         {
             dm::Area* dm = data->getArea()[i][j];
-            AreaSolver* solver = new AreaSolver(dm);
-            solvers[dm] = solver;
+            dm->setSolver(new AreaSolver(dm));
         }
 
+    for (int i = 0; i < data->getPartsH() + 1; i++)
+        for (int j = 0; j < data->getPartsV(); j++)
+        {
+            dm::Bound* dm = data->getBoundV()[i][j];
+            dm->setSolver(new BoundSolver(dm));
+        }
 
+    for (int i = 0; i < data->getPartsH(); i++)
+        for (int j = 0; j < data->getPartsV() + 1; j++)
+        {
+            dm::Bound* dm = data->getBoundH()[i][j];
+            dm->setSolver(new BoundSolver(dm));
+        }
+
+    for (int i = 0; i < data->getPartsH() + 1; i++)
+        for (int j = 0; j < data->getPartsV() + 1; j++)
+        {
+            dm::Corner* dm = data->getCorner()[i][j];
+            dm->setSolver(new CornerSolver(dm));
+        }
 
 }
 
@@ -48,13 +51,21 @@ sa::basicexplicit::Solver::Solver(dm::Model* data) : sa::Solver(data)
  */
 sa::basicexplicit::Solver::~Solver()
 {
-    /*
-    for (int i = 0; i < data->getPartsH() * 2 + 1; i++)
-        delete[] solvers[i];
-    delete[] solvers;
-    */
-//  for (; !solvers.empty(); solvers.pop_front())
-//      delete (*solvers.begin()).second;
+    for (int i = 0; i < data->getPartsH() + 1; i++)
+        for (int j = 0; j < data->getPartsV() + 1; j++)
+            delete static_cast<CornerSolver*>(data->getCorner()[i][j]->getSolver());
+
+    for (int i = 0; i < data->getPartsH() + 1; i++)
+        for (int j = 0; j < data->getPartsV(); j++)
+            delete static_cast<BoundSolver*>(data->getBoundV()[i][j]->getSolver());
+
+    for (int i = 0; i < data->getPartsH(); i++)
+        for (int j = 0; j < data->getPartsV() + 1; j++)
+            delete static_cast<BoundSolver*>(data->getBoundH()[i][j]->getSolver());
+
+    for (int i = 0; i < data->getPartsH(); i++)
+        for (int j = 0; j < data->getPartsV(); j++)
+            delete static_cast<AreaSolver*>(data->getArea()[i][j]->getSolver());
 }
 
 
@@ -89,13 +100,13 @@ void sa::basicexplicit::Solver::solve()
 void sa::basicexplicit::Solver::solveIteration()
 {
     std::cout << "sa::basicexplicit::Solver::solveIteration()...\n";
-    /*
+
 
     // Sriciu vidus.
     for (int i = 0; i < data->getPartsH(); i++)
         for (int j = 0; j < data->getPartsV(); j++)
         {
-            AreaSolver* solver = static_cast<AreaSolver*>(solvers[i * 2 + 1][j * 2 + 1]);
+            AreaSolver* solver = static_cast<AreaSolver*>(data->getArea()[i][j]->getSolver());
             solver->solveIteration();
         }
 
@@ -103,7 +114,7 @@ void sa::basicexplicit::Solver::solveIteration()
     for (int i = 0; i < data->getPartsH() + 1; i++)
         for (int j = 0; j < data->getPartsV(); j++)
         {
-            BoundSolver* solver = static_cast<BoundSolver*>(solvers[i * 2][j * 2 + 1]);
+            BoundSolver* solver = static_cast<BoundSolver*>(data->getBoundV()[i][j]->getSolver());
             solver->solveIteration();
         }
 
@@ -111,7 +122,7 @@ void sa::basicexplicit::Solver::solveIteration()
     for (int i = 0; i < data->getPartsH(); i++)
         for (int j = 0; j < data->getPartsV() + 1; j++)
         {
-            BoundSolver* solver = static_cast<BoundSolver*>(solvers[i * 2 + 1][j * 2]);
+            BoundSolver* solver = static_cast<BoundSolver*>(data->getBoundH()[i][j]->getSolver());
             solver->solveIteration();
         }
 
@@ -119,11 +130,11 @@ void sa::basicexplicit::Solver::solveIteration()
     for (int i = 0; i < data->getPartsH() + 1; i++)
         for (int j = 0; j < data->getPartsV() + 1; j++)
         {
-            CornerSolver* solver = static_cast<CornerSolver*>(solvers[i * 2][j * 2]);
+            CornerSolver* solver = static_cast<CornerSolver*>(data->getCorner()[i][j]->getSolver());
             solver->solveIteration();
         }
 
-    */
+
     std::cout << "sa::basicexplicit::Solver::solveIteration()... Done\n";
 }
 
