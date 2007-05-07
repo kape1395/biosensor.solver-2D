@@ -46,10 +46,10 @@ int main()
         config->getReactions().push_back(reaction);
         config->getMediums().push_back(medEnzyme);
         config->getMediums().push_back(medMembrane);
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
         config->getAreas().push_back(new cfg::Area(0, 0, medEnzyme));
         config->getAreas().push_back(new cfg::Area(1, 0, medMembrane));
         config->getAreas().push_back(new cfg::Area(0, 1, medEnzyme));
@@ -110,41 +110,11 @@ int main()
         bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
     }
     {
-        std::list<Dimension*> dimH;
-        std::list<Dimension*> dimV;
-        dimH.push_back(new ConstantDimension(Dimension::HORIZONTAL,  0.0, 1E-3, 100));
-        dimH.push_back(new ConstantDimension(Dimension::HORIZONTAL, 1E-3, 1E-3, 100));
-        dimV.push_back(new ConstantDimension(Dimension::VERTICAL,    0.0, 1E-3, 100));
-        dimV.push_back(new ConstantDimension(Dimension::VERTICAL,   1E-3, 1E-3, 100));
-
-
-        dm::PointFactory* pointFactory = new TestPointFactory();
         dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
-        dm::Model* model = new dm::Model(
-                               config,
-                               pointFactory,
-                               modelFactory,
-                               dimH.size(), dimV.size(),
-                               dimH, dimV
-                           );
-
-        // DO SOMETHING - Start.
-
-        sa::Solver* solver = new sa::basicexplicit::Solver(model);
+        sa::Solver* solver = new sa::basicexplicit::Solver(config, modelFactory);
         solver->solve();
         delete solver;
-
-        // DO SOMETHING - Done.
-
-        delete model;
         delete modelFactory;
-        delete pointFactory;
-
-
-
-        for ( ; dimH.size() > 0; delete *dimH.begin(), dimH.pop_front());
-        for ( ; dimV.size() > 0; delete *dimV.begin(), dimV.pop_front());
-
     }
     delete config;
 

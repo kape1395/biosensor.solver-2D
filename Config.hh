@@ -2,6 +2,7 @@
 #define CFG_Config_HH
 #include <string>
 #include <list>
+//#include "Model.hh"
 namespace cfg
 {
 
@@ -347,6 +348,11 @@ public:
         return length;
     }
 
+    virtual std::string getType()
+    {
+        return "DEFAULT";
+    }
+
 };
 
 
@@ -373,6 +379,11 @@ public:
     virtual int getStepCount()
     {
         return stepCount;
+    }
+
+    virtual std::string getType()
+    {
+        return "CONSTANT";
     }
 
 };
@@ -412,6 +423,11 @@ public:
     virtual double getFactor()
     {
         return factor;
+    }
+
+    virtual std::string getType()
+    {
+        return "BILINEAR";
     }
 
 };

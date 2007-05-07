@@ -164,11 +164,11 @@ public:
 
     virtual int  moveNext()
     {
-        return --pos;
+        return size - 1 - ++pos;
     }
     virtual int  movePrev()
     {
-        return size - 1 - ++pos;
+        return --pos;
     }
     virtual void moveToStart()
     {

@@ -1,6 +1,7 @@
 #ifndef DM_AbstractDM_HH
 #define DM_AbstractDM_HH
 #include <list>
+#include <iostream>
 #include "../Model.hh"
 #include "../Config.hh"
 namespace dm
@@ -14,6 +15,21 @@ class ModelFactory;
 class Area;
 class Bound;
 class Corner;
+class Dimension;
+class ConstantDimension;
+
+
+
+
+/**
+ *  Krypciu enumeracija.
+ */
+enum Direction
+{
+    HORIZONTAL = 0,
+    VERTICAL   = 1
+};
+
 
 
 
@@ -55,7 +71,7 @@ public:
 class Model
 {
 protected:
-    typedef std::list<Dimension*> DimensionList;
+    //typedef std::list<Dimension*> DimensionList;
     cfg::Config*  configuration;
     ModelFactory* modelFactory;
     int         partsH;     ///< X size
@@ -67,16 +83,18 @@ protected:
     Bound***    boundV;     ///< 2D Array   [x+1][y]
     Corner***   corner;     ///< 2D Array   [x+1][y+1]
 
+    virtual Dimension* createDimensionByConfig(
+        cfg::DimensionPart* config,
+        Direction direction,
+        double startPosition
+    );
+
 public:
     /// Kosntruktorius.
     Model(
         cfg::Config*    configuration,
         PointFactory*   pointFactory,
-        ModelFactory*   modelFactory,
-        int             partsH,
-        int             partsV,
-        DimensionList&  dimH,
-        DimensionList&  dimV
+        ModelFactory*   modelFactory
     );
 
     /// Destruktorius.
@@ -232,6 +250,16 @@ public:
         this->solver = solver;
     }
 
+    virtual Dimension* getDimensionX()
+    {
+        return dimX;
+    }
+
+    virtual Dimension* getDimensionY()
+    {
+        return dimY;
+    }
+
 };
 
 
@@ -334,6 +362,88 @@ public:
     virtual void setSolver(void* solver)
     {
         this->solver = solver;
+    }
+
+};
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Dimensijos atkarpa.
+ */
+class Dimension
+{
+protected:
+    Direction type;       ///< 0 - horizontali, 1 - vertikali.
+    double    length;      ///< Dimensijos atkarpos ilgis.
+    double    start;      ///< Dimensijos pradzia.
+
+public:
+    /// Konstruktorius.
+    Dimension(
+        Direction   type,
+        double      start,
+        double      length
+    )
+    {
+        this->type   = type;
+        this->start  = start;
+        this->length = length;
+    }
+
+    /// Destruktorius.
+    virtual ~Dimension()
+    {}
+
+    virtual int      getPointCount() = 0;
+    virtual double   getLength()
+    {
+        return length;
+    }
+    virtual double*  getPositions() = 0;
+    virtual double*  getIntervals() = 0;
+
+};
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Dimensijos atkarpa.
+ */
+class ConstantDimension : public Dimension
+{
+protected:
+    int     steps;
+    double  *positions;
+    double  *intervals;
+
+public:
+    ConstantDimension(
+        Direction   type,
+        double      start,
+        double      length,
+        int         steps
+    );
+
+    virtual ~ConstantDimension();
+
+    virtual int getPointCount()
+    {
+        return steps + 1;
+    }
+
+    virtual double* getPositions()
+    {
+        return positions;
+    }
+
+    virtual double* getIntervals()
+    {
+        return intervals;
     }
 
 };

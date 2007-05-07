@@ -40,6 +40,7 @@ public:
 class Solver
 {
 protected:
+    cfg::Config*                config;
     dm::Model*                  data;
     std::list<SolveListener*>   listeners;
 
@@ -51,18 +52,31 @@ protected:
             (*iterator)->solveEventOccured(this);
     }
 
-public:
-
-    /// Konstruktorius.
-    Solver(dm::Model* data)
+    /// Sita konstruktoriu gali kvieti tik sunines klases...
+    Solver(cfg::Config* config, dm::Model* model)
     {
-        this->data = data;
+        this->config = config;
+        this->data   = model;
     }
+
+    /// Sita konstruktoriu gali kvieti tik sunines klases...
+    Solver(cfg::Config* config)
+    {
+        this->config = config;
+        this->data   = 0;
+    }
+
+public:
 
     /// Destruktorius.
     virtual ~Solver()
     {
         listeners.clear();
+        if (data != 0)
+        {
+            delete data;
+            data = 0;
+        }
     }
 
     /// Cia vyksta modeliavimas.

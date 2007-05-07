@@ -9,33 +9,45 @@
 dm::Model::Model(
     cfg::Config*    configuration,
     PointFactory*   pointFactory,
-    ModelFactory*   modelFactory,
-    int             partsH,
-    int             partsV,
-    DimensionList&  dimH,
-    DimensionList&  dimV
+    ModelFactory*   modelFactory
 )
 {
     this->configuration = configuration;
     this->modelFactory = modelFactory;
-    this->partsH  = partsH;
-    this->partsV  = partsV;
+    this->partsH  = configuration->getDimensionXParts().size();
+    this->partsV  = configuration->getDimensionYParts().size();
 
-    this->dimH = new Dimension*[dimH.size()];
-    this->dimV = new Dimension*[dimV.size()];
+    ///////////////////////////////////////
+    //  Susukuriam horizontalias dimensijas
+    this->dimH = new Dimension*[partsH];
     {
-        int i;
+        std::list<cfg::DimensionPart*>::iterator iter = configuration->getDimensionXParts().begin();
+        std::list<cfg::DimensionPart*>::iterator end  = configuration->getDimensionXParts().end();
+        double startPosition = 0.0;
+        for (int i = 0; iter != end; i++, iter++)
+        {
+            dimH[i] = createDimensionByConfig(*iter, HORIZONTAL, startPosition);
+            startPosition += (*iter)->getLength();
+        }
+    }
 
-        i = 0;
-        for (DimensionList::iterator it = dimH.begin(); it != dimH.end(); it++, i++)
-            this->dimH[i] = *it;
-
-        i = 0;
-        for (DimensionList::iterator it = dimV.begin(); it != dimV.end(); it++, i++)
-            this->dimV[i] = *it;
+    ///////////////////////////////////////
+    //  Susukuriam vertikalias dimensijas
+    this->dimV = new Dimension*[partsV];
+    {
+        std::list<cfg::DimensionPart*>::iterator iter = configuration->getDimensionYParts().begin();
+        std::list<cfg::DimensionPart*>::iterator end  = configuration->getDimensionYParts().end();
+        double startPosition = 0.0;
+        for (int i = 0; iter != end; i++, iter++)
+        {
+            dimV[i] = createDimensionByConfig(*iter, VERTICAL, startPosition);
+            startPosition += (*iter)->getLength();
+        }
     }
 
 
+    ///////////////////////////////////////
+    //  Sukuriam striciu vidus.
     area = new Area**[this->partsH];
     for (int i = 0; i < partsH; i++)
     {
@@ -59,7 +71,8 @@ dm::Model::Model(
         }
     }
 
-
+    ///////////////////////////////////////
+    //  Sukuriam horizontalius krastus.
     boundH = new Bound**[partsH];
     for (int i = 0; i < partsH; i++)
     {
@@ -90,7 +103,8 @@ dm::Model::Model(
         }
     }
 
-
+    ///////////////////////////////////////
+    //  Sukuriam vertikalius krastus.
     boundV = new Bound**[partsH + 1];
     for (int i = 0; i <= partsH; i++)
     {
@@ -121,7 +135,8 @@ dm::Model::Model(
         }
     }
 
-
+    ///////////////////////////////////////
+    //  Sukuriam kampus.
     corner = new Corner**[partsH + 1];
     for (int i = 0; i <= partsH; i++)
     {
@@ -135,6 +150,7 @@ dm::Model::Model(
                                i == 0      ? 0 : boundH[i - 1][j]
                            );
     }
+
 }
 
 
@@ -182,10 +198,108 @@ dm::Model::~Model()
     }
     delete[] area;
 
+
+    for (int i = 0; i < partsH; i++)
+        delete dimH[i];
     delete[] dimH;
+
+
+    for (int i = 0; i < partsV; i++)
+        delete dimV[i];
     delete[] dimV;
 }
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Pagal konfiguracija sukuria dimensijos duomenu struktura.
+ */
+dm::Dimension* dm::Model::createDimensionByConfig(
+    cfg::DimensionPart* config,
+    Direction direction,
+    double startPosition
+)
+{
+    Dimension* dim = 0;
+    if (config->getType() == "DEFAULT")
+    {
+        dim = new ConstantDimension(
+                  direction,
+                  startPosition,
+                  config->getLength(),
+                  2
+              );
+    }
+    else if (config->getType() == "CONSTANT")
+    {
+        dim = new ConstantDimension(
+                  direction,
+                  startPosition,
+                  config->getLength(),
+                  dynamic_cast<cfg::ConstantDimensionPart*>(config)->getStepCount()
+              );
+    }
+    else if (config->getType() == "BILINEAR")
+    {
+        // FIXME: Implement biliner dimension.
+        std::cerr << "ERROR: Bilinera dimension not implemented yet.\n";
+    }
+    else
+    {
+        std::cerr << "ERROR: Unknown domensionpart type " << config->getType() << '\n';
+    }
+
+    return dim;
+}
+
+
+/* ************************************************************************** */
+/* **********   ConstantDimenion   ****************************************** */
+/* ************************************************************************** */
+
+
+
+/**
+ *  Konstruktorius.
+ *  @param type     Tipas (H/V).
+ *  @param start    Dimensijos pradzia.
+ *  @param length   Dimensijos ilgis.
+ *  @param steps    Kiek zinsniu srityje (tasku bus 1 daugiau).
+ */
+dm::ConstantDimension::ConstantDimension(
+    Direction   type,
+    double      start,
+    double      length,
+    int         steps
+) : dm::Dimension(type, start, length)
+{
+    this->steps = steps;
+
+    positions = new double[steps + 1];
+    intervals = new double[steps];
+
+    for (int i = 0; i < steps + 1; i++)
+    {
+        positions[i] = start + (length / steps * i);
+    }
+
+    for (int i = 0; i < steps; i++)
+    {
+        intervals[i] = positions[i + 1] - positions[i];
+    }
+}
+
+
+
+/**
+ *  Destruktorius.
+ */
+dm::ConstantDimension::~ConstantDimension()
+{
+    delete[] positions;
+    delete[] intervals;
+}
 
 
 /* ************************************************************************** */
