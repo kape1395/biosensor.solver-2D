@@ -46,10 +46,10 @@ int main()
         config->getReactions().push_back(reaction);
         config->getMediums().push_back(medEnzyme);
         config->getMediums().push_back(medMembrane);
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 200));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
         config->getAreas().push_back(new cfg::Area(0, 0, medEnzyme));
         config->getAreas().push_back(new cfg::Area(1, 0, medMembrane));
         config->getAreas().push_back(new cfg::Area(0, 1, medEnzyme));

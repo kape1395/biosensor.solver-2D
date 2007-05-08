@@ -140,23 +140,69 @@ public:
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+
+#define AreaSolver_DIFFUSION_V1
+//#define AreaSolver_DIFFUSION_V2
+
 /**
- *
+ *  Sprendcia srities vidu.
  */
 class AreaSolver
 {
 protected:
+    class Diffusion;
+    class Reaction;
     Solver*     solver;                 ///< Pagrindinis sprendejas.
     dm::Area*   data;                   ///< Duomenys su kuriais dirbame.
-    int         substanceCount;         ///< Difunduojanciu medziagu kiekis.
-    double*     diffusionCoefficient;   ///< Difuziju koeficientai.
+
+    int         diffusionCount;         ///< Kiek turime difuziju.
+    #ifdef AreaSolver_DIFFUSION_V1
+    Diffusion** diffusion;              ///< Difuziju objektai.
+    #endif
+    #ifdef AreaSolver_DIFFUSION_V2
+    int*        diffusionSI;            ///< Substance Index
+    double*     diffusionD;             ///< Difuzijos koef.
+    #endif
+
+    Reaction**  reaction;           ///< Reakciju objektai.
+    int         reactionCount;      ///< Kiek turime reakciju.
 
 public:
     AreaSolver(Solver* solver, dm::Area* data);
     virtual ~AreaSolver();
     virtual void solveIteration();
 
+protected:
+    #ifdef AreaSolver_DIFFUSION_V1
+    /// Modeliuoja difuzija.
+    class Diffusion
+    {
+    protected:
+        int substanceIndex;
+        double coefficient;
+    public:
+        Diffusion(int sIndex, double coef);
+        inline void apply(
+            double*& s, double*& st, double*& sb, double*& sl, double*& sr,
+            double*& target, double& dt, double& dx, double& dy
+        );
+    };
+
+    /// Modeliuoja Michaelis-Menten reakcija.
+    class Reaction
+    {
+    protected:
+        int substrateIndex;
+        int productIndex;
+        double V_max;
+        double K_M;
+    public:
+        Reaction(int sIndex, int pIndex, double V_max, double K_M);
+        inline void apply(double*& source, double*& target, double& dt);
+    };
+    #endif
 };
+
 
 
 

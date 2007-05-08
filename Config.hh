@@ -188,6 +188,7 @@ public:
         return name;
     }
 
+    virtual std::string getType() = 0;
 };
 
 
@@ -244,6 +245,10 @@ public:
         return K_M;
     }
 
+    virtual std::string getType()
+    {
+        return "MICHAELIS-MENTEN";
+    }
 };
 
 

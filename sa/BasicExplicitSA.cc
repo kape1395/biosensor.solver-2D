@@ -14,6 +14,8 @@ sa::basicexplicit::Solver::Solver(
     dm::ModelFactory* modelFactory
 ) : sa::Solver(config)
 {
+    activeLayer = 0;
+
     /////////////////////////////////
     //  Sukuriam duomenu modeli.
     {
@@ -163,61 +165,121 @@ void sa::basicexplicit::Solver::solveIteration()
 
 
 /* ************************************************************************** */
+/* ************************************************************************** */
 /* **********   AreaSolver   ************************************************ */
 /* ************************************************************************** */
+/* ************************************************************************** */
+
 
 /**
  *  Konstruktorius.
  */
 sa::basicexplicit::AreaSolver::AreaSolver(Solver* solver, dm::Area *data)
 {
+    typedef std::list<cfg::Medium::Diffusion*>::iterator    CfgDiff;
+
     this->solver = solver;
     this->data = data;
-    this->substanceCount = solver->getData()->getConfiguration()->getSubstances().size();
 
     //////////////////////////////////////
-    //  Susirenkam difuzijos koeficientus.
-    std::list<cfg::Substance*>::iterator substance = solver->getData()->getConfiguration()->getSubstances().begin();
-    this->diffusionCoefficient = new double[substanceCount];
-    for (int i = 0; i < substanceCount; i++, substance++)
+    //  Susikonfiguruojame difuzijas.
     {
-        diffusionCoefficient[i] = 0.0;
-        std::list<cfg::Medium::Diffusion*>::iterator diff = data->getConfiguration()->getMedium()->getDiffusions().begin();
-        std::list<cfg::Medium::Diffusion*>::iterator dend = data->getConfiguration()->getMedium()->getDiffusions().end();
-        for ( ; diff != dend; diff++)
+        diffusionCount = data->getConfiguration()->getMedium()->getDiffusions().size();
+        #ifdef AreaSolver_DIFFUSION_V1
+        diffusion = new Diffusion*[diffusionCount];
+        #endif
+        #ifdef AreaSolver_DIFFUSION_V2
+        diffusionSI = new int[diffusionCount];
+        diffusionD  = new double[diffusionCount];
+        #endif
+
+        std::list<cfg::Medium::Diffusion*>::iterator itDiff =
+            data->getConfiguration()->getMedium()->getDiffusions().begin();
+        for (int i = 0; i < diffusionCount; i++, itDiff++)
         {
-            if ((*diff)->getSubstance() == (*substance))
+            #ifdef AreaSolver_DIFFUSION_V1
+            diffusion[i] = new Diffusion(
+                               solver->getData()->getSubstanceIndex((*itDiff)->getSubstance()),
+                               (*itDiff)->getCoefficient()
+                           );
+            #endif
+            #ifdef AreaSolver_DIFFUSION_V2
+            diffusionSI[i] = solver->getData()->getSubstanceIndex((*itDiff)->getSubstance());
+            diffusionD [i] = (*itDiff)->getCoefficient();
+            #endif
+        }
+    }
+
+    //////////////////////////////////////
+    //  Susirenkame reakcijas.
+    {
+        reactionCount = data->getConfiguration()->getMedium()->getReactions().size();
+        reaction = new Reaction*[reactionCount];
+
+        std::list<cfg::Reaction*>::iterator itReac =
+            data->getConfiguration()->getMedium()->getReactions().begin();
+        for (int i = 0; i < reactionCount; i++, itReac++)
+        {
+            if ((*itReac)->getType() == "MICHAELIS-MENTEN")
             {
-                diffusionCoefficient[i] = (*diff)->getCoefficient();
+                cfg::MichaelisMentenReaction* mmr = dynamic_cast<cfg::MichaelisMentenReaction*>(*itReac);
+                reaction[i] = new Reaction(
+                                  solver->getData()->getSubstanceIndex(mmr->getSubstrate()),
+                                  solver->getData()->getSubstanceIndex(mmr->getProduct()),
+                                  mmr->getV_max(),
+                                  mmr->getK_M()
+                              );
+            }
+            else
+            {
+                std::cerr << "ERROR: Unsupported reaction type=" << (*itReac)->getType() << '\n';
             }
         }
     }
-    // TODO: Reactions
 }
 
+
 /* ************************************************************************** */
+
 
 /**
  *  Destruktorius.
  */
 sa::basicexplicit::AreaSolver::~AreaSolver()
 {
-    delete[] diffusionCoefficient;
+    #ifdef AreaSolver_DIFFUSION_V1
+    for (int i = 0; i < diffusionCount; i++)
+        delete diffusion[i];
+    delete[] diffusion;
+    #endif
+    #ifdef AreaSolver_DIFFUSION_V2
+    delete[] diffusionSI;
+    delete[] diffusionD;
+    #endif
+
+    for (int i = 0; i < reactionCount; i++)
+        delete reaction[i];
+    delete[] reaction;
 }
 
+
 /* ************************************************************************** */
+
 
 /**
  *  Sprendziame viena iteracija.
  */
 void sa::basicexplicit::AreaSolver::solveIteration()
 {
+    double dt = solver->getTimeStep();
     int x = 0;
     for (data->moveToRowStart(); data->moveRight() > 0; x++)
     {
+        double dx = data->getDimensionX()->getIntervals()[x];
         int y = 0;
         for (data->moveToColStart(); data->moveBottom() > 0; y++)
         {
+            double dy = data->getDimensionY()->getIntervals()[y];
             // Su dynamic_cast veikia kurkas leciau.
             double* p  = static_cast<Point*>(data->getCurrent())->getLastLayerSubstances();
             double* pt = static_cast<Point*>(data->getTop    ())->getLastLayerSubstances();
@@ -225,25 +287,76 @@ void sa::basicexplicit::AreaSolver::solveIteration()
             double* pl = static_cast<Point*>(data->getLeft   ())->getLastLayerSubstances();
             double* pr = static_cast<Point*>(data->getRight  ())->getLastLayerSubstances();
             double* tl = static_cast<Point*>(data->getCurrent())->getThisLayerSubstances();
-            for (int i = 0; i < substanceCount; i++)
+
+            for (int i = 0; i < diffusionCount; i++)
             {
-                if (diffusionCoefficient[i] == 0.0)
-                    continue;
-
-                double dx = data->getDimensionX()->getIntervals()[x];
-                double dy = data->getDimensionY()->getIntervals()[y];
-                double dt = solver->getTimeStep();
-                double D  = diffusionCoefficient[i];
-                double C_x  = (dt * D) / (dx * dx);
-                double C_y  = (dt * D) / (dy * dy);
+                #ifdef AreaSolver_DIFFUSION_V1
+                diffusion[i]->apply(p, pt, pb, pl, pr, tl, dt, dx, dy);
+                #endif
+                #ifdef AreaSolver_DIFFUSION_V2
+                double C_x  = (dt * diffusionD[i]) / (dx * dx);
+                double C_y  = (dt * diffusionD[i]) / (dy * dy);
                 double C_xy = 1E0 - 2E0 * C_x - 2E0 * C_y;
-
-                tl[i] = C_xy * p[i] + C_x * (pr[i] + pl[i]) + C_y * (pb[i] + pt[i]);
+                int j = diffusionSI[i];
+                tl[j] = C_xy * p[j] + C_x * (pr[j] + pl[j]) + C_y * (pb[j] + pt[j]);
+                #endif
             }
-            // TODO: Reactions
+
+            for (int i = 0; i < reactionCount; i++)
+            {
+                reaction[i]->apply(p, tl, dt);
+            }
+
         }
     }
 }
+
+
+
+/* ************************************************************************** */
+
+
+
+sa::basicexplicit::AreaSolver::Diffusion::Diffusion(int sIndex, double coef)
+{
+    this->substanceIndex = sIndex;
+    this->coefficient    = coef;
+}
+inline void sa::basicexplicit::AreaSolver::Diffusion::apply(
+    double*& s, double*& st, double*& sb, double*& sl, double*& sr,
+    double*& target, double& dt, double& dx, double& dy
+)
+{
+    double C_x  = (dt * coefficient) / (dx * dx);
+    double C_y  = (dt * coefficient) / (dy * dy);
+    double C_xy = 1E0 - 2E0 * C_x - 2E0 * C_y;
+    int i = substanceIndex;
+    target[i] = C_xy * s[i] + C_x * (sr[i] + sl[i]) + C_y * (sb[i] + st[i]);
+}
+
+
+sa::basicexplicit::AreaSolver::Reaction::Reaction(int sIndex, int pIndex, double V_max, double K_M)
+{
+    this->substrateIndex = sIndex;
+    this->productIndex   = pIndex;
+    this->V_max          = V_max;
+    this->K_M            = K_M;
+}
+inline void sa::basicexplicit::AreaSolver::Reaction::apply(double*& source, double*& target, double& dt)
+{
+    double reaction = dt * V_max * source[substrateIndex] / (K_M + source[substrateIndex]);
+    target[substrateIndex] -= reaction;
+    target[productIndex  ] += reaction;
+}
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/* **********   BoundSolver   *********************************************** */
+/* ************************************************************************** */
+/* ************************************************************************** */
+
 
 
 void sa::basicexplicit::BoundSolver::solveIteration()

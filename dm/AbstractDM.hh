@@ -136,6 +136,7 @@ public:
         return configuration;
     }
 
+    virtual int getSubstanceIndex(cfg::Substance* substance);
 };
 
 

@@ -254,6 +254,26 @@ dm::Dimension* dm::Model::createDimensionByConfig(
 }
 
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Grazina substane`o indeksa duomenu modelyje.
+ */
+int dm::Model::getSubstanceIndex(cfg::Substance* substance)
+{
+    std::list<cfg::Substance*>::iterator itSubs = configuration->getSubstances().begin();
+    std::list<cfg::Substance*>::iterator itSEnd = configuration->getSubstances().end();
+    for (int i = 0; itSubs != itSEnd; itSubs++, i++)
+    {
+        if (substance == (*itSubs))
+            return i;
+    }
+    std::cerr << "ERROR: Substance not found, substance=" << substance << '\n';
+    return -1;  // FIXME: cia exception.
+}
+
+
 /* ************************************************************************** */
 /* **********   ConstantDimenion   ****************************************** */
 /* ************************************************************************** */
