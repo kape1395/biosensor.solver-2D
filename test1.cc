@@ -9,21 +9,6 @@
 #include <string>
 
 
-class TestPoint : public dm::Point
-{
-    virtual double getSubstance(int substanceNr)
-    {
-        return 0;
-    }
-};
-class TestPointFactory : public dm::PointFactory
-{
-    virtual dm::Point* newPoint()
-    {
-        return new TestPoint();
-    }
-};
-
 int main()
 {
     std::cout << "Running test1...\n";

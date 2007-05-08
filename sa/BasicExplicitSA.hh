@@ -13,7 +13,7 @@ namespace basicexplicit
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
- *
+ *  Paprastas sprendejas, naujojantis isreikstine schema.
  */
 class Solver : public sa::Solver
 {
@@ -142,7 +142,7 @@ public:
 /* ************************************************************************** */
 
 #define AreaSolver_DIFFUSION_V1
-//#define AreaSolver_DIFFUSION_V2
+#undef  AreaSolver_DIFFUSION_V2
 
 /**
  *  Sprendcia srities vidu.
@@ -210,29 +210,56 @@ protected:
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
- *
+ *  Sprendzia srities krastus.
  */
 class BoundSolver
 {
 protected:
-    dm::Bound* data;
+    class Wall;
+    class Merge;
+    class Const;
+    Solver*     solver;                 ///< Pagrindinis sprendejas.
+    dm::Bound*  data;                   ///< Duomenys su kuriais dirbame.
+
+    int         conditionCount;         ///< Kiek turime krastiniu salygu.
+    Condition** condition;              ///< Krastu sprendejai konkreciom medziagom.
 
 public:
-    BoundSolver(dm::Bound* data)
-    {
-        this->data = data;
-    }
-    virtual ~BoundSolver()
-    {}
+    BoundSolver(Solver* solver, dm::Bound* data);
+    virtual ~BoundSolver();
     virtual void solveIteration();
 
 protected:
-    class Wall
-        {};
-    class Merge
-        {};
-    class Const
-        {};
+
+    /// Abstrakti krastine salyga.
+    class Condition
+    {
+    public:
+        virtual ~Condition() {}
+        virtual void apply() = 0;
+    };
+
+    /// Nepratekejimo salyga.
+    class Wall : public Condition
+    {
+    protected:
+    public:
+    };
+
+    /// Derinimo salyga.
+    class Merge : public Condition
+    {
+    protected:
+    public:
+    };
+
+    /// Pastovios koncentracijos salyga
+    class Const : public Condition
+    {
+    protected:
+    public:
+    };
+
 };
 
 
@@ -241,7 +268,7 @@ protected:
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
- *
+ *  Sprendzia sriciu kampus.
  */
 class CornerSolver
 {

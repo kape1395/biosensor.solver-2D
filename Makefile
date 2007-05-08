@@ -16,7 +16,11 @@ execs: $(target)
 	
 	
 clean:
-	rm -vfr $(objects) $(target) build/*
+	rm -vf $(objects) $(target)
+	
+clean-all: clean
+	rm -rf build/*
+	
 	
 docs:
 	mkdir -p build/doc

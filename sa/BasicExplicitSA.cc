@@ -358,7 +358,37 @@ inline void sa::basicexplicit::AreaSolver::Reaction::apply(double*& source, doub
 /* ************************************************************************** */
 
 
+/**
+ *  BoundSolver konstruktorius.
+ *  \param solver   Bendras modelio sprendejas.
+ *  \param data     Krastines salygos duomenys ir konfiguracija.
+ */
+sa::basicexplicit::BoundSolver::BoundSolver(Solver* solver, dm::Bound* data)
+{
+    this->solver = solver;
+    this->data   = data;
+    // TODO
+};
 
+
+/* ************************************************************************** */
+
+
+/**
+ *  BoundSolver destruktorius.
+ */
+sa::basicexplicit::BoundSolver::~BoundSolver()
+{
+    // TODO
+}
+
+
+/* ************************************************************************** */
+
+
+/**
+ *  Sprenziame viena iteracija vienam krastui.
+ */
 void sa::basicexplicit::BoundSolver::solveIteration()
 {
     //std::cout << '[';
@@ -371,6 +401,16 @@ void sa::basicexplicit::BoundSolver::solveIteration()
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
+/* **********   BoundSolver   *********************************************** */
+/* ************************************************************************** */
+/* ************************************************************************** */
+
+
+/**
+ *
+ */
 void sa::basicexplicit::CornerSolver::solveIteration()
 {
     // TODO: Implement
@@ -379,4 +419,4 @@ void sa::basicexplicit::CornerSolver::solveIteration()
 }
 
 
-
+/* ************************************************************************** */
