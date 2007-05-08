@@ -185,28 +185,28 @@ sa::basicexplicit::AreaSolver::AreaSolver(Solver* solver, dm::Area *data)
     //  Susikonfiguruojame difuzijas.
     {
         diffusionCount = data->getConfiguration()->getMedium()->getDiffusions().size();
-        #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
         diffusion = new Diffusion*[diffusionCount];
-        #endif
-        #ifdef AreaSolver_DIFFUSION_V2
+#endif
+#ifdef AreaSolver_DIFFUSION_V2
         diffusionSI = new int[diffusionCount];
         diffusionD  = new double[diffusionCount];
-        #endif
+#endif
 
         std::list<cfg::Medium::Diffusion*>::iterator itDiff =
             data->getConfiguration()->getMedium()->getDiffusions().begin();
         for (int i = 0; i < diffusionCount; i++, itDiff++)
         {
-            #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
             diffusion[i] = new Diffusion(
                                solver->getData()->getSubstanceIndex((*itDiff)->getSubstance()),
                                (*itDiff)->getCoefficient()
                            );
-            #endif
-            #ifdef AreaSolver_DIFFUSION_V2
+#endif
+#ifdef AreaSolver_DIFFUSION_V2
             diffusionSI[i] = solver->getData()->getSubstanceIndex((*itDiff)->getSubstance());
             diffusionD [i] = (*itDiff)->getCoefficient();
-            #endif
+#endif
         }
     }
 
@@ -247,15 +247,15 @@ sa::basicexplicit::AreaSolver::AreaSolver(Solver* solver, dm::Area *data)
  */
 sa::basicexplicit::AreaSolver::~AreaSolver()
 {
-    #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
     for (int i = 0; i < diffusionCount; i++)
         delete diffusion[i];
     delete[] diffusion;
-    #endif
-    #ifdef AreaSolver_DIFFUSION_V2
+#endif
+#ifdef AreaSolver_DIFFUSION_V2
     delete[] diffusionSI;
     delete[] diffusionD;
-    #endif
+#endif
 
     for (int i = 0; i < reactionCount; i++)
         delete reaction[i];
@@ -290,16 +290,16 @@ void sa::basicexplicit::AreaSolver::solveIteration()
 
             for (int i = 0; i < diffusionCount; i++)
             {
-                #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
                 diffusion[i]->apply(p, pt, pb, pl, pr, tl, dt, dx, dy);
-                #endif
-                #ifdef AreaSolver_DIFFUSION_V2
+#endif
+#ifdef AreaSolver_DIFFUSION_V2
                 double C_x  = (dt * diffusionD[i]) / (dx * dx);
                 double C_y  = (dt * diffusionD[i]) / (dy * dy);
                 double C_xy = 1E0 - 2E0 * C_x - 2E0 * C_y;
                 int j = diffusionSI[i];
                 tl[j] = C_xy * p[j] + C_x * (pr[j] + pl[j]) + C_y * (pb[j] + pt[j]);
-                #endif
+#endif
             }
 
             for (int i = 0; i < reactionCount; i++)

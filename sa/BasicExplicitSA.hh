@@ -156,13 +156,13 @@ protected:
     dm::Area*   data;                   ///< Duomenys su kuriais dirbame.
 
     int         diffusionCount;         ///< Kiek turime difuziju.
-    #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
     Diffusion** diffusion;              ///< Difuziju objektai.
-    #endif
-    #ifdef AreaSolver_DIFFUSION_V2
+#endif
+#ifdef AreaSolver_DIFFUSION_V2
     int*        diffusionSI;            ///< Substance Index
     double*     diffusionD;             ///< Difuzijos koef.
-    #endif
+#endif
 
     Reaction**  reaction;           ///< Reakciju objektai.
     int         reactionCount;      ///< Kiek turime reakciju.
@@ -173,7 +173,7 @@ public:
     virtual void solveIteration();
 
 protected:
-    #ifdef AreaSolver_DIFFUSION_V1
+#ifdef AreaSolver_DIFFUSION_V1
     /// Modeliuoja difuzija.
     class Diffusion
     {
@@ -200,7 +200,7 @@ protected:
         Reaction(int sIndex, int pIndex, double V_max, double K_M);
         inline void apply(double*& source, double*& target, double& dt);
     };
-    #endif
+#endif
 };
 
 

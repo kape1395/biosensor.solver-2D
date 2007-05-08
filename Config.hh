@@ -2,7 +2,6 @@
 #define CFG_Config_HH
 #include <string>
 #include <list>
-//#include "Model.hh"
 namespace cfg
 {
 

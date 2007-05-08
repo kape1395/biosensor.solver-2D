@@ -2,7 +2,6 @@
 #define DM_AbstractDM_HH
 #include <list>
 #include <iostream>
-#include "../Model.hh"
 #include "../Config.hh"
 namespace dm
 {
