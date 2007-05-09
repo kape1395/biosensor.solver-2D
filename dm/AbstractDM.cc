@@ -373,10 +373,10 @@ dm::Corner::Corner(
 
 /**
  *  Konstruktorius.
- *  @param type     Tipas (H/V).
- *  @param start    Dimensijos pradzia.
- *  @param length   Dimensijos ilgis.
- *  @param steps    Kiek zinsniu srityje (tasku bus 1 daugiau).
+ *  @param direction Tipas (H/V).
+ *  @param start     Dimensijos pradzia.
+ *  @param length    Dimensijos ilgis.
+ *  @param steps     Kiek zinsniu srityje (tasku bus 1 daugiau).
  */
 dm::ConstantDimension::ConstantDimension(
     Direction   direction,

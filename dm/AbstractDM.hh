@@ -325,6 +325,11 @@ public:
     virtual Point* getNextAreaPoint() = 0;  ///< Grazina atitnkama antra nuo krasto taska.
     virtual Point* getPrevAreaPoint() = 0;  ///< Grazina atitnkama antra nuo krasto taska.
 
+    virtual Dimension* getDimension()
+    {
+        return dim;
+    }
+
     virtual cfg::Bound* getConfiguration()
     {
         return configuration;

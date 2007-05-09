@@ -56,11 +56,11 @@ int main()
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
 
         config->getBounds().push_back(bound = new cfg::Bound(1, 0, cfg::Bound::TOP));
-        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
-        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceP, 0.0));
         config->getBounds().push_back(bound = new cfg::Bound(1, 0, cfg::Bound::RIGHT));
-        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
-        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceP, 0.0));
         config->getBounds().push_back(bound = new cfg::Bound(1, 0, cfg::Bound::BOTTOM));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));

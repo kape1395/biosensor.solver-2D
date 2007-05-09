@@ -392,13 +392,17 @@ sa::basicexplicit::BoundSolver::BoundSolver(Solver* solver, dm::Bound* data)
         else if ((*itCond)->getType() == "WALL")
         {
             condition[i] = new WallCondition(
-                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance())
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance()),
+                               *itCond,
+                               data
                            );
         }
         else if ((*itCond)->getType() == "MERGE")
         {
             condition[i] = new MergeCondition(
-                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance())
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance()),
+                               dynamic_cast<cfg::Bound::MergeCondition*>(*itCond),
+                               data
                            );
         }
         else
@@ -453,26 +457,117 @@ sa::basicexplicit::BoundSolver::Condition::~Condition()
 
 
 sa::basicexplicit::BoundSolver::WallCondition::WallCondition(
-    int substanceIndex
+    int                    substanceIndex,
+    cfg::Bound::Condition* cgf,
+    dm::Bound*             data
 ) : Condition(substanceIndex)
-{}
+{
+
+    bool foundInPrev = false;
+    bool foundInNext = false;
+    std::list<cfg::Medium::Diffusion*>::iterator itDiff;
+    if (data->getPrevArea() != 0)
+    {
+        for (itDiff = data->getPrevArea()->getConfiguration()->getMedium()->getDiffusions().begin();
+                itDiff != data->getPrevArea()->getConfiguration()->getMedium()->getDiffusions().end();
+                itDiff++)
+        {
+            if ((cgf->getSubstance() == (*itDiff)->getSubstance()) && (*itDiff)->getCoefficient() != 0.0)
+            {
+                foundInPrev = true;
+                break;
+            }
+        }
+    }
+    if (data->getNextArea() != 0)
+    {
+        for (itDiff = data->getNextArea()->getConfiguration()->getMedium()->getDiffusions().begin();
+                itDiff != data->getNextArea()->getConfiguration()->getMedium()->getDiffusions().end();
+                itDiff++)
+        {
+            if ((cgf->getSubstance() == (*itDiff)->getSubstance()) && (*itDiff)->getCoefficient() != 0.0)
+            {
+                foundInNext = true;
+                break;
+            }
+        }
+    }
+
+    if (foundInPrev && foundInNext)
+        std::cout << "ERROR: wall condition with both sides.\n";
+    if (!foundInPrev && !foundInNext)
+        std::cout << "ERROR: wall condition without sides.\n";
+
+    targetArea = foundInPrev ? data->getPrevArea() : data->getNextArea();
+}
 sa::basicexplicit::BoundSolver::WallCondition::~WallCondition()
 {}
 void sa::basicexplicit::BoundSolver::WallCondition::apply(dm::Bound* data)
 {
-    // TODO
+    Point* dst = dynamic_cast<Point*>(data->getCurrent());
+    Point* src = dynamic_cast<Point*>((targetArea == data->getPrevArea())
+                                      ? data->getPrevAreaPoint()
+                                      : data->getNextAreaPoint()
+                                     );
+
+    dst->getThisLayerSubstances()[substanceIndex] = src->getThisLayerSubstances()[substanceIndex];
 }
 
 
 sa::basicexplicit::BoundSolver::MergeCondition::MergeCondition(
-    int substanceIndex
+    int                         substanceIndex,
+    cfg::Bound::MergeCondition* cfg,
+    dm::Bound*                  data
 ) : Condition(substanceIndex)
-{}
+{
+    typedef std::list<cfg::Medium::Diffusion*> CfgDList;
+    nextArea_D = 0.0;
+    {
+        CfgDList diffs = data->getNextArea()->getConfiguration()->getMedium()->getDiffusions();
+        for (CfgDList::iterator it = diffs.begin(); it != diffs.end(); it++)
+            if ((*it)->getSubstance() == cfg->getSubstance())
+            {
+                nextArea_D = (*it)->getCoefficient();
+                break;
+            }
+    }
+
+    prevArea_D = 0.0;
+    {
+        CfgDList diffs = data->getPrevArea()->getConfiguration()->getMedium()->getDiffusions();
+        for (CfgDList::iterator it = diffs.begin(); it != diffs.end(); it++)
+            if ((*it)->getSubstance() == cfg->getSubstance())
+            {
+                prevArea_D = (*it)->getCoefficient();
+                break;
+            }
+    }
+
+    if (data->getDimension()->getDirection() == dm::HORIZONTAL)
+    {
+        int e = data->getPrevArea()->getDimensionY()->getPointCount() - 2;
+        nextArea_dx = data->getNextArea()->getDimensionY()->getIntervals()[0];
+        prevArea_dx = data->getPrevArea()->getDimensionY()->getIntervals()[e];
+    }
+    else
+    {
+        int e = data->getPrevArea()->getDimensionX()->getPointCount() - 2;
+        nextArea_dx = data->getNextArea()->getDimensionX()->getIntervals()[0];
+        prevArea_dx = data->getPrevArea()->getDimensionX()->getIntervals()[e];
+    }
+
+}
 sa::basicexplicit::BoundSolver::MergeCondition::~MergeCondition()
 {}
 void sa::basicexplicit::BoundSolver::MergeCondition::apply(dm::Bound* data)
 {
-    // TODO
+    double a = prevArea_D / prevArea_dx;
+    double b = nextArea_D / nextArea_dx;
+    double c = -(a + c);
+    double* pt = dynamic_cast<Point*>(data->getCurrent())->getThisLayerSubstances();
+    double* pp = dynamic_cast<Point*>(data->getPrevAreaPoint())->getThisLayerSubstances();
+    double* pn = dynamic_cast<Point*>(data->getNextAreaPoint())->getThisLayerSubstances();
+    pt[substanceIndex] = -(a * pp[substanceIndex] + c * pn[substanceIndex]) / b;
 }
 
 
@@ -486,7 +581,8 @@ sa::basicexplicit::BoundSolver::ConstCondition::~ConstCondition()
 {}
 void sa::basicexplicit::BoundSolver::ConstCondition::apply(dm::Bound* data)
 {
-    dynamic_cast<Point*>(data->getCurrent())->getThisLayerSubstances()[substanceIndex] = concentration;
+    Point* point = dynamic_cast<Point*>(data->getCurrent());
+    point->getThisLayerSubstances()[substanceIndex] = concentration;
 }
 
 

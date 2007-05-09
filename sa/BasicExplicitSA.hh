@@ -247,8 +247,9 @@ public:
 class BoundSolver::WallCondition : public Condition
 {
 protected:
+    dm::Area* targetArea;
 public:
-    WallCondition(int substanceIndex);
+    WallCondition(int substanceIndex, cfg::Bound::Condition* cgf, dm::Bound* data);
     virtual ~WallCondition();
     virtual void apply(dm::Bound* data);
 };
@@ -257,8 +258,12 @@ public:
 class BoundSolver::MergeCondition : public Condition
 {
 protected:
+    double nextArea_D;
+    double nextArea_dx;
+    double prevArea_D;
+    double prevArea_dx;
 public:
-    MergeCondition(int substanceIndex);
+    MergeCondition(int substanceIndex, cfg::Bound::MergeCondition* cfg, dm::Bound* data);
     virtual ~MergeCondition();
     virtual void apply(dm::Bound* data);
 };
