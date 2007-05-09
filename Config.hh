@@ -551,20 +551,24 @@ protected:
     Substance* substance;
 
 public:
-    Condition(
-        Substance* substance
-    )
+    /// Konstruktorius.
+    Condition(Substance* substance)
     {
         this->substance = substance;
     }
 
+    /// Destruktorius.
     virtual ~Condition()
     {}
 
+    /// Grazina medziaga, kuriai taikoma salyga.
     virtual Substance* getSubstance()
     {
         return substance;
     }
+
+    /// Grazina salygos tipa.
+    virtual std::string getType() = 0;
 
 };
 
@@ -585,6 +589,10 @@ public:
     virtual ~WallCondition()
     {}
 
+    virtual std::string getType()
+    {
+        return "WALL";
+    }
 };
 
 
@@ -613,11 +621,16 @@ public:
         return concentration;
     }
 
+    virtual std::string getType()
+    {
+        return "CONSTANT";
+    }
 };
 
 
 /**
  *  Reakcija ant elektrodo.
+ *  TODO: Ar tikrai sito reikia????
  */
 class Bound::ElectrodeCondition : public Bound::Condition
 {
@@ -632,6 +645,10 @@ public:
     virtual ~ElectrodeCondition()
     {}
 
+    virtual std::string getType()
+    {
+        return "ELECTRODE";
+    }
 };
 
 
@@ -651,6 +668,10 @@ public:
     virtual ~MergeCondition()
     {}
 
+    virtual std::string getType()
+    {
+        return "MERGE";
+    }
 };
 
 

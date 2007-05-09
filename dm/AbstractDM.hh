@@ -205,19 +205,14 @@ protected:
     Bound     *boundTop;    ///< Srities krastas is virsaus.
     Bound     *boundRight;  ///< Srities krastas is desines.
     Bound     *boundBottom; ///< Srities krastas is apacios.
-    Bound     *boundleft;   ///< Srities krastas is kaires.
+    Bound     *boundLeft;   ///< Srities krastas is kaires.
 
 public:
     Area(
         cfg::Area*  configuration,
         Dimension*  dimX,
         Dimension*  dimY
-    )
-    {
-        this->configuration = configuration;
-        this->dimX = dimX;
-        this->dimY = dimY;
-    }
+    );
     virtual ~Area()
     {}
 
@@ -260,6 +255,25 @@ public:
         return dimY;
     }
 
+    virtual Bound* getBoundTop()
+    {
+        return boundTop;
+    }
+
+    virtual Bound* getBoundRight()
+    {
+        return boundRight;
+    }
+
+    virtual Bound* getBoundBottom()
+    {
+        return boundBottom;
+    }
+
+    virtual Bound* getBoundLeft()
+    {
+        return boundLeft;
+    }
 };
 
 
@@ -276,22 +290,17 @@ protected:
     cfg::Bound* configuration;
     void*       solver;
     Dimension*  dim;
-    Area*       prev;
-    Area*       next;
-
+    Area*       prevArea;
+    Area*       nextArea;
+    Corner*     prevCorner;
+    Corner*     nextCorner;
 public:
     Bound(
         cfg::Bound* configuration,
         Dimension*  dim,
-        Area*       prev,
-        Area*       next
-    )
-    {
-        this->configuration = configuration;
-        this->dim = dim;
-        this->prev = prev;
-        this->next = next;
-    }
+        Area*       prevArea,
+        Area*       nextArea
+    );
     virtual ~Bound()
     {}
 
@@ -302,6 +311,19 @@ public:
     virtual Point* getNext() = 0;
     virtual Point* getPrev() = 0;
     virtual Point* getCurrent() = 0;
+
+    virtual Area* getNextArea()
+    {
+        return nextArea;
+    }
+
+    virtual Area* getPrevArea()
+    {
+        return prevArea;
+    }
+
+    virtual Point* getNextAreaPoint() = 0;  ///< Grazina atitnkama antra nuo krasto taska.
+    virtual Point* getPrevAreaPoint() = 0;  ///< Grazina atitnkama antra nuo krasto taska.
 
     virtual cfg::Bound* getConfiguration()
     {
@@ -338,17 +360,11 @@ protected:
 
 public:
     Corner(
-        Bound*          top,
-        Bound*          right,
-        Bound*          bottom,
-        Bound*          left
-    )
-    {
-        this->top    = top;
-        this->right  = right;
-        this->bottom = bottom;
-        this->left   = left;
-    }
+        Bound* top,
+        Bound* right,
+        Bound* bottom,
+        Bound* left
+    );
     virtual ~Corner()
     {}
 
@@ -376,21 +392,21 @@ public:
 class Dimension
 {
 protected:
-    Direction type;       ///< 0 - horizontali, 1 - vertikali.
+    Direction direction;   ///< 0 - horizontali, 1 - vertikali.
     double    length;      ///< Dimensijos atkarpos ilgis.
-    double    start;      ///< Dimensijos pradzia.
+    double    start;       ///< Dimensijos pradzia.
 
 public:
     /// Konstruktorius.
     Dimension(
-        Direction   type,
+        Direction   direction,
         double      start,
         double      length
     )
     {
-        this->type   = type;
-        this->start  = start;
-        this->length = length;
+        this->direction = direction;
+        this->start     = start;
+        this->length    = length;
     }
 
     /// Destruktorius.
@@ -401,6 +417,10 @@ public:
     virtual double   getLength()
     {
         return length;
+    }
+    virtual Direction getDirection()
+    {
+        return direction;
     }
     virtual double*  getPositions() = 0;
     virtual double*  getIntervals() = 0;
@@ -423,7 +443,7 @@ protected:
 
 public:
     ConstantDimension(
-        Direction   type,
+        Direction   direction,
         double      start,
         double      length,
         int         steps

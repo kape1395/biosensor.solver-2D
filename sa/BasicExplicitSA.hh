@@ -215,9 +215,10 @@ protected:
 class BoundSolver
 {
 protected:
-    class Wall;
-    class Merge;
-    class Const;
+    class Condition;
+    class WallCondition;
+    class MergeCondition;
+    class ConstCondition;
     Solver*     solver;                 ///< Pagrindinis sprendejas.
     dm::Bound*  data;                   ///< Duomenys su kuriais dirbame.
 
@@ -229,39 +230,49 @@ public:
     virtual ~BoundSolver();
     virtual void solveIteration();
 
-protected:
-
-    /// Abstrakti krastine salyga.
-    class Condition
-    {
-    public:
-        virtual ~Condition() {}
-        virtual void apply() = 0;
-    };
-
-    /// Nepratekejimo salyga.
-    class Wall : public Condition
-    {
-    protected:
-    public:
-    };
-
-    /// Derinimo salyga.
-    class Merge : public Condition
-    {
-    protected:
-    public:
-    };
-
-    /// Pastovios koncentracijos salyga
-    class Const : public Condition
-    {
-    protected:
-    public:
-    };
-
 };
 
+/// Abstrakti krastine salyga.
+class BoundSolver::Condition
+{
+protected:
+    int substanceIndex;
+public:
+    Condition(int substanceIndex);
+    virtual ~Condition();
+    virtual void apply(dm::Bound* data) = 0;
+};
+
+/// Nepratekejimo salyga.
+class BoundSolver::WallCondition : public Condition
+{
+protected:
+public:
+    WallCondition(int substanceIndex);
+    virtual ~WallCondition();
+    virtual void apply(dm::Bound* data);
+};
+
+/// Derinimo salyga.
+class BoundSolver::MergeCondition : public Condition
+{
+protected:
+public:
+    MergeCondition(int substanceIndex);
+    virtual ~MergeCondition();
+    virtual void apply(dm::Bound* data);
+};
+
+/// Pastovios koncentracijos salyga.
+class BoundSolver::ConstCondition : public Condition
+{
+protected:
+    double concentration;
+public:
+    ConstCondition(int substanceIndex, double concentration);
+    virtual ~ConstCondition();
+    virtual void apply(dm::Bound* data);
+};
 
 
 
@@ -273,12 +284,14 @@ protected:
 class CornerSolver
 {
 protected:
+    Solver*     solver;
     dm::Corner* data;
 
 public:
-    CornerSolver(dm::Corner* data)
+    CornerSolver(Solver* solver, dm::Corner* data)
     {
-        this->data = data;
+        this->solver = solver;
+        this->data   = data;
     }
     virtual ~CornerSolver()
     {}

@@ -20,7 +20,7 @@ clean:
 	
 clean-all: clean
 	rm -rf build/*
-	
+	find . -regextype posix-basic -regex ".*\.orig$$" -printf "removed \`%p'\n" -delete
 	
 docs:
 	mkdir -p build/doc

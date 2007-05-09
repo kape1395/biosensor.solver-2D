@@ -274,6 +274,97 @@ int dm::Model::getSubstanceIndex(cfg::Substance* substance)
 }
 
 
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+
+
+/**
+ *  Area konstruktorius.
+ */
+dm::Area::Area(
+    cfg::Area*  configuration,
+    Dimension*  dimX,
+    Dimension*  dimY
+)
+{
+    this->configuration = configuration;
+    this->dimX = dimX;
+    this->dimY = dimY;
+}
+
+
+
+/**
+ *  Bound konstruktorius.
+ */
+dm::Bound::Bound(
+    cfg::Bound* configuration,
+    Dimension*  dim,
+    Area*       prevArea,
+    Area*       nextArea
+)
+{
+    this->configuration = configuration;
+    this->dim      = dim;
+    this->prevArea = prevArea;
+    this->nextArea = nextArea;
+    switch (dim->getDirection())
+    {
+    case (HORIZONTAL):
+                    if (nextArea != 0)
+                        nextArea->boundTop = this;
+
+        if (prevArea != 0)
+            prevArea->boundBottom = this;
+
+        break;
+    case (VERTICAL):
+                    if (nextArea != 0)
+                        nextArea->boundLeft = this;
+
+        if (prevArea != 0)
+            prevArea->boundRight = this;
+
+        break;
+    }
+}
+
+
+
+/**
+ *  Corner konstruktorius.
+ */
+dm::Corner::Corner(
+    Bound* top,
+    Bound* right,
+    Bound* bottom,
+    Bound* left
+)
+{
+    this->top    = top;
+    this->right  = right;
+    this->bottom = bottom;
+    this->left   = left;
+
+    if (top != 0)
+        top->nextCorner = this;
+
+    if (right != 0)
+        right->prevCorner = this;
+
+    if (bottom != 0)
+        bottom->prevCorner = this;
+
+    if (left != 0)
+        left->nextCorner = this;
+
+}
+
+
+
+
 /* ************************************************************************** */
 /* **********   ConstantDimenion   ****************************************** */
 /* ************************************************************************** */
@@ -288,11 +379,11 @@ int dm::Model::getSubstanceIndex(cfg::Substance* substance)
  *  @param steps    Kiek zinsniu srityje (tasku bus 1 daugiau).
  */
 dm::ConstantDimension::ConstantDimension(
-    Direction   type,
+    Direction   direction,
     double      start,
     double      length,
     int         steps
-) : dm::Dimension(type, start, length)
+) : dm::Dimension(direction, start, length)
 {
     this->steps = steps;
 

@@ -38,21 +38,21 @@ sa::basicexplicit::Solver::Solver(
             for (int j = 0; j < data->getPartsV(); j++)
             {
                 dm::Bound* dm = data->getBoundV()[i][j];
-                dm->setSolver(new BoundSolver(dm));
+                dm->setSolver(new BoundSolver(this, dm));
             }
 
         for (int i = 0; i < data->getPartsH(); i++)
             for (int j = 0; j < data->getPartsV() + 1; j++)
             {
                 dm::Bound* dm = data->getBoundH()[i][j];
-                dm->setSolver(new BoundSolver(dm));
+                dm->setSolver(new BoundSolver(this, dm));
             }
 
         for (int i = 0; i < data->getPartsH() + 1; i++)
             for (int j = 0; j < data->getPartsV() + 1; j++)
             {
                 dm::Corner* dm = data->getCorner()[i][j];
-                dm->setSolver(new CornerSolver(dm));
+                dm->setSolver(new CornerSolver(this, dm));
             }
     }
 }
@@ -367,8 +367,46 @@ sa::basicexplicit::BoundSolver::BoundSolver(Solver* solver, dm::Bound* data)
 {
     this->solver = solver;
     this->data   = data;
-    // TODO
-};
+
+    conditionCount = data->getConfiguration()->getConditions().size();
+    condition = new Condition*[conditionCount];
+
+    std::list<cfg::Bound::Condition*>::iterator itCond =
+        data->getConfiguration()->getConditions().begin();
+    for (int i = 0; i < conditionCount; i++, itCond++)
+    {
+        if ((*itCond)->getType() == "CONSTANT")
+        {
+            condition[i] = new ConstCondition(
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance()),
+                               dynamic_cast<cfg::Bound::ConstantCondition*>(*itCond)->getConcentration()
+                           );
+        }
+        else if ((*itCond)->getType() == "ELECTRODE")
+        {
+            condition[i] = new ConstCondition(
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance()),
+                               0.0
+                           );
+        }
+        else if ((*itCond)->getType() == "WALL")
+        {
+            condition[i] = new WallCondition(
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance())
+                           );
+        }
+        else if ((*itCond)->getType() == "MERGE")
+        {
+            condition[i] = new MergeCondition(
+                               solver->getData()->getSubstanceIndex((*itCond)->getSubstance())
+                           );
+        }
+        else
+        {
+            std::cerr << "ERROR: Unknown bound conditio type=" << (*itCond)->getType() << '\n';
+        }
+    }
+}
 
 
 /* ************************************************************************** */
@@ -379,7 +417,9 @@ sa::basicexplicit::BoundSolver::BoundSolver(Solver* solver, dm::Bound* data)
  */
 sa::basicexplicit::BoundSolver::~BoundSolver()
 {
-    // TODO
+    for (int i = 0; i < conditionCount; i++)
+        delete condition[i];
+    delete[] condition;
 }
 
 
@@ -391,19 +431,71 @@ sa::basicexplicit::BoundSolver::~BoundSolver()
  */
 void sa::basicexplicit::BoundSolver::solveIteration()
 {
-    //std::cout << '[';
     for (data->moveToStart(); data->moveNext() > 0; )
     {
-        // TODO: Implement
-        //std::cout << '-';
+        for (int i = 0; i < conditionCount; i++)
+        {
+            condition[i]->apply(data);
+        }
     }
-    //std::cout << ']';
 }
 
 
 /* ************************************************************************** */
+
+
+sa::basicexplicit::BoundSolver::Condition::Condition(int substanceIndex)
+{
+    this->substanceIndex = substanceIndex;
+}
+sa::basicexplicit::BoundSolver::Condition::~Condition()
+{}
+
+
+sa::basicexplicit::BoundSolver::WallCondition::WallCondition(
+    int substanceIndex
+) : Condition(substanceIndex)
+{}
+sa::basicexplicit::BoundSolver::WallCondition::~WallCondition()
+{}
+void sa::basicexplicit::BoundSolver::WallCondition::apply(dm::Bound* data)
+{
+    // TODO
+}
+
+
+sa::basicexplicit::BoundSolver::MergeCondition::MergeCondition(
+    int substanceIndex
+) : Condition(substanceIndex)
+{}
+sa::basicexplicit::BoundSolver::MergeCondition::~MergeCondition()
+{}
+void sa::basicexplicit::BoundSolver::MergeCondition::apply(dm::Bound* data)
+{
+    // TODO
+}
+
+
+sa::basicexplicit::BoundSolver::ConstCondition::ConstCondition(
+    int substanceIndex, double concentration
+) : Condition(substanceIndex)
+{
+    this->concentration = concentration;
+}
+sa::basicexplicit::BoundSolver::ConstCondition::~ConstCondition()
+{}
+void sa::basicexplicit::BoundSolver::ConstCondition::apply(dm::Bound* data)
+{
+    dynamic_cast<Point*>(data->getCurrent())->getThisLayerSubstances()[substanceIndex] = concentration;
+}
+
+
+
+
+
 /* ************************************************************************** */
-/* **********   BoundSolver   *********************************************** */
+/* ************************************************************************** */
+/* **********   CornerSolver   ********************************************** */
 /* ************************************************************************** */
 /* ************************************************************************** */
 

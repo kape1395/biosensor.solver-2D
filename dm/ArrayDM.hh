@@ -62,6 +62,8 @@ public:
  */
 class ArrayArea : public Area
 {
+    friend class ArrayBound;
+    friend class ArrayCorner;
 protected:
     Point ***data;  ///< Dvimatis masyvas.
     int sizeX;
@@ -146,10 +148,14 @@ public:
  */
 class ArrayBound : public Bound
 {
+    friend class ArrayCorner;
 protected:
     Point **data;   ///< Vienmatis masyvas.
     int size;
     int pos;
+
+    Point** nextAreaPoint;  ///< Pointeriai i sekancia nuo krasto tasku eilute/stupeli
+    Point** prevAreaPoint;  ///< Pointeriai i sekancia nuo krasto tasku eilute/stupeli
 
 public:
     ArrayBound(
@@ -189,6 +195,16 @@ public:
     virtual Point* getCurrent()
     {
         return data[pos];
+    }
+
+    virtual Point* getNextAreaPoint()
+    {
+        return nextAreaPoint[pos];
+    }
+
+    virtual Point* getPrevAreaPoint()
+    {
+        return prevAreaPoint[pos];
     }
 
 };
