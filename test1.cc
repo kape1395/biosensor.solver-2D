@@ -4,6 +4,7 @@
 #include "sa/AbstractSA.hh"
 #include "sa/BasicExplicitSA.hh"
 #include "Config.hh"
+#include "SolveListener.hh"
 #include <iostream>
 #include <list>
 #include <string>
@@ -31,10 +32,10 @@ int main()
         config->getReactions().push_back(reaction);
         config->getMediums().push_back(medEnzyme);
         config->getMediums().push_back(medMembrane);
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 20));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
         config->getAreas().push_back(new cfg::Area(0, 0, medEnzyme));
         config->getAreas().push_back(new cfg::Area(1, 0, medMembrane));
         config->getAreas().push_back(new cfg::Area(0, 1, medEnzyme));
@@ -97,7 +98,26 @@ int main()
     {
         dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
         sa::Solver* solver = new sa::basicexplicit::Solver(config, modelFactory);
+        sl::DebugSL *slDebug1 = new sl::DebugSL(std::cout, 0 );
+        sl::DebugSL *slDebug2 = new sl::DebugSL(std::cout, 1 );
+        sl::DebugSL *slDebug3 = new sl::DebugSL(std::cout, 10);
+        sl::DebugSL *slDebug4 = new sl::DebugSL(std::cout, 20);
+        sl::DebugSL *slDebug5 = new sl::DebugSL(std::cout, 99);
+        sl::DebugSL *slDebug6 = new sl::DebugSL(std::cout, 999);
+        solver->addListener(slDebug1);
+        solver->addListener(slDebug2);
+        solver->addListener(slDebug3);
+        solver->addListener(slDebug4);
+        solver->addListener(slDebug5);
+        solver->addListener(slDebug6);
+
         solver->solve();
+        delete slDebug1;
+        delete slDebug2;
+        delete slDebug3;
+        delete slDebug4;
+        delete slDebug5;
+        delete slDebug6;
         delete solver;
         delete modelFactory;
     }

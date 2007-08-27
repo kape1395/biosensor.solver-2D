@@ -385,6 +385,25 @@ public:
         this->solver = solver;
     }
 
+    virtual Bound* getTopBound()
+    {
+        return top;
+    }
+
+    virtual Bound* getRightBound()
+    {
+        return right;
+    }
+
+    virtual Bound* getBottomBound()
+    {
+        return bottom;
+    }
+
+    virtual Bound* getLeftBound()
+    {
+        return left;
+    }
 };
 
 

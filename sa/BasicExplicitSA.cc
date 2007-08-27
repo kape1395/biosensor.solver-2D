@@ -514,6 +514,10 @@ void sa::basicexplicit::BoundSolver::WallCondition::apply(dm::Bound* data)
 }
 
 
+
+/**
+ *
+ */
 sa::basicexplicit::BoundSolver::MergeCondition::MergeCondition(
     int                         substanceIndex,
     cfg::Bound::MergeCondition* cfg,
@@ -557,28 +561,44 @@ sa::basicexplicit::BoundSolver::MergeCondition::MergeCondition(
     }
 
 }
+/**
+ *
+ */
 sa::basicexplicit::BoundSolver::MergeCondition::~MergeCondition()
 {}
+/**
+ *
+ */
 void sa::basicexplicit::BoundSolver::MergeCondition::apply(dm::Bound* data)
 {
     double a = prevArea_D / prevArea_dx;
-    double b = nextArea_D / nextArea_dx;
-    double c = -(a + c);
+    double c = nextArea_D / nextArea_dx;
+    double b = -(a + c);
     double* pt = dynamic_cast<Point*>(data->getCurrent())->getThisLayerSubstances();
     double* pp = dynamic_cast<Point*>(data->getPrevAreaPoint())->getThisLayerSubstances();
     double* pn = dynamic_cast<Point*>(data->getNextAreaPoint())->getThisLayerSubstances();
+
     pt[substanceIndex] = -(a * pp[substanceIndex] + c * pn[substanceIndex]) / b;
 }
 
 
+/**
+ *
+ */
 sa::basicexplicit::BoundSolver::ConstCondition::ConstCondition(
     int substanceIndex, double concentration
 ) : Condition(substanceIndex)
 {
     this->concentration = concentration;
 }
+/**
+ *
+ */
 sa::basicexplicit::BoundSolver::ConstCondition::~ConstCondition()
 {}
+/**
+ *
+ */
 void sa::basicexplicit::BoundSolver::ConstCondition::apply(dm::Bound* data)
 {
     Point* point = dynamic_cast<Point*>(data->getCurrent());
@@ -597,13 +617,103 @@ void sa::basicexplicit::BoundSolver::ConstCondition::apply(dm::Bound* data)
 
 
 /**
- *
+ *  Sprendcia sriciu kampa.
+ *  FIXME: Atrodo cia kazkas negerai skaiciuojasi, reikia realizuoti normaliai.
+ *         Tipo prirasiau sudo, ir dar noriu kad veiktu.
  */
 void sa::basicexplicit::CornerSolver::solveIteration()
 {
-    // TODO: Implement
-    //data->
-    //std::cout << '+';
+    std::list<cfg::Substance*>::iterator sBeg = solver->getData()->getConfiguration()->getSubstances().begin();
+    std::list<cfg::Substance*>::iterator sEnd = solver->getData()->getConfiguration()->getSubstances().end();
+    std::list<cfg::Substance*>::iterator sCur;
+    for (sCur = sBeg; sCur != sEnd; sCur++)
+    {
+        cfg::Bound::Condition* rCond = 0;
+        cfg::Bound::Condition* lCond = 0;
+        cfg::Bound::Condition* tCond = 0;
+        cfg::Bound::Condition* bCond = 0;
+
+        std::list<cfg::Bound::Condition*>::iterator bcBeg;
+        std::list<cfg::Bound::Condition*>::iterator bcEnd;
+        std::list<cfg::Bound::Condition*>::iterator bcCur;
+        if (data->getRightBound() != 0)
+        {
+            bcBeg = data->getRightBound()->getConfiguration()->getConditions().begin();
+            bcEnd = data->getRightBound()->getConfiguration()->getConditions().end();
+            for (bcCur = bcBeg; bcCur != bcEnd; bcCur++)
+            {
+                if ((*bcCur)->getSubstance() == *sCur)
+                    rCond = *bcCur;
+            }
+        }
+        if (data->getLeftBound() != 0)
+        {
+            bcBeg = data->getLeftBound()->getConfiguration()->getConditions().begin();
+            bcEnd = data->getLeftBound()->getConfiguration()->getConditions().end();
+            for (bcCur = bcBeg; bcCur != bcEnd; bcCur++)
+            {
+                if ((*bcCur)->getSubstance() == *sCur)
+                    lCond = *bcCur;
+            }
+        }
+        if (data->getTopBound() != 0)
+        {
+            bcBeg = data->getTopBound()->getConfiguration()->getConditions().begin();
+            bcEnd = data->getTopBound()->getConfiguration()->getConditions().end();
+            for (bcCur = bcBeg; bcCur != bcEnd; bcCur++)
+            {
+                if ((*bcCur)->getSubstance() == *sCur)
+                    tCond = *bcCur;
+            }
+        }
+        if (data->getBottomBound() != 0)
+        {
+            bcBeg = data->getBottomBound()->getConfiguration()->getConditions().begin();
+            bcEnd = data->getBottomBound()->getConfiguration()->getConditions().end();
+            for (bcCur = bcBeg; bcCur != bcEnd; bcCur++)
+            {
+                if ((*bcCur)->getSubstance() == *sCur)
+                    bCond = *bcCur;
+            }
+        }
+
+        Point* cp = dynamic_cast<Point*>(data->getCurrent());           // Current point
+        Point* tp = 0;                                                  // Temporary point
+        int    si = this->solver->getData()->getSubstanceIndex(*sCur);  // Current substance index
+        double sum   = 0.0;
+        int    count = 0;
+
+        if (rCond != 0)
+        {
+            data->getRightBound()->moveToStart();
+            tp = dynamic_cast<Point*>(data->getRightBound()->getCurrent());
+            sum += tp->getThisLayerSubstances()[si];
+            count++;
+        }
+        if (lCond != 0)
+        {
+            data->getLeftBound()->moveToEnd();
+            tp = dynamic_cast<Point*>(data->getLeftBound()->getCurrent());
+            sum += tp->getThisLayerSubstances()[si];
+            count++;
+        }
+        if (tCond != 0)
+        {
+            data->getTopBound()->moveToEnd();
+            tp = dynamic_cast<Point*>(data->getTopBound()->getCurrent());
+            sum += tp->getThisLayerSubstances()[si];
+            count++;
+        }
+        if (bCond != 0)
+        {
+            data->getBottomBound()->moveToStart();
+            tp = dynamic_cast<Point*>(data->getBottomBound()->getCurrent());
+            sum += tp->getThisLayerSubstances()[si];
+            count++;
+        }
+
+        cp->getThisLayerSubstances()[si] = sum / count;
+    }
 }
 
 

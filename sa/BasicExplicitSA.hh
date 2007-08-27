@@ -35,9 +35,9 @@ public:
     virtual ~Solver();
     virtual void solve();
 
-    virtual double getTimeStep()
+    virtual double getTimeStep()    // FIXME: Kazkaip normaliai realizuoti.
     {
-        return 1E-4;
+        return 1E-6;
     }
 
 };

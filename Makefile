@@ -5,7 +5,7 @@ CPPFLAGS =
 target  = test1
 obj_sa  = sa/AbstractSA.o sa/BasicExplicitSA.o sa/BasicImplicitSA.o
 obj_dm  = dm/AbstractDM.o dm/ArrayDM.o dm/LinkedDM.o
-obj_etc = Config.o
+obj_etc = Config.o SolveListener.o
 objects = $(target).o $(obj_etc) $(obj_sa) $(obj_dm)
 
 
