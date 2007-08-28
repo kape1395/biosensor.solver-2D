@@ -14,7 +14,10 @@ sa::basicexplicit::Solver::Solver(
     dm::ModelFactory* modelFactory
 ) : sa::Solver(config)
 {
-    activeLayer = 0;
+    activeLayer     = 0;
+    stopRequested   = false;
+    solvedTime      = 0.0;
+    solvedSteps     = 0;
 
     /////////////////////////////////
     //  Sukuriam duomenu modeli.
@@ -102,10 +105,14 @@ void sa::basicexplicit::Solver::solve()
 {
     std::cout << "sa::basicexplicit::Solver::solve()...\n";
 
-    for (int i = 0; i < 1000; i++)
+    invokeListeners();
+    while (!stopRequested)
     {
         solveIteration();
+        solvedSteps++;
+        solvedTime += getTimeStep();
         invokeListeners();
+        std::cout << "sa::basicexplicit::Solver::solve()... " << solvedSteps << '\n';
     }
 
     std::cout << "sa::basicexplicit::Solver::solve()... Done\n";
@@ -159,6 +166,45 @@ void sa::basicexplicit::Solver::solveIteration()
 
 
     //std::cout << "sa::basicexplicit::Solver::solveIteration()... Done\n";
+}
+
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *
+ */
+long sa::basicexplicit::Solver::getSolvedIterationCount()
+{
+    return solvedSteps;
+}
+
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *
+ */
+double sa::basicexplicit::Solver::getSolvedTime()
+{
+    return solvedTime;
+}
+
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *
+ */
+void sa::basicexplicit::Solver::stop()
+{
+    stopRequested = true;
 }
 
 

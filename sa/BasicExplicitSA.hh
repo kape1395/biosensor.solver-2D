@@ -18,7 +18,10 @@ namespace basicexplicit
 class Solver : public sa::Solver
 {
 protected:
-    int activeLayer;    ///< Skaiciuojamo sluoksnio numeris (0, 1).
+    int     activeLayer;    ///< Skaiciuojamo sluoksnio numeris (0, 1).
+    bool    stopRequested;  ///< Ar reikia nutraukti skaiciavimus?
+    double  solvedTime;     ///< Kiek laiko jau yra sumodeliuota.
+    long    solvedSteps;    ///< Kiek zingsniu (iteraciju) jau yra atlikta.
 
     virtual void solveIteration();
 
@@ -34,11 +37,9 @@ public:
     Solver(cfg::Config* config, dm::ModelFactory* modelFactory);
     virtual ~Solver();
     virtual void solve();
-
-    virtual double getTimeStep()    // FIXME: Kazkaip normaliai realizuoti.
-    {
-        return 1E-6;
-    }
+    virtual long getSolvedIterationCount();
+    virtual double getSolvedTime();
+    virtual void stop();
 
 };
 

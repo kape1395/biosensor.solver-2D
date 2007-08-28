@@ -12,6 +12,8 @@ namespace sl
 /* ************************************************************************** */
 /* ************************************************************************** */
 
+
+
 /**
  *  Sprendejas, kas iteracija raso viska i STDOUT.
  *
@@ -19,13 +21,29 @@ namespace sl
 class DebugSL : public sa::SolveListener
 {
 protected:
-    long currentStep;
     long stepToOutput;
     std::ostream *out;
 
 public:
     DebugSL(std::ostream &out, long step);
     virtual ~DebugSL();
+    virtual void solveEventOccured(sa::Solver *solver);
+
+};
+
+
+
+/**
+ *  Sustabdo sprendima, jei pasiekiama nurodyta iteracija.
+ */
+class StopAtStepSL : public sa::SolveListener
+{
+protected:
+    long maxStepCount;
+
+public:
+    StopAtStepSL(long step);
+    virtual ~StopAtStepSL();
     virtual void solveEventOccured(sa::Solver *solver);
 
 };

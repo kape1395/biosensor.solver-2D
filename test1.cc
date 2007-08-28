@@ -98,26 +98,34 @@ int main()
     {
         dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
         sa::Solver* solver = new sa::basicexplicit::Solver(config, modelFactory);
-        sl::DebugSL *slDebug1 = new sl::DebugSL(std::cout, 0 );
-        sl::DebugSL *slDebug2 = new sl::DebugSL(std::cout, 1 );
+        sl::DebugSL *slDebug1 = new sl::DebugSL(std::cout, 0);
+        sl::DebugSL *slDebug2 = new sl::DebugSL(std::cout, 1);
         sl::DebugSL *slDebug3 = new sl::DebugSL(std::cout, 10);
         sl::DebugSL *slDebug4 = new sl::DebugSL(std::cout, 20);
         sl::DebugSL *slDebug5 = new sl::DebugSL(std::cout, 99);
         sl::DebugSL *slDebug6 = new sl::DebugSL(std::cout, 999);
+        sl::DebugSL *slDebug7 = new sl::DebugSL(std::cout, 9999);
+        sl::StopAtStepSL *slStop = new sl::StopAtStepSL(1100);
         solver->addListener(slDebug1);
         solver->addListener(slDebug2);
         solver->addListener(slDebug3);
         solver->addListener(slDebug4);
         solver->addListener(slDebug5);
         solver->addListener(slDebug6);
+        solver->addListener(slDebug7);
+        solver->addListener(slStop);
+        solver->setTimeStep(1E-6);
 
         solver->solve();
+
         delete slDebug1;
         delete slDebug2;
         delete slDebug3;
         delete slDebug4;
         delete slDebug5;
         delete slDebug6;
+        delete slDebug7;
+        delete slStop;
         delete solver;
         delete modelFactory;
     }

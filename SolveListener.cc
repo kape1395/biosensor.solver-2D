@@ -7,41 +7,34 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
- *
+ *  Konstruktorius...
+ *  \param out  I koki stream`a rasyti informacija.
+ *  \param step Po kelinto zingsnio daryti output`a.
  */
 sl::DebugSL::DebugSL(std::ostream &out, long step)
 {
-    this->currentStep   = -1;
     this->stepToOutput  = step;
     this->out           = &out;
 }
 
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
 /**
- *
+ *  Destruktorius, tuscias.
  */
 sl::DebugSL::~DebugSL()
 {
     // Nothing
 }
 
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
 /**
- *
+ *  Dato output`a.
  */
 void sl::DebugSL::solveEventOccured ( sa::Solver *solver )
 {
-    if (++currentStep != stepToOutput)
+    if (solver->getSolvedIterationCount() != stepToOutput)
         return;
 
 
-    *out << "=================== Step " << currentStep << "============================\n";
+    *out << "=================== Step " << solver->getSolvedIterationCount() << "============================\n";
 
 
 
@@ -51,7 +44,6 @@ void sl::DebugSL::solveEventOccured ( sa::Solver *solver )
         {
             *out << "-------------- BEG OF AREA [" << i << ' ' << j << "]--------------------------\n";
             dm::Area *area = solver->getData()->getArea() [i][j];
-            //t substCount = area->getConfiguration()->getMedium()->getDiffusions().size();
             int substCount = solver->getData()->getConfiguration()->getSubstances().size();
 
             area->moveToColStart();
@@ -74,6 +66,39 @@ void sl::DebugSL::solveEventOccured ( sa::Solver *solver )
             while ( area->moveBottom() >= 0 );
             *out << "-------------- END OF AREA [" << i << ' ' << j << "]--------------------------\n\n";
         }
+    }
+}
+
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Konstruktorius.
+ *  \param step Zingsnis, po kurio sustabdyti skaiciavima.
+ */
+sl::StopAtStepSL::StopAtStepSL(long step)
+{
+    this->maxStepCount = step;
+}
+
+/**
+ *  Destruktorius.
+ */
+sl::StopAtStepSL::~StopAtStepSL()
+{
+    // Nothing
+}
+
+/**
+ *  Jei jau isspresta tiek zingsniu, kiek nurodyta sitam
+ *  listeneriui, tai sustabdyti skaiciavima.
+ */
+void sl::StopAtStepSL::solveEventOccured ( sa::Solver *solver )
+{
+    if (solver->getSolvedIterationCount() >= maxStepCount)
+    {
+        solver->stop();
     }
 }
 

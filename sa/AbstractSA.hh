@@ -43,6 +43,7 @@ protected:
     cfg::Config*                config;
     dm::Model*                  data;
     std::list<SolveListener*>   listeners;
+    double                      timeStep;
 
     /// Iskviecia visus klausytojus.
     void invokeListeners()
@@ -93,6 +94,27 @@ public:
     {
         return data;
     }
+
+    /// Grazina, kiek iteraciju kai isspresta.
+    virtual long getSolvedIterationCount() = 0;
+
+    /// Grazina, kiek laiko jau sumodeliuota.
+    virtual double getSolvedTime() = 0;
+
+    /// Grazina einamaji zingsni pagal laika.
+    virtual double getTimeStep()
+    {
+        return timeStep;
+    }
+
+    /// Cia gali buti nurodomas zingsnis pagal laika.
+    virtual void setTimeStep(double timeStep)
+    {
+        this->timeStep = timeStep;
+    }
+
+    /// Sustabdo skaiciavimus.
+    virtual void stop() = 0;
 
 };
 
