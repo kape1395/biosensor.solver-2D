@@ -496,5 +496,33 @@ public:
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+/**
+ *  Iteratorius per visa duomenu struktura.
+ *  TODO: Gal cia is ties bus geresnis sprendimas???
+class Iterator
+{
+protected:
+    Model* model;
+ 
+ 
+    Iterator(Model* model)
+    {
+        this->model = model;
+    }
+ 
+ 
+public:
+    virtual ~Iterator() {}
+    virtual Iterator* top() = 0;
+    virtual Iterator* bottom() = 0;
+    virtual Iterator* right() = 0;
+    virtual Iterator* left() = 0;
+    virtual Point* operator *() = 0;
+};
+*/
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 }  // namespace dm
 #endif

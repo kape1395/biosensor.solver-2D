@@ -87,13 +87,13 @@ public:
     /// Grazina skaiciuojamo sluoksnio koncentracijas.
     virtual double* getThisLayerSubstances()
     {
-        return substances[((*activeLayer) + 1) % 2];
+        return substances[*activeLayer];
     }
 
     /// Grazina pereito suskaiciuoto sluoksnio koncentracijas.
     virtual double* getLastLayerSubstances()
     {
-        return substances[*activeLayer];
+        return substances[((*activeLayer) + 1) % 2];
     }
 };
 
@@ -143,7 +143,7 @@ public:
 /* ************************************************************************** */
 
 #define AreaSolver_DIFFUSION_V1
-#undef  AreaSolver_DIFFUSION_V2
+#undef  AreaSolver_DIFFUSION_V2    // Neveikia jau sitas...
 
 /**
  *  Sprendcia srities vidu.

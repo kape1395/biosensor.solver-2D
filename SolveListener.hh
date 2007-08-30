@@ -49,6 +49,40 @@ public:
 };
 
 
+/**
+ *  Raso duomenu faila, tinkama atvaizduoti gnuplot`u.
+ */
+class GnuplotDataSL : public sa::SolveListener
+{
+protected:
+    long            writeAfterStep;
+    cfg::Substance* substance;
+    std::ostream*   out;
+
+public:
+    GnuplotDataSL(std::ostream &out, long step, cfg::Substance* substance);
+    virtual ~GnuplotDataSL();
+    virtual void solveEventOccured(sa::Solver *solver);
+
+};
+
+
+/**
+ *  Tikrina, ar neatsirado NaN`u arba neigiamu skaiciu substratu
+ *  koncentracijose.
+ */
+class ErrorInDataListener : public sa::SolveListener
+{
+protected:
+    long stepInterval;  ///< Kas kiek zingsniu tikrinti.
+
+public:
+    ErrorInDataListener(long stepInterval);
+    virtual ~ErrorInDataListener();
+    virtual void solveEventOccured(sa::Solver *solver);
+
+};
+
 
 /* ************************************************************************** */
 /* ************************************************************************** */

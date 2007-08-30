@@ -6,6 +6,7 @@
 #include "Config.hh"
 #include "SolveListener.hh"
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <string>
 
@@ -15,15 +16,18 @@ int main()
     std::cout << "Running test1...\n";
 
     cfg::Config* config = 0;
+    cfg::Substance* substanceS = 0;
+    cfg::Substance* substanceP = 0;
     {
-        cfg::Substance* substanceS = new cfg::Substance("S");
-        cfg::Substance* substanceP = new cfg::Substance("P");
+        substanceS = new cfg::Substance("S");
+        substanceP = new cfg::Substance("P");
+
         cfg::Reaction* reaction = new cfg::MichaelisMentenReaction("R", substanceS, substanceP, 1E-8, 1E-8);
 
         cfg::Medium* medEnzyme = new cfg::Medium("Enzyme");
         cfg::Medium* medMembrane = new cfg::Medium("PerforatedMembrane");
-        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceS, 1E-6));
-        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceP, 1E-6));
+        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceS, 1E-5)); //  1E-6
+        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceP, 1E-5)); //  1E-6
         medEnzyme->getReactions().push_back(reaction);
 
         config = new cfg::Config();
@@ -32,10 +36,10 @@ int main()
         config->getReactions().push_back(reaction);
         config->getMediums().push_back(medEnzyme);
         config->getMediums().push_back(medMembrane);
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 100));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
         config->getAreas().push_back(new cfg::Area(0, 0, medEnzyme));
         config->getAreas().push_back(new cfg::Area(1, 0, medMembrane));
         config->getAreas().push_back(new cfg::Area(0, 1, medEnzyme));
@@ -98,34 +102,30 @@ int main()
     {
         dm::ModelFactory* modelFactory = new dm::ArrayModelFactory();
         sa::Solver* solver = new sa::basicexplicit::Solver(config, modelFactory);
-        sl::DebugSL *slDebug1 = new sl::DebugSL(std::cout, 0);
-        sl::DebugSL *slDebug2 = new sl::DebugSL(std::cout, 1);
-        sl::DebugSL *slDebug3 = new sl::DebugSL(std::cout, 10);
-        sl::DebugSL *slDebug4 = new sl::DebugSL(std::cout, 20);
-        sl::DebugSL *slDebug5 = new sl::DebugSL(std::cout, 99);
-        sl::DebugSL *slDebug6 = new sl::DebugSL(std::cout, 999);
-        sl::DebugSL *slDebug7 = new sl::DebugSL(std::cout, 9999);
-        sl::StopAtStepSL *slStop = new sl::StopAtStepSL(1100);
-        solver->addListener(slDebug1);
-        solver->addListener(slDebug2);
-        solver->addListener(slDebug3);
-        solver->addListener(slDebug4);
-        solver->addListener(slDebug5);
-        solver->addListener(slDebug6);
-        solver->addListener(slDebug7);
-        solver->addListener(slStop);
+        sa::SolveListener* listeners[100];
+        int                lc = 0;
+
+        std::ofstream fS;
+        std::ofstream fP;
+        fS.open("test1-S.dat");
+        fP.open("test1-P.dat");
+
+        int finish = 1000000;
+      //solver->addListener(listeners[lc++] = new sl::DebugSL(std::cout, 100));
+        solver->addListener(listeners[lc++] = new sl::ErrorInDataListener(100));
+        solver->addListener(listeners[lc++] = new sl::GnuplotDataSL(fS, finish, substanceS));
+        solver->addListener(listeners[lc++] = new sl::GnuplotDataSL(fP, finish, substanceP));
+        solver->addListener(listeners[lc++] = new sl::StopAtStepSL(finish));
         solver->setTimeStep(1E-6);
 
         solver->solve();
 
-        delete slDebug1;
-        delete slDebug2;
-        delete slDebug3;
-        delete slDebug4;
-        delete slDebug5;
-        delete slDebug6;
-        delete slDebug7;
-        delete slStop;
+        for (int i = 0; i < lc; delete listeners[i++])
+            ;
+
+        fS.close();
+        fP.close();
+
         delete solver;
         delete modelFactory;
     }

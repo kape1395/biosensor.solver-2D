@@ -111,8 +111,9 @@ void sa::basicexplicit::Solver::solve()
         solveIteration();
         solvedSteps++;
         solvedTime += getTimeStep();
-        invokeListeners();
+        
         std::cout << "sa::basicexplicit::Solver::solve()... " << solvedSteps << '\n';
+        invokeListeners();
     }
 
     std::cout << "sa::basicexplicit::Solver::solve()... Done\n";
@@ -728,37 +729,116 @@ void sa::basicexplicit::CornerSolver::solveIteration()
         int    si = this->solver->getData()->getSubstanceIndex(*sCur);  // Current substance index
         double sum   = 0.0;
         int    count = 0;
-
-        if (rCond != 0)
+        cfg::Bound::Condition* cond;
+      //bool   wasMirror = false;
+        bool   wasConst  = false;
+        
+        if ((cond = rCond) != 0)
         {
             data->getRightBound()->moveToStart();
+            data->getRightBound()->moveNext();
             tp = dynamic_cast<Point*>(data->getRightBound()->getCurrent());
-            sum += tp->getThisLayerSubstances()[si];
-            count++;
+            if (cond->getType() == "CONSTANT")
+            {
+                if (wasConst)
+                {
+                    sum = 0.0;
+                    count = 0;
+                }
+                sum += tp->getThisLayerSubstances()[si];
+                count++;
+                wasConst = true;
+            }
+            else
+            {
+                if (!wasConst)
+                {
+                    sum += tp->getThisLayerSubstances()[si];
+                    count++;
+                }
+            }
         }
-        if (lCond != 0)
+        
+        if ((cond = lCond) != 0)
         {
             data->getLeftBound()->moveToEnd();
+            data->getLeftBound()->movePrev();
             tp = dynamic_cast<Point*>(data->getLeftBound()->getCurrent());
-            sum += tp->getThisLayerSubstances()[si];
-            count++;
+            if (cond->getType() == "CONSTANT")
+            {
+                if (wasConst)
+                {
+                    sum = 0.0;
+                    count = 0;
+                }
+                sum += tp->getThisLayerSubstances()[si];
+                count++;
+                wasConst = true;
+            }
+            else
+            {
+                if (!wasConst)
+                {
+                    sum += tp->getThisLayerSubstances()[si];
+                    count++;
+                }
+            }
         }
-        if (tCond != 0)
+        if ((cond = tCond) != 0)
         {
             data->getTopBound()->moveToEnd();
+            data->getTopBound()->movePrev();
             tp = dynamic_cast<Point*>(data->getTopBound()->getCurrent());
-            sum += tp->getThisLayerSubstances()[si];
-            count++;
+            if (cond->getType() == "CONSTANT")
+            {
+                if (wasConst)
+                {
+                    sum = 0.0;
+                    count = 0;
+                }
+                sum += tp->getThisLayerSubstances()[si];
+                count++;
+                wasConst = true;
+            }
+            else
+            {
+                if (!wasConst)
+                {
+                    sum += tp->getThisLayerSubstances()[si];
+                    count++;
+                }
+            }
         }
-        if (bCond != 0)
+        if ((cond = bCond) != 0)
         {
             data->getBottomBound()->moveToStart();
+            data->getBottomBound()->moveNext();
             tp = dynamic_cast<Point*>(data->getBottomBound()->getCurrent());
-            sum += tp->getThisLayerSubstances()[si];
-            count++;
+            if (cond->getType() == "CONSTANT")
+            {
+                if (wasConst)
+                {
+                    sum = 0.0;
+                    count = 0;
+                }
+                sum += tp->getThisLayerSubstances()[si];
+                count++;
+                wasConst = true;
+            }
+            else
+            {
+                if (!wasConst)
+                {
+                    sum += tp->getThisLayerSubstances()[si];
+                    count++;
+                }
+            }
         }
 
         cp->getThisLayerSubstances()[si] = sum / count;
+
+
+        //std::cout << "Angle: sum=" << sum << " count=" << count << " result=" << (sum / count) << '\n';  // TODO: Remove this.
     }
 }
 
