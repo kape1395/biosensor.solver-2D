@@ -1,5 +1,6 @@
 #include "BasicExplicitSA.hh"
 #include <iostream>
+#include <ctime>
 
 
 
@@ -104,6 +105,7 @@ sa::basicexplicit::Solver::~Solver()
 void sa::basicexplicit::Solver::solve()
 {
     std::cout << "sa::basicexplicit::Solver::solve()...\n";
+    std::time_t tStart = std::clock();
 
     invokeListeners();
     while (!stopRequested)
@@ -111,12 +113,19 @@ void sa::basicexplicit::Solver::solve()
         solveIteration();
         solvedSteps++;
         solvedTime += getTimeStep();
-        
-        std::cout << "sa::basicexplicit::Solver::solve()... " << solvedSteps << '\n';
+
+        if (solvedSteps % 1000 ==0)
+            std::cout << "sa::basicexplicit::Solver::solve()... " << solvedSteps << '\n';
+
         invokeListeners();
     }
 
-    std::cout << "sa::basicexplicit::Solver::solve()... Done\n";
+    std::cout
+    << "sa::basicexplicit::Solver::solve()... Done"
+    << " in " << ((std::clock() - tStart) / CLOCKS_PER_SEC) << "s "
+    << " solvedSteps=" << solvedSteps
+    << " solvedTime=" << solvedTime
+    << '\n';
 }
 
 
@@ -730,9 +739,9 @@ void sa::basicexplicit::CornerSolver::solveIteration()
         double sum   = 0.0;
         int    count = 0;
         cfg::Bound::Condition* cond;
-      //bool   wasMirror = false;
+        //bool   wasMirror = false;
         bool   wasConst  = false;
-        
+
         if ((cond = rCond) != 0)
         {
             data->getRightBound()->moveToStart();
@@ -758,7 +767,7 @@ void sa::basicexplicit::CornerSolver::solveIteration()
                 }
             }
         }
-        
+
         if ((cond = lCond) != 0)
         {
             data->getLeftBound()->moveToEnd();

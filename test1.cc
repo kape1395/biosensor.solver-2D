@@ -3,7 +3,7 @@
 #include "dm/ArrayDM.hh"
 #include "sa/AbstractSA.hh"
 #include "sa/BasicExplicitSA.hh"
-#include "Config.hh"
+#include "cfg/Config.hh"
 #include "SolveListener.hh"
 #include <iostream>
 #include <fstream>
@@ -22,28 +22,40 @@ int main()
         substanceS = new cfg::Substance("S");
         substanceP = new cfg::Substance("P");
 
-        cfg::Reaction* reaction = new cfg::MichaelisMentenReaction("R", substanceS, substanceP, 1E-8, 1E-8);
+        cfg::Reaction* reaction = new cfg::MichaelisMentenReaction(
+                                      "R",              // Name
+                                      substanceS,       // Substrate
+                                      substanceP,       // Product
+                                      1E-8,             // V_max
+                                      1E-7              // K_M
+                                  );
 
-        cfg::Medium* medEnzyme = new cfg::Medium("Enzyme");
-        cfg::Medium* medMembrane = new cfg::Medium("PerforatedMembrane");
-        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceS, 1E-5)); //  1E-6
-        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceP, 1E-5)); //  1E-6
+        cfg::Medium* medEnzyme   = new cfg::Medium("Enzyme");
+        cfg::Medium* medPerfMemb = new cfg::Medium("PerforatedMembrane");
+        cfg::Medium* medSelMemb  = new cfg::Medium("SelectiveMembrane");
+        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceS, 3E-6));
+        medEnzyme->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceP, 3E-6));
         medEnzyme->getReactions().push_back(reaction);
+        medSelMemb->getDiffusions().push_back(new cfg::Medium::Diffusion(substanceP, 1.0E-8));
 
         config = new cfg::Config();
         config->getSubstances().push_back(substanceS);
         config->getSubstances().push_back(substanceP);
         config->getReactions().push_back(reaction);
         config->getMediums().push_back(medEnzyme);
-        config->getMediums().push_back(medMembrane);
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
-        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
-        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1E-3, 150));
+        config->getMediums().push_back(medPerfMemb);
+        config->getMediums().push_back(medSelMemb);
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1.0E-5, 50));
+        config->getDimensionXParts().push_back(new cfg::ConstantDimensionPart(1.0E-3, 50));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(1.0E-3, 50));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(2.0E-4, 50));
+        config->getDimensionYParts().push_back(new cfg::ConstantDimensionPart(2.0E-4, 50));
         config->getAreas().push_back(new cfg::Area(0, 0, medEnzyme));
-        config->getAreas().push_back(new cfg::Area(1, 0, medMembrane));
+        config->getAreas().push_back(new cfg::Area(1, 0, medPerfMemb));
         config->getAreas().push_back(new cfg::Area(0, 1, medEnzyme));
         config->getAreas().push_back(new cfg::Area(1, 1, medEnzyme));
+        config->getAreas().push_back(new cfg::Area(0, 2, medSelMemb));
+        config->getAreas().push_back(new cfg::Area(1, 2, medSelMemb));
 
         cfg::Bound* bound = 0;
 
@@ -81,7 +93,7 @@ int main()
         bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
         config->getBounds().push_back(bound = new cfg::Bound(0, 1, cfg::Bound::BOTTOM));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
-        bound->getConditions().push_back(new cfg::Bound::ElectrodeCondition(substanceP));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
         config->getBounds().push_back(bound = new cfg::Bound(0, 1, cfg::Bound::LEFT));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
@@ -94,9 +106,35 @@ int main()
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
         config->getBounds().push_back(bound = new cfg::Bound(1, 1, cfg::Bound::BOTTOM));
         bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
-        bound->getConditions().push_back(new cfg::Bound::ElectrodeCondition(substanceP));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
         config->getBounds().push_back(bound = new cfg::Bound(1, 1, cfg::Bound::LEFT));
         bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceS));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
+
+        config->getBounds().push_back(bound = new cfg::Bound(0, 2, cfg::Bound::TOP));
+        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(0, 2, cfg::Bound::RIGHT));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(0, 2, cfg::Bound::BOTTOM));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::ElectrodeCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(0, 2, cfg::Bound::LEFT));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
+
+        config->getBounds().push_back(bound = new cfg::Bound(1, 2, cfg::Bound::TOP));
+        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceS));
+        bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(1, 2, cfg::Bound::RIGHT));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::WallCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(1, 2, cfg::Bound::BOTTOM));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
+        bound->getConditions().push_back(new cfg::Bound::ElectrodeCondition(substanceP));
+        config->getBounds().push_back(bound = new cfg::Bound(1, 2, cfg::Bound::LEFT));
+        bound->getConditions().push_back(new cfg::Bound::ConstantCondition(substanceS, 0.0));
         bound->getConditions().push_back(new cfg::Bound::MergeCondition(substanceP));
     }
     {
@@ -110,13 +148,12 @@ int main()
         fS.open("test1-S.dat");
         fP.open("test1-P.dat");
 
-        int finish = 1000000;
-      //solver->addListener(listeners[lc++] = new sl::DebugSL(std::cout, 100));
+        int finish = 1000;
         solver->addListener(listeners[lc++] = new sl::ErrorInDataListener(100));
         solver->addListener(listeners[lc++] = new sl::GnuplotDataSL(fS, finish, substanceS));
         solver->addListener(listeners[lc++] = new sl::GnuplotDataSL(fP, finish, substanceP));
         solver->addListener(listeners[lc++] = new sl::StopAtStepSL(finish));
-        solver->setTimeStep(1E-6);
+        solver->setTimeStep(5E-9);
 
         solver->solve();
 
@@ -130,7 +167,6 @@ int main()
         delete modelFactory;
     }
     delete config;
-
 
     std::cout << "Running test1... Done\n";
     return 0;

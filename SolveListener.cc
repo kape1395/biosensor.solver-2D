@@ -248,7 +248,7 @@ void sl::ErrorInDataListener::solveEventOccured ( sa::Solver *solver )
                     for ( int s = 0; s < substCount; s++ )
                     {
                         double subst = point->getSubstance(s);
-                        if (isnan(subst) || subst < 0.0)
+                        if (std::isnan(subst) || subst < 0.0)
                         {
                             std::cerr << "ERROR: Execution aborted, concentration NaN or <0 found.\n";
                             solver->stop();
