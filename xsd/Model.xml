@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model Model.xsd"
+    coordinateSystem="Cartesian">
+    
+    <substance name="S"/>
+    <substance name="P"/>
+    
+    <reaction xsi:type="Reaction_MichaelisMenten"
+        name="E"
+        substrate="S"
+        product="P"
+        V_max="V_max"
+        K_M="K_M"
+    />
+    
+    
+    <medium name="Enzyme">
+        <diffusion substance="S" coefficient="D_Enz_S"/>
+        <diffusion substance="P" coefficient="D_Enz_P"/>
+        <reaction reaction="R1"/>
+    </medium>
+    <medium name="PerforatedMembrane">
+    </medium>
+    <medium name="SelectiveMembrane">
+        <diffusion substance="P" coefficient="D_Sel_P"/>
+    </medium>
+    
+    
+    <area top="y1" bottom="y2" left="x1" right="x2" medium="Enzyme"/>
+    <area top="y2" bottom="y3" left="x1" right="x3" medium="Enzyme"/>
+    <area top="y1" bottom="y2" left="x2" right="x3" medium="PerforatedMembrane"/>
+    <area top="y3" bottom="y4" left="x1" right="x3" medium="SelectiveMembrane"/>
+    
+    
+    <boundCondition from="x1" to="x1" at="y1" substance="S" xsi:type="BoundCondition_Constant" concentration="S_0"/>
+    <boundCondition from="x1" to="x1" at="y1" substance="P" xsi:type="BoundCondition_Constant" concentration="P_0"/>
+    <boundCondition from="y1" to="y3" at="x1" substance="S" xsi:type="BoundCondition_Wall"/>
+    <boundCondition from="y1" to="y4" at="x1" substance="P" xsi:type="BoundCondition_Wall"/>
+    <boundCondition from="y2" to="y3" at="x3" substance="S" xsi:type="BoundCondition_Wall"/>
+    <boundCondition from="y2" to="y4" at="x3" substance="P" xsi:type="BoundCondition_Wall"/>
+    <boundCondition from="x1" to="x3" at="y4" substance="P" xsi:type="BoundCondition_Constant" concentration="E_0"/>
+    
+    <electrode name="Electrode">
+        <substrate substrate="P"/>
+        <position from="x1" to="x3" at="y4"/>
+    </electrode>
+    
+    <symbol name="S_0"      value="7.5E-7"  dimension="mol/cm^2"/>
+    <symbol name="P_0"      value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="E_0"      value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="V_max"    value="1E-8"    dimension="mol/s"/>
+    <symbol name="K_M"      value="1E-8"    />
+    <symbol name="D_Enz_S"  value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_Enz_P"  value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_Sel_P"  value="1E-6"    dimension="m^2/s"/>
+    <symbol name="x1"       value="0.0"     dimension="m"/>
+    <symbol name="x2"       value="1.0E-5"  dimension="m"/>
+    <symbol name="x3"       value="1.01E-3" dimension="m"/>
+    <symbol name="y1"       value="0.0"     dimension="m"/>
+    <symbol name="y2"       value="1.0E-3"  dimension="m"/>
+    <symbol name="y3"       value="1.2E-3"  dimension="m"/>
+    <symbol name="y4"       value="1.4E-3"  dimension="m"/>
+</model>

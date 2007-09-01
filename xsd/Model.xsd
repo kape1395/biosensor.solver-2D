@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace="http://lt.5grupe.karolis/biosensor/model"
+    elementFormDefault="qualified">
+    
+    
+    
+    <xs:element name="model" type="Model"/>
+    
+    
+    
+    <xs:complexType name="Model">
+        <xs:sequence>
+            <xs:element name="substance"      type="Substance"      minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="reaction"       type="Reaction"       minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="medium"         type="Medium"         minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="area"           type="Area"           minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="boundCondition" type="BoundCondition" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="electrode"      type="Electrode"      minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="symbol"         type="Symbol"         minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="coordinateSystem" type="CoordinateSystem" use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Substance">
+        <xs:attribute name="name" type="SubstanceName" use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Reaction" abstract="true">
+        <xs:attribute name="name" type="ReactionName"   use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Reaction_MichaelisMenten">
+        <xs:complexContent>
+            <xs:extension base="Reaction">
+                <xs:attribute name="substrate" type="SubstanceName"  use="required"/>
+                <xs:attribute name="product"   type="SubstanceName"  use="required"/>
+                <xs:attribute name="V_max"     type="SymbolName"     use="required"/>
+                <xs:attribute name="K_M"       type="SymbolName"     use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Medium">
+        <xs:sequence>
+            <xs:element name="diffusion" type="MediumDiffusion" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="reaction"  type="MediumReaction"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="MediumName" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="MediumDiffusion">
+        <xs:attribute name="substance"   type="SubstanceName" use="required"/>
+        <xs:attribute name="coefficient" type="SymbolName"    use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="MediumReaction">
+        <xs:attribute name="reaction" type="ReactionName" use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Area">
+        <xs:attribute name="top"    type="SymbolName" use="required"/>
+        <xs:attribute name="bottom" type="SymbolName" use="required"/>
+        <xs:attribute name="left"   type="SymbolName" use="required"/>
+        <xs:attribute name="right"  type="SymbolName" use="required"/>
+        <xs:attribute name="medium" type="MediumName" use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="BoundCondition" abstract="true">
+        <xs:attribute name="from"      type="SymbolName"         use="required"/>
+        <xs:attribute name="to"        type="SymbolName"         use="required"/>
+        <xs:attribute name="at"        type="SymbolName"         use="required"/>
+        <xs:attribute name="substance" type="SubstanceName"      use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="BoundCondition_Constant">
+        <xs:complexContent>
+            <xs:extension base="BoundCondition">
+                <xs:attribute name="concentration" type="SymbolName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="BoundCondition_Wall">
+        <xs:complexContent>
+            <xs:extension base="BoundCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="BoundCondition_Merge">
+        <xs:complexContent>
+            <xs:extension base="BoundCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Electrode">
+        <xs:sequence>
+            <xs:element name="substrate" type="ElectrodeSubstrate"/>
+            <xs:element name="position"  type="ElectrodePosition"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="ElectrodeName" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="ElectrodeSubstrate">
+        <xs:attribute name="substrate" type="SubstanceName" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="ElectrodePosition">
+        <xs:attribute name="from"   type="SymbolName"   use="required"/>
+        <xs:attribute name="to"     type="SymbolName"   use="required"/>
+        <xs:attribute name="at"     type="SymbolName"   use="required"/>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Symbol">
+        <xs:attribute name="name"       type="SymbolName" use="required"/>
+        <xs:attribute name="value"      type="xs:double"  use="required"/>
+        <xs:attribute name="dimension"  type="xs:string"  use="optional"/>
+    </xs:complexType>
+    
+    
+    <xs:simpleType name="CoordinateSystem">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Cartesian"/>
+            <xs:enumeration value="Cylindrical"/>
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="SubstanceName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="ReactionName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="MediumName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="ElectrodeName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+    <xs:simpleType name="SymbolName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    
+</xs:schema>
