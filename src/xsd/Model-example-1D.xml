@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns   ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:bc="http://lt.5grupe.karolis/biosensor/model/bc"
+    xmlns:mr="http://lt.5grupe.karolis/biosensor/model/mr"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model    Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bc ModelBoundCondition.xsd
+                        http://lt.5grupe.karolis/biosensor/model/mr ModelMediumReaction.xsd"
+    coordinateSystem="Linear">
+    
+    <axis name="x">
+        <point position="x1"/>
+        <point position="x2"/>
+        <point position="x3"/>
+        <point position="x4"/>
+    </axis>
+    
+    <substance name="S"/>
+    <substance name="P"/>
+    
+    <medium name="PerforatedMembrane">
+        <diffusion substance="S" coefficient="D_Per_S" initial="S_0"/>
+        <diffusion substance="P" coefficient="D_Per_P" initial="P_0"/>
+        <reaction xsi:type="mr:MichaelisMenten"
+            substrate="S"
+            product="P"
+            V_max="V_max_Per"
+            K_M="K_M_Per"
+        />
+        <area from="x1" to="x2"/>
+    </medium>
+    <medium name="Enzyme">
+        <diffusion substance="S" coefficient="D_Enz_S" initial="S_0"/>
+        <diffusion substance="P" coefficient="D_Enz_P" initial="P_0"/>
+        <reaction xsi:type="mr:MichaelisMenten"
+            substrate="S"
+            product="P"
+            V_max="V_max_Enz"
+            K_M="K_M_Enz"
+        />
+        <area from="x2" to="x3"/>
+    </medium>
+    <medium name="SelectiveMembrane">
+        <diffusion substance="P" coefficient="D_Sel_P" initial="P_0"/>
+        <area from="x3" to="x4"/>
+    </medium>
+    
+    <bound at="x1">
+        <condition substance="S" xsi:type="bc:Constant" concentration="S_Ext"/>
+        <condition substance="P" xsi:type="bc:Constant" concentration="P_Ext"/>
+        <initial substance="S" concentration="S_Ext"/>
+        <initial substance="P" concentration="P_Ext"/>
+    </bound>
+    <bound at="x4">
+        <condition substance="P" xsi:type="bc:Constant" concentration="E_0"/>
+        <initial substance="P" concentration="E_0"/>
+    </bound>
+    
+    <electrode name="Electrode">
+        <substrate substrate="P"/>
+        <position at="x4"/>
+    </electrode>
+    
+    <symbol name="S_Ext"        value="7.5E-7"  dimension="mol/cm^2"/>
+    <symbol name="P_Ext"        value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="S_0"          value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="P_0"          value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="E_0"          value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="V_max_Enz"    value="1E-8"    dimension="mol/s"/>
+    <symbol name="V_max_Per"    value="1E-8"    dimension="mol/s"/>
+    <symbol name="K_M_Enz"      value="1E-8"    />
+    <symbol name="K_M_Per"      value="1E-8"    />
+    <symbol name="D_Enz_S"      value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_Enz_P"      value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_Sel_P"      value="1E-6"    dimension="m^2/s"/>
+    <symbol name="x1"           value="0.0"     dimension="m"/>
+    <symbol name="x2"           value="1.0E-3"  dimension="m"/>
+    <symbol name="x3"           value="1.2E-3"  dimension="m"/>
+    <symbol name="x4"           value="1.4E-3"  dimension="m"/>
+</model>

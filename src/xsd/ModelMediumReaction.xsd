@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/mr"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/mr"
+    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+    
+    
+    
+    <xs:import
+        namespace="http://lt.5grupe.karolis/biosensor/model"
+        schemaLocation="Model.xsd">
+    </xs:import>
+    
+    
+    
+    <xs:complexType name="MichaelisMenten">
+        <xs:complexContent>
+            <xs:extension base="b:MediumReaction">
+                <xs:attribute name="substrate" type="b:SubstanceName"  use="required"/>
+                <xs:attribute name="product"   type="b:SubstanceName"  use="required"/>
+                <xs:attribute name="V_max"     type="b:SymbolName"     use="required"/>
+                <xs:attribute name="K_M"       type="b:SymbolName"     use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+</xs:schema>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/bc"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/bc"
+    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+    
+    
+    
+    <xs:import
+        namespace="http://lt.5grupe.karolis/biosensor/model"
+        schemaLocation="Model.xsd">
+    </xs:import>
+    
+    
+    
+    <xs:complexType name="Constant">
+        <xs:complexContent>
+            <xs:extension base="b:BoundCondition">
+                <xs:attribute name="concentration" type="b:SymbolName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="Wall">
+        <xs:complexContent>
+            <xs:extension base="b:BoundCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="Merge">
+        <xs:complexContent>
+            <xs:extension base="b:BoundCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+</xs:schema>
