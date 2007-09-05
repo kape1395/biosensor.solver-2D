@@ -17,9 +17,10 @@
 
 int main()
 {
+    
     try
     {
-        std::auto_ptr<xsd::model::Model> model (xsd::model::model("xsd/Model-example-2D.xml"));
+        std::auto_ptr<xsd::model::Model> model (xsd::model::model("src/xsd/Model-example-2D.xml"));
         if (model->coordinateSystem() == xsd::model::CoordinateSystem::Cartesian)
         {
             std::cout << "Dekarto\n";
@@ -38,8 +39,9 @@ int main()
     {
         std::cerr << e << std::endl;
     }
-        
+    /*
     return 0;
+    */
     /* ********************************************************************** */
     /* ********************************************************************** */
     std::cout << "Running test1...\n";

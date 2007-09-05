@@ -1,0 +1,3 @@
+datarootdir = @datarootdir@
+
+SUBDIRS = src

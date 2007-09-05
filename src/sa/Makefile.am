@@ -1,0 +1,2 @@
+datarootdir = @datarootdir@
+
