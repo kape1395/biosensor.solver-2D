@@ -17,7 +17,8 @@ test1_SOURCES = \
 	sa_BasicImplicit.cc \
 	xsd/Model.cc \
 	xsd/ModelBoundCondition.cc \
-	xsd/ModelMediumReaction.cc 
+	xsd/ModelMediumReaction.cc \
+	xsd/ModelSolver.cc 
 
 #test1_LDADD = xsd/libxsd.a
 

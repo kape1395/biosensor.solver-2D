@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/s"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/s"
+    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+    
+    
+    
+    <xs:import
+        namespace="http://lt.5grupe.karolis/biosensor/model"
+        schemaLocation="Model.xsd">
+    </xs:import>
+    
+    
+    
+    <xs:complexType name="FiniteDifferences">
+        <xs:complexContent>
+            <xs:extension base="b:Solver">
+                <xs:sequence>
+                    <xs:element name="axis" type="Axis" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="timeStep" type="xs:double" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Explicit1D">
+        <xs:complexContent>
+            <xs:extension base="FiniteDifferences">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Explicit2D">
+        <xs:complexContent>
+            <xs:extension base="FiniteDifferences">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+    <xs:complexType name="Axis">
+        <xs:attribute name="from" type="b:SymbolName" use="required"/>
+        <xs:attribute name="to"   type="b:SymbolName" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="ConstantAxisPart">
+        <xs:complexContent>
+            <xs:extension base="Axis">
+                <xs:attribute name="stepCount" type="xs:integer" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="BilinearAxisPart">
+        <xs:complexContent>
+            <xs:extension base="Axis">
+                <xs:attribute name="startStep" type="xs:double" use="required"/>
+                <xs:attribute name="factor"    type="xs:double" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    
+</xs:schema>

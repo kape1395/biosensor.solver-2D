@@ -2,9 +2,6 @@
 <xs:schema
     targetNamespace ="http://lt.5grupe.karolis/biosensor/model"
     xmlns           ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns:bc        ="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns:mr        ="http://lt.5grupe.karolis/biosensor/model/mr"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -22,6 +19,7 @@
             <xs:element name="bound"        type="Bound"        minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="electrode"    type="Electrode"    minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="symbol"       type="Symbol"       minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="solver"       type="Solver"       minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="coordinateSystem" type="CoordinateSystem" use="required"/>
     </xs:complexType>
@@ -121,6 +119,10 @@
         <xs:attribute name="name"       type="SymbolName" use="required"/>
         <xs:attribute name="value"      type="xs:double"  use="required"/>
         <xs:attribute name="dimension"  type="xs:string"  use="optional"/>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="Solver" abstract="true">
     </xs:complexType>
     
     
