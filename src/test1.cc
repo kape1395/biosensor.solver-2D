@@ -35,7 +35,7 @@ int main()
     }
     catch (Exception& ee)
     {
-        LOG4CXX_ERROR(logger, ee.message());
+        LOG4CXX_ERROR(logger, ee.what());
     }
     LOG4CXX_INFO(logger, "Done");
 

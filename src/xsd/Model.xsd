@@ -32,7 +32,7 @@
         <xs:sequence>
             <xs:element name="point" type="AxisPoint" minOccurs="2" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="name" type="AxisName" use="optional"/>
+        <xs:attribute name="name" type="AxisName" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="AxisPoint">

@@ -35,6 +35,18 @@
         </xs:complexContent>
     </xs:complexType>
     
+    <xs:complexType name="Null">
+        <xs:annotation>
+            <xs:documentation>
+                Sita krastine salyga nieko nereiskia. Ji buna ten, kur salia jos,
+                abiejose pusese nera medziagos, kuriai si salyga nurodyta.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="b:BoundCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
     
+
     
 </xs:schema>

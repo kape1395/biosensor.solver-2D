@@ -1,4 +1,4 @@
-#include "ConfigAnalyzer.hh"
+#include "cfg_ConfigAnalyzer.hh"
 #include <cstdio>
 #include "Exceptions.hh"
 #include "xsd/Model.hh"
@@ -11,8 +11,10 @@
 
 
 
+/* ************************************************************************** */
 /**
- *
+ *  Konstruktorius.
+ *  \param model    Modelis, kuri analizuoti.
  */
 cfg::ConfigAnalyzer2D::ConfigAnalyzer2D(::xsd::model::Model* model)
 {
@@ -26,23 +28,59 @@ cfg::ConfigAnalyzer2D::ConfigAnalyzer2D(::xsd::model::Model* model)
 
 
 
+/* ************************************************************************** */
 /**
- *
+ *  Destruktorius.
  */
 cfg::ConfigAnalyzer2D::~ConfigAnalyzer2D()
 {
     LOG4CXX_DEBUG(logger, "Destructor");
+
     if (areaMatrix != 0)
     {
         for (int i = 0; i < areaMatrixX; i++)
             delete[] areaMatrix[i];
         delete[] areaMatrix;
     }
+
+    if (boundConditionH != 0)
+    {
+        for (int x = 0; x < areaMatrixX; x++)
+        {
+            for (int y = 0; y <= areaMatrixY; y++)
+                delete[] boundConditionH[x][y];
+            delete[] boundConditionH[x];
+        }
+        delete[] boundConditionH;
+    }
+
+    if (boundConditionV != 0)
+    {
+        for (int x = 0; x <= areaMatrixX; x++)
+        {
+            for (int y = 0; y < areaMatrixY; y++)
+                delete[] boundConditionV[x][y];
+            delete[] boundConditionV[x];
+        }
+        delete[] boundConditionV;
+    }
+
+    // Nepamirstam istrinti ir automatiskai sugeneruotu krastiniu salygu.
+    while (!generatedBoundConditions.empty())
+    {
+        delete generatedBoundConditions.back();
+        generatedBoundConditions.pop_back();
+    }
+
 }
 
 
 
+/* ************************************************************************** */
 /**
+ *  Vykdo analize, susideda viska i patogesnes strukturas, validuoja kai
+ *  kurias konfiguracijos vietas.
+ *
  *  \throws Exception
  */
 void cfg::ConfigAnalyzer2D::analyze()
@@ -53,10 +91,10 @@ void cfg::ConfigAnalyzer2D::analyze()
     //  Patikrinam, ar sita klase palaiko nurodyta koordinaciu sistema.
     if (model->coordinateSystem() != xsd::model::CoordinateSystem::Cartesian &&
         model->coordinateSystem() != xsd::model::CoordinateSystem::Cylindrical)
-        throw Exception(model->coordinateSystem() + " coordinate system" +
-                " is not 2D, and therefore not suported by this class"
-                );
-
+        throw Exception(model->coordinateSystem() +
+                        " coordinate system" +
+                        " is not 2D, and therefore not suported by this class"
+                        );
 
     //  Ar asiu skaicius toks koks reikia?
     if (model->axis().size() != 2)
@@ -67,17 +105,17 @@ void cfg::ConfigAnalyzer2D::analyze()
             model->coordinateSystem().c_str()
             );
         throw new Exception(buf);
-        //throw Exception("Model has " + atoi(model->axis().size()) + " axes," +
-        //        model->coordinateSystem() + " coordinate system supports exact 2 axes"
-        //        );
     }
+
+
+    substanceCount = model->substance().size();
 
 
     xsd::model::Axis* axisX = &model->axis()[0];
     xsd::model::Axis* axisY = &model->axis()[1];
 
 
-    //  Susikuriam matrica, i kurios "langeliams" priskirinesime medziagas.
+    //  Susikuriam matrica, i kurios "langeliams" veliau priskirinesime medziagas.
     areaMatrixX = axisX->point().size() - 1;
     areaMatrixY = axisY->point().size() - 1;
     areaMatrix = new xsd::model::Medium**[areaMatrixX];
@@ -87,6 +125,38 @@ void cfg::ConfigAnalyzer2D::analyze()
         for (int y = 0; y < areaMatrixY; y++)
             areaMatrix[x][y] = 0;
     }
+
+    //  Dydis: boundConditionH = [areaMatrixX][areaMatrixY+1][substanceCount]
+    boundConditionH = new xsd::model::BoundCondition***[areaMatrixX];
+    for (int x = 0; x < areaMatrixX; x++)
+    {
+        boundConditionH[x] = new xsd::model::BoundCondition**[areaMatrixY + 1];
+        for (int y = 0; y <= areaMatrixY; y++)
+        {
+            boundConditionH[x][y] = new xsd::model::BoundCondition*[substanceCount];
+            for (int s = 0; s < substanceCount; s++)
+                boundConditionH[x][y][s] = 0;
+        }
+    }
+
+    //  Dydis: boundConditionV = [areaMatrixX + 1][areaMatrixY][substanceCount]
+    boundConditionV = new xsd::model::BoundCondition***[areaMatrixX + 1];
+    for (int x = 0; x <= areaMatrixX; x++)
+    {
+        boundConditionV[x] = new xsd::model::BoundCondition**[areaMatrixY];
+        for (int y = 0; y < areaMatrixY; y++)
+        {
+            boundConditionV[x][y] = new xsd::model::BoundCondition*[substanceCount];
+            for (int s = 0; s < substanceCount; s++)
+                boundConditionV[x][y][s] = 0;
+        }
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Sudeliojame sritis i masyva, patikrinam ar visos sritys padengtos
+    //
 
 
     //  Einam per visas medziagas, priskirsime jas matricos langeliams.
@@ -142,13 +212,116 @@ void cfg::ConfigAnalyzer2D::analyze()
         }
     }
 
+    // Sudeliojame sritis i masyva, patikrinam ar visos sritys padengtos
+    ////////////////////////////////////////////////////////////////////////////
 
-    // TODO: Tolia krastines salygos ir t.t.
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Sudeliojame krastines salygas
+    //
+
+    // Cia sudeliosime krastines salygas, kurios nurodytos konfiguracijoje.
+    for (::xsd::model::Model::bound_iterator iBound = model->bound().begin();
+            iBound != model->bound().end(); iBound++)
+    {
+        bool vertical;
+        int  indexAt;
+        int  indexFrom;
+        int  indexTo;
+
+        //  Nustatom, kokia kryptimi nurodytas krastas.
+        try
+        {
+            indexAt = boundIndexInAxis(*axisX, iBound->at());
+            vertical = true;
+        }
+        catch (Exception&)
+        {
+            try
+            {
+                indexAt = boundIndexInAxis(*axisY, iBound->at());
+                vertical = false;
+            }
+            catch (Exception&)
+            {
+                throw Exception("Bound at=" + iBound->at() + " not found in both axes");
+            }
+        }
+
+        // Patikrinam, ar paduota from/to ir pasiimam indeksus tu tasku, asyse.
+        if (!iBound->from().present() || !iBound->to().present())
+        {
+            throw Exception("Attributes from, to and at must be specified for 2D model");
+        }
+        indexFrom = boundIndexInAxis(*(vertical ? axisY : axisX), iBound->from().get());
+        indexTo   = boundIndexInAxis(*(vertical ? axisY : axisX), iBound->to  ().get());
+
+        // Einam per ta atkarpa, kuri nurodyta krasto aprasyme.
+        for (int i = indexFrom; i < indexTo; i++)
+        {
+            int x = vertical ? indexAt : i;
+            int y = vertical ? i : indexAt;
+            ::xsd::model::BoundCondition**** boundCondition = vertical ? boundConditionV : boundConditionH;
+
+            // Pereinam per visas nurodytas salygas, ir priskiriam jas atitinkamoms substancijoms
+            for (::xsd::model::Bound::condition_iterator iCond = iBound->condition().begin();
+                    iCond != iBound->condition().end(); iCond++)
+            {
+                boundCondition[x][y][substanceIndex(iCond->substance())] = &*iCond;
+            }
+        }
+
+    }   // for: by bounds
+
+
+    // Cia ieskosime vietu, kuriose krastines salygos nepriskirtos ir bandysi
+    // atspeti, kas gi cia turetu buti. (Horizontalios krastines salygos).
+    for (int x = 0; x < areaMatrixX; x++)
+    {
+        for (int y = 0; y <= areaMatrixY; y++)
+        {
+            for (int s = 0; s < substanceCount; s++)
+            {
+                if (boundConditionH[x][y][s] == 0)
+                {
+                    boundConditionH[x][y][s] = calculateBoundCondition(
+                        y == 0           ? 0 : areaMatrix[x][y - 1],
+                        y == areaMatrixY ? 0 : areaMatrix[x][y    ],
+                        s);
+                }
+            }
+        }
+    }
+
+    // Cia ieskosime vietu, kuriose krastines salygos nepriskirtos ir bandysi
+    // atspeti, kas gi cia turetu buti. (Vertikalios krastines salygos).
+    for (int x = 0; x <= areaMatrixX; x++)
+    {
+        for (int y = 0; y < areaMatrixY; y++)
+        {
+            for (int s = 0; s < substanceCount; s++)
+            {
+                if (boundConditionV[x][y][s] == 0)
+                {
+                    boundConditionV[x][y][s] = calculateBoundCondition(
+                        x == 0           ? 0 : areaMatrix[x - 1][y],
+                        x == areaMatrixX ? 0 : areaMatrix[x    ][y],
+                        s);
+                }
+            }
+        }
+    }
+
+    // Sudeliojame krastines salygas
+    ////////////////////////////////////////////////////////////////////////////
+
+
     LOG4CXX_DEBUG(logger, "analyze() DONE");
 }
 
 
 
+/* ************************************************************************** */
 /**
  *  Grazina tasko indeksa asyje.
  *  \param axis Kur ieskoti.
@@ -164,11 +337,12 @@ int cfg::ConfigAnalyzer2D::boundIndexInAxis(
         if (axis.point()[i].position() == name)
             return i;
 
-    throw Exception("Symbol " + name + " not found in axis " + axis.name().get());
+    throw Exception("Symbol " + name + " not found in axis " + axis.name());
 }
 
 
 
+/* ************************************************************************** */
 /**
  *  Grazina substancijos indeksa.
  *  \param substance    Ko ieskoti (lygina pagal name).
@@ -184,6 +358,61 @@ int cfg::ConfigAnalyzer2D::substanceIndex(
             return i;
 
     throw Exception("Substance " + substance.name() + " not found in model");
+}
+
+
+/* ************************************************************************** */
+/**
+ *  \returns 0 if not found.
+ */
+const ::xsd::model::MediumDiffusion* cfg::ConfigAnalyzer2D::diffusionBySubstance(
+        const ::xsd::model::Medium&    medium,
+        const ::xsd::model::Substance& substance
+        )
+{
+    for (int i = 0; i < medium.diffusion().size(); i++)
+        if (medium.diffusion()[i].substance() == substance.name())
+            return &medium.diffusion()[i];
+
+    return 0;
+}
+
+
+
+/* ************************************************************************** */
+/**
+ *  Parenka krastine salyga pagal gretimas sritis.
+ *  \throws Exception Jei neaisku ka parinkti.
+ */
+xsd::model::BoundCondition* cfg::ConfigAnalyzer2D::calculateBoundCondition(
+    xsd::model::Medium* medium1,
+    xsd::model::Medium* medium2,
+    int substanceIdx
+    )
+{
+    xsd::model::BoundCondition* bc = 0;
+    const xsd::model::Substance*      substance = &model->substance()[substanceIdx];
+    const xsd::model::MediumDiffusion* diff1 = medium1 == 0 ? 0 : diffusionBySubstance(*medium1, *substance);
+    const xsd::model::MediumDiffusion* diff2 = medium2 == 0 ? 0 : diffusionBySubstance(*medium2, *substance);
+
+    if (diff1 == 0 && diff2 == 0)
+    {
+        bc = new ::xsd::model::bc::Null(substance->name());
+    }
+    else if (diff1 == 0 || diff2 == 0)
+    {
+        bc = new ::xsd::model::bc::Wall(substance->name());
+    }
+    else
+    {
+        bc = new ::xsd::model::bc::Merge(substance->name());
+    }
+
+    if (bc == 0)
+        throw Exception("I dont know how to calculate bound condition...");
+
+    generatedBoundConditions.push_back(bc);
+    return bc;
 }
 
 

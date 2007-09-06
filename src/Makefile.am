@@ -1,6 +1,6 @@
 datarootdir = @datarootdir@
 
-SUBDIRS = cfg dm sa xsd
+SUBDIRS = xsd
 
 bin_PROGRAMS = test1
 test1_SOURCES = \
