@@ -1,11 +1,12 @@
-#ifndef SA_BasicExplicitSA_HH
-#define SA_BasicExplicitSA_HH
-#include "AbstractSA.hh"
-#include "../dm/AbstractDM.hh"
+#ifndef SA_BasicImplicitSA_HH
+#define SA_BasicImplicitSA_HH
+#include "sa_Abstract.hh"
+#include "dm_Abstract.hh"
 
+#ifdef TODO_REMOVE_ME
 namespace sa
 {
-namespace basicexplicit
+namespace basicimplicit
 {
 
 
@@ -18,10 +19,7 @@ namespace basicexplicit
 class Solver : public sa::Solver
 {
 protected:
-    int     activeLayer;    ///< Skaiciuojamo sluoksnio numeris (0, 1).
-    bool    stopRequested;  ///< Ar reikia nutraukti skaiciavimus?
-    double  solvedTime;     ///< Kiek laiko jau yra sumodeliuota.
-    long    solvedSteps;    ///< Kiek zingsniu (iteraciju) jau yra atlikta.
+    int activeLayer;    ///< Skaiciuojamo sluoksnio numeris (0, 1).
 
     virtual void solveIteration();
 
@@ -37,9 +35,11 @@ public:
     Solver(cfg::Config* config, dm::ModelFactory* modelFactory);
     virtual ~Solver();
     virtual void solve();
-    virtual long getSolvedIterationCount();
-    virtual double getSolvedTime();
-    virtual void stop();
+
+    virtual double getTimeStep()    // FIXME: Kazkaip normaliai realizuoti.
+    {
+        return 1E-6;
+    }
 
 };
 
@@ -87,13 +87,13 @@ public:
     /// Grazina skaiciuojamo sluoksnio koncentracijas.
     virtual double* getThisLayerSubstances()
     {
-        return substances[*activeLayer];
+        return substances[((*activeLayer) + 1) % 2];
     }
 
     /// Grazina pereito suskaiciuoto sluoksnio koncentracijas.
     virtual double* getLastLayerSubstances()
     {
-        return substances[((*activeLayer) + 1) % 2];
+        return substances[*activeLayer];
     }
 };
 
@@ -143,7 +143,7 @@ public:
 /* ************************************************************************** */
 
 #define AreaSolver_DIFFUSION_V1
-#undef  AreaSolver_DIFFUSION_V2    // Neveikia jau sitas...
+#undef  AreaSolver_DIFFUSION_V2
 
 /**
  *  Sprendcia srities vidu.
@@ -310,7 +310,7 @@ public:
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-}   // namespace basicexplicit
+}   // namespace basicimplicit
 }   // namespace sa
-
+#endif //TODO_REMOVE_ME
 #endif

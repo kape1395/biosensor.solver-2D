@@ -1,47 +1,46 @@
 #include "test1.hh"
-#include "dm/AbstractDM.hh"
-#include "dm/ArrayDM.hh"
-#include "sa/AbstractSA.hh"
-#include "sa/BasicExplicitSA.hh"
-#include "cfg/Config.hh"
-#include "SolveListener.hh"
+#include "dm_Abstract.hh"
+#include "dm_Array.hh"
+#include "sa_Abstract.hh"
+#include "sa_BasicExplicit.hh"
+#include "cfg_Config.hh"
+#include "cfg_ConfigAnalyzer.hh"
 #include "xsd/Model.hh"
-#include "xsd/ModelBoundCondition.hh"
-#include "xsd/ModelMediumReaction.hh"
+#include "SolveListener.hh"
+#include "Exceptions.hh"
 #include <iostream>
 #include <fstream>
 #include <list>
 #include <vector>
 #include <string>
+#include <log4cxx/logger.h>
 
 
 int main()
 {
-    
+    ::log4cxx::LoggerPtr logger(::log4cxx::Logger::getLogger("bio.test1"));
+    LOG4CXX_INFO(logger, "Starting");
     try
     {
         std::auto_ptr<xsd::model::Model> model (xsd::model::model("src/xsd/Model-example-2D.xml"));
-        if (model->coordinateSystem() == xsd::model::CoordinateSystem::Cartesian)
-        {
-            std::cout << "Dekarto\n";
-        }
-        if (model->coordinateSystem() == xsd::model::CoordinateSystem::Cylindrical)
-        {
-            std::cout << "Cilindrines\n";
-        }
-        if (model->coordinateSystem() == xsd::model::CoordinateSystem::Linear)
-        {
-            std::cout << "Tiesine\n";
-        }
 
+        cfg::ConfigAnalyzer2D analyzer(&*model);
+        analyzer.analyze();
+
+        LOG4CXX_INFO(logger, "Success");
     }
     catch (const xml_schema::exception& e)
     {
-        std::cerr << e << std::endl;
+        LOG4CXX_ERROR(logger, e);
     }
-    /*
+    catch (Exception& ee)
+    {
+        LOG4CXX_ERROR(logger, ee.message());
+    }
+    LOG4CXX_INFO(logger, "Done");
+
+
     return 0;
-    */
     /* ********************************************************************** */
     /* ********************************************************************** */
     std::cout << "Running test1...\n";

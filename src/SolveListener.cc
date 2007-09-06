@@ -1,6 +1,6 @@
 #include "SolveListener.hh"
-#include "sa/AbstractSA.hh"
-#include "dm/AbstractDM.hh"
+#include "sa_Abstract.hh"
+#include "dm_Abstract.hh"
 #include <ostream>
 #include <cmath>
 

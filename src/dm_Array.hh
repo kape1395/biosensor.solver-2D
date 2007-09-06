@@ -1,6 +1,6 @@
-#ifndef DM_ArrayDM_HH
-#define DM_ArrayDM_HH
-#include "AbstractDM.hh"
+#ifndef DM_Array_HH
+#define DM_Array_HH
+#include "dm_Abstract.hh"
 
 
 namespace dm

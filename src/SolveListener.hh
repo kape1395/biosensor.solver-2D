@@ -3,7 +3,7 @@
 ///
 #ifndef SolveListener_HH
 #define SolveListener_HH
-#include "sa/AbstractSA.hh"
+#include "sa_Abstract.hh"
 #include <ostream>
 
 

@@ -1,4 +1,4 @@
-#include "ArrayDM.hh"
+#include "dm_Array.hh"
 namespace dm
 {
 

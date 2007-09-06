@@ -3,7 +3,7 @@
 ///
 #ifndef SA_AbstractSA_HH
 #define SA_AbstractSA_HH
-#include "../dm/AbstractDM.hh"
+#include "dm_Abstract.hh"
 #include <list>
 
 

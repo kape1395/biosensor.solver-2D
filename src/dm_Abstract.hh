@@ -2,7 +2,7 @@
 #define DM_AbstractDM_HH
 #include <list>
 #include <iostream>
-#include "../cfg/Config.hh"
+#include "cfg_Config.hh"
 namespace dm
 {
 /* ************************************************************************** */

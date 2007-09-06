@@ -80,7 +80,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = /home/karolis/SVNWORK/kape1395.biosensor/src/cpp/dim2V2
+INPUT                  = ./src/
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \

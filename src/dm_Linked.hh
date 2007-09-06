@@ -1,6 +1,6 @@
 #ifndef DM_LinkedDM_HH
 #define DM_LinkedDM_HH
-#include "AbstractDM.hh"
+#include "dm_Abstract.hh"
 
 
 /// TODO: Implement.

@@ -1,4 +1,4 @@
-#include "Config.hh"
+#include "cfg_Config.hh"
 
 
 cfg::Config::~Config()
