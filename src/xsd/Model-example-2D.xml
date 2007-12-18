@@ -47,7 +47,7 @@
         <area top="y3" bottom="y4" left="x1" right="x3"/>
     </medium>
 
-    <bound from="x1" to="x1" at="y1">
+    <bound from="x1" to="x2" at="y1">
         <condition substance="S" xsi:type="bc:Constant" concentration="S_Ext"/>
         <condition substance="P" xsi:type="bc:Constant" concentration="P_Ext"/>
         <initial substance="S" concentration="S_Ext"/>
