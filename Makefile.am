@@ -3,8 +3,10 @@ datarootdir = @datarootdir@
 SUBDIRS = src
 
 
-doxygen:
-	doxygen
+#doxygen:
+#	doxygen
+#
+#test1: src/test1
+#	src/test1
+#
 
-test1: src/test1
-	src/test1
