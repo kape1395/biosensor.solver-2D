@@ -1,1 +1,12 @@
 Interfaces and base classes for solvers.
+
+Naujienos UML:
+    bio::slv::IComposite1DArea
+    bio::slv::IComposite1DBound
+    bio::slv::IComposite1DBound::Condition
+    bio::slv::IComposite2DArea
+    bio::slv::IComposite2DBound
+    bio::slv::IComposite2DBound::Condition
+    bio::slv::IComposite2DCorner
+
+Eilini karta susikau as cia viska su tuo composite 1D/2D...

@@ -1,12 +1,11 @@
-datarootdir = @datarootdir@
-
 SUBDIRS = src
 
+doxygen:
+	doxygen
 
-#doxygen:
-#	doxygen
-#
-#test1: src/test1
-#	src/test1
-#
+test-solver: src/bio-solver/bio-solver
+	src/bio-solver/bio-solver src/libbiosensor-xml/Model-example-2D.xml 
+
+test-solver-mem:
+	valgrind --suppressions=valgrind.supp tmp/bin/bio-solver  src/libbiosensor-xml/Model-example-2D.xml
 

@@ -5,6 +5,9 @@ libbiosensor_la_LIBADD  = ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_la_SOURCES = \
     bio/Exception.cxx \
+    bio/cfg/IConfigAnalyzer.cxx \
+    bio/cfg/IConfigTransformer.cxx \
+    bio/cfg/IConfigValidator.cxx \
     bio/dm/IComposite1D.cxx \
     bio/dm/IComposite1DArea.cxx \
     bio/dm/IComposite1DBound.cxx \
@@ -33,6 +36,9 @@ libbiosensor_la_SOURCES = \
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
     bio/Exception.hxx \
+    bio/cfg/IConfigAnalyzer.hxx \
+    bio/cfg/IConfigTransformer.hxx \
+    bio/cfg/IConfigValidator.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite1DArea.hxx \
     bio/dm/IComposite1DBound.hxx \

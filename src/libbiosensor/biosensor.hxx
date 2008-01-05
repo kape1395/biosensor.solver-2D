@@ -17,6 +17,10 @@
 #define BIO_DM_NS_BEGIN BIO_NS_BEGIN namespace dm {
 #define BIO_DM_NS_END BIO_NS_END }
 
+#define BIO_CFG_NS BIO_NS::cfg
+#define BIO_CFG_NS_BEGIN BIO_NS_BEGIN namespace cfg {
+#define BIO_CFG_NS_END BIO_NS_END }
+
 
 //#include "bio/slv/ISolver.hxx"
 

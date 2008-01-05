@@ -7,7 +7,7 @@
 #define BIO_NS_BEGIN namespace BIO_NS {
 #define BIO_NS_END }
 
-#define BIO_SLV_FD_NS solvFD
+#define BIO_SLV_FD_NS BIO_NS::slv::fd
 #define BIO_SLV_FD_NS_BEGIN BIO_NS_BEGIN namespace slv { namespace fd {
 #define BIO_SLV_FD_NS_END BIO_NS_END } }
 

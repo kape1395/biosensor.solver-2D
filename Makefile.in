@@ -625,12 +625,14 @@ uninstall-am:
 	tags tags-recursive uninstall uninstall-am
 
 
-#doxygen:
-#	doxygen
-#
-#test1: src/test1
-#	src/test1
-#
+doxygen:
+	doxygen
+
+test-solver: src/bio-solver/bio-solver
+	src/bio-solver/bio-solver src/libbiosensor-xml/Model-example-2D.xml 
+
+test-solver-mem:
+	valgrind --suppressions=valgrind.supp tmp/bin/bio-solver  src/libbiosensor-xml/Model-example-2D.xml
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

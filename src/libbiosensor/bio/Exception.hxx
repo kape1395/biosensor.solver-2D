@@ -26,4 +26,4 @@ public:
 
 
 BIO_NS_END
-#endif  // Exception_HH
+#endif
