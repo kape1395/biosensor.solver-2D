@@ -1,3 +1,9 @@
 Hmm.
 
 Sudai ir myzalai!
+
+
+-----------
+autoreconf --install
+
+

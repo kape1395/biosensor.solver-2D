@@ -1,7 +1,8 @@
 pkglib_LTLIBRARIES = libbiosensor.la
-libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml
+libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml -I../libbiosensor-slv-fd
 libbiosensor_la_LDFLAGS = -version-info 0:0:0
-libbiosensor_la_LIBADD  = ../libbiosensor-xml/libbiosensor-xml.la
+libbiosensor_la_LIBADD  = \
+    ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_la_SOURCES = \
     bio/Exception.cxx \

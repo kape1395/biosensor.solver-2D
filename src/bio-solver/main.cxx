@@ -41,7 +41,8 @@ int main(int argn, char **argv)
             SolverFactory solverFactory;
             ISolver*      solver = solverFactory.create(&*model);
             
-            if (solver != 0) {
+            if (solver != 0)
+            {
                 // Solve biosensor
                 LOG4CXX_INFO(log, "Solving...");
                 solver->solve();

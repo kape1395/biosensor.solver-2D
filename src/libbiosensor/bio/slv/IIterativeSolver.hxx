@@ -9,14 +9,14 @@ class ISolverListener;
 /**
  *
  */
-class IIterativeSolver : public ISolver
+class IIterativeSolver //: public ISolver -- to avoid diamond inheritance
 {
 public:
     virtual void stop() = 0;
     virtual bool isStopped() = 0;
     virtual double getTimeStep() = 0;
     virtual void setTimeStep(double timeStep) = 0;
-    virtual long getSolverIterationCount() = 0;
+    virtual long getSolvedIterationCount() = 0;
     virtual double getSolvedTime() = 0;
     virtual void addListener(ISolverListener* listener) = 0;
 };

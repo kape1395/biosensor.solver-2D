@@ -16,10 +16,10 @@ class Splitted2DArea
 private:
     int sizeH_;
     int sizeV_;
-    std::vector<std::vector<A> > areas_;
-    std::vector<std::vector<B> > boundsH_;
-    std::vector<std::vector<B> > boundsV_;
-    std::vector<std::vector<C> > corners_;
+    std::vector< std::vector<A> > areas_;
+    std::vector< std::vector<B> > boundsH_;
+    std::vector< std::vector<B> > boundsV_;
+    std::vector< std::vector<C> > corners_;
 public:
     Splitted2DArea(int sizeH, int sizeV)
     {
