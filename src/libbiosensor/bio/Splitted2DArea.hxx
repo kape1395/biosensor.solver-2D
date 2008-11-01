@@ -6,20 +6,20 @@ BIO_NS_BEGIN
 
 /**
  *  Template for structure, that holds parts of splitted 2D rectangular area.
- *  Parameter A is class of area (sub-area).
- *  Parameter B is class of bounds, that surrounds sub-areas.
- *  Parameter C is class of corners, that exists at bound crossing points.
+ *  Parameter area is class of area (sub-area).
+ *  Parameter bound is class of bounds, that surrounds sub-areas.
+ *  Parameter corner is class of corners, that exists at bound crossing points.
  */
-template<class A, class B, class C>
+template<class area, class bound, class corner>
 class Splitted2DArea
 {
 private:
     int sizeH_;
     int sizeV_;
-    std::vector< std::vector<A> > areas_;
-    std::vector< std::vector<B> > boundsH_;
-    std::vector< std::vector<B> > boundsV_;
-    std::vector< std::vector<C> > corners_;
+    std::vector< std::vector<area> > areas_;
+    std::vector< std::vector<bound> > boundsH_;
+    std::vector< std::vector<bound> > boundsV_;
+    std::vector< std::vector<corner> > corners_;
 public:
     Splitted2DArea(int sizeH, int sizeV)
     {
@@ -55,35 +55,35 @@ public:
     {
         return sizeV_;
     }
-    inline std::vector<std::vector<A> >& areas()
+    inline std::vector<std::vector<area> >& areas()
     {
         return areas_;
     }
-    inline std::vector<std::vector<B> >& boundsH()
+    inline std::vector<std::vector<bound> >& boundsH()
     {
         return boundsH_;
     }
-    inline std::vector<std::vector<B> >& boundsV()
+    inline std::vector<std::vector<bound> >& boundsV()
     {
         return boundsV_;
     }
-    inline std::vector<std::vector<B> >& corners()
+    inline std::vector<std::vector<bound> >& corners()
     {
         return corners_;
     }
-    inline A& area(int x, int y)
+    inline area& area(int x, int y)
     {
         return areas_[x][y];
     }
-    inline B& boundH(int x, int y)
+    inline bound& boundH(int x, int y)
     {
         return boundsH_[x][y];
     }
-    inline B& boundV(int x, int y)
+    inline bound& boundV(int x, int y)
     {
         return boundsV_[x][y];
     }
-    inline C& corner(int x, int y)
+    inline corner& corner(int x, int y)
     {
         return corners_[x][y];
     }

@@ -16,6 +16,8 @@ using namespace log4cxx;
  */
 int main(int argn, char **argv)
 {
+    LoggerPtr log(Logger::getLogger("bio-solver"));
+    
     if (argn == 1)
     {
         printf("usage: bio-solver <file-name>\n");
@@ -24,7 +26,6 @@ int main(int argn, char **argv)
     }
     else
     {
-        LoggerPtr log(Logger::getLogger("bio-solver"));
         LOG4CXX_INFO(log, "Starting");
         
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
