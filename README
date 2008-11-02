@@ -3,6 +3,11 @@ Hmm.
 Sudai ir myzalai!
 
 
+rm -r tmp/*
+./configure --prefix=`pwd`/tmp
+make
+make install
+
 -----------
 autoreconf --install
 
