@@ -10,7 +10,7 @@ BIO_NS_BEGIN
  *  Parameter bound is class of bounds, that surrounds sub-areas.
  */
 template<class area, class bound>
-class Splitted1DArea
+class Splitted1DArea    // FIXME: Manau kad reiks ismesti...
 {
 private:
     int size_;

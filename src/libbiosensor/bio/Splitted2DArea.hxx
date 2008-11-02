@@ -6,21 +6,27 @@ BIO_NS_BEGIN
 
 /**
  *  Template for structure, that holds parts of splitted 2D rectangular area.
- *  Parameter area is class of area (sub-area).
- *  Parameter bound is class of bounds, that surrounds sub-areas.
- *  Parameter corner is class of corners, that exists at bound crossing points.
+ *  Parameter A is class of area (sub-area).
+ *  Parameter B is class of bounds, that surrounds sub-areas.
+ *  Parameter C is class of corners, that exists at bound crossing points.
  */
-template<class area, class bound, class corner>
-class Splitted2DArea
+template<class A, class B, class C>
+class Splitted2DArea        // FIXME: Manau kad reiks ismesti.
 {
 private:
     int sizeH_;
     int sizeV_;
-    std::vector< std::vector<area> > areas_;
-    std::vector< std::vector<bound> > boundsH_;
-    std::vector< std::vector<bound> > boundsV_;
-    std::vector< std::vector<corner> > corners_;
+    std::vector< std::vector<A> > areas_;
+    std::vector< std::vector<B> > boundsH_;
+    std::vector< std::vector<B> > boundsV_;
+    std::vector< std::vector<C> > corners_;
 public:
+    /* ********************************************************************** */
+    /**
+     *  Constructor.
+     *  \param sizeH    Number of parts "horizontaly"
+     *  \param sizeV    Number of parts "verticaly"
+     */
     Splitted2DArea(int sizeH, int sizeV)
     {
         sizeH_ = sizeH;
@@ -34,6 +40,10 @@ public:
         for (int i = 0; i < sizeH_ + 1; boundsV_[i++].resize(sizeV_    ));
         for (int i = 0; i < sizeH_ + 1; corners_[i++].resize(sizeV_ + 1));
     }
+    /* ********************************************************************** */
+    /**
+     *  Destructor.
+     */
     ~Splitted2DArea()
     {
         for (int i = 0; i < sizeH_    ; areas_  [i++].clear());
@@ -47,43 +57,46 @@ public:
         sizeH_ = 0;
         sizeV_ = 0;
     }
+    /* ********************************************************************** */
+    /// Returns number of parts "horizintaly"
     inline int sizeH() const
     {
         return sizeH_;
     }
+    /// Returns number of parts "verticaly"
     inline int sizeV() const
     {
         return sizeV_;
     }
-    inline std::vector<std::vector<area> >& areas()
+    inline std::vector<std::vector<A> >& getAreas()
     {
         return areas_;
     }
-    inline std::vector<std::vector<bound> >& boundsH()
+    inline std::vector<std::vector<B> >& getBoundsH()
     {
         return boundsH_;
     }
-    inline std::vector<std::vector<bound> >& boundsV()
+    inline std::vector<std::vector<B> >& getBoundsV()
     {
         return boundsV_;
     }
-    inline std::vector<std::vector<bound> >& corners()
+    inline std::vector<std::vector<B> >& getCorners()
     {
         return corners_;
     }
-    inline area& area(int x, int y)
+    inline A& getArea(int x, int y)
     {
         return areas_[x][y];
     }
-    inline bound& boundH(int x, int y)
+    inline B& getBoundH(int x, int y)
     {
         return boundsH_[x][y];
     }
-    inline bound& boundV(int x, int y)
+    inline B& getBoundV(int x, int y)
     {
         return boundsV_[x][y];
     }
-    inline corner& corner(int x, int y)
+    inline C& getCorner(int x, int y)
     {
         return corners_[x][y];
     }

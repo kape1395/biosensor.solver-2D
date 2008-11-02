@@ -2,7 +2,7 @@
 #include <log4cxx/logger.h>
 #include <bio/Exception.hxx>
 #include <bio/slv/ISolver.hxx>
-#include <bio/slv/SolverFactory.hxx>
+#include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <Model.hxx>
 
@@ -11,11 +11,28 @@ using namespace BIO_SLV_NS;
 using namespace BIO_XML_NS::model;
 using namespace log4cxx;
 
+
+#include <bio/Splitted2DArea.hxx>
+class TestA
+{};
+class TestB
+{};
+class TestC
+{};
+class TestSplitted2DArea : public bio::Splitted2DArea<TestA*, TestB*, TestC*>
+{
+public:
+    TestSplitted2DArea(int sizeH, int sizeV) : Splitted2DArea<TestA*, TestB*, TestC*>(sizeH, sizeV)
+    {}
+};
+
 /**
  *  Entry point for program bio-solver.
  */
 int main(int argn, char **argv)
 {
+    TestSplitted2DArea test(3, 3);
+    
     LoggerPtr log(Logger::getLogger("bio-solver"));
     
     if (argn == 1)
@@ -39,25 +56,26 @@ int main(int argn, char **argv)
             
             // Create solver
             LOG4CXX_INFO(log, "Creating solver...");
-            SolverFactory solverFactory;
-            ISolver*      solver = solverFactory.create(&*model);
-            
-            if (solver != 0)
+            ISolver* solver = 0;
             {
-                // Solve biosensor
-                LOG4CXX_INFO(log, "Solving...");
-                solver->solve();
+                // FIXME: Only one solver factory exists for now, so we are using it explicitly
+                BIO_SLV_FD_NS::SolverFactory solverFactory;
                 
-                // Deinitialize
-                delete solver;
-                LOG4CXX_INFO(log, "Success");
-                return 0;
+                if ((solver = solverFactory.create(&*model)) == 0)
+                {
+                    LOG4CXX_ERROR(log, "I dont know how to create requested solver.");
+                    return 2;
+                }
             }
-            else
-            {
-                LOG4CXX_ERROR(log, "Failed to create solver");
-                return 2;
-            }
+            
+            // Solve biosensor
+            LOG4CXX_INFO(log, "Solving...");
+            solver->solve();
+            
+            // Deinitialize
+            delete solver;
+            LOG4CXX_INFO(log, "Success");
+            return 0;
             
         }
         catch (const xml_schema::exception& e)

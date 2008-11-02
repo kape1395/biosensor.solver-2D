@@ -6,8 +6,11 @@ libbiosensor_slv_fd_la_LIBADD  = \
     ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_slv_fd_la_SOURCES = \
+    bio/fd/SolverFactory.cxx \
     bio/fd/ex2d/Solver.cxx
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
-    bio/fd/ex2d/Solver.cxx
+    bio/fd/SolverFactory.hxx \
+    bio/fd/ex2d/Solver.hxx
+

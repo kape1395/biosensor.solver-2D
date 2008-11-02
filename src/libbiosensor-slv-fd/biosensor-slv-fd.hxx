@@ -15,7 +15,7 @@
 #define BIO_SLV_FD_EX2D_NS_BEGIN BIO_SLV_FD_NS_BEGIN namespace ex2d {
 #define BIO_SLV_FD_EX2D_NS_END BIO_SLV_FD_NS_END }
 
-#include "bio/fd/ex2d/Solver.hxx"
+#include "bio/fd/SolverFactory.hxx"
 
 
 #endif

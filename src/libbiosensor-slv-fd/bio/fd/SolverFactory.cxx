@@ -1,10 +1,13 @@
 #include "SolverFactory.hxx"
 #include <log4cxx/logger.h>
-#include "../Exception.hxx"
-#include <biosensor-slv-fd.hxx>
+#include <bio/Exception.cxx>
+#include "ex2d/Solver.hxx"
 
 
-BIO_SLV_NS::ISolver* BIO_SLV_NS::SolverFactory::create(BIO_XML_NS::model::Model* model)
+/**
+ *  This method is responsible to create solvers, provided by this module.
+ */
+BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::SolverFactory::create(BIO_XML_NS::model::Model* model)
 {
     log4cxx::LoggerPtr log(log4cxx::Logger::getLogger("libbiosensor"));
     
@@ -26,6 +29,7 @@ BIO_SLV_NS::ISolver* BIO_SLV_NS::SolverFactory::create(BIO_XML_NS::model::Model*
     }
     else
     {
-        throw bio::Exception("Unknown solver type in config xml.");
+        LOG4CXX_DEBUG(log, "I dont know the requested solver, so returning 0.");
+        return 0;
     }
 }

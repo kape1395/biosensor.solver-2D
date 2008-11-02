@@ -1,5 +1,5 @@
 pkglib_LTLIBRARIES = libbiosensor.la
-libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml -I../libbiosensor-slv-fd
+libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml
 libbiosensor_la_LDFLAGS = -version-info 0:0:0
 libbiosensor_la_LIBADD  = \
     ../libbiosensor-xml/libbiosensor-xml.la
@@ -26,13 +26,11 @@ libbiosensor_la_SOURCES = \
     bio/dm/NullDM.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
-    bio/slv/Composite1D.cxx \
-    bio/slv/Composite2D.cxx \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
-    bio/slv/NullSolver.cxx \
-    bio/slv/SolverFactory.cxx
+    bio/slv/ISolverFactory.cxx \
+    bio/slv/NullSolver.cxx
 
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
@@ -57,10 +55,9 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
-    bio/slv/Composite1D.hxx \
-    bio/slv/Composite2D.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
-    bio/slv/NullSolver.hxx \
-    bio/slv/SolverFactory.hxx
+    bio/slv/ISolverFactory.hxx \
+    bio/slv/NullSolver.hxx
+

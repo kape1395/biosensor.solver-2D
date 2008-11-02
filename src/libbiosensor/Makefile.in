@@ -78,13 +78,11 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/dm/libbiosensor_la-NullDM.lo \
 	bio/slv/libbiosensor_la-AbstractIterativeSolver.lo \
 	bio/slv/libbiosensor_la-AbstractSolver.lo \
-	bio/slv/libbiosensor_la-Composite1D.lo \
-	bio/slv/libbiosensor_la-Composite2D.lo \
 	bio/slv/libbiosensor_la-IIterativeSolver.lo \
 	bio/slv/libbiosensor_la-ISolver.lo \
 	bio/slv/libbiosensor_la-ISolverListener.lo \
-	bio/slv/libbiosensor_la-NullSolver.lo \
-	bio/slv/libbiosensor_la-SolverFactory.lo
+	bio/slv/libbiosensor_la-ISolverFactory.lo \
+	bio/slv/libbiosensor_la-NullSolver.lo
 libbiosensor_la_OBJECTS = $(am_libbiosensor_la_OBJECTS)
 libbiosensor_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -219,7 +217,7 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 pkglib_LTLIBRARIES = libbiosensor.la
-libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml -I../libbiosensor-slv-fd
+libbiosensor_la_CPPFLAGS = -I../libbiosensor-xml
 libbiosensor_la_LDFLAGS = -version-info 0:0:0
 libbiosensor_la_LIBADD = \
     ../libbiosensor-xml/libbiosensor-xml.la
@@ -246,13 +244,11 @@ libbiosensor_la_SOURCES = \
     bio/dm/NullDM.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
-    bio/slv/Composite1D.cxx \
-    bio/slv/Composite2D.cxx \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
-    bio/slv/NullSolver.cxx \
-    bio/slv/SolverFactory.cxx
+    bio/slv/ISolverFactory.cxx \
+    bio/slv/NullSolver.cxx
 
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
@@ -277,13 +273,11 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
-    bio/slv/Composite1D.hxx \
-    bio/slv/Composite2D.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
-    bio/slv/NullSolver.hxx \
-    bio/slv/SolverFactory.hxx
+    bio/slv/ISolverFactory.hxx \
+    bio/slv/NullSolver.hxx
 
 all: all-am
 
@@ -411,19 +405,15 @@ bio/slv/libbiosensor_la-AbstractIterativeSolver.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-AbstractSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-Composite1D.lo: bio/slv/$(am__dirstamp) \
-	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-Composite2D.lo: bio/slv/$(am__dirstamp) \
-	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-IIterativeSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-ISolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-ISolverListener.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
+bio/slv/libbiosensor_la-ISolverFactory.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-SolverFactory.lo: bio/slv/$(am__dirstamp) \
+bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 libbiosensor.la: $(libbiosensor_la_OBJECTS) $(libbiosensor_la_DEPENDENCIES) 
 	$(libbiosensor_la_LINK) -rpath $(pkglibdir) $(libbiosensor_la_OBJECTS) $(libbiosensor_la_LIBADD) $(LIBS)
@@ -472,20 +462,16 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-AbstractIterativeSolver.lo
 	-rm -f bio/slv/libbiosensor_la-AbstractSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-AbstractSolver.lo
-	-rm -f bio/slv/libbiosensor_la-Composite1D.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-Composite1D.lo
-	-rm -f bio/slv/libbiosensor_la-Composite2D.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-Composite2D.lo
 	-rm -f bio/slv/libbiosensor_la-IIterativeSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-IIterativeSolver.lo
 	-rm -f bio/slv/libbiosensor_la-ISolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-ISolver.lo
+	-rm -f bio/slv/libbiosensor_la-ISolverFactory.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-ISolverFactory.lo
 	-rm -f bio/slv/libbiosensor_la-ISolverListener.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-ISolverListener.lo
 	-rm -f bio/slv/libbiosensor_la-NullSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-NullSolver.lo
-	-rm -f bio/slv/libbiosensor_la-SolverFactory.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-SolverFactory.lo
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -511,13 +497,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-NullDM.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractSolver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-Composite1D.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-Composite2D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-IIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolver.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverListener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-SolverFactory.Plo@am__quote@
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -690,20 +674,6 @@ bio/slv/libbiosensor_la-AbstractSolver.lo: bio/slv/AbstractSolver.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-AbstractSolver.lo `test -f 'bio/slv/AbstractSolver.cxx' || echo '$(srcdir)/'`bio/slv/AbstractSolver.cxx
 
-bio/slv/libbiosensor_la-Composite1D.lo: bio/slv/Composite1D.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-Composite1D.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-Composite1D.Tpo -c -o bio/slv/libbiosensor_la-Composite1D.lo `test -f 'bio/slv/Composite1D.cxx' || echo '$(srcdir)/'`bio/slv/Composite1D.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-Composite1D.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-Composite1D.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/Composite1D.cxx' object='bio/slv/libbiosensor_la-Composite1D.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-Composite1D.lo `test -f 'bio/slv/Composite1D.cxx' || echo '$(srcdir)/'`bio/slv/Composite1D.cxx
-
-bio/slv/libbiosensor_la-Composite2D.lo: bio/slv/Composite2D.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-Composite2D.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-Composite2D.Tpo -c -o bio/slv/libbiosensor_la-Composite2D.lo `test -f 'bio/slv/Composite2D.cxx' || echo '$(srcdir)/'`bio/slv/Composite2D.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-Composite2D.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-Composite2D.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/Composite2D.cxx' object='bio/slv/libbiosensor_la-Composite2D.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-Composite2D.lo `test -f 'bio/slv/Composite2D.cxx' || echo '$(srcdir)/'`bio/slv/Composite2D.cxx
-
 bio/slv/libbiosensor_la-IIterativeSolver.lo: bio/slv/IIterativeSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-IIterativeSolver.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-IIterativeSolver.Tpo -c -o bio/slv/libbiosensor_la-IIterativeSolver.lo `test -f 'bio/slv/IIterativeSolver.cxx' || echo '$(srcdir)/'`bio/slv/IIterativeSolver.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-IIterativeSolver.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-IIterativeSolver.Plo
@@ -725,19 +695,19 @@ bio/slv/libbiosensor_la-ISolverListener.lo: bio/slv/ISolverListener.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-ISolverListener.lo `test -f 'bio/slv/ISolverListener.cxx' || echo '$(srcdir)/'`bio/slv/ISolverListener.cxx
 
+bio/slv/libbiosensor_la-ISolverFactory.lo: bio/slv/ISolverFactory.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-ISolverFactory.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-ISolverFactory.Tpo -c -o bio/slv/libbiosensor_la-ISolverFactory.lo `test -f 'bio/slv/ISolverFactory.cxx' || echo '$(srcdir)/'`bio/slv/ISolverFactory.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-ISolverFactory.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-ISolverFactory.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/ISolverFactory.cxx' object='bio/slv/libbiosensor_la-ISolverFactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-ISolverFactory.lo `test -f 'bio/slv/ISolverFactory.cxx' || echo '$(srcdir)/'`bio/slv/ISolverFactory.cxx
+
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/NullSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-NullSolver.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Tpo -c -o bio/slv/libbiosensor_la-NullSolver.lo `test -f 'bio/slv/NullSolver.cxx' || echo '$(srcdir)/'`bio/slv/NullSolver.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/NullSolver.cxx' object='bio/slv/libbiosensor_la-NullSolver.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-NullSolver.lo `test -f 'bio/slv/NullSolver.cxx' || echo '$(srcdir)/'`bio/slv/NullSolver.cxx
-
-bio/slv/libbiosensor_la-SolverFactory.lo: bio/slv/SolverFactory.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-SolverFactory.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-SolverFactory.Tpo -c -o bio/slv/libbiosensor_la-SolverFactory.lo `test -f 'bio/slv/SolverFactory.cxx' || echo '$(srcdir)/'`bio/slv/SolverFactory.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-SolverFactory.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-SolverFactory.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/SolverFactory.cxx' object='bio/slv/libbiosensor_la-SolverFactory.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-SolverFactory.lo `test -f 'bio/slv/SolverFactory.cxx' || echo '$(srcdir)/'`bio/slv/SolverFactory.cxx
 
 mostlyclean-libtool:
 	-rm -f *.lo
