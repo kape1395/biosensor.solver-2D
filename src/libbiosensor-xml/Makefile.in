@@ -15,6 +15,7 @@
 @SET_MAKE@
 
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -50,7 +51,7 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(pkglibdir)" \
+am__installdirs = "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(pkgdatadir)" \
 	"$(DESTDIR)$(pkgincludedir)"
 pkglibLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(pkglib_LTLIBRARIES)
@@ -76,6 +77,8 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libbiosensor_xml_la_SOURCES)
 DIST_SOURCES = $(libbiosensor_xml_la_SOURCES)
+nobase_pkgdataDATA_INSTALL = $(install_sh_DATA)
+DATA = $(nobase_pkgdata_DATA)
 nobase_pkgincludeHEADERS_INSTALL = $(install_sh_DATA)
 HEADERS = $(nobase_pkginclude_HEADERS)
 ETAGS = etags
@@ -197,6 +200,7 @@ GENERATED_CXX = Model.cxx ModelBoundCondition.cxx ModelMediumReaction.cxx ModelS
 GENERATED_HXX = Model.hxx ModelBoundCondition.hxx ModelMediumReaction.hxx ModelSolver.hxx
 libbiosensor_xml_la_SOURCES = $(GENERATED_CXX)
 nobase_pkginclude_HEADERS = $(GENERATED_HXX) biosensor-xml.hxx 
+nobase_pkgdata_DATA = Model.xsd ModelBoundCondition.xsd ModelMediumReaction.xsd ModelSolver.xsd
 CLEANFILES = $(GENERATED_CXX) $(GENERATED_HXX)
 XSD_DEF_NSMAP = \
     --namespace-map http://lt.5grupe.karolis/biosensor/model=$(ROOTNS)::xml::model \
@@ -315,6 +319,25 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-nobase_pkgdataDATA: $(nobase_pkgdata_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(pkgdatadir)" || $(MKDIR_P) "$(DESTDIR)$(pkgdatadir)"
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_pkgdata_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  $(am__vpath_adj) \
+	  echo " $(nobase_pkgdataDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(pkgdatadir)/$$f'"; \
+	  $(nobase_pkgdataDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	done
+
+uninstall-nobase_pkgdataDATA:
+	@$(NORMAL_UNINSTALL)
+	@$(am__vpath_adj_setup) \
+	list='$(nobase_pkgdata_DATA)'; for p in $$list; do \
+	  $(am__vpath_adj) \
+	  echo " rm -f '$(DESTDIR)$(pkgdatadir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(pkgdatadir)/$$f"; \
+	done
 install-nobase_pkgincludeHEADERS: $(nobase_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
@@ -410,9 +433,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(DATA) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(pkgincludedir)"; do \
+	for dir in "$(DESTDIR)$(pkglibdir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -461,7 +484,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-nobase_pkgincludeHEADERS
+install-data-am: install-nobase_pkgdataDATA \
+	install-nobase_pkgincludeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -497,8 +521,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-nobase_pkgincludeHEADERS \
-	uninstall-pkglibLTLIBRARIES
+uninstall-am: uninstall-nobase_pkgdataDATA \
+	uninstall-nobase_pkgincludeHEADERS uninstall-pkglibLTLIBRARIES
 
 .MAKE: install-am install-strip
 
@@ -509,12 +533,13 @@ uninstall-am: uninstall-nobase_pkgincludeHEADERS \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
-	install-nobase_pkgincludeHEADERS install-pdf install-pdf-am \
-	install-pkglibLTLIBRARIES install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am \
+	install-nobase_pkgdataDATA install-nobase_pkgincludeHEADERS \
+	install-pdf install-pdf-am install-pkglibLTLIBRARIES \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-nobase_pkgdataDATA \
 	uninstall-nobase_pkgincludeHEADERS uninstall-pkglibLTLIBRARIES
 
 

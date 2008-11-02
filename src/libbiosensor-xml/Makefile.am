@@ -7,6 +7,7 @@ GENERATED_HXX = Model.hxx ModelBoundCondition.hxx ModelMediumReaction.hxx ModelS
 
 libbiosensor_xml_la_SOURCES = $(GENERATED_CXX)
 nobase_pkginclude_HEADERS = $(GENERATED_HXX) biosensor-xml.hxx 
+nobase_pkgdata_DATA = Model.xsd ModelBoundCondition.xsd ModelMediumReaction.xsd ModelSolver.xsd
 
 CLEANFILES = $(GENERATED_CXX) $(GENERATED_HXX)
 
