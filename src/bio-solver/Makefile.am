@@ -12,3 +12,6 @@ bio_solver_LDADD = \
 
 bio_solver_SOURCES = \
     main.cxx
+
+dist_man_MANS = \
+    bio-solver.1

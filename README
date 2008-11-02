@@ -1,14 +1,24 @@
-Hmm.
+                             Biosensor solver
 
-Sudai ir myzalai!
+Author: Karolis Petrauskas
 
 
-rm -r tmp/*
-./configure --prefix=`pwd`/tmp
+################################################################################
+##    Pilnas perkurimas yra:
+
+make maintainer-clean  
+rm -rf local_install
+mkdir local_install
+./configure --prefix=`pwd`/local_install
 make
 make install
 
------------
+
+################################################################################
+##    Cia matyt reikia paleisti kai pakeiciama konfiguracija
+##    Sitas sukuria ir Makefile.in
+
 autoreconf --install
 
 
+################################################################################
