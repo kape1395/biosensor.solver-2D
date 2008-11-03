@@ -9,6 +9,7 @@ libbiosensor_la_SOURCES = \
     bio/cfg/IConfigAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
+    bio/cfg/StructureAnalyzer.cxx \
     bio/dm/IComposite1D.cxx \
     bio/dm/IComposite1DArea.cxx \
     bio/dm/IComposite1DBound.cxx \
@@ -38,6 +39,7 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/IConfigAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
+    bio/cfg/StructureAnalyzer.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite1DArea.hxx \
     bio/dm/IComposite1DBound.hxx \

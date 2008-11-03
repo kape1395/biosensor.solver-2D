@@ -61,6 +61,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/cfg/libbiosensor_la-IConfigAnalyzer.lo \
 	bio/cfg/libbiosensor_la-IConfigTransformer.lo \
 	bio/cfg/libbiosensor_la-IConfigValidator.lo \
+	bio/cfg/libbiosensor_la-StructureAnalyzer.lo \
 	bio/dm/libbiosensor_la-IComposite1D.lo \
 	bio/dm/libbiosensor_la-IComposite1DArea.lo \
 	bio/dm/libbiosensor_la-IComposite1DBound.lo \
@@ -227,6 +228,7 @@ libbiosensor_la_SOURCES = \
     bio/cfg/IConfigAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
+    bio/cfg/StructureAnalyzer.cxx \
     bio/dm/IComposite1D.cxx \
     bio/dm/IComposite1DArea.cxx \
     bio/dm/IComposite1DBound.cxx \
@@ -256,6 +258,7 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/IConfigAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
+    bio/cfg/StructureAnalyzer.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite1DArea.hxx \
     bio/dm/IComposite1DBound.hxx \
@@ -359,6 +362,8 @@ bio/cfg/libbiosensor_la-IConfigTransformer.lo:  \
 	bio/cfg/$(am__dirstamp) bio/cfg/$(DEPDIR)/$(am__dirstamp)
 bio/cfg/libbiosensor_la-IConfigValidator.lo: bio/cfg/$(am__dirstamp) \
 	bio/cfg/$(DEPDIR)/$(am__dirstamp)
+bio/cfg/libbiosensor_la-StructureAnalyzer.lo: bio/cfg/$(am__dirstamp) \
+	bio/cfg/$(DEPDIR)/$(am__dirstamp)
 bio/dm/$(am__dirstamp):
 	@$(MKDIR_P) bio/dm
 	@: > bio/dm/$(am__dirstamp)
@@ -426,6 +431,8 @@ mostlyclean-compile:
 	-rm -f bio/cfg/libbiosensor_la-IConfigTransformer.lo
 	-rm -f bio/cfg/libbiosensor_la-IConfigValidator.$(OBJEXT)
 	-rm -f bio/cfg/libbiosensor_la-IConfigValidator.lo
+	-rm -f bio/cfg/libbiosensor_la-StructureAnalyzer.$(OBJEXT)
+	-rm -f bio/cfg/libbiosensor_la-StructureAnalyzer.lo
 	-rm -f bio/dm/libbiosensor_la-IComposite1D.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-IComposite1D.lo
 	-rm -f bio/dm/libbiosensor_la-IComposite1DArea.$(OBJEXT)
@@ -480,6 +487,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigAnalyzer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigTransformer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigValidator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-StructureAnalyzer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DArea.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DBound.Plo@am__quote@
@@ -554,6 +562,13 @@ bio/cfg/libbiosensor_la-IConfigValidator.lo: bio/cfg/IConfigValidator.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/cfg/IConfigValidator.cxx' object='bio/cfg/libbiosensor_la-IConfigValidator.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/cfg/libbiosensor_la-IConfigValidator.lo `test -f 'bio/cfg/IConfigValidator.cxx' || echo '$(srcdir)/'`bio/cfg/IConfigValidator.cxx
+
+bio/cfg/libbiosensor_la-StructureAnalyzer.lo: bio/cfg/StructureAnalyzer.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/cfg/libbiosensor_la-StructureAnalyzer.lo -MD -MP -MF bio/cfg/$(DEPDIR)/libbiosensor_la-StructureAnalyzer.Tpo -c -o bio/cfg/libbiosensor_la-StructureAnalyzer.lo `test -f 'bio/cfg/StructureAnalyzer.cxx' || echo '$(srcdir)/'`bio/cfg/StructureAnalyzer.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/cfg/$(DEPDIR)/libbiosensor_la-StructureAnalyzer.Tpo bio/cfg/$(DEPDIR)/libbiosensor_la-StructureAnalyzer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/cfg/StructureAnalyzer.cxx' object='bio/cfg/libbiosensor_la-StructureAnalyzer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/cfg/libbiosensor_la-StructureAnalyzer.lo `test -f 'bio/cfg/StructureAnalyzer.cxx' || echo '$(srcdir)/'`bio/cfg/StructureAnalyzer.cxx
 
 bio/dm/libbiosensor_la-IComposite1D.lo: bio/dm/IComposite1D.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite1D.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Tpo -c -o bio/dm/libbiosensor_la-IComposite1D.lo `test -f 'bio/dm/IComposite1D.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1D.cxx

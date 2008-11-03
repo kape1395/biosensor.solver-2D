@@ -11,28 +11,13 @@ using namespace BIO_SLV_NS;
 using namespace BIO_XML_NS::model;
 using namespace log4cxx;
 
-
-#include <bio/Splitted2DArea.hxx>
-class TestA
-{};
-class TestB
-{};
-class TestC
-{};
-class TestSplitted2DArea : public bio::Splitted2DArea<TestA*, TestB*, TestC*>
-{
-public:
-    TestSplitted2DArea(int sizeH, int sizeV) : Splitted2DArea<TestA*, TestB*, TestC*>(sizeH, sizeV)
-    {}
-};
+#include <bio/cfg/StructureAnalyzer.hxx>
 
 /**
  *  Entry point for program bio-solver.
  */
 int main(int argn, char **argv)
 {
-    TestSplitted2DArea test(3, 3);
-    
     LoggerPtr log(Logger::getLogger("bio-solver"));
     
     if (argn == 1)
@@ -53,6 +38,13 @@ int main(int argn, char **argv)
             LOG4CXX_INFO(log, "Parsing config file...");
             const std::string uri = std::string(argv[1]);
             std::auto_ptr<Model> model(bio::xml::model::model(uri));
+            
+            
+            // FIXME: This is test...
+            BIO_CFG_NS::StructureAnalyzer analyzer;
+            analyzer.analyze(&*model);
+            return 1;
+            
             
             // Create solver
             LOG4CXX_INFO(log, "Creating solver...");
