@@ -39,13 +39,6 @@ int main(int argn, char **argv)
             const std::string uri = std::string(argv[1]);
             std::auto_ptr<Model> model(bio::xml::model::model(uri));
             
-            
-            // FIXME: This is test...
-            BIO_CFG_NS::StructureAnalyzer analyzer;
-            analyzer.analyze(&*model);
-            return 1;
-            
-            
             // Create solver
             LOG4CXX_INFO(log, "Creating solver...");
             ISolver* solver = 0;

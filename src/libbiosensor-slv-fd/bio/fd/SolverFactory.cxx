@@ -2,6 +2,7 @@
 #include <log4cxx/logger.h>
 #include <bio/Exception.cxx>
 #include "ex2d/Solver.hxx"
+#include "im2d/Solver.hxx"
 
 
 /**
@@ -20,10 +21,22 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::SolverFactory::create(BIO_XML_NS::model::Mod
         LOG4CXX_INFO(log, "Selected solver: bio::xml::model::s::Explicit1D -> ???");
         throw bio::Exception("Not implemented: bio::xml::model::s::Explicit1D");
     }
+    else if (dynamic_cast<bio::xml::model::s::Implicit1D*>(&model->solver()) != 0)
+    {
+        LOG4CXX_INFO(log, "Selected solver: bio::xml::model::s::Implicit1D -> ???");
+        throw bio::Exception("Not implemented: bio::xml::model::s::Implicit1D");
+    }
     else if (dynamic_cast<bio::xml::model::s::Explicit2D*>(&model->solver()) != 0)
     {
         LOG4CXX_INFO(log, "Selected solver: bio::xml::model::s::Explicit2D -> BIO_SLV_FD_NS::ex2d::Solver");
         BIO_SLV_FD_NS::ex2d::Solver* solver = new BIO_SLV_FD_NS::ex2d::Solver(model);
+        
+        return solver;
+    }
+    else if (dynamic_cast<bio::xml::model::s::Implicit2D*>(&model->solver()) != 0)
+    {
+        LOG4CXX_INFO(log, "Selected solver: bio::xml::model::s::Implicit2D -> BIO_SLV_FD_NS::im2d::Solver");
+        BIO_SLV_FD_NS::im2d::Solver* solver = new BIO_SLV_FD_NS::im2d::Solver(model);
         
         return solver;
     }

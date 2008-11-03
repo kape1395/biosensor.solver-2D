@@ -31,7 +31,19 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="Implicit1D">
+        <xs:complexContent>
+            <xs:extension base="FiniteDifferences">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="Explicit2D">
+        <xs:complexContent>
+            <xs:extension base="FiniteDifferences">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Implicit2D">
         <xs:complexContent>
             <xs:extension base="FiniteDifferences">
             </xs:extension>

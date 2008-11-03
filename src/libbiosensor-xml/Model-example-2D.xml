@@ -97,7 +97,7 @@
     <symbol name="y3"       value="1.2E-3"  dimension="m"/>
     <symbol name="y4"       value="1.4E-3"  dimension="m"/>
 
-    <solver xsi:type="s:Explicit2D" timeStep="5E-9">
+    <solver xsi:type="s:Implicit2D" timeStep="5E-9">
         <s:axis from="x1" to="x2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
         <s:axis from="x2" to="x3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
         <s:axis from="y1" to="y2" xsi:type="s:ConstantAxisPart" stepCount="50"/>

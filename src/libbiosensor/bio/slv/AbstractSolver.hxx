@@ -8,22 +8,40 @@ BIO_SLV_NS_BEGIN
 
 
 /**
- *
+ *  Abstract implementation of ISolver. It is very simple now.
  */
 class AbstractSolver : public ISolver
 {
-protected:
-    BIO_XML_NS::model::Model*   config;
-    BIO_DM_NS::IDataModel*      data;
+private:
+    BIO_XML_NS::model::Model* config;
     
 public:
-    AbstractSolver(BIO_XML_NS::model::Model* config);
-    virtual ~AbstractSolver();
-    virtual BIO_DM_NS::IDataModel* getData();
-    virtual BIO_XML_NS::model::Model* getConfig();
-
+    
+    /**
+     *  Constructor.
+     */
+    AbstractSolver(BIO_XML_NS::model::Model* config)
+    {
+        this->config = config;
+    }
+    
+    /**
+     *  Destructor.
+     */
+    virtual ~AbstractSolver()
+    {
+        // Nothing to do here.
+    }
+    
+    /**
+     *  Returns configuration, supplied for this solver.
+     */
+    virtual BIO_XML_NS::model::Model* getConfig()
+    {
+        return this->config;
+    }
+    
 };
-
 
 
 BIO_SLV_NS_END

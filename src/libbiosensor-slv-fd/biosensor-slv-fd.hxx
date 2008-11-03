@@ -15,6 +15,10 @@
 #define BIO_SLV_FD_EX2D_NS_BEGIN BIO_SLV_FD_NS_BEGIN namespace ex2d {
 #define BIO_SLV_FD_EX2D_NS_END BIO_SLV_FD_NS_END }
 
+#define BIO_SLV_FD_IM2D_NS BIO_SLV_FD_NS::im2d
+#define BIO_SLV_FD_IM2D_NS_BEGIN BIO_SLV_FD_NS_BEGIN namespace im2d {
+#define BIO_SLV_FD_IM2D_NS_END BIO_SLV_FD_NS_END }
+
 #include "bio/fd/SolverFactory.hxx"
 
 
