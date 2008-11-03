@@ -34,7 +34,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = bio-solver$(EXEEXT)
 subdir = src/bio-solver
-DIST_COMMON = $(dist_man_MANS) $(srcdir)/Makefile.am \
+DIST_COMMON = $(dist_man1_MANS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
@@ -68,7 +68,7 @@ SOURCES = $(bio_solver_SOURCES)
 DIST_SOURCES = $(bio_solver_SOURCES)
 man1dir = $(mandir)/man1
 NROFF = nroff
-MANS = $(dist_man_MANS)
+MANS = $(dist_man1_MANS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -195,9 +195,7 @@ bio_solver_LDADD = \
 bio_solver_SOURCES = \
     main.cxx
 
-dist_man_MANS = \
-    bio-solver.1
-
+dist_man1_MANS = bio-solver.man
 all: all-am
 
 .SUFFIXES:

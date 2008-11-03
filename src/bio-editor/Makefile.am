@@ -4,3 +4,6 @@ bio_editor_LDADD = \
 
 bio_editor_SOURCES = \
     main.cxx
+
+dist_man1_MANS = bio-editor.man
+

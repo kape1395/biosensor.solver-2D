@@ -1,0 +1,18 @@
+.\" ============================================================================
+.TH bio-editor 1 2008-11-02 "" "Biosensor modelling"
+.SH NAME
+bio-editor \- Biosensor model editor
+.\" ============================================================================
+.SH SYNOPSIS
+.B bio-solver
+.\" ============================================================================
+.SH DESCRIPTION
+.B bio-solver
+is a GUI tool that lets to prepare biosensor models in more user-fiendly way.
+.\" ============================================================================
+.SH AUTHOR
+Karolis Petrauskas <k dot petrauskas at gmail dot com>
+.\" ============================================================================
+.SH "SEE ALSO"
+.BR bio-solver (1)
+
