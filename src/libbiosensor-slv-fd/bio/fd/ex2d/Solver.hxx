@@ -9,7 +9,7 @@ BIO_SLV_FD_EX2D_NS_BEGIN
 /**
  *
  */
-class Solver : public bio::slv::AbstractIterativeSolver
+class Solver : public BIO_SLV_NS::AbstractIterativeSolver
 {
 public:
     Solver(BIO_XML_NS::model::Model* config) : AbstractIterativeSolver(config) {}

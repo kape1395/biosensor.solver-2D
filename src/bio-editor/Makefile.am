@@ -7,3 +7,6 @@ bio_editor_SOURCES = \
 
 dist_man1_MANS = bio-editor.man
 
+astyle:
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
+

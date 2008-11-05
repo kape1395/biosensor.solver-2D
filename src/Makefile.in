@@ -39,7 +39,10 @@ am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
-CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_HEADER =  \
+	$(top_builddir)/src/libbiosensor-xml/biosensor-xml.hxx \
+	$(top_builddir)/src/libbiosensor/biosensor.hxx \
+	$(top_builddir)/src/libbiosensor-slv-fd/biosensor-slv-fd.hxx
 CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
@@ -59,10 +62,12 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
+ASTYLE_OPTS = @ASTYLE_OPTS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BIO_NS = @BIO_NS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@

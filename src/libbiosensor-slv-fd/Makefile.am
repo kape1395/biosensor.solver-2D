@@ -19,5 +19,5 @@ nobase_pkginclude_HEADERS = \
     bio/fd/SolverFactory.hxx
 
 astyle:
-	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
+	astyle @ASTYLE_OPTS@ *.hxx.in `find  bio -name  "*.cxx"` `find  bio -name  "*.hxx"`
 

@@ -2,6 +2,8 @@
 
 Author: Karolis Petrauskas
 
+Before commit, make shure to run `make astyle'.
+
 
 ################################################################################
 ##    Pilnas perkurimas yra:

@@ -19,7 +19,7 @@ using namespace log4cxx;
 int main(int argn, char **argv)
 {
     LoggerPtr log(Logger::getLogger("bio-solver"));
-    
+
     if (argn == 1)
     {
         printf("usage: bio-solver <file-name>\n");
@@ -29,39 +29,39 @@ int main(int argn, char **argv)
     else
     {
         LOG4CXX_INFO(log, "Starting");
-        
+
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
         try
         {
-            
+
             // Parse file
             LOG4CXX_INFO(log, "Parsing config file...");
             const std::string uri = std::string(argv[1]);
-            std::auto_ptr<Model> model(bio::xml::model::model(uri));
-            
+            std::auto_ptr<Model> model(BIO_XML_NS::model::model(uri));
+
             // Create solver
             LOG4CXX_INFO(log, "Creating solver...");
             ISolver* solver = 0;
             {
                 // FIXME: Only one solver factory exists for now, so we are using it explicitly
                 BIO_SLV_FD_NS::SolverFactory solverFactory;
-                
+
                 if ((solver = solverFactory.create(&*model)) == 0)
                 {
                     LOG4CXX_ERROR(log, "I dont know how to create requested solver.");
                     return 2;
                 }
             }
-            
+
             // Solve biosensor
             LOG4CXX_INFO(log, "Solving...");
             solver->solve();
-            
+
             // Deinitialize
             delete solver;
             LOG4CXX_INFO(log, "Success");
             return 0;
-            
+
         }
         catch (const xml_schema::exception& e)
         {

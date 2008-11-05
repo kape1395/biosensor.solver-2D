@@ -15,3 +15,6 @@ bio_solver_SOURCES = \
 
 dist_man1_MANS = bio-solver.man
 
+astyle:
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
+

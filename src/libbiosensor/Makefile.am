@@ -64,5 +64,5 @@ nobase_pkginclude_HEADERS = \
     bio/slv/NullSolver.hxx
 
 astyle:
-	astyle --style=ansi `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
 

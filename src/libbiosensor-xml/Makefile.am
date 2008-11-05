@@ -12,10 +12,10 @@ nobase_pkgdata_DATA = Model.xsd ModelBoundCondition.xsd ModelMediumReaction.xsd 
 CLEANFILES = $(GENERATED_CXX) $(GENERATED_HXX)
 
 XSD_DEF_NSMAP = \
-    --namespace-map http://lt.5grupe.karolis/biosensor/model=$(ROOTNS)::xml::model \
-    --namespace-map http://lt.5grupe.karolis/biosensor/model/bc=$(ROOTNS)::xml::model::bc \
-    --namespace-map http://lt.5grupe.karolis/biosensor/model/mr=$(ROOTNS)::xml::model::mr \
-    --namespace-map http://lt.5grupe.karolis/biosensor/model/s=$(ROOTNS)::xml::model::s
+    --namespace-map http://lt.5grupe.karolis/biosensor/model=@BIO_NS@::xml::model \
+    --namespace-map http://lt.5grupe.karolis/biosensor/model/bc=@BIO_NS@::xml::model::bc \
+    --namespace-map http://lt.5grupe.karolis/biosensor/model/mr=@BIO_NS@::xml::model::mr \
+    --namespace-map http://lt.5grupe.karolis/biosensor/model/s=@BIO_NS@::xml::model::s
 
 XSD_DEF_OPTS = cxx-tree \
     --generate-serialization \

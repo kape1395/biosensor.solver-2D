@@ -1,9 +1,7 @@
 #ifndef BIOSENSOR_SLV_FD_HXX
 #define BIOSENSOR_SLV_FD_HXX
 
-// TODO: Cia kazkaip NS nesusirisa su configure.h
-
-#define BIO_NS bio
+#undef BIO_NS
 #define BIO_NS_BEGIN namespace BIO_NS {
 #define BIO_NS_END }
 
