@@ -17,11 +17,11 @@ public:
     {
         std::cout << "BoundSubSolver()\n";
     }
-    
+
 };
 
 
 
 BIO_SLV_FD_IM2D_NS_END
-        
+
 #endif

@@ -59,6 +59,7 @@ libbiosensor_slv_fd_la_DEPENDENCIES = ../libbiosensor/libbiosensor.la \
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libbiosensor_slv_fd_la_OBJECTS =  \
 	bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo \
+	bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo \
 	bio/fd/ex2d/libbiosensor_slv_fd_la-Solver.lo \
 	bio/fd/im2d/libbiosensor_slv_fd_la-Solver.lo \
 	bio/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo \
@@ -90,6 +91,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
+ASTYLE_OPTS = @ASTYLE_OPTS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -206,6 +208,7 @@ libbiosensor_slv_fd_la_LIBADD = \
 
 libbiosensor_slv_fd_la_SOURCES = \
     bio/fd/SolverFactory.cxx \
+    bio/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/fd/ex2d/Solver.cxx \
     bio/fd/im2d/Solver.cxx \
     bio/fd/im2d/AreaSubSolver.cxx \
@@ -214,12 +217,7 @@ libbiosensor_slv_fd_la_SOURCES = \
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
-    bio/fd/SolverFactory.hxx \
-    bio/fd/ex2d/Solver.hxx \
-    bio/fd/im2d/Solver.hxx \
-    bio/fd/im2d/AreaSubSolver.hxx \
-    bio/fd/im2d/BoundSubSolver.hxx \
-    bio/fd/im2d/CornerSubSolver.hxx
+    bio/fd/SolverFactory.hxx
 
 all: all-am
 
@@ -289,6 +287,8 @@ bio/fd/$(DEPDIR)/$(am__dirstamp):
 	@: > bio/fd/$(DEPDIR)/$(am__dirstamp)
 bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo:  \
 	bio/fd/$(am__dirstamp) bio/fd/$(DEPDIR)/$(am__dirstamp)
+bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo:  \
+	bio/fd/$(am__dirstamp) bio/fd/$(DEPDIR)/$(am__dirstamp)
 bio/fd/ex2d/$(am__dirstamp):
 	@$(MKDIR_P) bio/fd/ex2d
 	@: > bio/fd/ex2d/$(am__dirstamp)
@@ -331,12 +331,15 @@ mostlyclean-compile:
 	-rm -f bio/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.lo
 	-rm -f bio/fd/im2d/libbiosensor_slv_fd_la-Solver.$(OBJEXT)
 	-rm -f bio/fd/im2d/libbiosensor_slv_fd_la-Solver.lo
+	-rm -f bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.$(OBJEXT)
+	-rm -f bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo
 	-rm -f bio/fd/libbiosensor_slv_fd_la-SolverFactory.$(OBJEXT)
 	-rm -f bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@bio/fd/$(DEPDIR)/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/fd/$(DEPDIR)/libbiosensor_slv_fd_la-SolverFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/fd/ex2d/$(DEPDIR)/libbiosensor_slv_fd_la-Solver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-AreaSubSolver.Plo@am__quote@
@@ -374,6 +377,13 @@ bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo: bio/fd/SolverFactory.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/fd/SolverFactory.cxx' object='bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/fd/libbiosensor_slv_fd_la-SolverFactory.lo `test -f 'bio/fd/SolverFactory.cxx' || echo '$(srcdir)/'`bio/fd/SolverFactory.cxx
+
+bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo: bio/fd/FiniteDifferencesSolverAnalyzer.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo -MD -MP -MF bio/fd/$(DEPDIR)/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.Tpo -c -o bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo `test -f 'bio/fd/FiniteDifferencesSolverAnalyzer.cxx' || echo '$(srcdir)/'`bio/fd/FiniteDifferencesSolverAnalyzer.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/fd/$(DEPDIR)/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.Tpo bio/fd/$(DEPDIR)/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/fd/FiniteDifferencesSolverAnalyzer.cxx' object='bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo `test -f 'bio/fd/FiniteDifferencesSolverAnalyzer.cxx' || echo '$(srcdir)/'`bio/fd/FiniteDifferencesSolverAnalyzer.cxx
 
 bio/fd/ex2d/libbiosensor_slv_fd_la-Solver.lo: bio/fd/ex2d/Solver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/fd/ex2d/libbiosensor_slv_fd_la-Solver.lo -MD -MP -MF bio/fd/ex2d/$(DEPDIR)/libbiosensor_slv_fd_la-Solver.Tpo -c -o bio/fd/ex2d/libbiosensor_slv_fd_la-Solver.lo `test -f 'bio/fd/ex2d/Solver.cxx' || echo '$(srcdir)/'`bio/fd/ex2d/Solver.cxx
@@ -625,6 +635,9 @@ uninstall-am: uninstall-nobase_pkgincludeHEADERS \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
 	uninstall-nobase_pkgincludeHEADERS uninstall-pkglibLTLIBRARIES
 
+
+astyle:
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -20,33 +20,33 @@ private:
     int dataSizeH;  // number of points in H (including boundary)
     int dataSizeV;  // number of points in V (including boundary)
     int dataSizeS;  // number of substances
-    
+
 public:
-    
+
     /**
      *  Constructor.
      */
     AreaSubSolver(int positionH, int positionV, BIO_CFG_NS::StructureAnalyzer* structAnalyzer);
-    
+
     /**
      *  Destructor.
      */
     virtual ~AreaSubSolver();
-    
+
     /**
      *  First half-step -- vertical.
      */
     void solveFirstHalfStep();
-    
+
     /**
      *  Second half-step -- horizontal.
      */
     void solveSecondHalfStep();
-    
+
 };
 
 
 
 BIO_SLV_FD_IM2D_NS_END
-        
+
 #endif

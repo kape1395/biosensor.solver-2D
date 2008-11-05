@@ -4,9 +4,9 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
-int positionH,
-        int positionV,
-        BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+    int positionH,
+    int positionV,
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::AreaSubSolver"))
 {
     LOG4CXX_DEBUG(log, "AreaSubSolver()");
@@ -15,7 +15,7 @@ int positionH,
     this->dataSizeH = 200;  // FIXME: Get this from config.
     this->dataSizeV = 200;  // FIXME: Get this from config.
     this->dataSizeS = structAnalyzer->getSubstances().size();
-    
+
     data = new double***[dataSizeH];
     for (int h = 0; h < dataSizeH; h++)
     {
@@ -30,7 +30,7 @@ int positionH,
             }
         }
     }
-    
+
 }
 
 

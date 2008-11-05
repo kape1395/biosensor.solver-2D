@@ -7,13 +7,13 @@ BIO_SLV_FD_EX2D_NS_BEGIN
 
 
 /**
- *  
+ *
  */
 class Solver : public bio::slv::AbstractIterativeSolver
 {
 public:
     Solver(BIO_XML_NS::model::Model* config) : AbstractIterativeSolver(config) {}
-    
+
     /**
      *  Returns data-model.
      */
@@ -21,7 +21,7 @@ public:
     {
         return 0;   // FIXME: Implement
     }
-    
+
 protected:
     virtual void solveIteration() {}
 };
@@ -29,5 +29,5 @@ protected:
 
 
 BIO_SLV_FD_EX2D_NS_END
-        
+
 #endif

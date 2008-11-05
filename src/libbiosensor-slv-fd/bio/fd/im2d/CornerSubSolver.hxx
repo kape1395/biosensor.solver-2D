@@ -12,11 +12,11 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class CornerSubSolver
 {
 
-    
+
 };
 
 
 
 BIO_SLV_FD_IM2D_NS_END
-        
+
 #endif

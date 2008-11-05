@@ -7,6 +7,7 @@ libbiosensor_slv_fd_la_LIBADD  = \
 
 libbiosensor_slv_fd_la_SOURCES = \
     bio/fd/SolverFactory.cxx \
+    bio/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/fd/ex2d/Solver.cxx \
     bio/fd/im2d/Solver.cxx \
     bio/fd/im2d/AreaSubSolver.cxx \
@@ -15,10 +16,8 @@ libbiosensor_slv_fd_la_SOURCES = \
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
-    bio/fd/SolverFactory.hxx \
-    bio/fd/ex2d/Solver.hxx \
-    bio/fd/im2d/Solver.hxx \
-    bio/fd/im2d/AreaSubSolver.hxx \
-    bio/fd/im2d/BoundSubSolver.hxx \
-    bio/fd/im2d/CornerSubSolver.hxx
+    bio/fd/SolverFactory.hxx
+
+astyle:
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
 
