@@ -22,3 +22,5 @@ autoreconf --install
 
 
 ################################################################################
+apt-get install build-essential dh-make debhelper devscripts 
+/usr/share/doc/maint-guide/maint-guide.en.pdf.gz

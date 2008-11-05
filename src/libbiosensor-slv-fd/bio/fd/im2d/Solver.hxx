@@ -54,6 +54,7 @@ protected:
     
     /**
      *  Prepares all internal structure of the solver.
+     *  FIXME: Mayme move this to the constructor?
      */
     void constructSolver();
     

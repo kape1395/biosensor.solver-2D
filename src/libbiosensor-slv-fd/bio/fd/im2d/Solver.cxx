@@ -16,15 +16,37 @@ AbstractIterativeSolver(config),
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
-    // FIXME: Implement
+    for (int h = 0; h < subSolvers->sizeH(); h++)
+    {
+        for (int v = 0; v < subSolvers->sizeV(); v++)
+        {
+            delete subSolvers->getAreas()[h][v];
+        }
+    }
+    // FIXME: Implement, bounds/corners...
+    delete subSolvers;
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
-{
-    
+{ 
+    LOG4CXX_DEBUG(log, "solveIteration()");
+    for (int h = 0; h < subSolvers->sizeH(); h++)
+    {
+        for (int v = 0; v < subSolvers->sizeV(); v++)
+        {
+            subSolvers->getAreas()[h][v]->solveFirstHalfStep();
+        }
+    }
+    for (int v = 0; v < subSolvers->sizeV(); v++)
+    {
+        for (int h = 0; h < subSolvers->sizeH(); h++)
+        {
+            subSolvers->getAreas()[h][v]->solveSecondHalfStep();
+        }
+    }
 }
 
 
@@ -42,7 +64,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::constructSolver()
     }
     
     char message[1000];
-
+    
     subSolvers = new SplittedSolver(
             structAnalyzer.getPointsH().size() - 1,
             structAnalyzer.getPointsV().size() - 1
@@ -59,7 +81,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::constructSolver()
     {
         for (int v = 0; v < subSolvers->sizeV(); v++)
         {
-            subSolvers->getAreas()[h][v] = new AreaSubSolver();
+            subSolvers->getAreas()[h][v] = new AreaSubSolver(h, v, &structAnalyzer);
         }
     }
     //
