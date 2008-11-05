@@ -10,17 +10,17 @@ BIO_DM_NS_BEGIN
 class IConcentrations
 {
 public:
-    
+
     /**
      *  Returns concentration of the substance with index <code>substanceNr</code>.
      */
     virtual double operator [] (int substanceNr) = 0;
-    
+
     /**
      *  Returns substance count (not the index of the last substance).
      */
     virtual int count() = 0;
-    
+
 };
 
 BIO_DM_NS_END

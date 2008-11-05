@@ -14,9 +14,9 @@ class NullSolver : public AbstractSolver
 {
 private:
     BIO_DM_NS::NullDM *data;
-    
+
 public:
-    
+
     /**
      *  Constructor.
      */
@@ -24,7 +24,7 @@ public:
     {
         data = new BIO_DM_NS::NullDM();
     }
-    
+
     /**
      *  Destructor.
      */
@@ -32,7 +32,7 @@ public:
     {
         delete data;
     }
-    
+
     /**
      *  Returns data-model.
      */
@@ -40,7 +40,7 @@ public:
     {
         return data;
     }
-    
+
     /**
      *  Solves nothing.
      */
@@ -48,7 +48,7 @@ public:
     {
         // Nothing to do here.
     }
-    
+
 };
 
 

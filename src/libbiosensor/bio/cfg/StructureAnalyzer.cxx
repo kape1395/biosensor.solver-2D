@@ -6,17 +6,17 @@
 /* ************************************************************************** */
 void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
 {
-    
+
     typedef BIO_XML_NS::model::Model::axis_iterator it_axis;
     typedef BIO_XML_NS::model::Model::substance_iterator it_subst;
     typedef BIO_XML_NS::model::Model::medium_iterator it_med;
     typedef BIO_XML_NS::model::Medium::area_iterator it_area;
     typedef BIO_XML_NS::model::Medium::diffusion_iterator it_diff;
     typedef BIO_XML_NS::model::Medium::reaction_iterator it_reac;
-    
-    
+
+
     LOG4CXX_INFO(log, "cleanup...");
-    
+
     ////////////////////////////////////////////////////////////////////////////
     //  Release all old data.
     //
@@ -59,18 +59,18 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //
     //  Release all old data.
     ////////////////////////////////////////////////////////////////////////////
-    
+
     LOG4CXX_INFO(log, "cleanup... Done");
-    
-    
+
+
     //  If 0 is passed as config, only cleanup should be performed.
     this->config = config;
     if (config == 0)
         return;
-    
-    
+
+
     LOG4CXX_INFO(log, "analyze...");
-    
+
     ////////////////////////////////////////////////////////////////////////////
     //  Fill pointsH and pointsV
     //
@@ -92,7 +92,7 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
                 fillListWithAxisPoints(pointsV, *axis);
                 found_v = true;
             }
-            
+
         }
         if (!(found_h && found_v))
         {
@@ -118,7 +118,7 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
                 fillListWithAxisPoints(pointsV, *axis);
                 found_v = true;
             }
-            
+
         }
         if (!(found_h && found_v))
         {
@@ -154,8 +154,8 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //
     //  Fill pointsH and pointsV
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     ////////////////////////////////////////////////////////////////////////////
     //  Fill substances (order is preserved from config file).
     //
@@ -166,8 +166,8 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //
     //  Fill substances.
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     ////////////////////////////////////////////////////////////////////////////
     //  Fill mediums.
     //
@@ -219,8 +219,8 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //
     //  Fill mediums.
     ////////////////////////////////////////////////////////////////////////////
-    
-    
+
+
     ////////////////////////////////////////////////////////////////////////////
     //  Fill diffusions and reactions.
     //
@@ -259,7 +259,7 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //
     //  Fill diffusions and reactions.
     ////////////////////////////////////////////////////////////////////////////
-    
+
     LOG4CXX_INFO(log, "analyze... Done");
 }
 
@@ -287,7 +287,7 @@ void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_
     {
         list.push_back(getSymbol(p->position()));
     }
-    
+
 }
 
 

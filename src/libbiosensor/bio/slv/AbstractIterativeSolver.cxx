@@ -9,7 +9,7 @@ BIO_SLV_NS_BEGIN
  *  Constructor.
  */
 AbstractIterativeSolver::AbstractIterativeSolver(
-BIO_XML_NS::model::Model* config
+    BIO_XML_NS::model::Model* config
 ) : AbstractSolver(config)
 {
     timeStep = 0;

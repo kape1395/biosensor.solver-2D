@@ -9,7 +9,7 @@ class ISolverListener;
 
 
 /**
- *  Abstract operations: solveIteration(). 
+ *  Abstract operations: solveIteration().
  */
 class AbstractIterativeSolver : public AbstractSolver, public IIterativeSolver
 {
@@ -38,5 +38,5 @@ protected:
 
 
 BIO_SLV_NS_END
-        
+
 #endif

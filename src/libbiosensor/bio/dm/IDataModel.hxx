@@ -10,11 +10,11 @@ BIO_DM_NS_BEGIN
  */
 class IDataModel
 {
-    
+
 };
 
 
 
 BIO_DM_NS_END
-        
+
 #endif

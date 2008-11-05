@@ -17,7 +17,7 @@ class StructureAnalyzer : public IConfigAnalyzer
 {
 private:
     log4cxx::LoggerPtr log;
-    
+
     BIO_XML_NS::model::Model* config;
     bool twoDimensional;
     std::vector< BIO_XML_NS::model::Symbol* > pointsH;
@@ -27,17 +27,17 @@ private:
     BIO_XML_NS::model::Symbol* *** diffusions;
     BIO_XML_NS::model::Symbol* *** initialConcentrations;
     BIO_XML_NS::model::Medium* ** mediums;
-            
+
     /// Position for the case, when these was Linear (one-dimensional) coordinate system.
     BIO_XML_NS::model::Symbol axisPoint0;
-    
+
 public:
-    
+
     /**
      *  Constructor.
      */
     StructureAnalyzer() :
-    log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
+            log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
             axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
     {
         twoDimensional = false; // it is now wery correct, but...
@@ -46,7 +46,7 @@ public:
         initialConcentrations = 0;
         mediums = 0;
     }
-    
+
     /**
      *  Destructor.
      */
@@ -54,7 +54,7 @@ public:
     {
         analyze(0);
     }
-    
+
     /**
      *  Setter for configuration, to be analyzed.
      *  Should analysis be performed in this method?
@@ -62,7 +62,7 @@ public:
      *  \param config  Configuration to be analyzed. This also can be 0.
      */
     virtual void analyze(BIO_XML_NS::model::Model* config);
-    
+
     /**
      *  Returns true if analyzed model is two-dimensional and
      *  false in another case (1D model).
@@ -71,7 +71,7 @@ public:
     {
         return twoDimensional;
     }
-    
+
     /**
      *  Returns points in horizontal (x) axis.
      *
@@ -81,7 +81,7 @@ public:
     {
         return pointsH;
     }
-    
+
     /**
      *  Returns points in vertical (y) axis.
      *
@@ -91,7 +91,7 @@ public:
     {
         return pointsV;
     }
-    
+
     /**
      *  Returns substances, that are mentioned in the model.
      *  The ordering of the substances (and indexes of them) are defined
@@ -103,7 +103,7 @@ public:
     {
         return substances;
     }
-    
+
     /**
      *  Get the reactions in the specified area.
      *
@@ -115,7 +115,7 @@ public:
     {
         return reactions[h][v];
     }
-    
+
     /**
      *  Get diffusion coefficient of the substance s
      *  at the specified area.
@@ -130,7 +130,7 @@ public:
     {
         return diffusions[h][v][s];
     }
-    
+
     /**
      *  Get initial concentrations of the substance s
      *  at the specified area.
@@ -145,7 +145,7 @@ public:
     {
         return initialConcentrations[h][v][s];
     }
-    
+
     /**
      *  Returns medium by the specified position.
      *
@@ -158,7 +158,7 @@ public:
     {
         return mediums[h][v];
     }
-    
+
     /**
      *  Finds symbol definition by the name.
      *
@@ -166,24 +166,24 @@ public:
      *  \return Symbol definition or 0 if symbol not found.
      */
     BIO_XML_NS::model::Symbol* getSymbol(std::string& name);
-    
+
 private:
-    
+
     /**
      *  Fills given list with symbols, mentioned in the axis definition.
      */
     void fillListWithAxisPoints(std::vector< BIO_XML_NS::model::Symbol* >& list, BIO_XML_NS::model::Axis& axis);
-    
+
     /**
      *  Returns index of point in axis by point name.
      */
     int getPointIndexInAxis(std::vector< BIO_XML_NS::model::Symbol* >& axis, std::string& pointSymbolName);
-    
+
     /**
      *  Return index of the substance by substance name.
      */
     int getSubstanceIndex(std::string& substanceName);
-    
+
 };
 
 

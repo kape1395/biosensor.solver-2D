@@ -18,7 +18,7 @@ Exception::Exception()
 /**
  *  Konstruktorius
  *  \param msg  Exception`o tekstas.
- */    
+ */
 Exception::Exception(std::string string)
 {
     msg = new std::ostringstream();

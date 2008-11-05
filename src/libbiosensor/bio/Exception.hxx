@@ -15,13 +15,13 @@ class Exception : public std::exception //, public std::ostringstream
 {
 protected:
     std::ostringstream *msg;
-    
+
 public:
     Exception();
     Exception(std::string string);
     ~Exception() throw();
     virtual const char* what() const throw();
-    
+
 };
 
 

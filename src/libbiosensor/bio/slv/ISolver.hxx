@@ -7,7 +7,7 @@ BIO_SLV_NS_BEGIN
 
 
 /**
- *  
+ *
  */
 class ISolver
 {

@@ -14,9 +14,9 @@ class AbstractSolver : public ISolver
 {
 private:
     BIO_XML_NS::model::Model* config;
-    
+
 public:
-    
+
     /**
      *  Constructor.
      */
@@ -24,7 +24,7 @@ public:
     {
         this->config = config;
     }
-    
+
     /**
      *  Destructor.
      */
@@ -32,7 +32,7 @@ public:
     {
         // Nothing to do here.
     }
-    
+
     /**
      *  Returns configuration, supplied for this solver.
      */
@@ -40,7 +40,7 @@ public:
     {
         return this->config;
     }
-    
+
 };
 
 
