@@ -20,6 +20,7 @@
             <xs:element name="electrode"    type="Electrode"    minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="symbol"       type="Symbol"       minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="solver"       type="Solver"       minOccurs="1" maxOccurs="1"/>
+            <xs:element name="listener"     type="Listener"     minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="coordinateSystem" type="CoordinateSystem" use="required"/>
     </xs:complexType>
@@ -125,7 +126,11 @@
     <xs:complexType name="Solver" abstract="true">
     </xs:complexType>
     
+
+    <xs:complexType name="Listener" abstract="true">
+    </xs:complexType>
     
+
     <xs:simpleType name="CoordinateSystem">
         <xs:restriction base="xs:string">
             <xs:enumeration value="Cartesian"/>

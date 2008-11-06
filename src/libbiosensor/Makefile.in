@@ -288,6 +288,10 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolverFactory.hxx \
     bio/slv/NullSolver.hxx
 
+EXTRA_DIST = \
+    bio/Splitted1DArea.hxx \
+    bio/Splitted2DArea.hxx
+
 all: biosensor.hxx
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

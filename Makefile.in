@@ -188,6 +188,13 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = src
+EXTRA_DIST = \
+    Doxyfile \
+    log4j.properties \
+    valgrind.supp \
+    doc/Requirements.odt \
+    doc/UML.xmi
+
 all: all-recursive
 
 .SUFFIXES:

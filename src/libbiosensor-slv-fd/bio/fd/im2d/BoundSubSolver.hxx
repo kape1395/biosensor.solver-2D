@@ -43,7 +43,7 @@ public:
      *
      */
     void solveAlong();
-
+    
 };
 
 

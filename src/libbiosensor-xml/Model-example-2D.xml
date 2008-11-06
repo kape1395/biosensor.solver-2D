@@ -4,11 +4,13 @@
     xmlns:bc="http://lt.5grupe.karolis/biosensor/model/bc"
     xmlns:mr="http://lt.5grupe.karolis/biosensor/model/mr"
     xmlns:s ="http://lt.5grupe.karolis/biosensor/model/s"
+    xmlns:l ="http://lt.5grupe.karolis/biosensor/model/l"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model    Model.xsd
                         http://lt.5grupe.karolis/biosensor/model/bc ModelBoundCondition.xsd
                         http://lt.5grupe.karolis/biosensor/model/mr ModelMediumReaction.xsd
-                        http://lt.5grupe.karolis/biosensor/model/s  ModelSolver.xsd"
+                        http://lt.5grupe.karolis/biosensor/model/s  ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/l  ModelListener.xsd"
     coordinateSystem="Cartesian">
 
     <axis name="x">
@@ -105,4 +107,8 @@
         <s:axis from="y3" to="y4" xsi:type="s:ConstantAxisPart" stepCount="50"/>
     </solver>
 
+    <listener xsi:type="l:InvokeEvery" iterations="100">
+        <l:listener xsi:type="l:StopAfter" iterations="3000"/>
+    </listener>
+    
 </model>

@@ -63,6 +63,10 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolverFactory.hxx \
     bio/slv/NullSolver.hxx
 
+EXTRA_DIST = \
+    bio/Splitted1DArea.hxx \
+    bio/Splitted2DArea.hxx
+
 astyle:
 	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
 

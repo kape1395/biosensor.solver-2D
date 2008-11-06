@@ -18,6 +18,15 @@ nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
     bio/fd/SolverFactory.hxx
 
+EXTRA_DIST = \
+    bio/fd/SolverFactory.hxx \
+    bio/fd/FiniteDifferencesSolverAnalyzer.hxx \
+    bio/fd/ex2d/Solver.hxx \
+    bio/fd/im2d/Solver.hxx \
+    bio/fd/im2d/AreaSubSolver.hxx \
+    bio/fd/im2d/BoundSubSolver.hxx \
+    bio/fd/im2d/CornerSubSolver.hxx
+
 astyle:
 	astyle @ASTYLE_OPTS@ *.hxx.in `find  bio -name  "*.cxx"` `find  bio -name  "*.hxx"`
 
