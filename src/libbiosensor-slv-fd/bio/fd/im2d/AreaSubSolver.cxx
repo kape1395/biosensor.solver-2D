@@ -70,7 +70,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveFirstHalfStep()
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontal()
 {
     int i = 0;
     for (int h = 0; h < dataSizeH; h++)
@@ -92,7 +92,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveFirstHalfStep()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveSecondHalfStep()
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVertical()
 {
     int i = 0;
     for (int h = 0; h < dataSizeH; h++)

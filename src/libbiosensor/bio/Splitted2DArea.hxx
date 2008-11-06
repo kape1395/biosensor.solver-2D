@@ -80,7 +80,7 @@ public:
     {
         return boundsV_;
     }
-    inline std::vector<std::vector<B> >& getCorners()
+    inline std::vector<std::vector<C> >& getCorners()
     {
         return corners_;
     }

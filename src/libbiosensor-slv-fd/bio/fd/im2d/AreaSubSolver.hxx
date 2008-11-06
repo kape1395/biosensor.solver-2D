@@ -40,14 +40,14 @@ public:
     virtual ~AreaSubSolver();
 
     /**
-     *  First half-step -- vertical.
+     *  First half-step -- horizontal.
      */
-    void solveFirstHalfStep();
+    void solveHorizontal();
 
     /**
-     *  Second half-step -- horizontal.
+     *  Second half-step -- vertical.
      */
-    void solveSecondHalfStep();
+    void solveVertical();
 
 };
 
