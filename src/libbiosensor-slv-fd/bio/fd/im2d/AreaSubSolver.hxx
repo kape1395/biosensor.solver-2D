@@ -1,6 +1,7 @@
 #ifndef BIO_SLV_FD_IM2D_AreaSubSolver_HXX
 #define BIO_SLV_FD_IM2D_AreaSubSolver_HXX
 #include "../../../biosensor-slv-fd.hxx"
+#include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <log4cxx/logger.h>
 
@@ -26,7 +27,12 @@ public:
     /**
      *  Constructor.
      */
-    AreaSubSolver(int positionH, int positionV, BIO_CFG_NS::StructureAnalyzer* structAnalyzer);
+    AreaSubSolver(
+        int positionH,
+        int positionV,
+        BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+        BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
+    );
 
     /**
      *  Destructor.

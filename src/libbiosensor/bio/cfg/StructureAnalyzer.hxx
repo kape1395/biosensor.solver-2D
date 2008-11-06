@@ -50,7 +50,7 @@ public:
     /**
      *  Destructor.
      */
-    ~StructureAnalyzer()
+    virtual ~StructureAnalyzer()
     {
         analyze(0);
     }
@@ -77,7 +77,7 @@ public:
      *
      *  \return List of point definitions.
      */
-    std::vector< BIO_XML_NS::model::Symbol* > getPointsH()
+    std::vector< BIO_XML_NS::model::Symbol* >& getPointsH()
     {
         return pointsH;
     }
@@ -87,7 +87,7 @@ public:
      *
      *  \return List of point definitions.
      */
-    std::vector< BIO_XML_NS::model::Symbol* > getPointsV()
+    std::vector< BIO_XML_NS::model::Symbol* >& getPointsV()
     {
         return pointsV;
     }
@@ -99,7 +99,7 @@ public:
      *
      *  \return List of substance descriptions.
      */
-    std::vector< BIO_XML_NS::model::Substance* > getSubstances()
+    std::vector< BIO_XML_NS::model::Substance* >& getSubstances()
     {
         return substances;
     }
@@ -111,7 +111,7 @@ public:
      *  \param v Vertical (y) coordinate of the area.
      *  \return List of reactions. This list can also be empty (size = 0).
      */
-    std::vector< BIO_XML_NS::model::MediumReaction* > getReactions(int h, int v)
+    std::vector< BIO_XML_NS::model::MediumReaction* >& getReactions(int h, int v)
     {
         return reactions[h][v];
     }

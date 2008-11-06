@@ -4,6 +4,7 @@
 #include "AreaSubSolver.hxx"
 #include "BoundSubSolver.hxx"
 #include "CornerSubSolver.hxx"
+#include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Splitted2DArea.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/slv/AbstractIterativeSolver.hxx>
@@ -23,6 +24,7 @@ private:
 
     log4cxx::LoggerPtr log;
     BIO_CFG_NS::StructureAnalyzer structAnalyzer;
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer fdAnalyzer;
     SplittedSolver *subSolvers;
 
 public:

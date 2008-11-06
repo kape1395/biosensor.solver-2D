@@ -56,6 +56,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::constructSolver()
 {
     LOG4CXX_DEBUG(log, "constructSolver()...");
     structAnalyzer.analyze(getConfig());
+    fdAnalyzer.analyze(getConfig());
 
     if (!structAnalyzer.isTwoDimensional())
     {
@@ -81,7 +82,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::constructSolver()
     {
         for (int v = 0; v < subSolvers->sizeV(); v++)
         {
-            subSolvers->getAreas()[h][v] = new AreaSubSolver(h, v, &structAnalyzer);
+            subSolvers->getAreas()[h][v] = new AreaSubSolver(h, v, &structAnalyzer, &fdAnalyzer);
         }
     }
     //

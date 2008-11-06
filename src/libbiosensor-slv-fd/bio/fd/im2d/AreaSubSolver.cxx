@@ -1,19 +1,32 @@
 #include "AreaSubSolver.hxx"
-
+#include <bio/Exception.hxx>
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     int positionH,
     int positionV,
-    BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::AreaSubSolver"))
 {
+    using BIO_XML_NS::model::s::Axis;
+    using BIO_XML_NS::model::s::ConstantAxisPart;
+
     LOG4CXX_DEBUG(log, "AreaSubSolver()");
     this->positionH = positionH;
     this->positionV = positionV;
-    this->dataSizeH = 200;  // FIXME: Get this from config.
-    this->dataSizeV = 200;  // FIXME: Get this from config.
+
+    ConstantAxisPart* axisPartH = dynamic_cast<ConstantAxisPart*>(fdAnalyzer->getAxisPartH(positionH));
+    ConstantAxisPart* axisPartV = dynamic_cast<ConstantAxisPart*>(fdAnalyzer->getAxisPartV(positionV));
+    if (axisPartH == 0 || axisPartV == 0)
+    {
+        LOG4CXX_ERROR(log, "Only axis parts of type ConstantAxisPart are now supported.");
+        throw Exception("Invalid coonf.");
+    }
+
+    this->dataSizeH = axisPartH->stepCount();
+    this->dataSizeV = axisPartH->stepCount();
     this->dataSizeS = structAnalyzer->getSubstances().size();
 
     data = new double***[dataSizeH];

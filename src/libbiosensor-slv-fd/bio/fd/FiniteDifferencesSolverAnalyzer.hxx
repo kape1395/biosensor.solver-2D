@@ -1,7 +1,9 @@
 #ifndef BIO_SLV_FD_FiniteDifferencesSolverAnalyzer_HXX
 #define BIO_SLV_FD_FiniteDifferencesSolverAnalyzer_HXX
 #include "../../biosensor-slv-fd.hxx"
+#include <biosensor-xml.hxx>
 #include <bio/cfg/IConfigAnalyzer.hxx>
+#include <bio/cfg/StructureAnalyzer.hxx>
 #include <vector>
 #include <log4cxx/logger.h>
 
@@ -18,6 +20,10 @@ private:
 
     BIO_XML_NS::model::Model* config;
 
+    BIO_CFG_NS::StructureAnalyzer structureAnalyzer;
+    BIO_XML_NS::model::s::Axis** axisPartsH;
+    BIO_XML_NS::model::s::Axis** axisPartsV;
+
 
 public:
 
@@ -28,12 +34,14 @@ public:
             log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::FiniteDifferencesSolverAnalyzer"))
     {
         this->config = 0;
+        this->axisPartsH = 0;
+        this->axisPartsV = 0;
     }
 
     /**
      *  Destructor.
      */
-    ~FiniteDifferencesSolverAnalyzer()
+    virtual ~FiniteDifferencesSolverAnalyzer()
     {
         analyze(0);
     }
@@ -46,6 +54,16 @@ public:
      */
     virtual void analyze(BIO_XML_NS::model::Model* config);
 
+
+    BIO_XML_NS::model::s::Axis* getAxisPartH(int index)
+    {
+        return axisPartsH[index];
+    }
+
+    BIO_XML_NS::model::s::Axis* getAxisPartV(int index)
+    {
+        return axisPartsV[index];
+    }
 
 };
 
