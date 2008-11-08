@@ -3,7 +3,7 @@ SUBDIRS = src
 EXTRA_DIST = \
     Doxyfile \
     log4j.properties \
-    valgrind.supp \ 
+    valgrind.supp \
     doc/Requirements.odt \
     doc/UML.xmi
 
