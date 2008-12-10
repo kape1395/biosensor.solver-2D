@@ -1,0 +1,31 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\begin{document}
+Cylindrical coordinate system,  $(r,z)$ plane. $S = S(r, z, t)$.
+\begin{multline}
+    \Delta S = \frac{1}{r} \frac{\partial}{\partial r}
+    \left( r \frac{\partial S}{\partial r} \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\
+    \approx
+    \frac{1}{r}\frac{\partial}{\partial r}\left(
+         r_i \frac{S_{i,j,k} - S_{i-1,j,k}}{g}
+    \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\
+    \approx
+    \frac{ r_{i+1/2}\frac{S_{i+1,j,k} - S_{i,j,k}}{g} - r_{i-1/2}\frac{S_{i,j,k} - S_{i-1,j,k}}{g}}{r_i g} +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\
+    \approx
+    \frac{ r_{i+1/2}S_{i+1,j,k} - (r_{i+1/2} + r_{i-1/2})S_{i,j,k} + r_{i-1/2} S_{i-1,j,k} }{r_i g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+    .
+\end{multline}
+Here $g$ and $h$ are step sizes correspondingly in $r$ and $z$ axes.
+Note that $r_{i+1/2} = r_i + \frac{g}{2}$ and $r_{i-1/2} = r_i - \frac{g}{2}$.
+
+\end{document}

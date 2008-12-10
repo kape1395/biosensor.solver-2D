@@ -1,0 +1,123 @@
+\documentclass[a4paper,10pt]{article}
+
+\title{Equations}
+\author{Karolis Petrauskas}
+\usepackage{amsmath, amsthm, amssymb}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    Mathematical part of the solvers.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Implicid 2D solver in the cartesian coordinates}
+Lets define the following symbols.
+$S$ is the substance concentration in time and two-dimensional space and
+$R$ is a speed of the reaction.
+Generic equation, that governs processes inside of area is:
+\begin{equation}
+    \frac{\partial S}{\partial t} = \Delta S + R.
+\end{equation}
+Here $\Delta$ is the Laplace operator. It has different forms in the different coordinate system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Diffusion}
+
+In the cartesian coordinate sytem $S = S(x, y, t)$ and $R = R(x, y, t)$.
+\begin{equation}
+    \Delta S = \frac{\partial^2 S}{\partial x^2} + \frac{\partial^2 S}{\partial y^2}.
+\end{equation}
+
+
+In the cylindrical (r,z plane) coordinate system $S = S(r, z, t)$ and $R = R(r, z, t)$.
+\begin{equation}
+    \Delta S =
+        \frac{1}{r} \frac{\partial}{\partial r}
+        \left( r \frac{\partial f}{\partial r} \right) +
+        \frac{\partial^2 f}{\partial z^2}.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Reactions}
+
+Michaelis-menten reaction:
+\begin{equation}
+    R = \begin{cases}
+            -\frac{V_{max} S}{K_M + S} & \text{in equation for substrate $S$,}
+            \\
+            +\frac{V_{max} S}{K_M + S} & \text{in equation for product $P$.}
+        \end{cases}
+\end{equation}
+%
+``Simple'' reaction:
+\begin{equation}
+    R = \sum_i k_{R_i} S_{R_{i,a}} S_{R_{i,b}} - \sum_j k_{R_j} P_{R_{j,a}} P_{R_{j,b}}
+\end{equation}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Finite differences}
+
+\begin{equation}
+    \frac{\partial S}{\partial t}
+    \approx
+    \frac{S_{i,j,k} - S_{i,j,k-1}}{\tau}
+\end{equation}
+\begin{equation}
+    \frac{\partial^2 S}{\partial x^2} + \frac{\partial^2 S}{\partial y^2}
+    \approx
+    \frac{S_{i+1,j,k} - 2 S_{i,j,k} + S_{i-1,j,k}}{g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+\end{equation}
+\begin{multline}
+    \frac{1}{r} \frac{\partial}{\partial r}
+    \left( r \frac{\partial S}{\partial r} \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{1}{r}\frac{\partial}{\partial r}\left(r_i \frac{S_{i,j,k} - S_{i-1,j,k}}{g} \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{ r_{i+1}\frac{S_{i+1,j,k} - S_{i,j,k}}{g} - r_{i}\frac{S_{i,j,k} - S_{i-1,j,k}}{g}}{r_i g} +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{ r_{i+1}S_{i+1,j,k} - (r_{i+1} + r_i)S_{i,j,k} + r_i S_{i-1,j,k} }{r_i g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+    =
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    =
+    \frac{ (r_i + g)S_{i+1,j,k} - (2 r_i + g)S_{i,j,k} + r_i S_{i-1,j,k} }{r_i g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+    =
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    =
+    -\frac{2 (h^2 + g^2) r_i + g h^2}{r_i g^2 h^2}  S_{i,j,k}
+    +\frac{r_i + g}{r_i g^2}                        S_{i+1,j,k}
+    +\frac{1}{g^2}                                  S_{i-1,j,k}
+    +\frac{1}{h^2}                                  S_{i,j+1,k}
+    +\frac{1}{h^2}                                  S_{i,j-1,k}
+%     =\\=
+%     -\frac{g^2 (r_{i+1} + r_i) + 2 r_i h^2}{r_i h^2 g^2} S_{i,j,k} +
+%     \frac{ r_{i+1}S_{i+1,j,k} + r_i S_{i-1,j,k} }{r_i h^2} +
+%     \frac{S_{i,j-1,k} + S_{i,j+1,k}}{g^2}
+%     =\\=
+%     -\frac{(g^2 + 2h^2)r_i + g^2 r_{i+1}}{r_i h^2 g^2} S_{i,j,k} +
+%     \frac{ r_{i+1}S_{i+1,j,k} + r_i S_{i-1,j,k} }{r_i h^2} +
+%     \frac{S_{i,j-1,k} + S_{i,j+1,k}}{g^2}
+\end{multline}
+Note that $r_{i+1} = r_i + g$.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
