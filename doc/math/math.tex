@@ -18,7 +18,7 @@ $S$ is the substance concentration in time and two-dimensional space and
 $R$ is a speed of the reaction.
 Generic equation, that governs processes inside of area is:
 \begin{equation}
-    \frac{\partial S}{\partial t} = \Delta S + R.
+    \frac{\partial S}{\partial t} = D \Delta S + R.
 \end{equation}
 Here $\Delta$ is the Laplace operator. It has different forms in the different coordinate system.
 
@@ -66,12 +66,26 @@ Michaelis-menten reaction:
     \approx
     \frac{S_{i,j,k} - S_{i,j,k-1}}{\tau}
 \end{equation}
-\begin{equation}
+\begin{multline}
     \frac{\partial^2 S}{\partial x^2} + \frac{\partial^2 S}{\partial y^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \approx
     \frac{S_{i+1,j,k} - 2 S_{i,j,k} + S_{i-1,j,k}}{g^2} +
     \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
-\end{equation}
+    =
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    =
+    -2\frac{g^2 + h^2}{g^2 h^2} S_{i,j,k}
+    +\frac{1}{g^2}              S_{i+1,j,k}
+    +\frac{1}{g^2}              S_{i-1,j,k}
+    +\frac{1}{h^2}              S_{i,j+1,k}
+    +\frac{1}{h^2}              S_{i,j-1,k}
+\end{multline}
+
+Cylindrical coordinate system,  $(r,z)$ plane. $S = S(r, z, t)$.
+Case one -- non simetrical by inner $r$.
+Note that $r_{i+1} = r_i + g$.
 \begin{multline}
     \frac{1}{r} \frac{\partial}{\partial r}
     \left( r \frac{\partial S}{\partial r} \right) +
@@ -104,16 +118,69 @@ Michaelis-menten reaction:
     +\frac{1}{g^2}                                  S_{i-1,j,k}
     +\frac{1}{h^2}                                  S_{i,j+1,k}
     +\frac{1}{h^2}                                  S_{i,j-1,k}
-%     =\\=
-%     -\frac{g^2 (r_{i+1} + r_i) + 2 r_i h^2}{r_i h^2 g^2} S_{i,j,k} +
-%     \frac{ r_{i+1}S_{i+1,j,k} + r_i S_{i-1,j,k} }{r_i h^2} +
-%     \frac{S_{i,j-1,k} + S_{i,j+1,k}}{g^2}
-%     =\\=
-%     -\frac{(g^2 + 2h^2)r_i + g^2 r_{i+1}}{r_i h^2 g^2} S_{i,j,k} +
-%     \frac{ r_{i+1}S_{i+1,j,k} + r_i S_{i-1,j,k} }{r_i h^2} +
-%     \frac{S_{i,j-1,k} + S_{i,j+1,k}}{g^2}
 \end{multline}
-Note that $r_{i+1} = r_i + g$.
+Case two -- symetrical by inner $r$.
+Note that $r_{i+1/2} = r_i + \frac{g}{2}$ and $r_{i-1/2} = r_i - \frac{g}{2}$.
+The difference from tme previous case is in the second equation,
+here we replaced $r$ with $r_{i-1/2}$ instead of $r_i$.
+\begin{multline}
+    \frac{1}{r} \frac{\partial}{\partial r}
+    \left( r \frac{\partial S}{\partial r} \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{1}{r}\frac{\partial}{\partial r}\left(r_{i-1/2} \frac{S_{i,j,k} - S_{i-1,j,k}}{g} \right) +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{ r_{i+1/2}\frac{S_{i+1,j,k} - S_{i,j,k}}{g} - r_{i-1/2}\frac{S_{i,j,k} - S_{i-1,j,k}}{g}}{r_i g} +
+    \frac{\partial^2 S}{\partial z^2}
+    \approx
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \approx
+    \frac{ r_{i+1/2}S_{i+1,j,k} - (r_{i+1/2} + r_{i-1/2})S_{i,j,k} + r_{i-1/2} S_{i-1,j,k} }{r_i g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+    =
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    =
+    \frac{ (r_i + \frac{g}{2})S_{i+1,j,k} - 2 r_i S_{i,j,k} + (r_i - \frac{g}{2}) S_{i-1,j,k} }{r_i g^2} +
+    \frac{S_{i,j+1,k} - 2 S_{i,j,k} + S_{i,j-1,k}}{h^2}
+    =
+    \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    =
+    -2\frac{g^2 + h^2}{g^2 h^2}         S_{i,j,k}
+    +\frac{r_i + \frac{g}{2}}{r_i g^2}  S_{i+1,j,k}
+    +\frac{r_i - \frac{g}{2}}{r_i g^2}  S_{i-1,j,k}
+    +\frac{1}{h^2}                      S_{i,j+1,k}
+    +\frac{1}{h^2}                      S_{i,j-1,k}
+\end{multline}
+So:
+\begin{table}
+\begin{tabular}{c|cc|cc|}
+    Var & $cyl^1$ & $cyl^2$ & $dec^1$ & $dec^2$
+    \\\hline
+    $a_D$
+        & $\frac{r_i - \frac{g}{2}}{r_i g^2}$
+        & $\frac{1}{h^2}$
+    \\\hline
+    $b_D$
+        & $-\frac{2}{g^2}$
+        & $-\frac{2}{h^2}$
+    \\\hline
+    $c_D$
+        & $\frac{r_i + \frac{g}{2}}{r_i g^2}$
+        & $\frac{1}{h^2}$
+    \\\hline
+\end{tabular}
+\end{table}
+
+\begin{align}
+    a_D &= \frac{r_i - \frac{g}{2}}{r_i g^2} \\
+    b_D &= \frac{2}{g^2} \\
+    c_D &= \frac{r_i + \frac{g}{2}}{r_i g^2}
+\end{align}
 
 
 
