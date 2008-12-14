@@ -12,37 +12,43 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Implicid 2D solver in the cartesian coordinates}
+\section{Implicid 2D solver in the cartesian and cylindrical coordinate sstems}
+\subsection{Mathematical model}
 Lets define the following symbols.
 $S$ is the substance concentration in time and two-dimensional space and
 $R$ is a speed of the reaction.
 Generic equation, that governs processes inside of area is:
-\begin{equation}
+\begin{equation}\label{eq.im2d.governing}
     \frac{\partial S}{\partial t} = D \Delta S + R.
 \end{equation}
 Here $\Delta$ is the Laplace operator. It has different forms in the different coordinate system.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Diffusion}
+\subsubsection{Diffusion}
 
 In the cartesian coordinate sytem $S = S(x, y, t)$ and $R = R(x, y, t)$.
-\begin{equation}
+\begin{equation}\label{eq.im2d.laplace.cartesian}
     \Delta S = \frac{\partial^2 S}{\partial x^2} + \frac{\partial^2 S}{\partial y^2}.
 \end{equation}
 
 
 In the cylindrical (r,z plane) coordinate system $S = S(r, z, t)$ and $R = R(r, z, t)$.
-\begin{equation}
+\begin{equation}\label{eq.im2d.laplace.cylindrical}
     \Delta S =
         \frac{1}{r} \frac{\partial}{\partial r}
         \left( r \frac{\partial f}{\partial r} \right) +
         \frac{\partial^2 f}{\partial z^2}.
 \end{equation}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Reactions}
+\subsubsection{Reactions}
 
 Michaelis-menten reaction:
+\begin{equation}
+    R_{mm} = <V_{max}, K_M, S, P>
+\end{equation}
 \begin{equation}
     R = \begin{cases}
             -\frac{V_{max} S}{K_M + S} & \text{in equation for substrate $S$,}
@@ -53,20 +59,50 @@ Michaelis-menten reaction:
 %
 ``Simple'' reaction:
 \begin{equation}
-    R = \sum_i k_{R_i} S_{R_{i,a}} S_{R_{i,b}} - \sum_j k_{R_j} P_{R_{j,a}} P_{R_{j,b}}
+    R_{s} = <k, S_{s1}, S_{s2}, S_{r1}, S_{r2}>
 \end{equation}
+\begin{equation}
+    R =
+        - \sum_{R_s : S \in \{S_{s1}, S_{s2}\}} k S_{s1} S_{s2}
+        + \sum_{R_s : S \in \{S_{p1}, S_{p2}\}} k S_{p1} P_{p2}
+\end{equation}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Bounds}
+Constant condition:
+\begin{equation}
+    S(x, y, t) = C,\quad (x, y) \in \Gamma.
+\end{equation}
+Non-leakage (wall) condition:
+\begin{equation}
+    \left.\frac{\partial S}{\partial n}\right|_{\Gamma} = 0.
+\end{equation}
+Merge condition:
+\begin{equation}
+    D_A \left.\frac{\partial S_A}{\partial n}\right|_{\Gamma} =
+    D_B \left.\frac{\partial S_B}{\partial n}\right|_{\Gamma}.
+\end{equation}
+
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Finite differences}
 
-\begin{equation}
+The partial derivate from \eqref{eq.im2d.governing} by time is aproximated as follows:
+\begin{equation}\label{eq.im2d.time}
     \frac{\partial S}{\partial t}
     \approx
     \frac{S_{i,j,k} - S_{i,j,k-1}}{\tau}
 \end{equation}
-\begin{multline}
+
+
+The Laplace operator, formulated in the cartesian coordinate system \eqref{eq.im2d.laplace.cartesian}
+is aproximated as follows:
+\begin{multline}\label{eq.im2d.diffusion.cartesian}
     \frac{\partial^2 S}{\partial x^2} + \frac{\partial^2 S}{\partial y^2}
     \approx
     \\%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,7 +159,7 @@ Case two -- symetrical by inner $r$.
 Note that $r_{i+1/2} = r_i + \frac{g}{2}$ and $r_{i-1/2} = r_i - \frac{g}{2}$.
 The difference from tme previous case is in the second equation,
 here we replaced $r$ with $r_{i-1/2}$ instead of $r_i$.
-\begin{multline}
+\begin{multline}\label{eq.im2d.diffusion.cylindrical}
     \frac{1}{r} \frac{\partial}{\partial r}
     \left( r \frac{\partial S}{\partial r} \right) +
     \frac{\partial^2 S}{\partial z^2}
@@ -156,31 +192,76 @@ here we replaced $r$ with $r_{i-1/2}$ instead of $r_i$.
     +\frac{1}{h^2}                      S_{i,j+1,k}
     +\frac{1}{h^2}                      S_{i,j-1,k}
 \end{multline}
-So:
-\begin{table}
-\begin{tabular}{c|cc|cc|}
-    Var & $cyl^1$ & $cyl^2$ & $dec^1$ & $dec^2$
-    \\\hline
-    $a_D$
-        & $\frac{r_i - \frac{g}{2}}{r_i g^2}$
-        & $\frac{1}{h^2}$
-    \\\hline
-    $b_D$
-        & $-\frac{2}{g^2}$
-        & $-\frac{2}{h^2}$
-    \\\hline
-    $c_D$
-        & $\frac{r_i + \frac{g}{2}}{r_i g^2}$
-        & $\frac{1}{h^2}$
-    \\\hline
-\end{tabular}
-\end{table}
 
-\begin{align}
-    a_D &= \frac{r_i - \frac{g}{2}}{r_i g^2} \\
-    b_D &= \frac{2}{g^2} \\
-    c_D &= \frac{r_i + \frac{g}{2}}{r_i g^2}
-\end{align}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection{Alternating directions and tridiagonal matrixes}
+The main equation system for one area is:
+\begin{equation}
+    a S + b S + c S = f
+\end{equation}
+here:
+\begin{equation}
+    a = a_D,\quad
+    b = b_T + b_D,\quad
+    c = c_D,\quad
+    f = f_T + f_D + f_R.
+\end{equation}
+Functions $a_D, b_T, b_D, c_D, f_T, f_D$ and $ f_R$ are defined bellow.
+Coefficients for $\Delta$ are taken from \eqref{eq.im2d.diffusion.cartesian}
+and \eqref{eq.im2d.diffusion.cylindrical}.\\
+From \eqref{eq.im2d.time} we get:
+\begin{equation}
+    b_T = -\frac{2}{\tau},\qquad
+    f_T = \begin{cases}
+            -\frac{2 S_{i,j,k-1  }}{\tau} & \text{for first direction};\\
+            -\frac{2 S_{i,j,k-0.5}}{\tau} & \text{for second direction.}
+          \end{cases}
+\end{equation}
+In the cylindrical coordinate system, by the coordinate $r$ (to find $S_{i,j,k-0.5}$):
+\begin{multline}
+    a_D = \frac{r_i - \frac{g}{2}}{r_i g^2},\quad
+    b_D = -\frac{2}{g^2},\quad
+    c_D = \frac{r_i + \frac{g}{2}}{r_i g^2},\\
+    f_D = -\frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
+\end{multline}
+In the cylindrical coordinate system, by the coordinate $z$ (to find $S_{i,j,k}$):
+\begin{multline}
+    a_D = \frac{1}{h^2},\quad
+    b_D = -\frac{2}{h^2},\quad
+    c_D = \frac{1}{h^2},\\
+    f_D = -\frac{ (r_i + \frac{g}{2})S_{i+1,j,k-0.5} - 2 r_i S_{i,j,k-0.5} + (r_i - \frac{g}{2}) S_{i-1,j,k-0.5} }{r_i g^2}.
+\end{multline}
+In the cartesian coordinate system, by coordinate $x$ (to find $S_{i,j,k-0.5}$):
+\begin{multline}
+    a_D = \frac{1}{g^2},\quad
+    b_D = -\frac{2}{g^2},\quad
+    c_D = \frac{1}{g^2},\\
+    f_D = -\frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
+\end{multline}
+In the cartesian coordinate system, by coordinate $y$ (to find $S_{i,j,k}$):
+\begin{multline}
+    a_D = \frac{1}{h^2},\quad
+    b_D = -\frac{2}{h^2},\quad
+    c_D = \frac{1}{h^2},\\
+    f_D = -\frac{S_{i+1,j,k-0.5} - 2 S_{i,j,k-0.5} + S_{i-1,j,k-0.5}}{g^2}.
+\end{multline}
+For Michaelis-Menten reaction (for both directions is the same):
+\begin{equation}
+    f_R =
+        \begin{cases}
+            +\frac{V_{max} S_{i,j,k-1}}{K_M + S_{i,j,k-1}} &\text{for a substrate};\\
+            -\frac{V_{max} S_{i,j,k-1}}{K_M + S_{i,j,k-1}} &\text{for a product}.
+        \end{cases}
+\end{equation}
+For ``Simple'' reaction:
+\begin{equation}
+    aaa
+\end{equation}
+
+
+
 
 
 
