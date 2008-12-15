@@ -38,7 +38,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
             data[h][v] = new double*[dataSizeS];
             for (int s = 0; s < dataSizeS; s++)
             {
-                data[h][v][s] = new double[4];
+                data[h][v][s] = new double[5];
                 // Apply initial conditions.
             }
         }
@@ -70,7 +70,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontal()
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 {
     int i = 0;
     for (int h = 0; h < dataSizeH; h++)
@@ -82,17 +82,24 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontal()
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];
-                dataHVS[0] += h + v - s;
+                //dataHVS[0] += h + v - s;
                 // FIXME: Do something.
+                
+                // Apply diffusions
+                
+                // Apply reactions
             }
         }
     }
+}
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
+{
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVertical()
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 {
     int i = 0;
     for (int h = 0; h < dataSizeH; h++)
@@ -104,13 +111,15 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVertical()
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];
-                dataHVS[0] += h + v - s;
+                //dataHVS[0] += h + v - s;
                 // FIXME: Do something.
             }
         }
     }
 }
-
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
+{
+}
 
 /* ************************************************************************** */
 /* ************************************************************************** */

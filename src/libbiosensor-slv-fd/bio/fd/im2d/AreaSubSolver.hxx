@@ -17,7 +17,7 @@ private:
     log4cxx::LoggerPtr log;
     int positionH;
     int positionV;
-    double ****data;  //[h][v][s][thisLayer, prevLayer, p, q]
+    double ****data;  //[h][v][s][thisLayer, intermLayer, prevLayer, p, q]
     int dataSizeH;  // number of points in H (including boundary)
     int dataSizeV;  // number of points in V (including boundary)
     int dataSizeS;  // number of substances
@@ -42,13 +42,23 @@ public:
     /**
      *  First half-step -- horizontal.
      */
-    void solveHorizontal();
+    void solveHorizontalForward();
+
+    /**
+     *  First half-step -- horizontal.
+     */
+    void solveHorizontalBackward();
 
     /**
      *  Second half-step -- vertical.
      */
-    void solveVertical();
+    void solveVerticalForward();
 
+    /**
+     *  Second half-step -- vertical.
+     */
+    void solveVerticalBackward();
+    
 };
 
 

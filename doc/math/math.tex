@@ -47,7 +47,7 @@ In the cylindrical (r,z plane) coordinate system $S = S(r, z, t)$ and $R = R(r, 
 
 Michaelis-menten reaction:
 \begin{equation}
-    R_{mm} = <V_{max}, K_M, S, P>
+    R_{mm} = \langle V_{max}, K_M, S, P \rangle
 \end{equation}
 \begin{equation}
     R = \begin{cases}
@@ -59,12 +59,12 @@ Michaelis-menten reaction:
 %
 ``Simple'' reaction:
 \begin{equation}
-    R_{s} = <k, S_{s1}, S_{s2}, S_{r1}, S_{r2}>
+    R_{s} = \langle k, S_{s_1}, S_{s_2}, S_{p_1}, S_{p_2} \rangle
 \end{equation}
 \begin{equation}
     R =
-        - \sum_{R_s : S \in \{S_{s1}, S_{s2}\}} k S_{s1} S_{s2}
-        + \sum_{R_s : S \in \{S_{p1}, S_{p2}\}} k S_{p1} P_{p2}
+        - \sum_{R_s : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1} S_{s_2}
+        + \sum_{R_s : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1} S_{s_2}
 \end{equation}
 
 
@@ -192,7 +192,36 @@ here we replaced $r$ with $r_{i-1/2}$ instead of $r_i$.
     +\frac{1}{h^2}                      S_{i,j+1,k}
     +\frac{1}{h^2}                      S_{i,j-1,k}
 \end{multline}
-
+%
+%
+%
+Constant bound condition:
+\begin{equation}
+    S(x, y, t) = C \approx S_{i,j,k} = C,
+    \qquad
+    S(r, z, t) = C \approx S_{i,j,k} = C.
+\end{equation}
+Wall boundCondition:
+\begin{equation}
+    \left.\frac{\partial S}{\partial n}\right|_{\Gamma} = 0
+    \approx
+    \begin{cases}
+        \frac{S_{i,j,k} - S_{i+1,j,k}}{h} = 0 & \text{for vertical bounds}\\
+        \frac{S_{i,j,k} - S_{i,j+1,k}}{g} = 0 & \text{for horizontal bounds}
+    \end{cases}
+\end{equation}
+Merge condition:
+\begin{multline}
+    D_A \left.\frac{\partial S_A}{\partial n}\right|_{\Gamma} =
+    D_B \left.\frac{\partial S_B}{\partial n}\right|_{\Gamma}
+    \approx\\\approx
+    \begin{cases}
+        D_A \frac{S_{A,i-1,j,k} - S_{A,i,j,k}}{h} =
+        D_B \frac{S_{B,i,j,k} - S_{B,i+1,j,k}}{h} & \text{for vertical bounds}\\
+        D_A \frac{S_{A,i,j-1,k} - S_{A,i,j,k}}{g} =
+        D_B \frac{S_{B,i,j,k} - S_{B,i,j+1,k}}{g} & \text{for horizontal bounds}
+    \end{cases}
+\end{multline}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -247,6 +276,7 @@ In the cartesian coordinate system, by coordinate $y$ (to find $S_{i,j,k}$):
     c_D = \frac{D}{h^2},\\
     f_D = - D \frac{S_{i+1,j,k-0.5} - 2 S_{i,j,k-0.5} + S_{i-1,j,k-0.5}}{g^2}.
 \end{multline}
+
 For Michaelis-Menten reaction (for both directions is the same):
 \begin{equation}
     f_R =
@@ -257,7 +287,9 @@ For Michaelis-Menten reaction (for both directions is the same):
 \end{equation}
 For ``Simple'' reaction:
 \begin{equation}
-    aaa
+    R =
+         \sum_{R_s : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
+        -\sum_{R_s : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
 \end{equation}
 
 

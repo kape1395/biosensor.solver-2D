@@ -26,7 +26,15 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::~CornerSubSolver()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solve()
+void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveForward()
+{
+    //  FIXME: Implement
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveBackward()
 {
     //  FIXME: Implement
 }

@@ -98,38 +98,76 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
             bool lastV = v == subSolvers->sizeV();
 
             if (!lastV)
-                subSolvers->getBoundsV()[h][v]->solveThrough();
+                subSolvers->getBoundsV()[h][v]->solveThroughForward();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v]->solveHorizontal();
+                subSolvers->getAreas()[h][v]->solveHorizontalForward();
 
             if (!lastH)
-                subSolvers->getBoundsH()[h][v]->solveAlong();
+                subSolvers->getBoundsH()[h][v]->solveAlongForward();
 
-            subSolvers->getCorners()[h][v]->solve();
+            subSolvers->getCorners()[h][v]->solveForward();
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Solve "vertical" half-step in time
-    //
-    for (int h = 0; h < subSolvers->sizeH(); h++)
+    for (int h = subSolvers->sizeH() - 1; h >= 0; h--)
     {
         for (int v = 0; v < subSolvers->sizeV(); v++)
         {
             bool lastH = h == subSolvers->sizeH();
             bool lastV = v == subSolvers->sizeV();
 
-            if (!lastH)
-                subSolvers->getBoundsH()[h][v]->solveThrough();
+            if (!lastV)
+                subSolvers->getBoundsV()[h][v]->solveThroughBackward();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v]->solveVertical();
+                subSolvers->getAreas()[h][v]->solveHorizontalBackward();
+
+            if (!lastH)
+                subSolvers->getBoundsH()[h][v]->solveAlongBackward();
+
+            subSolvers->getCorners()[h][v]->solveBackward();
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Solve "vertical" half-step in time
+    //
+    for (int v = 0; v < subSolvers->sizeV(); v++)
+    {
+        for (int h = 0; h < subSolvers->sizeH(); h++)
+        {
+            bool lastH = h == subSolvers->sizeH();
+            bool lastV = v == subSolvers->sizeV();
+
+            if (!lastH)
+                subSolvers->getBoundsH()[h][v]->solveThroughForward();
+
+            if (!(lastH || lastV))
+                subSolvers->getAreas()[h][v]->solveVerticalForward();
 
             if (!lastV)
-                subSolvers->getBoundsV()[h][v]->solveAlong();
+                subSolvers->getBoundsV()[h][v]->solveAlongForward();
 
-            subSolvers->getCorners()[h][v]->solve();
+            subSolvers->getCorners()[h][v]->solveForward();
+        }
+    }
+    for (int v = subSolvers->sizeV(); v >= 0; v--)
+    {
+        for (int h = 0; h < subSolvers->sizeH(); h++)
+        {
+            bool lastH = h == subSolvers->sizeH();
+            bool lastV = v == subSolvers->sizeV();
+
+            if (!lastH)
+                subSolvers->getBoundsH()[h][v]->solveThroughBackward();
+
+            if (!(lastH || lastV))
+                subSolvers->getAreas()[h][v]->solveVerticalBackward();
+
+            if (!lastV)
+                subSolvers->getBoundsV()[h][v]->solveAlongBackward();
+
+            subSolvers->getCorners()[h][v]->solveBackward();
         }
     }
 

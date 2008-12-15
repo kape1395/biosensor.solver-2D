@@ -33,7 +33,16 @@ public:
      */
     virtual ~CornerSubSolver();
 
-    void solve();
+    /**
+     *  Solve...
+     */
+    void solveForward();
+    
+    /**
+     *  Solve...
+     */
+    void solveBackward();
+    
 };
 
 

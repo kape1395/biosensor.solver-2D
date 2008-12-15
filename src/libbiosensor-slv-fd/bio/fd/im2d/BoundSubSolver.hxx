@@ -37,12 +37,22 @@ public:
     /**
      *
      */
-    void solveThrough();
+    void solveThroughForward();
 
     /**
      *
      */
-    void solveAlong();
+    void solveThroughBackward();
+
+    /**
+     *
+     */
+    void solveAlongForward();
+    
+    /**
+     *
+     */
+    void solveAlongBackward();
     
 };
 

@@ -27,7 +27,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThrough()
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughForward()
 {
     //  FIXME: Implement
 }
@@ -35,7 +35,23 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThrough()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlong()
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughBackward()
+{
+    //  FIXME: Implement
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongForward()
+{
+    //  FIXME: Implement
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 {
     //  FIXME: Implement
 }
