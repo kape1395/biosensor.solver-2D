@@ -221,31 +221,31 @@ From \eqref{eq.im2d.time} we get:
 \end{equation}
 In the cylindrical coordinate system, by the coordinate $r$ (to find $S_{i,j,k-0.5}$):
 \begin{multline}
-    a_D = \frac{r_i - \frac{g}{2}}{r_i g^2},\quad
-    b_D = -\frac{2}{g^2},\quad
-    c_D = \frac{r_i + \frac{g}{2}}{r_i g^2},\\
-    f_D = -\frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
+    a_D = D \frac{r_i - \frac{g}{2}}{r_i g^2},\quad
+    b_D = -\frac{2 D}{g^2},\quad
+    c_D = D \frac{r_i + \frac{g}{2}}{r_i g^2},\\
+    f_D = -D \frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
 \end{multline}
 In the cylindrical coordinate system, by the coordinate $z$ (to find $S_{i,j,k}$):
 \begin{multline}
-    a_D = \frac{1}{h^2},\quad
-    b_D = -\frac{2}{h^2},\quad
-    c_D = \frac{1}{h^2},\\
-    f_D = -\frac{ (r_i + \frac{g}{2})S_{i+1,j,k-0.5} - 2 r_i S_{i,j,k-0.5} + (r_i - \frac{g}{2}) S_{i-1,j,k-0.5} }{r_i g^2}.
+    a_D = \frac{D}{h^2},\quad
+    b_D = -\frac{2 D}{h^2},\quad
+    c_D = \frac{D}{h^2},\\
+    f_D = - D \frac{ (r_i + \frac{g}{2})S_{i+1,j,k-0.5} - 2 r_i S_{i,j,k-0.5} + (r_i - \frac{g}{2}) S_{i-1,j,k-0.5} }{r_i g^2}.
 \end{multline}
 In the cartesian coordinate system, by coordinate $x$ (to find $S_{i,j,k-0.5}$):
 \begin{multline}
-    a_D = \frac{1}{g^2},\quad
-    b_D = -\frac{2}{g^2},\quad
-    c_D = \frac{1}{g^2},\\
-    f_D = -\frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
+    a_D = \frac{D}{g^2},\quad
+    b_D = -\frac{2 D}{g^2},\quad
+    c_D = \frac{D}{g^2},\\
+    f_D = - D \frac{S_{i,j+1,k-1} - 2 S_{i,j,k-1} + S_{i,j-1,k-1}}{h^2}.
 \end{multline}
 In the cartesian coordinate system, by coordinate $y$ (to find $S_{i,j,k}$):
 \begin{multline}
-    a_D = \frac{1}{h^2},\quad
-    b_D = -\frac{2}{h^2},\quad
-    c_D = \frac{1}{h^2},\\
-    f_D = -\frac{S_{i+1,j,k-0.5} - 2 S_{i,j,k-0.5} + S_{i-1,j,k-0.5}}{g^2}.
+    a_D = \frac{D}{h^2},\quad
+    b_D = -\frac{2 D}{h^2},\quad
+    c_D = \frac{D}{h^2},\\
+    f_D = - D \frac{S_{i+1,j,k-0.5} - 2 S_{i,j,k-0.5} + S_{i-1,j,k-0.5}}{g^2}.
 \end{multline}
 For Michaelis-Menten reaction (for both directions is the same):
 \begin{equation}
