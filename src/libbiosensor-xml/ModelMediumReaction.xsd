@@ -28,4 +28,22 @@
     
     
     
+    <xs:complexType name="ReductionOxidation">
+        <xs:complexContent>
+            <xs:extension base="b:MediumReaction">
+                <xs:sequence>
+                    <xs:element name="substances" type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="products"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="rate" type="b:SymbolName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ReductionOxidationElement">
+        <xs:attribute name="name" type="b:SubstanceName" use="required"/>
+        <xs:attribute name="coefficient" type="xs:integer" use="optional" default="1"/>
+    </xs:complexType>
+    
+    
+    
 </xs:schema>
