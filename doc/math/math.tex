@@ -59,14 +59,14 @@ Michaelis-menten reaction:
         \end{cases}
 \end{equation}
 %
-``Simple'' reaction:
+ReductionOxidation reaction:
 \begin{equation}
-    R_{s} = \langle k, S_{s_1}, S_{s_2}, S_{p_1}, S_{p_2} \rangle
+    R_{ro} = \langle k, S_{s_1}, S_{s_2}, S_{p_1}, S_{p_2} \rangle
 \end{equation}
 \begin{equation}
     R =
-        - \sum_{R_s : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1} S_{s_2}
-        + \sum_{R_s : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1} S_{s_2}
+        - \sum_{R_{ro} : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1} S_{s_2}
+        + \sum_{R_{ro} : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1} S_{s_2}
 \end{equation}
 
 
@@ -291,11 +291,11 @@ For Michaelis-Menten reaction (for both directions is the same):
             -\frac{V_{max} S_{i,j,k-1}}{K_M + S_{i,j,k-1}} &\text{for a product}.
         \end{cases}
 \end{equation}
-For ``Simple'' reaction:
+For ReductionOxidation reaction:
 \begin{equation}
     R =
-         \sum_{R_s : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
-        -\sum_{R_s : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
+         \sum_{R_{ro} : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
+        -\sum_{R_{ro} : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
 \end{equation}
 
 The tri-diagonal matrix can be solved easily by the following algorithm.
