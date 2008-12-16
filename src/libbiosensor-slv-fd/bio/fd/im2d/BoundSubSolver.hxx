@@ -48,12 +48,12 @@ public:
      *
      */
     void solveAlongForward();
-    
+
     /**
      *
      */
     void solveAlongBackward();
-    
+
 };
 
 

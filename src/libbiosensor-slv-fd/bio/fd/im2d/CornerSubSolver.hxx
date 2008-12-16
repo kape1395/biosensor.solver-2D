@@ -37,12 +37,12 @@ public:
      *  Solve...
      */
     void solveForward();
-    
+
     /**
      *  Solve...
      */
     void solveBackward();
-    
+
 };
 
 

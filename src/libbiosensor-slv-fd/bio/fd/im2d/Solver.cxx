@@ -40,7 +40,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
             bool lastV = v == subSolvers->sizeV();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v] = new AreaSubSolver(h, v, &structAnalyzer, &fdAnalyzer);
+                subSolvers->getAreas()[h][v] = new AreaSubSolver(this, h, v, &structAnalyzer, &fdAnalyzer);
 
             if (!lastH)
                 subSolvers->getBoundsH()[h][v] = new BoundSubSolver(h, v, true, &structAnalyzer, &fdAnalyzer);

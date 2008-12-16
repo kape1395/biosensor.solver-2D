@@ -1,6 +1,11 @@
 #ifndef BIO_SLV_FD_IM2D_Solver_HXX
 #define BIO_SLV_FD_IM2D_Solver_HXX
 #include "../../../biosensor-slv-fd.hxx"
+
+BIO_SLV_FD_IM2D_NS_BEGIN
+class Solver;
+BIO_SLV_FD_IM2D_NS_END
+
 #include "AreaSubSolver.hxx"
 #include "BoundSubSolver.hxx"
 #include "CornerSubSolver.hxx"
@@ -26,7 +31,7 @@ private:
     BIO_CFG_NS::StructureAnalyzer structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer fdAnalyzer;
     SplittedSolver *subSolvers;
-    
+
     /*
      *  It is used to switch this ant previous layers.
      *  All subsolvers must look at this attribute.

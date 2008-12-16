@@ -72,6 +72,16 @@ public:
         return twoDimensional;
     }
 
+    bool isCoordinateSystemCartesian()
+    {
+        return config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cartesian;
+    }
+
+    bool isCoordinateSystemCylindrical()
+    {
+        return config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cylindrical;
+    }
+
     /**
      *  Returns points in horizontal (x) axis.
      *
