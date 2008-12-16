@@ -2,7 +2,9 @@
 
 \title{Equations}
 \author{Karolis Petrauskas}
-\usepackage{amsmath, amsthm, amssymb}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 
 \begin{document}
 \maketitle
@@ -201,7 +203,7 @@ Constant bound condition:
     \qquad
     S(r, z, t) = C \approx S_{i,j,k} = C.
 \end{equation}
-Wall boundCondition:
+Wall bound condition:
 \begin{equation}
     \left.\frac{\partial S}{\partial n}\right|_{\Gamma} = 0
     \approx
@@ -228,7 +230,11 @@ Merge condition:
 \subsubsection{Alternating directions and tridiagonal matrixes}
 The main equation system for one area is:
 \begin{equation}
-    a S + b S + c S = f
+\begin{aligned}
+    &b_0 S_0     &+& c_0 S_1     & &             &=& f_0\\
+    &a_l S_{l-1} &+& b_l S_l     &+& c_l S_{l+1} &=& f_l,\quad l = 1..N-1\\
+    &            & & a_N S_{N-1} &+& b_N S_N     &=& f_N
+\end{aligned}
 \end{equation}
 here:
 \begin{equation}
@@ -291,6 +297,78 @@ For ``Simple'' reaction:
          \sum_{R_s : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
         -\sum_{R_s : S \in \{S_{p_1}, S_{p_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}
 \end{equation}
+
+The tri-diagonal matrix can be solved easily by the following algorithm.
+It has four main steps:
+\begin{enumerate}
+  \item 
+    Find $p_0$ and $q_0$:
+    \begin{equation}
+        p_0 = -\frac{c_0}{b_0},\quad
+        q_0 =  \frac{f_0}{b_0}
+    \end{equation}
+    For the \emph{constant} bound condition:
+    \begin{equation}
+        b_0 = 1,\ c_0 = 0,\ f_0 = C
+        \quad\Rightarrow\quad
+        p_0 = -\frac{0}{1} = 0,\
+        q_0 = \frac{C}{1} = C.
+    \end{equation}
+    For the \emph{wall condition}:
+    \begin{equation}
+        b_0 = 1,\ c_0 = -1,\ f_0 = 0
+        \quad\Rightarrow\quad
+        p_0 = -\frac{-1}{1} = 1,\
+        q_0 = \frac{0}{1} = 0.
+    \end{equation}
+    Values for $p_0$ and $q_0$ for the merge condition is calculated
+    by the formula, defined in the second step.
+    \begin{gather}
+        D_A \frac{S_{A,l-1} - S_{A,l}}{h_A} =
+        D_B \frac{S_{B,l} - S_{B,l+1}}{h_B}
+        \\
+        \frac{D_A}{h_A} S_{A,l-1} -
+        \left(\frac{D_A}{h_A} + \frac{D_B}{h_B}\right)S_{0,l} +
+        \frac{D_B}{h_B} S_{B,l+1} = 0
+    \end{gather}
+    The following coefficients should be used in \eqref{eq.im2d.trigiagonal.step2}
+    in order to find $p_0$ and $q_0$ for the \emph{merge} condition:
+    \begin{equation}
+        a_0 = \frac{D_A}{h_A},\
+        b_0 = -\left(\frac{D_A}{h_A} + \frac{D_B}{h_B}\right),\
+        c_0 = \frac{D_B}{h_B},\
+        f_0 = 0
+    \end{equation}
+  \item Recurrently find $p_i$ and $q_i$.
+    \begin{equation}\label{eq.im2d.trigiagonal.step2}
+        p_l = -\frac{c_l}{a_l p_{l-1} + b_l},\quad
+        q_l =  \frac{f_l - a_l q_{l-1}}{a_l p_{l-1} + b_l}
+    \end{equation}
+  \item Find $y_N$.
+    \begin{equation}
+        y_N = \frac{f_N - a_N q_{N-1}}{a_N p_{N-1} + b_N}
+    \end{equation}
+    For the \emph{constant} bound condition:
+    \begin{equation}
+        a_N = 0,\ b_N = 1,\ f_0 = C
+        \quad\Rightarrow\quad
+        y_N = \frac{C - 0 q_{N-1}}{0 p_{N-1} + 1} = C
+    \end{equation}
+    For the \emph{wall condition}:
+    \begin{equation}
+        a_N = 1,\ b_N = -1,\ f_0 = 0
+        \quad\Rightarrow\quad
+        y_N = \frac{0 - 1 q_{N-1}}{1 p_{N-1} - 1} = -\frac{q_{N-1}}{p_{N-1} - 1}
+    \end{equation}
+    For the \emph{merge condition} \eqref{eq.im2d.trigiagonal.step4}
+    should be used.
+  \item Recurrently find $y_i$.
+    \begin{equation}\label{eq.im2d.trigiagonal.step4}
+        y_l = p_l y_{l+1} + q_l.
+    \end{equation}
+\end{enumerate}
+
+The end.
 
 
 

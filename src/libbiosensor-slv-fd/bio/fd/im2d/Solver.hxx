@@ -26,6 +26,13 @@ private:
     BIO_CFG_NS::StructureAnalyzer structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer fdAnalyzer;
     SplittedSolver *subSolvers;
+    
+    /*
+     *  It is used to switch this ant previous layers.
+     *  All subsolvers must look at this attribute.
+     *
+    bool layersAreInversed = false;
+     */
 
 public:
     /**
