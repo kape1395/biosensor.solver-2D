@@ -1,3 +1,9 @@
+
+#include "Model.hxx"
+
+
+#include "ModelMediumReaction.hxx"
+
 #include "AreaSubSolver.hxx"
 #include <bio/Exception.hxx>
 
@@ -19,6 +25,10 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     this->positionH = positionH;
     this->positionV = positionV;
 
+    
+    ////////////////////////////////////////////////////////////////////////////
+    //  Create data structures
+    //
     ConstantAxisPart* axisPartH = dynamic_cast<ConstantAxisPart*> (fdAnalyzer->getAxisPartH(positionH));
     ConstantAxisPart* axisPartV = dynamic_cast<ConstantAxisPart*> (fdAnalyzer->getAxisPartV(positionV));
     if (axisPartH == 0 || axisPartV == 0)
@@ -62,8 +72,13 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
             }
         }
     }
+    //
+    //  Create data structures
+    ////////////////////////////////////////////////////////////////////////////
 
 
+    ////////////////////////////////////////////////////////////////////////////
+    //  Check the coordinate system
     if (structAnalyzer->isCoordinateSystemCartesian())
     {
         coordinateSystemIsCartesian = true;
@@ -78,15 +93,107 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     {
         throw Exception("Unsupported coordinate system");
     }
+    //  Check the coordinate system
+    ////////////////////////////////////////////////////////////////////////////
 
 
+    ////////////////////////////////////////////////////////////////////////////
     // Collect information about diffusions
-    D = new double[dataSizeS];
-    for (int i = 0; i < dataSizeS; i++)
     {
-        BIO_XML_NS::model::Symbol *sym = structAnalyzer->getDiffusion(i, positionH, positionV);
-        D[i] = sym == 0 ? 0.0 : sym->value();
+        //
+        //  NOTE:   The cineticts is modelled only for substances, for which
+        //          the diffusion is defined.
+        //
+        BIO_XML_NS::model::Medium *medium = structAnalyzer->getMedium(posutionH, positionV);
+        this->substIndexes = new int[this->substCount = medium->diffusion().size()];
+        
+        this->D = new double[dataSizeS];
+        int localIndex = 0;
+        for (int i = 0; i < dataSizeS; i++)
+        {
+            BIO_XML_NS::model::Symbol *sym = structAnalyzer->getDiffusion(i, positionH, positionV);
+            D[i] = sym == 0 ? 0.0 : sym->value();
+            if (sym)
+            {
+                substIndexes[localIndex++] = i;
+            }
+        }
     }
+    // Collect information about diffusions
+    ////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    // Collect information about reactions
+    {
+        typedef std::vector< BIO_XML_NS::model::MediumReaction* > reactions_vector;
+        typedef BIO_XML_NS::model::mr::MichaelisMenten R_MM;
+        typedef BIO_XML_NS::model::mr::ReductionOxidation R_RO;
+
+        reactions_vector& reactions = structAnalyzer->getReactions(positionH, positionV);
+        std::vector< ReactionMMPart > *mmParts = new std::vector< ReactionMMPart >[dataSizeS];
+        std::vector< ReactionROPart > *roParts = new std::vector< ReactionROPart >[dataSizeS];
+        for (
+            reactions_vector::iterator reaction = reactions.begin();
+            reaction < reactions.end();
+            reaction++
+        )
+        {
+            R_MM *rMM = dynamic_cast< R_MM* >(*reaction);
+            R_RO *rRO = dynamic_cast< R_RO* >(*reaction);
+            if (rMM != 0)
+            {
+                int substS = structAnalyzer->getSubstanceIndex(rMM->substrate());
+                int substP = structAnalyzer->getSubstanceIndex(rMM->product());
+                ReactionMMPart partS;
+                ReactionMMPart partP;
+                partS.substrateIndex = partP.substrateIndex = substS;
+                partS.V_max = + structAnalyzer->getSymbol(rMM->V_max())->value();
+                partP.V_max = - structAnalyzer->getSymbol(rMM->V_max())->value();
+                partS.K_M = partP.K_M = structAnalyzer->getSymbol(rMM->K_M())->value();
+                mmParts[substS].push_back(partS);
+                mmParts[substP].push_back(partP);
+            }
+            else if (rRO != 0)
+            {
+                if (rRO->substrates().size() != 2 || rRO->products().size() != 2 ||
+                        rRO->substrates()[0].coefficient() != 1 ||
+                        rRO->substrates()[1].coefficient() != 1 ||
+                        rRO->products()[0].coefficient() != 1 ||
+                        rRO->products()[1].coefficient() != 1
+                   )
+                {
+                    LOG4CXX_ERROR(log, "Implementation of RO reaction is limited: 2S + 2P without coefficients");
+                    throw Exception("Unsupported reaction.");
+                }
+
+                int substS1 = structAnalyzer->getSubstanceIndex(rRO->substrates()[0].name());
+                int substS2 = structAnalyzer->getSubstanceIndex(rRO->substrates()[1].name());
+                int substP1 = structAnalyzer->getSubstanceIndex(rRO->products()[0].name());
+                int substP2 = structAnalyzer->getSubstanceIndex(rRO->products()[1].name());
+                double rate = structAnalyzer->getSymbol(rRO->rate())->value();
+
+                ReactionROPart part;
+                part.substrate1Index = substS1;
+                part.substrate2Index = substS2;
+                part.rate = rate;
+                roParts[substS1].push_back(part);
+                roParts[substS2].push_back(part);
+                part.rate = -rate;
+                roParts[substP1].push_back(part);
+                roParts[substP2].push_back(part);
+            }
+            else
+            {
+                throw Exception("Unsupported reaction.");
+            }
+        }
+
+        // TODO: Fill class atributes by converting vectors to arrays.
+    }
+    // Collect information about reactions
+    ////////////////////////////////////////////////////////////////////////////
+
 }
 
 
@@ -95,6 +202,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 {
     delete [] D;
+    delete [] substIndexes;
 
     LOG4CXX_DEBUG(log, "~AreaSubSolver()");
     for (int h = 0; h < dataSizeH; h++)

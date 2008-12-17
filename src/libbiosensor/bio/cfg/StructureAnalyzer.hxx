@@ -2,6 +2,7 @@
 #define BIO_CFG_StructureAnalyzer_HXX
 #include "../../biosensor.hxx"
 #include "IConfigAnalyzer.hxx"
+#include "../Exception.hxx"
 #include <biosensor-xml.hxx>
 #include <vector>
 #include <log4cxx/logger.h>
@@ -112,6 +113,27 @@ public:
     std::vector< BIO_XML_NS::model::Substance* >& getSubstances()
     {
         return substances;
+    }
+
+    /**
+     *  Returns substance index by the substance name.
+     *  First substance index is 0.
+     *
+     *  \return substance index.
+     *  \throws Exception, when substance not found.
+     */
+    int getSubstanceIndex(BIO_XML_NS::model::SubstanceName& name)
+    {
+        int i = 0;
+        for (std::vector< BIO_XML_NS::model::Substance* >::iterator s = substances.begin(); s < substances.end(); s++)
+        {
+            if ((*s)->name() == name)
+            {
+                return i;
+            }
+            i++;
+        }
+        throw Exception("Substance not found by name.");
     }
 
     /**

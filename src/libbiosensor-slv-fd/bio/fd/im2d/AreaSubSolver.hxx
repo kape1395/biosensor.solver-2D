@@ -21,18 +21,22 @@ class AreaSubSolver
 {
 private:
     log4cxx::LoggerPtr log;
+    
     Solver *solver;
     int positionH;
     int positionV;
-    double ****data;  //[h][v][s][thisLayer, intermLayer, nextLayer, p, q]
+    
     static const int LAYER_INTERM = 1;
     static const int LAYER_P = 3;
     static const int LAYER_Q = 4;
+    double ****data;    //  [h][v][s][thisLayer, intermLayer, nextLayer, p, q]
+    int dataSizeH;      //  number of points in H (including boundary)
+    int dataSizeV;      //  number of points in V (including boundary)
+    int dataSizeS;      //  number of substances (FIXME: Should it be equal to substCount???)
 
+    int *substIndexes;  //  Indexes of the modelled substances.
+    int substCount;     //  Number of the modelled substances.
 
-    int dataSizeH;  // number of points in H (including boundary)
-    int dataSizeV;  // number of points in V (including boundary)
-    int dataSizeS;  // number of substances
     double stepSizeH;   // Step size by H direction.
     double stepSizeV;   // Step size by V direction.
     double startPositionH;  // position in coord. system, where this ub-area starts (H).
@@ -44,6 +48,26 @@ private:
     bool layersInverted;
 
     double *D;  // diff. coef. by substance. 0.0 means no diffusion.
+
+    // reaction related things
+    struct ReactionMMPart
+    {
+        int substrateIndex;
+        double V_max;   // with + or -, depending on the substance to apply.
+        double K_M;
+    };
+    struct ReactionROPart
+    {
+        int substrate1Index;
+        int substrate2Index;
+        double rate;    // with + or -, depending on the substance to apply.
+    };
+    ReactionMMPart **reactionsMM;   // reactionsMM[substance][MM_part];
+    int *reactionsMMPartCounts;     // reactionsMMPartCounts[substance];
+
+    ReactionROPart **reactionsRO;   // reactionsRO[substance][MM_part];
+    int *reactionsROPartCounts;     // reactionsROPartCounts[substance];
+
 
 public:
 
