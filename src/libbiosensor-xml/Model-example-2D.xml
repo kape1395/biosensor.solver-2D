@@ -100,11 +100,11 @@
     <symbol name="y4"       value="1.4E-3"  dimension="m"/>
 
     <solver xsi:type="s:Implicit2D" timeStep="5E-9">
-        <s:axis from="x1" to="x2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="x2" to="x3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="y1" to="y2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="y2" to="y3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="y3" to="y4" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:axis from="x1" to="x2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="x2" to="x3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="y1" to="y2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="y2" to="y3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="y3" to="y4" xsi:type="s:ConstantAxisPart" stepCount="200"/>
     </solver>
 
     <listener xsi:type="l:InvokeEvery" iterations="100">

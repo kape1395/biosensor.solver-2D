@@ -11,10 +11,13 @@ Before commit, make shure to run `make astyle'.
 make maintainer-clean  
 rm -rf local_install
 mkdir local_install
-./configure --prefix=`pwd`/local_install
+./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O0"
 make
 make install
 
+
+Del optimizacijos ijungimo:
+./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O2"
 
 ################################################################################
 ##    Cia matyt reikia paleisti kai pakeiciama konfiguracija

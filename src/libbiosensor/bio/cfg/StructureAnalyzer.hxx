@@ -41,7 +41,7 @@ public:
             log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
             axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
     {
-        twoDimensional = false; // it is now wery correct, but...
+        twoDimensional = false; // it is not very correct, but...
         reactions = 0;
         diffusions = 0;
         initialConcentrations = 0;
@@ -122,19 +122,16 @@ public:
      *  \return substance index.
      *  \throws Exception, when substance not found.
      */
-    int getSubstanceIndex(BIO_XML_NS::model::SubstanceName& name)
-    {
-        int i = 0;
-        for (std::vector< BIO_XML_NS::model::Substance* >::iterator s = substances.begin(); s < substances.end(); s++)
-        {
-            if ((*s)->name() == name)
-            {
-                return i;
-            }
-            i++;
-        }
-        throw Exception("Substance not found by name.");
-    }
+    int getSubstanceIndex(BIO_XML_NS::model::SubstanceName& name);
+
+    /**
+     *  Returns indexes of the substances, that are used in the specified area.
+     *
+     *  \param h Horizontal (x) coordinate of the area.
+     *  \param v Vertical (y) coordinate of the area.
+     *  \return vector of indexes (see also getSubstanceIndex).
+     */
+    std::vector<int> getSubstanceIndexesInArea(int h, int v);
 
     /**
      *  Get the reactions in the specified area.
@@ -210,11 +207,6 @@ private:
      *  Returns index of point in axis by point name.
      */
     int getPointIndexInAxis(std::vector< BIO_XML_NS::model::Symbol* >& axis, std::string& pointSymbolName);
-
-    /**
-     *  Return index of the substance by substance name.
-     */
-    int getSubstanceIndex(std::string& substanceName);
 
 };
 

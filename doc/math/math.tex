@@ -283,7 +283,9 @@ In the cartesian coordinate system, by coordinate $y$ (to find $S_{i,j,k}$):
     f_D = - D \frac{S_{i+1,j,k-0.5} - 2 S_{i,j,k-0.5} + S_{i-1,j,k-0.5}}{g^2}.
 \end{multline}
 
-For Michaelis-Menten reaction (for both directions is the same):
+For Michaelis-Menten%
+\footnote{Expression in the same for the both directions, so results can be reused}
+reaction (for both directions is the same):
 \begin{equation}
     f_R =
         \begin{cases}
@@ -291,7 +293,9 @@ For Michaelis-Menten reaction (for both directions is the same):
             -\frac{V_{max} S_{i,j,k-1}}{K_M + S_{i,j,k-1}} &\text{for a product}.
         \end{cases}
 \end{equation}
-For ReductionOxidation reaction:
+For ReductionOxidation%
+\footnote{Expression in the same for the both directions, so results can be reused}
+reaction (for both directions is the same):
 \begin{equation}
     f_R =
          \sum_{R_{ro} : S \in \{S_{s_1}, S_{s_2}\}} k S_{s_1,i,j,k-1} S_{s_2,i,j,k-1}

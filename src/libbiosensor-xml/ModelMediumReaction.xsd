@@ -32,8 +32,8 @@
         <xs:complexContent>
             <xs:extension base="b:MediumReaction">
                 <xs:sequence>
-                    <xs:element name="substrates" type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
-                    <xs:element name="products"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="substrate" type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="product"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="rate" type="b:SymbolName" use="required"/>
             </xs:extension>

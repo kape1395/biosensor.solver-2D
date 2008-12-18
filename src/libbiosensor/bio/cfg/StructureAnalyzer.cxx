@@ -207,6 +207,20 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
                 LOG4CXX_ERROR(log, "Some of needed coordinates are not specified in medium`s area");
                 throw Exception("Invalid configuration");
             }
+            if (h1 > h2)
+            {
+                LOG4CXX_WARN(log, "Swapping horizontal boundary points for area definition....");
+                int tmp = h1;
+                h1 = h2;
+                h2 = tmp;
+            }
+            if (v1 > v2)
+            {
+                LOG4CXX_WARN(log, "Swapping vertical boundary points for area definition....");
+                int tmp = v1;
+                v1 = v2;
+                v2 = tmp;
+            }
             for (int h = h1; h < h2; h++)
             {
                 for (int v = v1; v < v2; v++)
@@ -308,7 +322,7 @@ int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(std::vector< BIO_XML_NS::
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(std::string& substanceName)
+int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(BIO_XML_NS::model::SubstanceName& substanceName)
 {
     int i = 0;
     for (std::vector< BIO_XML_NS::model::Substance* >::iterator it = substances.begin(); it < substances.end(); it++, i++)
@@ -318,6 +332,23 @@ int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(std::string& substanceName)
     }
     LOG4CXX_ERROR(log, "Substance nor found by name.");
     throw Exception("Invalid configuration");
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h, int v)
+{
+    std::vector<int> indexes;
+    for (int i = 0; i < getSubstances().size(); i++)
+    {
+        BIO_XML_NS::model::Symbol *sym = getDiffusion(i, h, v);
+        if (sym != 0)
+        {
+            indexes.push_back(i);
+        }
+    }
+    return indexes;
 }
 
 

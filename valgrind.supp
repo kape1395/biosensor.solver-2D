@@ -1,103 +1,30 @@
 {
-   <insert a suppression name here>
+   log4cxx_bugs1
    Memcheck:Addr1
-   fun:strncmp
-   fun:__add_to_environ
-   fun:putenv
-   fun:_ZN7log4cxx7helpers8TimeZoneC1ERKSs
-   fun:_ZN7log4cxx7helpers8TimeZone11getTimeZoneERKSs
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-2.6.1.so
+   fun:getenv
 }
 {
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:strncmp
-   fun:__add_to_environ
-   fun:putenv
-   fun:_ZN7log4cxx7helpers8TimeZoneC1ERKSs
-   fun:_ZN7log4cxx7helpers8TimeZone11getTimeZoneERKSs
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-2.6.1.so
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:strncmp
-   fun:__add_to_environ
-   fun:putenv
-   fun:_ZN7log4cxx7helpers8TimeZoneC1ERKSs
-   fun:_ZN7log4cxx7helpers8TimeZone11getTimeZoneERKSs
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-2.6.1.so
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:strncmp
-   fun:__add_to_environ
-   fun:putenv
-   fun:_ZN7log4cxx7helpers8TimeZoneC1ERKSs
-   fun:_ZN7log4cxx7helpers8TimeZone11getTimeZoneERKSs
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-2.6.1.so
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:__add_to_environ
-   fun:putenv
-   fun:_ZN7log4cxx7helpers8TimeZoneC1ERKSs
-   fun:_ZN7log4cxx7helpers8TimeZone11getTimeZoneERKSs
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   obj:/usr/lib/liblog4cxx.so.9.0.0
-   fun:call_init
-   fun:_dl_init
-   obj:/lib/ld-2.6.1.so
-   obj:*
-   obj:*
-}
-{
-   <insert a suppression name here>
+   log4cxx_bugs2
    Memcheck:Addr2
    fun:getenv
-   fun:_ZN7log4cxx7helpers6System11getPropertyERKSs
-   fun:_ZN7log4cxx7helpers15OptionConverter17getSystemPropertyERKSsS3_
-   fun:_ZN7log4cxx10LogManager19getLoggerRepositoryEv
-   fun:_ZN7log4cxx10LogManager9getLoggerERKSs
-   fun:_ZN7log4cxx6Logger9getLoggerERKSs
-   fun:main
 }
 {
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   fun:_ZN7log4cxx7helpers6System11getPropertyERKSs
-   fun:_ZN7log4cxx7helpers15OptionConverter17getSystemPropertyERKSsS3_
-   fun:_ZN7log4cxx10LogManager19getLoggerRepositoryEv
-   fun:_ZN7log4cxx10LogManager9getLoggerERKSs
-   fun:_ZN7log4cxx6Logger9getLoggerERKSs
-   fun:main
+   log4cxx_bugs3
+   Memcheck:Addr1
+   fun:tzset_internal
 }
 {
-   <insert a suppression name here>
+   log4cxx_bugs4
+   Memcheck:Addr1
+   fun:__add_to_environ
+}
+{
+   log4cxx_bugs5
+   Memcheck:Addr1
+   fun:strncmp
+}
+{
+   log4cxx_bugs6
    Memcheck:Free
    fun:_ZdlPv
    fun:_ZN7log4cxx7helpers15StringTokenizerD1Ev
@@ -112,145 +39,7 @@
    fun:main
 }
 {
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   fun:tzset_internal
-   fun:__tz_convert
-   fun:gmtime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx7helpers22AppenderAttachableImpl21appendLoopOnAppendersERKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:getenv
-   fun:tzset_internal
-   fun:__tz_convert
-   fun:gmtime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx7helpers22AppenderAttachableImpl21appendLoopOnAppendersERKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:tzset_internal
-   fun:__tz_convert
-   fun:gmtime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx7helpers22AppenderAttachableImpl21appendLoopOnAppendersERKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx6Logger13callAppendersERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   fun:tzset_internal
-   fun:tzset
-   fun:strftime_l
-   fun:strftime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:getenv
-   fun:tzset_internal
-   fun:tzset
-   fun:strftime_l
-   fun:strftime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr1
-   fun:tzset_internal
-   fun:tzset
-   fun:strftime_l
-   fun:strftime
-   fun:_ZNK7log4cxx7helpers10DateFormat6formatERSox
-   fun:_ZNK7log4cxx7helpers13PatternParser20DatePatternConverter7convertERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx7helpers16PatternConverter6formatERSoRKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZNK7log4cxx13PatternLayout6formatERSoRKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender9subAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx14WriterAppender6appendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx16AppenderSkeleton8doAppendERKNS_7helpers10ObjectPtrTINS_3spi12LoggingEventEEE
-   fun:_ZN7log4cxx7helpers22AppenderAttachableImpl21appendLoopOnAppendersERKNS0_10ObjectPtrTINS_3spi12LoggingEventEEE
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   fun:u_getDataDirectory_3_6
-   obj:/usr/lib/libicuuc.so.36.0
-   obj:/usr/lib/libicuuc.so.36.0
-   fun:ucnv_io_countTotalAliases_3_6
-   fun:u_init_3_6
-   fun:_ZN11xercesc_2_715ICUTransServiceC1Ev
-   fun:_ZN11xercesc_2_716XMLPlatformUtils16makeTransServiceEv
-   fun:_ZN11xercesc_2_716XMLPlatformUtils10InitializeEPKcS2_PNS_12PanicHandlerEPNS_13MemoryManagerEb
-   fun:main
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   obj:/usr/lib/libicuuc.so.36.0
-   fun:uprv_getDefaultCodepage_3_6
-   fun:ucnv_getDefaultName_3_6
-   fun:ucnv_loadSharedData_3_6
-   fun:ucnv_createConverter_3_6
-   fun:ucnv_open_3_6
-   fun:_ZN11xercesc_2_715ICUTransService20makeNewLCPTranscoderEv
-   fun:_ZN11xercesc_2_716XMLPlatformUtils10InitializeEPKcS2_PNS_12PanicHandlerEPNS_13MemoryManagerEb
-   fun:main
-}
-{
-   <insert a suppression name here>
-   Memcheck:Addr2
-   fun:getenv
-   obj:/usr/lib/libicuuc.so.36.0
-   fun:uprv_getDefaultCodepage_3_6
-   fun:ucnv_getDefaultName_3_6
-   fun:ucnv_loadSharedData_3_6
-   fun:ucnv_createConverter_3_6
-   fun:ucnv_open_3_6
-   fun:_ZN11xercesc_2_715ICUTransService20makeNewLCPTranscoderEv
-   fun:_ZN11xercesc_2_716XMLPlatformUtils10InitializeEPKcS2_PNS_12PanicHandlerEPNS_13MemoryManagerEb
-   fun:main
-}
-{
-   <insert a suppression name here>
+   xerces_bugs1
    Memcheck:Cond
    fun:_ZN11xercesc_2_717XMLUTF8Transcoder13transcodeFromEPKhjPtjRjPh
    fun:_ZN11xercesc_2_79XMLReader14xcodeMoreCharsEPtPhj
