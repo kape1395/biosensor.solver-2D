@@ -6,11 +6,11 @@
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
         AbstractIterativeSolver(config),
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::Solver"))
+        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::Solver")),
+        structAnalyzer(config),
+        fdAnalyzer(config)
 {
     LOG4CXX_DEBUG(log, "Solver()...");
-    structAnalyzer.analyze(getConfig());
-    fdAnalyzer.analyze(getConfig());
 
     if (!structAnalyzer.isTwoDimensional())
     {

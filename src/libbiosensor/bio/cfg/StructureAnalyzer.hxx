@@ -1,7 +1,6 @@
 #ifndef BIO_CFG_StructureAnalyzer_HXX
 #define BIO_CFG_StructureAnalyzer_HXX
 #include "../../biosensor.hxx"
-#include "IConfigAnalyzer.hxx"
 #include "../Exception.hxx"
 #include <biosensor-xml.hxx>
 #include <vector>
@@ -14,7 +13,7 @@ BIO_CFG_NS_BEGIN
  *  This class is just helper now, but in the future it can help to hide
  *  configuration xml-format from the rest of the code.
  */
-class StructureAnalyzer : public IConfigAnalyzer
+class StructureAnalyzer
 {
 private:
     log4cxx::LoggerPtr log;
@@ -36,33 +35,14 @@ public:
 
     /**
      *  Constructor.
+     *  \param config  Configuration to be analyzed.
      */
-    StructureAnalyzer() :
-            log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
-            axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
-    {
-        twoDimensional = false; // it is not very correct, but...
-        reactions = 0;
-        diffusions = 0;
-        initialConcentrations = 0;
-        mediums = 0;
-    }
+    StructureAnalyzer(BIO_XML_NS::model::Model* config);
 
     /**
      *  Destructor.
      */
-    virtual ~StructureAnalyzer()
-    {
-        analyze(0);
-    }
-
-    /**
-     *  Setter for configuration, to be analyzed.
-     *  Should analysis be performed in this method?
-     *
-     *  \param config  Configuration to be analyzed. This also can be 0.
-     */
-    virtual void analyze(BIO_XML_NS::model::Model* config);
+    virtual ~StructureAnalyzer();
 
     /**
      *  Returns true if analyzed model is two-dimensional and

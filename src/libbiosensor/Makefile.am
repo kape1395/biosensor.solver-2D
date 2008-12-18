@@ -6,7 +6,6 @@ libbiosensor_la_LIBADD  = \
 
 libbiosensor_la_SOURCES = \
     bio/Exception.cxx \
-    bio/cfg/IConfigAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
     bio/cfg/StructureAnalyzer.cxx \
@@ -36,7 +35,6 @@ libbiosensor_la_SOURCES = \
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
     bio/Exception.hxx \
-    bio/cfg/IConfigAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
     bio/cfg/StructureAnalyzer.hxx \

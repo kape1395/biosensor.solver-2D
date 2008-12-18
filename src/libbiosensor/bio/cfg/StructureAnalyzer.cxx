@@ -4,8 +4,17 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
+BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
+    BIO_XML_NS::model::Model* config
+) :
+        log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
+        axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
 {
+    twoDimensional = false; // it is not very correct, but...
+    reactions = 0;
+    diffusions = 0;
+    initialConcentrations = 0;
+    mediums = 0;
 
     typedef BIO_XML_NS::model::Model::axis_iterator it_axis;
     typedef BIO_XML_NS::model::Model::substance_iterator it_subst;
@@ -14,62 +23,9 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     typedef BIO_XML_NS::model::Medium::substance_iterator it_diff;
     typedef BIO_XML_NS::model::Medium::reaction_iterator it_reac;
 
+    LOG4CXX_INFO(log, "StructureAnalyzer()...");
 
-    LOG4CXX_INFO(log, "cleanup...");
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Release all old data.
-    //
-    twoDimensional = false;
-    for (int h = 0; h < pointsH.size(); h++)
-    {
-        for (int v = 0; v < pointsV.size(); v++)
-        {
-            delete [] diffusions[h][v];
-            delete [] initialConcentrations[h][v];
-        }
-        delete [] reactions[h];
-        delete [] diffusions[h];
-        delete [] initialConcentrations[h];
-        delete [] mediums[h];
-    }
-    if (reactions)
-    {
-        delete [] reactions;
-        reactions = 0;
-    }
-    if (diffusions)
-    {
-        delete [] diffusions;
-        diffusions = 0;
-    }
-    if (initialConcentrations)
-    {
-        delete [] initialConcentrations;
-        initialConcentrations = 0;
-    }
-    if (mediums)
-    {
-        delete [] mediums;
-        mediums = 0;
-    }
-    pointsH.clear();
-    pointsV.clear();
-    substances.clear();
-    //
-    //  Release all old data.
-    ////////////////////////////////////////////////////////////////////////////
-
-    LOG4CXX_INFO(log, "cleanup... Done");
-
-
-    //  If 0 is passed as config, only cleanup should be performed.
     this->config = config;
-    if (config == 0)
-        return;
-
-
-    LOG4CXX_INFO(log, "analyze...");
 
     ////////////////////////////////////////////////////////////////////////////
     //  Fill pointsH and pointsV
@@ -274,7 +230,56 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     //  Fill diffusions and reactions.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG4CXX_INFO(log, "analyze... Done");
+    LOG4CXX_INFO(log, "StructureAnalyzer()... Done");
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
+{
+    LOG4CXX_INFO(log, "~StructureAnalyzer()...");
+
+    twoDimensional = false;
+    for (int h = 0; h < pointsH.size(); h++)
+    {
+        for (int v = 0; v < pointsV.size(); v++)
+        {
+            delete [] diffusions[h][v];
+            delete [] initialConcentrations[h][v];
+        }
+        delete [] reactions[h];
+        delete [] diffusions[h];
+        delete [] initialConcentrations[h];
+        delete [] mediums[h];
+    }
+    if (reactions)
+    {
+        delete [] reactions;
+        reactions = 0;
+    }
+    if (diffusions)
+    {
+        delete [] diffusions;
+        diffusions = 0;
+    }
+    if (initialConcentrations)
+    {
+        delete [] initialConcentrations;
+        initialConcentrations = 0;
+    }
+    if (mediums)
+    {
+        delete [] mediums;
+        mediums = 0;
+    }
+    pointsH.clear();
+    pointsV.clear();
+    substances.clear();
+
+    config = 0;
+
+    LOG4CXX_INFO(log, "~StructureAnalyzer()... Done");
 }
 
 

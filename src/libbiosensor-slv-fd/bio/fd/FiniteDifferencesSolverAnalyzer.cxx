@@ -9,10 +9,16 @@
  *  NOTE: There is a litle of code duplication.
  *  NOTE: For now only ConstantAxisPart elements are supported.
  */
-void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::analyze(
+BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     BIO_XML_NS::model::Model* config
-)
+) :
+        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::FiniteDifferencesSolverAnalyzer")),
+        structureAnalyzer(config)
 {
+    this->config = 0;
+    this->axisPartsH = 0;
+    this->axisPartsV = 0;
+
     using BIO_XML_NS::model::Symbol;
     using BIO_XML_NS::model::solver::FiniteDifferences;
     using BIO_XML_NS::model::solver::Axis;
@@ -20,38 +26,9 @@ void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::analyze(
     typedef std::vector<Symbol*>::iterator Symbol_it;
     typedef FiniteDifferences::axis_iterator Axis_it;
 
-    LOG4CXX_INFO(log, "cleanup...");
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  Release all old data.
-    //
-    if (axisPartsH)
-    {
-        delete[] axisPartsH;
-        axisPartsH = 0;
-    }
-    if (axisPartsV)
-    {
-        delete[] axisPartsV;
-        axisPartsV = 0;
-    }
-    //
-    //  Release all old data.
-    ////////////////////////////////////////////////////////////////////////////
-
-    LOG4CXX_INFO(log, "cleanup... Done");
-
+    LOG4CXX_INFO(log, "FiniteDifferencesSolverAnalyzer()...");
 
     this->config = config;
-    this->structureAnalyzer.analyze(config);
-
-    //  If 0 is passed as config, only cleanup should be performed.
-    if (config == 0)
-        return;
-
-
-    LOG4CXX_INFO(log, "analyze...");
-
 
     FiniteDifferences* fdSolver = dynamic_cast<FiniteDifferences*>(&config->solver());
     if (!fdSolver)
@@ -144,7 +121,34 @@ void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::analyze(
     //  Collect axis-parts and assign them to the concrete "cells"
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG4CXX_INFO(log, "analyze... Done");
+    LOG4CXX_INFO(log, "FiniteDifferencesSolverAnalyzer()... Done");
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer()
+{
+    LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()...");
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Release all old data.
+    //
+    if (axisPartsH)
+    {
+        delete[] axisPartsH;
+        axisPartsH = 0;
+    }
+    if (axisPartsV)
+    {
+        delete[] axisPartsV;
+        axisPartsV = 0;
+    }
+    //
+    //  Release all old data.
+    ////////////////////////////////////////////////////////////////////////////
+
+    LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()... Done");
 }
 
 
