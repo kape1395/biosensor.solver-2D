@@ -1,10 +1,6 @@
-
-#include "Model.hxx"
-
-
-#include "ModelMediumReaction.hxx"
-
 #include "AreaSubSolver.hxx"
+#include "Model.hxx"
+#include "ModelMediumReaction.hxx"
 #include <bio/Exception.hxx>
 
 /* ************************************************************************** */
@@ -96,8 +92,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 
                 // Apply initial conditions.
                 data[h][v][s][getCurrentLayerIndex()] = structAnalyzer->getInitialConcentration(
-                                       substanceIndexes[s], positionH, positionV
-                                   )->value();
+                                                            substanceIndexes[s], positionH, positionV
+                                                        )->value();
             }
         }
     }
@@ -273,7 +269,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 
     double timeStep = this->solver->getTimeStep();
     int layerPrev = this->getPreviousLayerIndex();
-    int i = 0;
+
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {
         double r = startPositionH + stepSizeH * h;
@@ -324,14 +320,14 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 {
                     ReactionMMPart mm = reactionsMM[s][r];
                     f_R += (mm.V_max * dataHV[mm.substrateIndex][layerPrev])
-                         / (mm.K_M + dataHV[mm.substrateIndex][layerPrev]);
+                           / (mm.K_M + dataHV[mm.substrateIndex][layerPrev]);
                 }
                 for (int r = 0; r < reactionsROPartCounts[s]; r++)
                 {
                     ReactionROPart ro = reactionsRO[s][r];
                     f_R += ro.rate
-                         * dataHV[ro.substrate1Index][layerPrev]
-                         * dataHV[ro.substrate2Index][layerPrev];
+                           * dataHV[ro.substrate1Index][layerPrev]
+                           * dataHV[ro.substrate2Index][layerPrev];
                 }
                 f += dataHVS[LAYER_f_R] = f_R;
 
@@ -375,23 +371,65 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 {
-    /*
-    int i = 0;
-    for (int h = 0; h < dataSizeH; h++)
+    double timeStep = this->solver->getTimeStep();
+
+    for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {
+        double r = startPositionH + stepSizeH * h;
         double ***dataH = data[h];
-        for (int v = 0; v < dataSizeV; v++)
+        for (int v = 1; v < dataSizeV - 1; v++) // dont calculate boundaries
         {
             double **dataHV = dataH[v];
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];
-                //dataHVS[0] += h + v - s;
-                // FIXME: Do something.
+
+                //
+                //  Time part of the coefficients (b+=b_T, f+=f_T+f_R)
+                //  Saved reaction part is also added here.
+                //
+                double a = 0.0;
+                double b = -2.0 / timeStep;                             // b_T
+                double c = 0.0;
+                double f = (-2.0 * dataHVS[LAYER_INTERM] / timeStep)    // f_T
+                           + dataHVS[LAYER_f_R];                        // f_R
+
+
+                //
+                //  Diffusion part (a=a_D, b+=b_D, c=c_D, f+=f_D)
+                //
+                a = c = D[s] / (stepSizeV * stepSizeV);
+                b += - 2.0 * a;
+                if (coordinateSystemIsCartesian)
+                {
+                    f += (- D[s] / (stepSizeH * stepSizeH)) * (
+                             data[h+1][v][s][LAYER_INTERM]
+                             - 2.0 * dataHVS[LAYER_INTERM]
+                             + data[h-1][v][s][LAYER_INTERM]
+                         );
+                }
+                else    // coordinateSystemIsCylindrical
+                {
+                    f += (- D[s] / (r * stepSizeH * stepSizeH)) * (
+                             + (r + stepSizeH / 2) * data[h+1][v][s][LAYER_INTERM]
+                             - 2.0 * r * dataHVS[LAYER_INTERM]
+                             + (r - stepSizeH / 2) * data[h-1][v][s][LAYER_INTERM]
+                         );
+                }
+
+                //
+                //  Reaction part (f+=f_R) is alredy added together with f_T)
+                //
+
+                //
+                // And now we are able to calculate layers:
+                //
+                double tmp = a * data[h - 1][v][s][LAYER_P] + b;
+                dataHVS[LAYER_P] = - c / tmp;
+                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / tmp;
             }
         }
     }
-     */
 }
 
 
