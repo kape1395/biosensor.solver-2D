@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model
-    xmlns   ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns:bc="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns:mr="http://lt.5grupe.karolis/biosensor/model/mr"
-    xmlns:s ="http://lt.5grupe.karolis/biosensor/model/s"
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model    Model.xsd
-                        http://lt.5grupe.karolis/biosensor/model/bc ModelBoundCondition.xsd
-                        http://lt.5grupe.karolis/biosensor/model/mr ModelMediumReaction.xsd
-                        http://lt.5grupe.karolis/biosensor/model/s  ModelSolver.xsd"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bound    ModelBound.xsd
+                        http://lt.5grupe.karolis/biosensor/model/reaction ModelReaction.xsd
+                        http://lt.5grupe.karolis/biosensor/model/solver   ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/listener ModelListener.xsd"
     coordinateSystem="Linear">
 
     <axis name="x">
@@ -22,9 +24,9 @@
     <substance name="P"/>
 
     <medium name="PerforatedMembrane">
-        <diffusion substance="S" coefficient="D_Per_S" initial="S_0"/>
-        <diffusion substance="P" coefficient="D_Per_P" initial="P_0"/>
-        <reaction xsi:type="mr:MichaelisMenten"
+        <substance name="S" diffusion="D_Per_S" initial="S_0"/>
+        <substance name="P" diffusion="D_Per_P" initial="P_0"/>
+        <reaction xsi:type="r:MichaelisMenten"
             substrate="S"
             product="P"
             V_max="V_max_Per"
@@ -33,9 +35,9 @@
         <area from="x1" to="x2"/>
     </medium>
     <medium name="Enzyme">
-        <diffusion substance="S" coefficient="D_Enz_S" initial="S_0"/>
-        <diffusion substance="P" coefficient="D_Enz_P" initial="P_0"/>
-        <reaction xsi:type="mr:MichaelisMenten"
+        <substance name="S" diffusion="D_Enz_S" initial="S_0"/>
+        <substance name="P" diffusion="D_Enz_P" initial="P_0"/>
+        <reaction xsi:type="r:MichaelisMenten"
             substrate="S"
             product="P"
             V_max="V_max_Enz"
@@ -44,19 +46,16 @@
         <area from="x2" to="x3"/>
     </medium>
     <medium name="SelectiveMembrane">
-        <diffusion substance="P" coefficient="D_Sel_P" initial="P_0"/>
+        <substance name="P" diffusion="D_Sel_P" initial="P_0"/>
         <area from="x3" to="x4"/>
     </medium>
 
     <bound at="x1">
-        <condition substance="S" xsi:type="bc:Constant" concentration="S_Ext"/>
-        <condition substance="P" xsi:type="bc:Constant" concentration="P_Ext"/>
-        <initial substance="S" concentration="S_Ext"/>
-        <initial substance="P" concentration="P_Ext"/>
+        <substance name="S" xsi:type="b:Constant" concentration="S_Ext" initial="S_Ext"/>
+        <substance name="P" xsi:type="b:Constant" concentration="P_Ext" initial="P_Ext"/>
     </bound>
     <bound at="x4">
-        <condition substance="P" xsi:type="bc:Constant" concentration="E_0"/>
-        <initial substance="P" concentration="E_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="E_0" initial="E_0"/>
     </bound>
 
     <electrode name="Electrode">

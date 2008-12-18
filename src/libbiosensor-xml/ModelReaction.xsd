@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/mr"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/mr"
-    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:m         ="http://lt.5grupe.karolis/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -17,11 +17,11 @@
     
     <xs:complexType name="MichaelisMenten">
         <xs:complexContent>
-            <xs:extension base="b:MediumReaction">
-                <xs:attribute name="substrate" type="b:SubstanceName"  use="required"/>
-                <xs:attribute name="product"   type="b:SubstanceName"  use="required"/>
-                <xs:attribute name="V_max"     type="b:SymbolName"     use="required"/>
-                <xs:attribute name="K_M"       type="b:SymbolName"     use="required"/>
+            <xs:extension base="m:MediumReaction">
+                <xs:attribute name="substrate" type="m:SubstanceName"  use="required"/>
+                <xs:attribute name="product"   type="m:SubstanceName"  use="required"/>
+                <xs:attribute name="V_max"     type="m:SymbolName"     use="required"/>
+                <xs:attribute name="K_M"       type="m:SymbolName"     use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -30,17 +30,17 @@
     
     <xs:complexType name="ReductionOxidation">
         <xs:complexContent>
-            <xs:extension base="b:MediumReaction">
+            <xs:extension base="m:MediumReaction">
                 <xs:sequence>
                     <xs:element name="substrate" type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
                     <xs:element name="product"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
                 </xs:sequence>
-                <xs:attribute name="rate" type="b:SymbolName" use="required"/>
+                <xs:attribute name="rate" type="m:SymbolName" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="ReductionOxidationElement">
-        <xs:attribute name="name" type="b:SubstanceName" use="required"/>
+        <xs:attribute name="name" type="m:SubstanceName" use="required"/>
         <xs:attribute name="coefficient" type="xs:integer" use="optional" default="1"/>
     </xs:complexType>
     

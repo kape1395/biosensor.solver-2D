@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/l"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/l"
-    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/listener"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/listener"
+    xmlns:m         ="http://lt.5grupe.karolis/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -17,9 +17,9 @@
     
     <xs:complexType name="InvokeEvery">
         <xs:complexContent>
-            <xs:extension base="b:Listener">
+            <xs:extension base="m:Listener">
                 <xs:sequence>
-                    <xs:element name="listener" type="b:Listener" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="listener" type="m:Listener" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="iterations" type="xs:integer" use="required"/>
             </xs:extension>
@@ -29,7 +29,7 @@
     
     <xs:complexType name="StopAfter">
         <xs:complexContent>
-            <xs:extension base="b:Listener">
+            <xs:extension base="m:Listener">
                 <xs:attribute name="iterations" type="xs:integer" use="required"/>
             </xs:extension>
         </xs:complexContent>

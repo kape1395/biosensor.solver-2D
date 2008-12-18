@@ -1,6 +1,6 @@
 #include "AreaSubSolver.hxx"
 #include "Model.hxx"
-#include "ModelMediumReaction.hxx"
+#include "ModelReaction.hxx"
 #include <bio/Exception.hxx>
 
 /* ************************************************************************** */
@@ -13,8 +13,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::AreaSubSolver"))
 {
-    using BIO_XML_NS::model::s::Axis;
-    using BIO_XML_NS::model::s::ConstantAxisPart;
+    using BIO_XML_NS::model::solver::Axis;
+    using BIO_XML_NS::model::solver::ConstantAxisPart;
 
     LOG4CXX_DEBUG(log, "AreaSubSolver()");
     this->solver = solver;
@@ -117,8 +117,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     // Collect information about reactions
     {
         typedef std::vector< BIO_XML_NS::model::MediumReaction* > reactions_vector;
-        typedef BIO_XML_NS::model::mr::MichaelisMenten R_MM;
-        typedef BIO_XML_NS::model::mr::ReductionOxidation R_RO;
+        typedef BIO_XML_NS::model::reaction::MichaelisMenten R_MM;
+        typedef BIO_XML_NS::model::reaction::ReductionOxidation R_RO;
 
         reactions_vector& reactions = structAnalyzer->getReactions(positionH, positionV);
         std::vector< ReactionMMPart > *mmParts = new std::vector< ReactionMMPart >[dataSizeS];
@@ -264,6 +264,12 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
  */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 {
+    if (dataSizeS == 0)
+    {
+        // Nothing to solve...
+        return;
+    }
+
     // This "solve method" is executed firstly, so we must invert layers.
     dataLayersInverted = !dataLayersInverted;
 
@@ -347,6 +353,12 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 {
+    if (dataSizeS == 0)
+    {
+        // Nothing to solve...
+        return;
+    }
+
     for (int h = dataSizeH - 2; h > 0; h--) // dont calculate boundaries
     {
         double ***dataH = data[h];
@@ -371,6 +383,12 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 {
+    if (dataSizeS == 0)
+    {
+        // Nothing to solve...
+        return;
+    }
+
     double timeStep = this->solver->getTimeStep();
 
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
@@ -437,6 +455,12 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
 {
+    if (dataSizeS == 0)
+    {
+        // Nothing to solve...
+        return;
+    }
+
     int layerCurrent = getCurrentLayerIndex();
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {

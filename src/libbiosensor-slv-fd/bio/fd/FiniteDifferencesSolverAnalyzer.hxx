@@ -21,8 +21,8 @@ private:
     BIO_XML_NS::model::Model* config;
 
     BIO_CFG_NS::StructureAnalyzer structureAnalyzer;
-    BIO_XML_NS::model::s::Axis** axisPartsH;
-    BIO_XML_NS::model::s::Axis** axisPartsV;
+    BIO_XML_NS::model::solver::Axis** axisPartsH;
+    BIO_XML_NS::model::solver::Axis** axisPartsV;
 
 
 public:
@@ -55,12 +55,12 @@ public:
     virtual void analyze(BIO_XML_NS::model::Model* config);
 
 
-    BIO_XML_NS::model::s::Axis* getAxisPartH(int index)
+    BIO_XML_NS::model::solver::Axis* getAxisPartH(int index)
     {
         return axisPartsH[index];
     }
 
-    BIO_XML_NS::model::s::Axis* getAxisPartV(int index)
+    BIO_XML_NS::model::solver::Axis* getAxisPartV(int index)
     {
         return axisPartsV[index];
     }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/s"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/s"
-    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:m         ="http://lt.5grupe.karolis/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -17,7 +17,7 @@
     
     <xs:complexType name="FiniteDifferences">
         <xs:complexContent>
-            <xs:extension base="b:Solver">
+            <xs:extension base="m:Solver">
                 <xs:sequence>
                     <xs:element name="axis" type="Axis" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
@@ -53,8 +53,8 @@
     
     
     <xs:complexType name="Axis">
-        <xs:attribute name="from" type="b:SymbolName" use="required"/>
-        <xs:attribute name="to"   type="b:SymbolName" use="required"/>
+        <xs:attribute name="from" type="m:SymbolName" use="required"/>
+        <xs:attribute name="to"   type="m:SymbolName" use="required"/>
     </xs:complexType>
     <xs:complexType name="ConstantAxisPart">
         <xs:complexContent>

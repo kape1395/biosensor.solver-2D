@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model
-    xmlns   ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns:bc="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns:mr="http://lt.5grupe.karolis/biosensor/model/mr"
-    xmlns:s ="http://lt.5grupe.karolis/biosensor/model/s"
-    xmlns:l ="http://lt.5grupe.karolis/biosensor/model/l"
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model    Model.xsd
-                        http://lt.5grupe.karolis/biosensor/model/bc ModelBoundCondition.xsd
-                        http://lt.5grupe.karolis/biosensor/model/mr ModelMediumReaction.xsd
-                        http://lt.5grupe.karolis/biosensor/model/s  ModelSolver.xsd
-                        http://lt.5grupe.karolis/biosensor/model/l  ModelListener.xsd"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bound    ModelBound.xsd
+                        http://lt.5grupe.karolis/biosensor/model/reaction ModelReaction.xsd
+                        http://lt.5grupe.karolis/biosensor/model/solver   ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/listener ModelListener.xsd"
     coordinateSystem="Cylindrical">
 
     <axis name="r">
@@ -35,57 +35,57 @@
 
 
     <medium name="\Omega_1">
-        <diffusion substance="S"     coefficient="D_Diff_S" initial="0"/>
-        <diffusion substance="M_ox"  coefficient="D_Diff_M" initial="0"/>
-        <diffusion substance="M_red" coefficient="D_Diff_M" initial="0"/>
+        <substance name="S"     diffusion="D_Diff_S" initial="0"/>
+        <substance name="M_ox"  diffusion="D_Diff_M" initial="0"/>
+        <substance name="M_red" diffusion="D_Diff_M" initial="0"/>
         <area top="z1" bottom="z0" left="r0" right="r2"/>
     </medium>
     <medium name="\Omega_2">
-        <diffusion substance="S"     coefficient="D_Enz_S" initial="0"/>
-        <diffusion substance="P"     coefficient="D_Enz_P" initial="0"/>
-        <diffusion substance="E_ox"  coefficient="D_Enz_E" initial="0"/>
-        <diffusion substance="E_red" coefficient="D_Enz_E" initial="0"/>
-        <diffusion substance="M_ox"  coefficient="D_Enz_M" initial="0"/>
-        <diffusion substance="M_red" coefficient="D_Enz_M" initial="0"/>
-        <reaction xsi:type="mr:ReductionOxidation" rate="k1">
-            <mr:substrate name="E_ox"/>
-            <mr:substrate name="S"/>
-            <mr:product name="E_red"/>
-            <mr:product name="P"/>
+        <substance name="S"     diffusion="D_Enz_S" initial="0"/>
+        <substance name="P"     diffusion="D_Enz_P" initial="0"/>
+        <substance name="E_ox"  diffusion="D_Enz_E" initial="0"/>
+        <substance name="E_red" diffusion="D_Enz_E" initial="0"/>
+        <substance name="M_ox"  diffusion="D_Enz_M" initial="0"/>
+        <substance name="M_red" diffusion="D_Enz_M" initial="0"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k1">
+            <r:substrate name="E_ox"/>
+            <r:substrate name="S"/>
+            <r:product name="E_red"/>
+            <r:product name="P"/>
         </reaction>
-        <reaction xsi:type="mr:ReductionOxidation" rate="k2">
-            <mr:substrate name="E_red"/>
-            <mr:substrate name="M_ox"/>
-            <mr:product name="E_ox"/>
-            <mr:product name="M_red"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k2">
+            <r:substrate name="E_red"/>
+            <r:substrate name="M_ox"/>
+            <r:product name="E_ox"/>
+            <r:product name="M_red"/>
         </reaction>
         <area top="z2" bottom="z1" left="r0" right="r2"/>
     </medium>
     <medium name="\Omega_3">
-        <diffusion substance="S"     coefficient="D_Enz_S" initial="0"/>
-        <diffusion substance="P"     coefficient="D_Enz_P" initial="0"/>
-        <diffusion substance="E_ox"  coefficient="D_Enz_E" initial="0"/>
-        <diffusion substance="E_red" coefficient="D_Enz_E" initial="0"/>
-        <diffusion substance="M_ox"  coefficient="D_Enz_M" initial="0"/>
-        <diffusion substance="M_red" coefficient="D_Enz_M" initial="0"/>
-        <reaction xsi:type="mr:ReductionOxidation" rate="k1">
-            <mr:substrate name="E_ox"/>
-            <mr:substrate name="S"/>
-            <mr:product name="E_red"/>
-            <mr:product name="P"/>
+        <substance name="S"     diffusion="D_Enz_S" initial="0"/>
+        <substance name="P"     diffusion="D_Enz_P" initial="0"/>
+        <substance name="E_ox"  diffusion="D_Enz_E" initial="0"/>
+        <substance name="E_red" diffusion="D_Enz_E" initial="0"/>
+        <substance name="M_ox"  diffusion="D_Enz_M" initial="0"/>
+        <substance name="M_red" diffusion="D_Enz_M" initial="0"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k1">
+            <r:substrate name="E_ox"/>
+            <r:substrate name="S"/>
+            <r:product name="E_red"/>
+            <r:product name="P"/>
         </reaction>
-        <reaction xsi:type="mr:ReductionOxidation" rate="k2">
-            <mr:substrate name="E_red"/>
-            <mr:substrate name="M_ox"/>
-            <mr:product name="E_ox"/>
-            <mr:product name="M_red"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k2">
+            <r:substrate name="E_red"/>
+            <r:substrate name="M_ox"/>
+            <r:product name="E_ox"/>
+            <r:product name="M_red"/>
         </reaction>
         <area top="z3" bottom="z2" left="r0" right="r1"/>
     </medium>
     <medium name="\Omega_4">
-        <diffusion substance="S"     coefficient="D_Diff_S" initial="0"/>
-        <diffusion substance="M_ox"  coefficient="D_Diff_M" initial="0"/>
-        <diffusion substance="M_red" coefficient="D_Diff_M" initial="0"/>
+        <substance name="S"     diffusion="D_Diff_S" initial="0"/>
+        <substance name="M_ox"  diffusion="D_Diff_M" initial="0"/>
+        <substance name="M_red" diffusion="D_Diff_M" initial="0"/>
         <area top="z4" bottom="z4" left="r0" right="r2"/>
     </medium>
 

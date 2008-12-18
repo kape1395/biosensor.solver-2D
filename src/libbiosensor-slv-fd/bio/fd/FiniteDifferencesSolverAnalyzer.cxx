@@ -14,8 +14,8 @@ void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::analyze(
 )
 {
     using BIO_XML_NS::model::Symbol;
-    using BIO_XML_NS::model::s::FiniteDifferences;
-    using BIO_XML_NS::model::s::Axis;
+    using BIO_XML_NS::model::solver::FiniteDifferences;
+    using BIO_XML_NS::model::solver::Axis;
 
     typedef std::vector<Symbol*>::iterator Symbol_it;
     typedef FiniteDifferences::axis_iterator Axis_it;

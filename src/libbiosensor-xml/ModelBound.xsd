@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns:b         ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:m         ="http://lt.5grupe.karolis/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -17,21 +17,21 @@
     
     <xs:complexType name="Constant">
         <xs:complexContent>
-            <xs:extension base="b:BoundCondition">
-                <xs:attribute name="concentration" type="b:SymbolName" use="required"/>
+            <xs:extension base="m:BoundSubstance">
+                <xs:attribute name="concentration" type="m:SymbolName" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     
     <xs:complexType name="Wall">
         <xs:complexContent>
-            <xs:extension base="b:BoundCondition"/>
+            <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
     
     <xs:complexType name="Merge">
         <xs:complexContent>
-            <xs:extension base="b:BoundCondition"/>
+            <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
     
@@ -43,7 +43,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="b:BoundCondition"/>
+            <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
     

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model
-    xmlns   ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns:bc="http://lt.5grupe.karolis/biosensor/model/bc"
-    xmlns:mr="http://lt.5grupe.karolis/biosensor/model/mr"
-    xmlns:s ="http://lt.5grupe.karolis/biosensor/model/s"
-    xmlns:l ="http://lt.5grupe.karolis/biosensor/model/l"
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model    Model.xsd
-                        http://lt.5grupe.karolis/biosensor/model/bc ModelBoundCondition.xsd
-                        http://lt.5grupe.karolis/biosensor/model/mr ModelMediumReaction.xsd
-                        http://lt.5grupe.karolis/biosensor/model/s  ModelSolver.xsd
-                        http://lt.5grupe.karolis/biosensor/model/l  ModelListener.xsd"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bound    ModelBound.xsd
+                        http://lt.5grupe.karolis/biosensor/model/reaction ModelReaction.xsd
+                        http://lt.5grupe.karolis/biosensor/model/solver   ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/listener ModelListener.xsd"
     coordinateSystem="Cartesian">
 
     <axis name="x">
@@ -30,9 +30,9 @@
 
 
     <medium name="Enzyme">
-        <diffusion substance="S" coefficient="D_Enz_S" initial="S_0"/>
-        <diffusion substance="P" coefficient="D_Enz_P" initial="P_0"/>
-        <reaction xsi:type="mr:MichaelisMenten"
+        <substance name="S" diffusion="D_Enz_S" initial="S_0"/>
+        <substance name="P" diffusion="D_Enz_P" initial="P_0"/>
+        <reaction xsi:type="r:MichaelisMenten"
             substrate="S"
             product="P"
             V_max="V_max"
@@ -45,35 +45,28 @@
         <area top="y1" bottom="y2" left="x2" right="x3"/>
     </medium>
     <medium name="SelectiveMembrane">
-        <diffusion substance="P" coefficient="D_Sel_P" initial="P_0"/>
+        <substance name="P" diffusion="D_Sel_P" initial="P_0"/>
         <area top="y3" bottom="y4" left="x1" right="x3"/>
     </medium>
 
     <bound from="x1" to="x2" at="y1">
-        <condition substance="S" xsi:type="bc:Constant" concentration="S_Ext"/>
-        <condition substance="P" xsi:type="bc:Constant" concentration="P_Ext"/>
-        <initial substance="S" concentration="S_Ext"/>
-        <initial substance="P" concentration="P_Ext"/>
+        <substance name="S" xsi:type="b:Constant" concentration="S_Ext" initial="S_Ext"/>
+        <substance name="P" xsi:type="b:Constant" concentration="P_Ext" initial="P_Ext"/>
     </bound>
     <bound from="y1" to="y3" at="x1">
-        <condition substance="S" xsi:type="bc:Wall"/>
-        <initial substance="S" concentration="S_0"/>
+        <substance name="S" xsi:type="b:Wall" initial="S_0"/>
     </bound>
     <bound from="y1" to="y4" at="x1">
-        <condition substance="P" xsi:type="bc:Wall"/>
-        <initial substance="P" concentration="P_0"/>
+        <substance name="P" xsi:type="b:Wall" initial="P_0"/>
     </bound>
     <bound from="y2" to="y3" at="x3">
-        <condition substance="S" xsi:type="bc:Wall"/>
-        <initial substance="S" concentration="S_0"/>
+        <substance name="S" xsi:type="b:Wall" initial="S_0"/>
     </bound>
     <bound from="y2" to="y4" at="x3">
-        <condition substance="P" xsi:type="bc:Wall"/>
-        <initial substance="P" concentration="P_0"/>
+        <substance name="P" xsi:type="b:Wall" initial="P_0"/>
     </bound>
     <bound from="x1" to="x3" at="y4">
-        <condition substance="P" xsi:type="bc:Constant" concentration="E_0"/>
-        <initial substance="P" concentration="P_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="E_0" initial="P_0"/>
     </bound>
 
     <electrode name="Electrode">

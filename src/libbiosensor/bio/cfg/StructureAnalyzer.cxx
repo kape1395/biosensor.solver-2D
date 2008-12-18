@@ -11,7 +11,7 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
     typedef BIO_XML_NS::model::Model::substance_iterator it_subst;
     typedef BIO_XML_NS::model::Model::medium_iterator it_med;
     typedef BIO_XML_NS::model::Medium::area_iterator it_area;
-    typedef BIO_XML_NS::model::Medium::diffusion_iterator it_diff;
+    typedef BIO_XML_NS::model::Medium::substance_iterator it_diff;
     typedef BIO_XML_NS::model::Medium::reaction_iterator it_reac;
 
 
@@ -257,10 +257,10 @@ void BIO_CFG_NS::StructureAnalyzer::analyze(BIO_XML_NS::model::Model* config)
             }
             if (mediums[h][v])
             {
-                for (it_diff diffusion = mediums[h][v]->diffusion().begin(); diffusion < mediums[h][v]->diffusion().end(); diffusion++)
+                for (it_diff diffusion = mediums[h][v]->substance().begin(); diffusion < mediums[h][v]->substance().end(); diffusion++)
                 {
-                    int substIdx = getSubstanceIndex(diffusion->substance());
-                    diffusions[h][v][substIdx] = getSymbol(diffusion->coefficient());
+                    int substIdx = getSubstanceIndex(diffusion->name());
+                    diffusions[h][v][substIdx] = getSymbol(diffusion->diffusion());
                     initialConcentrations[h][v][substIdx] = getSymbol(diffusion->initial());
                 }
                 for (it_reac reaction = mediums[h][v]->reaction().begin(); reaction < mediums[h][v]->reaction().end(); reaction++)

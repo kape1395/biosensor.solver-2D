@@ -11,8 +11,8 @@
 #define BIO_XML_NS_END BIO_NS_END }
 
 
-#include "ModelBoundCondition.hxx"
-#include "ModelMediumReaction.hxx"
+#include "ModelBound.hxx"
+#include "ModelReaction.hxx"
 #include "Model.hxx"
 #include "ModelSolver.hxx"
 
