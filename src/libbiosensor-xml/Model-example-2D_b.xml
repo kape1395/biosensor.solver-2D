@@ -138,19 +138,9 @@
     <symbol name="D_Enz_M"  value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Diff_S" value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Diff_M" value="1E-6"    dimension="m^2/s"/>
-    <symbol name="0"        value="0"       dimension="mol/cm^2"/>
-    <symbol name="k1"       value="0"       dimension="?"/>
-    <symbol name="k2"       value="0"       dimension="?"/>
-
-    <!--
-    <symbol name="S_Ext"    value="7.5E-7"  dimension="mol/cm^2"/>
-    <symbol name="P_Ext"    value="0.0"     dimension="mol/cm^2"/>
-    <symbol name="S_0"      value="0.0"     dimension="mol/cm^2"/>
-    <symbol name="P_0"      value="0.0"     dimension="mol/cm^2"/>
-    <symbol name="E_0"      value="0.0"     dimension="mol/cm^2"/>
-    <symbol name="V_max"    value="1E-8"    dimension="mol/s"/>
-    <symbol name="K_M"      value="1E-8"    />
-    -->
+    <symbol name="0"        value="0.0"     dimension="mol/cm^2"/>
+    <symbol name="k1"       value="0.0"     dimension="mol/s"/>
+    <symbol name="k2"       value="0.0"     dimension="mol/s"/>
 
 
     <solver xsi:type="s:Implicit2D" timeStep="5E-9">

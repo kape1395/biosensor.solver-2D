@@ -30,7 +30,7 @@ private:
     static const int LAYER_P = 3;
     static const int LAYER_Q = 4;
     static const int LAYER_f_R = 5;
-    double ****data;    //  [h][v][s][thisLayer, intermLayer, nextLayer, p, q, f_R]
+    double ****data;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
     int dataSizeH;      //  number of points in H (including boundary)
     int dataSizeV;      //  number of points in V (including boundary)
     int dataSizeS;      //  number of modelled substances
@@ -44,9 +44,17 @@ private:
     bool coordinateSystemIsCartesian;
     bool coordinateSystemIsCylindrical;
 
-    bool layersInverted;
+    /**
+     *  Indicates, are layers inverted or not.
+     *  \see getCurrentLayerIndex() getPreviousLayerIndex()
+     */
+    bool dataLayersInverted;
 
-    double *D;  // diff. coef. by substance. 0.0 means no diffusion.
+    /**
+     *  Diffusion coefficients for all needed substances, array size is #dataSizeS.
+     *  Here 0.0 means no diffusion.
+     */
+    double *D;
 
     ////////////////////////////////////////
     // reaction related things
@@ -120,6 +128,31 @@ protected:
      */
     int getLocalSubstanceIndex(int globalSubstanceIndex);
 
+    /**
+     *  Returns an index of the current layer (in the time dimension) in the structure "data".
+     *  Between calculations the "current" layer has a result of the last iteration.
+     *  When calculations are running, current layer means the destination
+     *  of the calculations.
+     *
+     *  \return Index of "current".
+     */
+    int getCurrentLayerIndex()
+    {
+        return dataLayersInverted ? 2 : 0;
+    }
+
+    /**
+     *  Returns an index of the previous layer (in the time dimension) in the structure "data".
+     *  Between calculations the "previous" layer has a result the previous iteration.
+     *  When calculations are running, previous layer means the source (basis)
+     *  of the calculations.
+     *
+     *  \return Index of "current".
+     */
+    int getPreviousLayerIndex()
+    {
+        return dataLayersInverted ? 0 : 2;
+    }
 };
 
 
