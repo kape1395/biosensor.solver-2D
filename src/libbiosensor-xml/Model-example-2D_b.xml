@@ -13,6 +13,7 @@
                         http://lt.5grupe.karolis/biosensor/model/listener ModelListener.xsd"
     coordinateSystem="Cylindrical">
 
+
     <axis name="r">
         <point position="r0"/>
         <point position="r1"/>
@@ -26,24 +27,25 @@
         <point position="z4"/>
     </axis>
 
+
     <substance name="S"/>
-    <substance name="P"/>
+    <substance name="P"/><!-- P is intentially omited in the medium definitions. Needed only for reactions. -->
     <substance name="E_ox"/>
     <substance name="E_red"/>
     <substance name="M_ox"/>
     <substance name="M_red"/>
 
 
-    <medium name="\Omega_1">
+    <medium name="Omega_1 and Omega_4">
         <substance name="S"     diffusion="D_Diff_S" initial="0"/>
         <substance name="M_ox"  diffusion="D_Diff_M" initial="0"/>
         <substance name="M_red" diffusion="D_Diff_M" initial="0"/>
         <area top="z1" bottom="z0" left="r0" right="r2"/>
+        <area top="z4" bottom="z3" left="r0" right="r2"/>
     </medium>
-    <medium name="\Omega_2">
+    <medium name="Omega_2">
         <substance name="S"     diffusion="D_Enz_S" initial="0"/>
-        <substance name="P"     diffusion="D_Enz_P" initial="0"/>
-        <substance name="E_ox"  diffusion="D_Enz_E" initial="0"/>
+        <substance name="E_ox"  diffusion="D_Enz_E" initial="E_0"/>
         <substance name="E_red" diffusion="D_Enz_E" initial="0"/>
         <substance name="M_ox"  diffusion="D_Enz_M" initial="0"/>
         <substance name="M_red" diffusion="D_Enz_M" initial="0"/>
@@ -61,10 +63,9 @@
         </reaction>
         <area top="z2" bottom="z1" left="r0" right="r2"/>
     </medium>
-    <medium name="\Omega_3">
+    <medium name="Omega_3">
         <substance name="S"     diffusion="D_Enz_S" initial="0"/>
-        <substance name="P"     diffusion="D_Enz_P" initial="0"/>
-        <substance name="E_ox"  diffusion="D_Enz_E" initial="0"/>
+        <substance name="E_ox"  diffusion="D_Enz_E" initial="E_0"/>
         <substance name="E_red" diffusion="D_Enz_E" initial="0"/>
         <substance name="M_ox"  diffusion="D_Enz_M" initial="0"/>
         <substance name="M_red" diffusion="D_Enz_M" initial="0"/>
@@ -82,41 +83,38 @@
         </reaction>
         <area top="z3" bottom="z2" left="r0" right="r1"/>
     </medium>
-    <medium name="\Omega_4">
-        <substance name="S"     diffusion="D_Diff_S" initial="0"/>
-        <substance name="M_ox"  diffusion="D_Diff_M" initial="0"/>
-        <substance name="M_red" diffusion="D_Diff_M" initial="0"/>
-        <area top="z4" bottom="z4" left="r0" right="r2"/>
-    </medium>
 
-    <!--
-    <bound from="x1" to="x2" at="y1">
-        <condition substance="S" xsi:type="bc:Constant" concentration="S_Ext"/>
-        <condition substance="P" xsi:type="bc:Constant" concentration="P_Ext"/>
-        <initial substance="S" concentration="S_Ext"/>
-        <initial substance="P" concentration="P_Ext"/>
+
+    <bound from="z0" to="z4" at="r0">
+        <substance name="S"     xsi:type="b:Wall"/>
+        <substance name="M_ox"  xsi:type="b:Wall"/>
+        <substance name="M_red" xsi:type="b:Wall"/>
     </bound>
-    <bound from="y1" to="y3" at="x1">
-        <condition substance="S" xsi:type="bc:Wall"/>
-        <initial substance="S" concentration="S_0"/>
+    <bound from="z1" to="z3" at="r0">
+        <substance name="E_ox"  xsi:type="b:Wall"/>
+        <substance name="E_red" xsi:type="b:Wall"/>
     </bound>
-    <bound from="y1" to="y4" at="x1">
-        <condition substance="P" xsi:type="bc:Wall"/>
-        <initial substance="P" concentration="P_0"/>
+    <bound from="z0" to="z2" at="r2">
+        <substance name="S"     xsi:type="b:Wall"/>
+        <substance name="M_ox"  xsi:type="b:Wall"/>
+        <substance name="M_red" xsi:type="b:Wall"/>
     </bound>
-    <bound from="y2" to="y3" at="x3">
-        <condition substance="S" xsi:type="bc:Wall"/>
-        <initial substance="S" concentration="S_0"/>
+    <bound from="z1" to="z2" at="r2">
+        <substance name="E_ox"  xsi:type="b:Wall"/>
+        <substance name="E_red" xsi:type="b:Wall"/>
     </bound>
-    <bound from="y2" to="y4" at="x3">
-        <condition substance="P" xsi:type="bc:Wall"/>
-        <initial substance="P" concentration="P_0"/>
+    <bound from="r0" to="r2" at="z0">
+        <substance name="S"     xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="M_ox"  xsi:type="b:Constant" concentration="M_0"/>
+        <substance name="M_red" xsi:type="b:Constant" concentration="0"  />
     </bound>
-    <bound from="x1" to="x3" at="y4">
-        <condition substance="P" xsi:type="bc:Constant" concentration="E_0"/>
-        <initial substance="P" concentration="P_0"/>
+    <bound from="r0" to="r2" at="z4">
+        <substance name="S"     xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="M_ox"  xsi:type="b:Constant" concentration="M_0"/>
+        <substance name="M_red" xsi:type="b:Constant" concentration="0"  />
     </bound>
-    -->
+
+
     <!--
     <electrode name="Electrode">
         <substrate substrate="P"/>
@@ -124,6 +122,8 @@
     </electrode>
     -->
 
+
+    <!-- Geometry -->
     <symbol name="r0"       value="0.0"     dimension="m"/>
     <symbol name="r1"       value="1.0E-4"  dimension="m"/>
     <symbol name="r2"       value="2.0E-4"  dimension="m"/>
@@ -132,13 +132,21 @@
     <symbol name="z2"       value="2.0E-3"  dimension="m"/>
     <symbol name="z3"       value="3.0E-3"  dimension="m"/>
     <symbol name="z4"       value="4.0E-3"  dimension="m"/>
+
+    <!-- Diffusion coefficients -->
     <symbol name="D_Enz_S"  value="1E-6"    dimension="m^2/s"/>
-    <symbol name="D_Enz_P"  value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Enz_E"  value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Enz_M"  value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Diff_S" value="1E-6"    dimension="m^2/s"/>
     <symbol name="D_Diff_M" value="1E-6"    dimension="m^2/s"/>
+
+    <!-- Concentrations -->
+    <symbol name="E_0"      value="1E-8"    dimension="mol/cm^2"/>
+    <symbol name="M_0"      value="1E-8"    dimension="mol/cm^2"/>
+    <symbol name="S_0"      value="1E-8"    dimension="mol/cm^2"/>
     <symbol name="0"        value="0.0"     dimension="mol/cm^2"/>
+
+    <!-- Reaction rates -->
     <symbol name="k1"       value="0.0"     dimension="mol/s"/>
     <symbol name="k2"       value="0.0"     dimension="mol/s"/>
 

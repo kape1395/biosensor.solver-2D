@@ -85,8 +85,7 @@
     </xs:complexType>
     
     <xs:complexType name="BoundSubstance" abstract="true">
-        <xs:attribute name="name"       type="SubstanceName" use="required"/>
-        <xs:attribute name="initial"    type="SymbolName"    use="required"/>
+        <xs:attribute name="name" type="SubstanceName" use="required"/>
     </xs:complexType>
     
     

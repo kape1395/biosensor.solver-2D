@@ -50,23 +50,23 @@
     </medium>
 
     <bound from="x1" to="x2" at="y1">
-        <substance name="S" xsi:type="b:Constant" concentration="S_Ext" initial="S_Ext"/>
-        <substance name="P" xsi:type="b:Constant" concentration="P_Ext" initial="P_Ext"/>
+        <substance name="S" xsi:type="b:Constant" concentration="S_Ext"/>
+        <substance name="P" xsi:type="b:Constant" concentration="P_Ext"/>
     </bound>
     <bound from="y1" to="y3" at="x1">
-        <substance name="S" xsi:type="b:Wall" initial="S_0"/>
+        <substance name="S" xsi:type="b:Wall"/>
     </bound>
     <bound from="y1" to="y4" at="x1">
-        <substance name="P" xsi:type="b:Wall" initial="P_0"/>
+        <substance name="P" xsi:type="b:Wall"/>
     </bound>
     <bound from="y2" to="y3" at="x3">
-        <substance name="S" xsi:type="b:Wall" initial="S_0"/>
+        <substance name="S" xsi:type="b:Wall"/>
     </bound>
     <bound from="y2" to="y4" at="x3">
-        <substance name="P" xsi:type="b:Wall" initial="P_0"/>
+        <substance name="P" xsi:type="b:Wall"/>
     </bound>
     <bound from="x1" to="x3" at="y4">
-        <substance name="P" xsi:type="b:Constant" concentration="E_0" initial="P_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="E_0"/>
     </bound>
 
     <electrode name="Electrode">

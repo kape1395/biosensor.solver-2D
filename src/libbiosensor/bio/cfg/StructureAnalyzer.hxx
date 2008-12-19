@@ -1,7 +1,6 @@
 #ifndef BIO_CFG_StructureAnalyzer_HXX
 #define BIO_CFG_StructureAnalyzer_HXX
 #include "../../biosensor.hxx"
-#include "../Exception.hxx"
 #include <biosensor-xml.hxx>
 #include <vector>
 #include <log4cxx/logger.h>
@@ -24,14 +23,23 @@ private:
     std::vector< BIO_XML_NS::model::Symbol* > pointsV;
     std::vector< BIO_XML_NS::model::Substance* > substances;
     std::vector< BIO_XML_NS::model::MediumReaction* >** reactions;
-    BIO_XML_NS::model::Symbol* *** diffusions;
-    BIO_XML_NS::model::Symbol* *** initialConcentrations;
-    BIO_XML_NS::model::Medium* ** mediums;
+    BIO_XML_NS::model::Symbol* *** diffusions;                      // Symbol* [h][v][s]
+    BIO_XML_NS::model::Symbol* *** initialConcentrations;           // Symbol* [h][v][s]
+    BIO_XML_NS::model::Medium* ** mediums;                          // Medium* [h][v]
 
     /// Position for the case, when these was Linear (one-dimensional) coordinate system.
     BIO_XML_NS::model::Symbol axisPoint0;
 
 public:
+
+    /**
+     *  Axis types.
+     */
+    enum Axis
+    {
+        HORIZONTAL = 0,
+        VERTICAL   = 1
+    };
 
     /**
      *  Constructor.
@@ -43,6 +51,15 @@ public:
      *  Destructor.
      */
     virtual ~StructureAnalyzer();
+
+    /**
+     *  Returns configuration used by this analyzer.
+     *  \return Model of the biosensor.
+     */
+    BIO_XML_NS::model::Model* getConfig()
+    {
+        return config;
+    }
 
     /**
      *  Returns true if analyzed model is two-dimensional and
@@ -174,19 +191,56 @@ public:
      *  \param name Symbol name.
      *  \return Symbol definition or 0 if symbol not found.
      */
-    BIO_XML_NS::model::Symbol* getSymbol(std::string& name);
+    BIO_XML_NS::model::Symbol* getSymbol(BIO_XML_NS::model::SymbolName& name);
+
+    /**
+     *  Check if specified symbol is a point in the specified axis.
+     *
+     *  \param axis             Axis to check.
+     *  \param pointSymbolName  Name of the point symbol.
+     *  \returns true if point found and false otherwise.
+     */
+    bool isPointInAxis(
+        Axis axis,
+        BIO_XML_NS::model::SymbolName& pointSymbolName
+    );
+
+
+    /**
+     *  Returns index of point in axis by point name.
+     *
+     *  \param axis             Axis, in which point should be found.
+     *  \param pointSymbolName  Name of the point in axis.
+     *  \return index, starting at 0.
+     *  \throws Exception If point not found in axis.
+     */
+    int getPointIndexInAxis(
+        Axis axis,
+        BIO_XML_NS::model::SymbolName& pointSymbolName
+    );
 
 private:
 
     /**
      *  Fills given list with symbols, mentioned in the axis definition.
      */
-    void fillListWithAxisPoints(std::vector< BIO_XML_NS::model::Symbol* >& list, BIO_XML_NS::model::Axis& axis);
+    void fillListWithAxisPoints(
+        std::vector< BIO_XML_NS::model::Symbol* >& list,
+        BIO_XML_NS::model::Axis& axis
+    );
 
     /**
      *  Returns index of point in axis by point name.
+     *
+     *  \param axis             Axis, in which point should be found.
+     *  \param pointSymbolName  Name of the point in axis.
+     *  \return index, starting at 0.
+     *  \throws Exception If point not found in axis.
      */
-    int getPointIndexInAxis(std::vector< BIO_XML_NS::model::Symbol* >& axis, std::string& pointSymbolName);
+    int getPointIndexInAxis(
+        std::vector< BIO_XML_NS::model::Symbol* >& axis,
+        std::string& pointSymbolName
+    );
 
 };
 

@@ -51,11 +51,11 @@
     </medium>
 
     <bound at="x1">
-        <substance name="S" xsi:type="b:Constant" concentration="S_Ext" initial="S_Ext"/>
-        <substance name="P" xsi:type="b:Constant" concentration="P_Ext" initial="P_Ext"/>
+        <substance name="S" xsi:type="b:Constant" concentration="S_Ext"/>
+        <substance name="P" xsi:type="b:Constant" concentration="P_Ext"/>
     </bound>
     <bound at="x4">
-        <substance name="P" xsi:type="b:Constant" concentration="E_0" initial="E_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="E_0"/>
     </bound>
 
     <electrode name="Electrode">

@@ -17,7 +17,7 @@ Exception::Exception()
 /* ************************************************************************** */
 /**
  *  Konstruktorius
- *  \param msg  Exception`o tekstas.
+ *  \param string  Exception`o tekstas.
  */
 Exception::Exception(std::string string)
 {

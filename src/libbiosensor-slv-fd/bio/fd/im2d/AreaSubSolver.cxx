@@ -340,9 +340,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //
                 // And now we are able to calculate layers:
                 //
-                double tmp = a * data[h - 1][v][s][LAYER_P] + b;
-                dataHVS[LAYER_P] = - c / tmp;
-                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / tmp;
+                double denominator = a * data[h - 1][v][s][LAYER_P] + b;
+                dataHVS[LAYER_P] = - c / denominator;
+                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / denominator;
             }
         }
     }
@@ -442,9 +442,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 //
                 // And now we are able to calculate layers:
                 //
-                double tmp = a * data[h - 1][v][s][LAYER_P] + b;
-                dataHVS[LAYER_P] = - c / tmp;
-                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / tmp;
+                double denominator = a * data[h - 1][v][s][LAYER_P] + b;
+                dataHVS[LAYER_P] = - c / denominator;
+                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / denominator;
             }
         }
     }

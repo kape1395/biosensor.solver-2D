@@ -166,16 +166,12 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             if (h1 > h2)
             {
                 LOG4CXX_WARN(log, "Swapping horizontal boundary points for area definition....");
-                int tmp = h1;
-                h1 = h2;
-                h2 = tmp;
+                std::swap<int>(h1, h2);
             }
             if (v1 > v2)
             {
                 LOG4CXX_WARN(log, "Swapping vertical boundary points for area definition....");
-                int tmp = v1;
-                v1 = v2;
-                v2 = tmp;
+                std::swap<int>(v1, v2);
             }
             for (int h = h1; h < h2; h++)
             {
@@ -285,7 +281,7 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(std::string& name)
+BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::model::SymbolName& name)
 {
     for (int i = 0; i < config->symbol().size(); i++)
     {
@@ -307,6 +303,38 @@ void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_
         list.push_back(getSymbol(p->position()));
     }
 
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+bool BIO_CFG_NS::StructureAnalyzer::isPointInAxis(
+    Axis axis,
+    BIO_XML_NS::model::SymbolName& pointSymbolName
+)
+{
+    std::vector< BIO_XML_NS::model::Symbol* >& points = (axis == HORIZONTAL) ? pointsH : pointsV;
+
+    for (std::vector<BIO_XML_NS::model::Symbol*>::iterator it = points.begin(); it < points.end(); it++)
+    {
+        if ((*it)->name() == pointSymbolName)
+            return true;
+    }
+    return false;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
+    Axis axis,
+    BIO_XML_NS::model::SymbolName& pointSymbolName
+)
+{
+    return getPointIndexInAxis(
+               (axis == HORIZONTAL) ? pointsH : pointsV,
+               pointSymbolName
+           );
 }
 
 
