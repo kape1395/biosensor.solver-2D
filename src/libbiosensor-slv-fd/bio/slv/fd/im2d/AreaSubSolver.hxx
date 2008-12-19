@@ -1,6 +1,6 @@
 #ifndef BIO_SLV_FD_IM2D_AreaSubSolver_HXX
 #define BIO_SLV_FD_IM2D_AreaSubSolver_HXX
-#include "../../../biosensor-slv-fd.hxx"
+#include "../../../../biosensor-slv-fd.hxx"
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 class AreaSubSolver;

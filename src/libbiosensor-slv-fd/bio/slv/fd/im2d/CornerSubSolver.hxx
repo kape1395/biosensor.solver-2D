@@ -1,6 +1,6 @@
 #ifndef BIO_SLV_FD_IM2D_CornerSubSolver_HXX
 #define BIO_SLV_FD_IM2D_CornerSubSolver_HXX
-#include "../../../biosensor-slv-fd.hxx"
+#include "../../../../biosensor-slv-fd.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <log4cxx/logger.h>

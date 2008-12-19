@@ -1,6 +1,6 @@
 #ifndef BIO_SLV_FD_SolverFactory_HXX
 #define BIO_SLV_FD_SolverFactory_HXX
-#include "../../biosensor-slv-fd.hxx"
+#include "../../../biosensor-slv-fd.hxx"
 #include <bio/slv/ISolverFactory.hxx>
 BIO_SLV_FD_NS_BEGIN
 

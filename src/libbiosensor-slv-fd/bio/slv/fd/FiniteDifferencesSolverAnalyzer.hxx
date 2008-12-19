@@ -1,6 +1,6 @@
 #ifndef BIO_SLV_FD_FiniteDifferencesSolverAnalyzer_HXX
 #define BIO_SLV_FD_FiniteDifferencesSolverAnalyzer_HXX
-#include "../../biosensor-slv-fd.hxx"
+#include "../../../biosensor-slv-fd.hxx"
 #include <biosensor-xml.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <vector>

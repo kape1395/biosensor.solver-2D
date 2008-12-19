@@ -1,6 +1,6 @@
 #ifndef BIO_SLV_FD_EX2D_Solver_HXX
 #define BIO_SLV_FD_EX2D_Solver_HXX
-#include "../../../biosensor-slv-fd.hxx"
+#include "../../../../biosensor-slv-fd.hxx"
 #include <bio/slv/AbstractIterativeSolver.hxx>
 
 BIO_SLV_FD_EX2D_NS_BEGIN
