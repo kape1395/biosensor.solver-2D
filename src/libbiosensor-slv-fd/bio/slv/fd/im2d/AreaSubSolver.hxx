@@ -15,10 +15,13 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 
 /**
- *
+ *  This solver is responsible for one homogenous rectangular area.
  */
 class AreaSubSolver
 {
+public:
+    class EdgeData;
+
 private:
     log4cxx::LoggerPtr log;
 
@@ -79,6 +82,9 @@ private:
     ////////////////////////////////////////
 
 
+    //! Allocated edge data objects.
+    std::vector<EdgeData*> edges;
+
 public:
 
     /**
@@ -117,6 +123,21 @@ public:
      */
     void solveVerticalBackward();
 
+    /**
+     *  Get object that provides access to the data
+     *  at the specified edge of the area.
+     *
+     *  \param substance    Global substance index.
+     *  \param horizontal   Is bound horizontal (true) or vertical (false)?
+     *  \param start        is that bound at top|left (true) or bottom|right (false).s
+     *  \return Reference to the edge data.
+     */
+    EdgeData* getEdgeData(
+        int substance,
+        bool horizontal,
+        bool start
+    );
+
 protected:
 
     /**
@@ -153,6 +174,86 @@ protected:
     {
         return dataLayersInverted ? 0 : 2;
     }
+
+public:
+
+    /**
+     *  This class is used by bound subsolvers to access the concentrations
+     *  and P-Q constants on the edge of this structure.
+     */
+    class EdgeData
+    {
+        friend class AreaSubSolver;
+
+    private:
+        AreaSubSolver* solver;
+        int size;
+        double **data0;    //!< data0[x][layer]
+        double **data1;    //!< data1[x][layer]
+
+    protected:
+
+        /**
+         *
+         */
+        EdgeData(
+            AreaSubSolver* solver,
+            int substance,
+            bool horizontal,
+            bool start
+        );
+
+    public:
+
+        ~EdgeData();
+
+        void setP0(int index, double value)
+        {
+            data0[index][LAYER_P] = value;
+        };
+
+        double getP0(int index)
+        {
+            return data0[index][LAYER_P];
+        };
+
+        double getP1(int index)
+        {
+            return data1[index][LAYER_P];
+        };
+
+        void setQ0(int index, double value)
+        {
+            data0[index][LAYER_Q] = value;
+        };
+
+        double getQ0(int index)
+        {
+            return data0[index][LAYER_Q];
+        };
+
+        double getQ1(int index)
+        {
+            return data1[index][LAYER_Q];
+        };
+
+        void setC0(int index, double value)
+        {
+            data0[index][solver->getCurrentLayerIndex()] = value;
+        };
+
+        double getC0(int index)
+        {
+            return data0[index][solver->getCurrentLayerIndex()];
+        };
+
+        double getC1(int index)
+        {
+            return data1[index][solver->getCurrentLayerIndex()];
+        };
+
+    };
+
 };
 
 

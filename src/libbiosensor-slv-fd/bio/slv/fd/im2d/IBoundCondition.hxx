@@ -40,7 +40,7 @@ public:
      *
      */
     virtual void solveAlongBackward() = 0;
-    
+
 };
 
 

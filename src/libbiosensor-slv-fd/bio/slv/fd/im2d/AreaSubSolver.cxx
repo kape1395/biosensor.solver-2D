@@ -229,6 +229,14 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 {
     LOG4CXX_DEBUG(log, "~AreaSubSolver()");
 
+
+    for (std::vector<EdgeData*>::iterator e = edges.begin(); e < edges.end(); e++)
+    {
+        delete *e;
+    }
+    edges.clear();
+
+
     for (int s = 0; s < dataSizeS; s++)
     {
         delete [] reactionsMM[s];
@@ -494,6 +502,69 @@ int BIO_SLV_FD_IM2D_NS::AreaSubSolver::getLocalSubstanceIndex(int globalSubstanc
         }
     }
     return -1;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
+    int substance,
+    bool horizontal,
+    bool start
+)
+{
+    EdgeData* edge = new EdgeData(
+        this,
+        getLocalSubstanceIndex(substance),
+        horizontal,
+        start
+    );
+    edges.push_back(edge);
+    return edge;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
+    AreaSubSolver* solver,
+    int substance,
+    bool horizontal,
+    bool start
+)
+{
+    this->solver = solver;
+    if (horizontal)
+    {
+        size = solver->dataSizeH;
+        data0 = new double*[size];
+        data1 = new double*[size];
+        for (int i = 0; i < size; i++)
+        {
+            data0[i] = solver->data[i][start ? 0 : solver->dataSizeV - 1][substance];
+            data1[i] = solver->data[i][start ? 1 : solver->dataSizeV - 2][substance];
+        }
+    }
+    else // vertical
+    {
+        size = solver->dataSizeV;
+        data0 = new double*[size];
+        data1 = new double*[size];
+        for (int i = 0; i < size; i++)
+        {
+            data0[i] = solver->data[start ? 0 : solver->dataSizeH - 1][i][substance];
+            data1[i] = solver->data[start ? 1 : solver->dataSizeH - 2][i][substance];
+        }
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::~EdgeData()
+{
+    delete [] data0;
+    delete [] data1;
 }
 
 
