@@ -107,93 +107,6 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(StructureAnalyzer *structAnalyzer)
                         else
                             applyBoundCondition(h, v - 1, s, RIGHT, &*bs);
                     }
-// ---> start
-                    /*
-                                        //
-                                        //  get diffusions in the adjacent areas.
-                                        //
-                                        BIO_XML_NS::model::Symbol* diffPrev;
-                                        BIO_XML_NS::model::Symbol* diffNext;
-                                        if (isHorizontal)
-                                        {
-                                            diffPrev = (v == 0        ) ? 0 : structAnalyzer->getDiffusion(s, h, v - 1);
-                                            diffNext = (v == sizeV - 1) ? 0 : structAnalyzer->getDiffusion(s, h, v    );
-                                        }
-                                        else    // isVertical
-                                        {
-                                            diffPrev = (h == 0        ) ? 0 : structAnalyzer->getDiffusion(s, h - 1, v);
-                                            diffNext = (h == sizeH - 1) ? 0 : structAnalyzer->getDiffusion(s, h    , v);
-                                        }
-                                        bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
-                                        bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
-
-                                        //
-                                        //  Check the applicability of the condition
-                                        //
-                                        BIO_XML_NS::model::BoundSubstance* bsPrev;
-                                        BIO_XML_NS::model::BoundSubstance* bsNext;
-                                        if (dynamic_cast<BIO_XML_NS::model::bound::Merge*>(&*bs))
-                                        {
-                                            if (diffPrevIsZero || diffNextIsZero)
-                                                throw Exception("In one of the sides of Merge bound is no substance or diffusion is 0.");
-
-                                            bsPrev = &*bs;
-                                            bsNext = &*bs;
-                                        }
-                                        else if (dynamic_cast<BIO_XML_NS::model::bound::Constant*>(&*bs) ||
-                                                 dynamic_cast<BIO_XML_NS::model::bound::Wall*>(&*bs))
-                                        {
-                                            if (diffPrevIsZero && diffNextIsZero)
-                                                throw Exception("Both sides of 'Wall' or 'Constant' bound have no substrate of diffusions are 0.");
-
-                                            if (!diffPrevIsZero && !diffNextIsZero)
-                                                throw Exception("Both sides of 'Wall' or 'Constant' bound have non 0 diffusions so I think the model is inconsistent");
-
-                                            if (diffPrevIsZero)
-                                            {
-                                                bsPrev = 0;
-                                                bsNext = &*bs;
-                                            }
-                                            else // diffNextIsZero
-                                            {
-                                                bsPrev = &*bs;
-                                                bsNext = 0;
-                                            }
-                                        }
-                                        else if (dynamic_cast<BIO_XML_NS::model::bound::Null*>(&*bs))
-                                        {
-                                            if (!diffPrevIsZero || !diffNextIsZero)
-                                                throw Exception("One of the sides of 'Null' bound have non 0 diffusions so I think the model is inconsistent");
-
-                                            bsPrev = &*bs;
-                                            bsNext = &*bs;
-                                        }
-                                        else
-                                        {
-                                            throw Exception("Unknown BoundSubstance type");
-                                        }
-
-                                        //
-                                        //  Save the bound conditions in the correct places.
-                                        //
-                                        if (isHorizontal)
-                                        {
-                                            if (v != 0)
-                                                bounds[h][v-1][s][BOTTOM] = createNullBoundSubstanceIfNull(bsPrev, bs->name());
-
-                                            if (v != sizeV - 1)
-                                                bounds[h][v][s][TOP] = createNullBoundSubstanceIfNull(bsNext, bs->name());
-                                        }
-                                        else    // isVertical
-                                        {
-                                            if (h != 0)
-                                                bounds[h - 1][v][s][RIGHT] = createNullBoundSubstanceIfNull(bsPrev, bs->name());
-
-                                            if (h != sizeH - 1)
-                                                bounds[h][v][s][LEFT] = createNullBoundSubstanceIfNull(bsNext, bs->name());
-                                        }
-                    */
-// ---> end
                 }   //  for (int v = vFrom; v < vTo; v++)
             }       //  for (int h = hFrom; h < hTo; h++)
         }           //  for (bsIt bs = b->substance().begin(); bs < b->substance().end(); bs++)
@@ -241,8 +154,8 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(StructureAnalyzer *structAnalyzer)
 BIO_CFG_NS::BoundAnalyzer::~BoundAnalyzer()
 {
     // Delete allocated bound specifications.
-    for (std::vector< BIO_XML_NS::model::BoundSubstance* >::iterator bound = allocatedBounds.begin();
-            bound < allocatedBounds.end(); bound++)
+    for (std::vector< BIO_XML_NS::model::BoundSubstance* >::iterator bound = allocatedBoundConditions.begin();
+            bound < allocatedBoundConditions.end(); bound++)
     {
         delete (*bound);
     }
@@ -301,7 +214,9 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
 
 
-    
+    BIO_XML_NS::model::SubstanceName& substanceName = structAnalyzer->getSubstances()[s]->name();
+
+
     BIO_XML_NS::model::BoundSubstance* bsPrev;
     BIO_XML_NS::model::BoundSubstance* bsNext;
     if (bsProvided)
@@ -328,13 +243,17 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
 
             if (diffPrevIsZero)
             {
-                bsPrev = 0;
+                allocatedBoundConditions.push_back(
+                    bsPrev = new BIO_XML_NS::model::bound::Null(substanceName)
+                );
                 bsNext = bsProvided;
             }
             else // diffNextIsZero
             {
                 bsPrev = bsProvided;
-                bsNext = 0;
+                allocatedBoundConditions.push_back(
+                    bsNext = new BIO_XML_NS::model::bound::Null(substanceName)
+                );
             }
         }
         else if (dynamic_cast<BIO_XML_NS::model::bound::Null*>(bsProvided))
@@ -351,18 +270,20 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         }
     }   // if (bsProvided)
     else
-    {   // try to guess correct BS
-        BIO_XML_NS::model::SubstanceName* substanceName = structAnalyzer->getSubstances(s)->name();
+    {
+        // try to guess correct BS
 
         if (!diffPrevIsZero && !diffNextIsZero)
         {
-            diffPrev = diffNext = new BIO_XML_NS::model::bound::Merge(substanceName);
-            allocatedBoundConditions.push_back(diffPrev);
+            allocatedBoundConditions.push_back(
+                bsPrev = bsNext = new BIO_XML_NS::model::bound::Merge(substanceName)
+            );
         }
         else if (diffPrevIsZero && diffNextIsZero)
         {
-            diffPrev = diffNext = new BIO_XML_NS::model::bound::Null(substanceName);
-            allocatedBoundConditions.push_back(diffPrev);
+            allocatedBoundConditions.push_back(
+                bsPrev = bsNext = new BIO_XML_NS::model::bound::Null(substanceName)
+            );
         }
         else
         {
@@ -370,42 +291,51 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
             //  Maybe restrict this to internal bounds only?
             if (diffPrevIsZero)
             {
-                allocatedBoundConditions.push_back(diffPrev = new BIO_XML_NS::model::bound::Null(substanceName));
-                allocatedBoundConditions.push_back(diffNext = new BIO_XML_NS::model::bound::Wall(substanceName));
+                allocatedBoundConditions.push_back(
+                    bsPrev = new BIO_XML_NS::model::bound::Null(substanceName)
+                );
+                allocatedBoundConditions.push_back(
+                    bsNext = new BIO_XML_NS::model::bound::Wall(substanceName)
+                );
             }
             else // diffNextIsZero
             {
-                allocatedBoundConditions.push_back(diffPrev = new BIO_XML_NS::model::bound::Wall(substanceName));
-                allocatedBoundConditions.push_back(diffNext = new BIO_XML_NS::model::bound::Null(substanceName));
+                allocatedBoundConditions.push_back(
+                    bsPrev = new BIO_XML_NS::model::bound::Wall(substanceName)
+                );
+                allocatedBoundConditions.push_back(
+                    bsNext = new BIO_XML_NS::model::bound::Null(substanceName)
+                );
             }
         }
     }
 
-    
+
     //
     //  Save the bound conditions in the correct places.
     //
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
         if (v != 0)
-            bounds[h][v-1][s][BOTTOM] = createNullBoundSubstanceIfNull(bsPrev, bsProvided->name());
+            bounds[h][v-1][s][BOTTOM] = bsPrev;
 
         if (v != sizeV - 1)
-            bounds[h][v][s][TOP] = createNullBoundSubstanceIfNull(bsNext, bsProvided->name());
+            bounds[h][v][s][TOP] = bsNext;
     }
     else // isVertical
     {
         if (h != 0)
-            bounds[h - 1][v][s][RIGHT] = createNullBoundSubstanceIfNull(bsPrev, bsProvided->name());
+            bounds[h - 1][v][s][RIGHT] = bsPrev;
 
         if (h != sizeH - 1)
-            bounds[h][v][s][LEFT] = createNullBoundSubstanceIfNull(bsNext, bsProvided->name());
+            bounds[h][v][s][LEFT] = bsNext;
     }
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+/*
 BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::createNullBoundSubstanceIfNull(
     BIO_XML_NS::model::BoundSubstance* bs,
     BIO_XML_NS::model::SubstanceName& sn
@@ -419,6 +349,7 @@ BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::createNullBoundSub
 
     return bs;
 }
+ */
 
 
 /* ************************************************************************** */

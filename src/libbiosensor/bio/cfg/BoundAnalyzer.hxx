@@ -35,7 +35,7 @@ private:
      *  A vector for the bounds, allocated by this class.
      *  It is used for a cleanup.
      */
-    std::vector< BIO_XML_NS::model::BoundSubstance* > allocatedBounds;
+    std::vector< BIO_XML_NS::model::BoundSubstance* > allocatedBoundConditions;
 
 public:
 
@@ -86,10 +86,12 @@ private:
         BIO_XML_NS::model::BoundSubstance* bsProvided
     );
 
+    /*
     BIO_XML_NS::model::BoundSubstance* createNullBoundSubstanceIfNull(
         BIO_XML_NS::model::BoundSubstance* bs,
         BIO_XML_NS::model::SubstanceName& sn
     );
+     */
 };
 
 
