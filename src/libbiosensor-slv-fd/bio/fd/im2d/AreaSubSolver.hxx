@@ -6,8 +6,8 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class AreaSubSolver;
 BIO_SLV_FD_IM2D_NS_END
 
-#include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include "Solver.hxx"
+#include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <log4cxx/logger.h>
 

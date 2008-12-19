@@ -12,7 +12,12 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/fd/im2d/Solver.cxx \
     bio/fd/im2d/AreaSubSolver.cxx \
     bio/fd/im2d/BoundSubSolver.cxx \
-    bio/fd/im2d/CornerSubSolver.cxx
+    bio/fd/im2d/CornerSubSolver.cxx \
+    bio/fd/im2d/ConstantCondition.cxx \
+    bio/fd/im2d/MergeCondition.cxx \
+    bio/fd/im2d/NullCondition.cxx \
+    bio/fd/im2d/WallCondition.cxx
+
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
@@ -25,7 +30,13 @@ EXTRA_DIST = \
     bio/fd/im2d/Solver.hxx \
     bio/fd/im2d/AreaSubSolver.hxx \
     bio/fd/im2d/BoundSubSolver.hxx \
-    bio/fd/im2d/CornerSubSolver.hxx
+    bio/fd/im2d/CornerSubSolver.hxx \
+    bio/fd/im2d/IBoundCondition.hxx \
+    bio/fd/im2d/ConstantCondition.hxx \
+    bio/fd/im2d/MergeCondition.hxx \
+    bio/fd/im2d/NullCondition.hxx \
+    bio/fd/im2d/WallCondition.hxx
+
 
 astyle:
 	astyle @ASTYLE_OPTS@ *.hxx.in `find  bio -name  "*.cxx"` `find  bio -name  "*.hxx"`

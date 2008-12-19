@@ -6,13 +6,15 @@
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
         AbstractIterativeSolver(config),
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::Solver")),
-        structAnalyzer(config),
-        fdAnalyzer(config)
+        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::Solver"))
 {
+    structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
+    boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
+    fdAnalyzer = new BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer(config);
+
     LOG4CXX_DEBUG(log, "Solver()...");
 
-    if (!structAnalyzer.isTwoDimensional())
+    if (!structAnalyzer->isTwoDimensional())
     {
         LOG4CXX_ERROR(log, "Config is not two-dimensional, this solver supports only two-dimensional models");
         throw Exception("Unsuppordet model");
@@ -21,8 +23,8 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
     char message[1000];
 
     subSolvers = new SplittedSolver(
-        structAnalyzer.getPointsH().size() - 1,
-        structAnalyzer.getPointsV().size() - 1
+        structAnalyzer->getPointsH().size() - 1,
+        structAnalyzer->getPointsV().size() - 1
     );
 
     sprintf(message, "SubSolver grid has sizeH=%i sizeV=%i", subSolvers->sizeH(), subSolvers->sizeV());
@@ -40,15 +42,15 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
             bool lastV = v == subSolvers->sizeV();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v] = new AreaSubSolver(this, h, v, &structAnalyzer, &fdAnalyzer);
+                subSolvers->getAreas()[h][v] = new AreaSubSolver(this, h, v, structAnalyzer, fdAnalyzer);
 
             if (!lastH)
-                subSolvers->getBoundsH()[h][v] = new BoundSubSolver(h, v, true, &structAnalyzer, &fdAnalyzer);
+                subSolvers->getBoundsH()[h][v] = new BoundSubSolver(this, h, v, true, structAnalyzer, fdAnalyzer, boundAnalyzer);
 
             if (!lastV)
-                subSolvers->getBoundsV()[h][v] = new BoundSubSolver(h, v, false, &structAnalyzer, &fdAnalyzer);
+                subSolvers->getBoundsV()[h][v] = new BoundSubSolver(this, h, v, false, structAnalyzer, fdAnalyzer, boundAnalyzer);
 
-            subSolvers->getCorners()[h][v] = new CornerSubSolver(h, v, &structAnalyzer, &fdAnalyzer);
+            subSolvers->getCorners()[h][v] = new CornerSubSolver(h, v, structAnalyzer, fdAnalyzer);
         }
     }
     //
@@ -78,6 +80,18 @@ BIO_SLV_FD_IM2D_NS::Solver::~Solver()
         }
     }
     delete subSolvers;
+
+    delete fdAnalyzer;
+    delete boundAnalyzer;
+    delete structAnalyzer;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::IDataModel* BIO_SLV_FD_IM2D_NS::Solver::getData()
+{
+    return 0;   // TODO: Implement
 }
 
 

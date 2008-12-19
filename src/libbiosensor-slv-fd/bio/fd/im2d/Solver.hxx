@@ -11,6 +11,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include "CornerSubSolver.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Splitted2DArea.hxx>
+#include <bio/cfg/BoundAnalyzer.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/slv/AbstractIterativeSolver.hxx>
 #include <log4cxx/logger.h>
@@ -28,8 +29,9 @@ private:
     typedef BIO_NS::Splitted2DArea<AreaSubSolver*, BoundSubSolver*, CornerSubSolver*> SplittedSolver;
 
     log4cxx::LoggerPtr log;
-    BIO_CFG_NS::StructureAnalyzer structAnalyzer;
-    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer fdAnalyzer;
+    BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
     SplittedSolver *subSolvers;
 
     /*
@@ -53,10 +55,7 @@ public:
     /**
      *  Returns data-model.
      */
-    virtual BIO_DM_NS::IDataModel* getData()
-    {
-        return 0;   // FIXME: Implement
-    }
+    virtual BIO_DM_NS::IDataModel* getData();
 
 protected:
 
