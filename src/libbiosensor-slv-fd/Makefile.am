@@ -6,36 +6,36 @@ libbiosensor_slv_fd_la_LIBADD  = \
     ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_slv_fd_la_SOURCES = \
-    bio/fd/SolverFactory.cxx \
-    bio/fd/FiniteDifferencesSolverAnalyzer.cxx \
-    bio/fd/ex2d/Solver.cxx \
-    bio/fd/im2d/Solver.cxx \
-    bio/fd/im2d/AreaSubSolver.cxx \
-    bio/fd/im2d/BoundSubSolver.cxx \
-    bio/fd/im2d/CornerSubSolver.cxx \
-    bio/fd/im2d/ConstantCondition.cxx \
-    bio/fd/im2d/MergeCondition.cxx \
-    bio/fd/im2d/NullCondition.cxx \
-    bio/fd/im2d/WallCondition.cxx
+    bio/slv/fd/SolverFactory.cxx \
+    bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
+    bio/slv/fd/ex2d/Solver.cxx \
+    bio/slv/fd/im2d/Solver.cxx \
+    bio/slv/fd/im2d/AreaSubSolver.cxx \
+    bio/slv/fd/im2d/BoundSubSolver.cxx \
+    bio/slv/fd/im2d/CornerSubSolver.cxx \
+    bio/slv/fd/im2d/ConstantCondition.cxx \
+    bio/slv/fd/im2d/MergeCondition.cxx \
+    bio/slv/fd/im2d/NullCondition.cxx \
+    bio/slv/fd/im2d/WallCondition.cxx
 
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
-    bio/fd/SolverFactory.hxx
+    bio/slv/fd/SolverFactory.hxx
 
 EXTRA_DIST = \
-    bio/fd/SolverFactory.hxx \
-    bio/fd/FiniteDifferencesSolverAnalyzer.hxx \
-    bio/fd/ex2d/Solver.hxx \
-    bio/fd/im2d/Solver.hxx \
-    bio/fd/im2d/AreaSubSolver.hxx \
-    bio/fd/im2d/BoundSubSolver.hxx \
-    bio/fd/im2d/CornerSubSolver.hxx \
-    bio/fd/im2d/IBoundCondition.hxx \
-    bio/fd/im2d/ConstantCondition.hxx \
-    bio/fd/im2d/MergeCondition.hxx \
-    bio/fd/im2d/NullCondition.hxx \
-    bio/fd/im2d/WallCondition.hxx
+    bio/slv/fd/SolverFactory.hxx \
+    bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
+    bio/slv/fd/ex2d/Solver.hxx \
+    bio/slv/fd/im2d/Solver.hxx \
+    bio/slv/fd/im2d/AreaSubSolver.hxx \
+    bio/slv/fd/im2d/BoundSubSolver.hxx \
+    bio/slv/fd/im2d/CornerSubSolver.hxx \
+    bio/slv/fd/im2d/IBoundCondition.hxx \
+    bio/slv/fd/im2d/ConstantCondition.hxx \
+    bio/slv/fd/im2d/MergeCondition.hxx \
+    bio/slv/fd/im2d/NullCondition.hxx \
+    bio/slv/fd/im2d/WallCondition.hxx
 
 
 astyle:

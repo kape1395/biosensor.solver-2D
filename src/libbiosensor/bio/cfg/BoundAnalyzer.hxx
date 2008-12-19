@@ -58,10 +58,6 @@ public:
      */
     virtual ~BoundAnalyzer();
 
-    //BIO_XML_NS::model::Bound* getBoundH(int s, int h, int v);
-
-    //BIO_XML_NS::model::Bound* getBoundV(int s, int h, int v);
-
     /**
      *  Get bound specification for specific area side and substance.
      *
@@ -86,12 +82,6 @@ private:
         BIO_XML_NS::model::BoundSubstance* bsProvided
     );
 
-    /*
-    BIO_XML_NS::model::BoundSubstance* createNullBoundSubstanceIfNull(
-        BIO_XML_NS::model::BoundSubstance* bs,
-        BIO_XML_NS::model::SubstanceName& sn
-    );
-     */
 };
 
 

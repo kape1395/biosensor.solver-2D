@@ -19,6 +19,12 @@ make install
 Del optimizacijos ijungimo:
 ./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O2"
 
+Patestavimas:
+    src/bio-solver/bio-solver src/libbiosensor-xml/Model-example-2D_b.xml
+  arba
+    valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiosensor-xml/Model-example-2D_b.xml
+
+
 ################################################################################
 ##    Cia matyt reikia paleisti kai pakeiciama konfiguracija
 ##    Sitas sukuria ir Makefile.in

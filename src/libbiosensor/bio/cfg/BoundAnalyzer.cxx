@@ -24,7 +24,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(StructureAnalyzer *structAnalyzer)
             for (int s = 0; s < sizeS; s++)
             {
                 bounds[h][v][s] = new BIO_XML_NS::model::BoundSubstance* [4];    // 4 sides
-                for (int i = 0; i < sizeS; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     bounds[h][v][s][i] = 0;
                 }
@@ -331,25 +331,6 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
             bounds[h][v][s][LEFT] = bsNext;
     }
 }
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/*
-BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::createNullBoundSubstanceIfNull(
-    BIO_XML_NS::model::BoundSubstance* bs,
-    BIO_XML_NS::model::SubstanceName& sn
-)
-{
-    if (bs != 0)
-        return bs;
-
-    bs = new BIO_XML_NS::model::bound::Null(sn);
-    allocatedBounds.push_back(bs);
-
-    return bs;
-}
- */
 
 
 /* ************************************************************************** */
