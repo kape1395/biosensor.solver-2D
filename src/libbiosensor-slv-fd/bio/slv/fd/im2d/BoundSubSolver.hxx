@@ -16,7 +16,10 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 
 /**
- *  Bound solver.
+ *  Bound solver. Mainly responsible for construction of the bound solver.
+ *  \see ConstantCondition, WallCondition, MergeCondition, NullCondition.
+ *
+ *  XXX: Should it implement IBoundCondition?
  */
 class BoundSubSolver
 {
@@ -71,27 +74,6 @@ public:
      */
     void solveAlongBackward();
 
-    
-    class BoundCondition {
-        virtual ~BoundCondition()
-        {};
-        virtual void solveThroughForward() = 0;
-        virtual void solveThroughBackward() = 0;
-        virtual void solveAlongForward() = 0;
-        virtual void solveAlongBackward() = 0;
-    };
-    class ConstantBoundCondition : public BoundCondition {
-        
-    };
-    class WallBoundCondition : public BoundCondition {
-
-    };
-    class MergeBoundCondition : public BoundCondition {
-
-    };
-    class NullBoundCondition : public BoundCondition {
-
-    };
 };
 
 

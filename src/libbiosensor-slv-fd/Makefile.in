@@ -71,7 +71,6 @@ am_libbiosensor_slv_fd_la_OBJECTS =  \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-ConstantCondition.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo \
-	bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.lo
 libbiosensor_slv_fd_la_OBJECTS = $(am_libbiosensor_slv_fd_la_OBJECTS)
 libbiosensor_slv_fd_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -225,7 +224,6 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/im2d/CornerSubSolver.cxx \
     bio/slv/fd/im2d/ConstantCondition.cxx \
     bio/slv/fd/im2d/MergeCondition.cxx \
-    bio/slv/fd/im2d/NullCondition.cxx \
     bio/slv/fd/im2d/WallCondition.cxx
 
 nobase_pkginclude_HEADERS = \
@@ -243,7 +241,6 @@ EXTRA_DIST = \
     bio/slv/fd/im2d/IBoundCondition.hxx \
     bio/slv/fd/im2d/ConstantCondition.hxx \
     bio/slv/fd/im2d/MergeCondition.hxx \
-    bio/slv/fd/im2d/NullCondition.hxx \
     bio/slv/fd/im2d/WallCondition.hxx
 
 all: biosensor-slv-fd.hxx
@@ -369,9 +366,6 @@ bio/slv/fd/im2d/libbiosensor_slv_fd_la-ConstantCondition.lo:  \
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo:  \
 	bio/slv/fd/im2d/$(am__dirstamp) \
 	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
-bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo:  \
-	bio/slv/fd/im2d/$(am__dirstamp) \
-	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.lo:  \
 	bio/slv/fd/im2d/$(am__dirstamp) \
 	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
@@ -392,8 +386,6 @@ mostlyclean-compile:
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.$(OBJEXT)
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo
-	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.$(OBJEXT)
-	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.$(OBJEXT)
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.$(OBJEXT)
@@ -414,7 +406,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-ConstantCondition.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-CornerSubSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-MergeCondition.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-NullCondition.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-Solver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-WallCondition.Plo@am__quote@
 
@@ -504,13 +495,6 @@ bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo: bio/slv/fd/im2d/MergeC
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/fd/im2d/MergeCondition.cxx' object='bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo `test -f 'bio/slv/fd/im2d/MergeCondition.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/MergeCondition.cxx
-
-bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo: bio/slv/fd/im2d/NullCondition.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo -MD -MP -MF bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-NullCondition.Tpo -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo `test -f 'bio/slv/fd/im2d/NullCondition.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/NullCondition.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-NullCondition.Tpo bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-NullCondition.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/fd/im2d/NullCondition.cxx' object='bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-NullCondition.lo `test -f 'bio/slv/fd/im2d/NullCondition.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/NullCondition.cxx
 
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.lo: bio/slv/fd/im2d/WallCondition.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.lo -MD -MP -MF bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-WallCondition.Tpo -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-WallCondition.lo `test -f 'bio/slv/fd/im2d/WallCondition.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/WallCondition.cxx
