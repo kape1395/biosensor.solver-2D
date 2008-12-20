@@ -3,9 +3,15 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition()
+BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
+    AreaSubSolver::EdgeData* edge,
+    double concentration,
+    bool atStart
+)
 {
-    // TODO: Implement
+    this->edge = edge;
+    this->concentration = concentration;
+    this->atStart = atStart;
 }
 
 
@@ -13,7 +19,7 @@ BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition()
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::ConstantCondition::~ConstantCondition()
 {
-    // TODO: Implement
+    // Nothing to do here.
 }
 
 
@@ -21,7 +27,14 @@ BIO_SLV_FD_IM2D_NS::ConstantCondition::~ConstantCondition()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughForward()
 {
-    // TODO: Implement
+    if (atStart) // P and Q are needed at start only
+    {
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setP0(i, 0.0);
+            edge->setQ0(i, concentration);
+        }
+    }
 }
 
 
@@ -29,7 +42,10 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughBackward()
 {
-    // TODO: Implement
+    for (int i = 1; i < edge->getSize() - 1; i++)
+    {
+        edge->setC0(i, concentration);
+    }
 }
 
 
@@ -37,7 +53,7 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveAlongForward()
 {
-    // TODO: Implement
+    //  Nothing to do here.
 }
 
 
@@ -45,7 +61,10 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveAlongForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveAlongBackward()
 {
-    // TODO: Implement
+    for (int i = 1; i < edge->getSize() - 1; i++)
+    {
+        edge->setC0(i, concentration);
+    }
 }
 
 

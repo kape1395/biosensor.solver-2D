@@ -207,50 +207,55 @@ public:
 
         ~EdgeData();
 
+        int getSize()
+        {
+            return size;
+        }
+
         void setP0(int index, double value)
         {
             data0[index][LAYER_P] = value;
-        };
+        }
 
         double getP0(int index)
         {
             return data0[index][LAYER_P];
-        };
+        }
 
         double getP1(int index)
         {
             return data1[index][LAYER_P];
-        };
+        }
 
         void setQ0(int index, double value)
         {
             data0[index][LAYER_Q] = value;
-        };
+        }
 
         double getQ0(int index)
         {
             return data0[index][LAYER_Q];
-        };
+        }
 
         double getQ1(int index)
         {
             return data1[index][LAYER_Q];
-        };
+        }
 
         void setC0(int index, double value)
         {
             data0[index][solver->getCurrentLayerIndex()] = value;
-        };
+        }
 
         double getC0(int index)
         {
             return data0[index][solver->getCurrentLayerIndex()];
-        };
+        }
 
         double getC1(int index)
         {
             return data1[index][solver->getCurrentLayerIndex()];
-        };
+        }
 
     };
 
