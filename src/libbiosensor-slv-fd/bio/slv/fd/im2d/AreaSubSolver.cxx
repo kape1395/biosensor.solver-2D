@@ -537,6 +537,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
     if (horizontal)
     {
         size = solver->dataSizeH;
+        stepSize = solver->stepSizeV;
         data0 = new double*[size];
         data1 = new double*[size];
         for (int i = 0; i < size; i++)
@@ -548,6 +549,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
     else // vertical
     {
         size = solver->dataSizeV;
+        stepSize = solver->stepSizeH;
         data0 = new double*[size];
         data1 = new double*[size];
         for (int i = 0; i < size; i++)

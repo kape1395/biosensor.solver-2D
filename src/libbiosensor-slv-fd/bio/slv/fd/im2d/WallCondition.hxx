@@ -9,7 +9,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 
 /**
- *
+ *  Bound condition "Wall" (or "Non-leakage").
  */
 class WallCondition : public IBoundCondition
 {

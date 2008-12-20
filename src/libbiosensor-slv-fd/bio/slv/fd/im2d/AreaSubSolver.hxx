@@ -188,8 +188,9 @@ public:
     private:
         AreaSubSolver* solver;
         int size;
-        double **data0;    //!< data0[x][layer]
-        double **data1;    //!< data1[x][layer]
+        double stepSize;    //!< distande from #data0 to #data1
+        double **data0;     //!< data0[x][layer]
+        double **data1;     //!< data1[x][layer]
 
     protected:
 
@@ -210,6 +211,11 @@ public:
         int getSize()
         {
             return size;
+        }
+
+        double getStepSize()
+        {
+            return stepSize;
         }
 
         void setP0(int index, double value)
