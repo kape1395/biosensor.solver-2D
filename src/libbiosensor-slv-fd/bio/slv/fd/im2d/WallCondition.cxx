@@ -3,9 +3,13 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition()
+BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
+    AreaSubSolver::EdgeData* edge,
+    bool atStart
+)
 {
-    // TODO: Implement
+    this->edge = edge;
+    this->atStart = atStart;
 }
 
 
@@ -13,7 +17,7 @@ BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition()
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::WallCondition::~WallCondition()
 {
-    // TODO: Implement
+    //  Nothing to do here.
 }
 
 
@@ -21,7 +25,14 @@ BIO_SLV_FD_IM2D_NS::WallCondition::~WallCondition()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::WallCondition::solveThroughForward()
 {
-    // TODO: Implement
+    if (atStart)    // P and Q are needed at start only
+    {
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setP0(i, 1.0);
+            edge->setQ0(i, 0.0);
+        }
+    }
 }
 
 
@@ -29,7 +40,20 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::solveThroughForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::WallCondition::solveThroughBackward()
 {
-    // TODO: Implement
+    if (atStart)
+    {
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setC0(i, edge->getP0(i) * edge->getC1(i) + edge->getQ0(i));
+        }
+    }
+    else
+    {
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setC0(i, -(edge->getQ1(i) / (edge->getP1(i) - 1)));
+        }
+    }
 }
 
 
@@ -37,7 +61,7 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::solveThroughBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongForward()
 {
-    // TODO: Implement
+    //  Nothing to do here (for now the explicit aproach is used "along").
 }
 
 
@@ -45,7 +69,10 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongBackward()
 {
-    // TODO: Implement
+    for (int i = 1; i < edge->getSize() - 1; i++)
+    {
+        edge->setC0(i, edge->getC1(i));
+    }
 }
 
 

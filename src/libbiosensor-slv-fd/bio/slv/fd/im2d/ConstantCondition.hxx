@@ -23,8 +23,9 @@ public:
     /**
      *  Constructor.
      *
-     *  \param edge Reference to the data in the area.
+     *  \param edge             Reference to the data in the area.
      *  \param concentration    Concentration to be constant.
+     *  \param atStart          Is this condition at top|left (true) or bottom|right (false)?
      */
     ConstantCondition(
         AreaSubSolver::EdgeData* edge,

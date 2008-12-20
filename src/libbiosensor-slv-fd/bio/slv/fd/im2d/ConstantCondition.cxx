@@ -42,9 +42,19 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughBackward()
 {
-    for (int i = 1; i < edge->getSize() - 1; i++)
+    if (atStart)
     {
-        edge->setC0(i, concentration);
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setC0(i, edge->getP0(i) * edge->getC1(i) + edge->getQ0(i));
+        }
+    }
+    else
+    {
+        for (int i = 1; i < edge->getSize() - 1; i++)
+        {
+            edge->setC0(i, concentration);
+        }
     }
 }
 
@@ -53,7 +63,7 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveThroughBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveAlongForward()
 {
-    //  Nothing to do here.
+    //  Nothing to do here (for now the explicit aproach is used "along").
 }
 
 
