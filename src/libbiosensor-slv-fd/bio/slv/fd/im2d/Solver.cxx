@@ -42,13 +42,26 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
             bool lastV = v == subSolvers->sizeV();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v] = new AreaSubSolver(this, h, v, structAnalyzer, fdAnalyzer);
+                subSolvers->getAreas()[h][v] = new AreaSubSolver(
+                    this, h, v,
+                    structAnalyzer, fdAnalyzer
+                );
 
             if (!lastH)
-                subSolvers->getBoundsH()[h][v] = new BoundSubSolver(this, h, v, true, structAnalyzer, fdAnalyzer, boundAnalyzer);
+                subSolvers->getBoundsH()[h][v] = new BoundSubSolver( // Horizontal Bound
+                    this, h, v, true,
+                    v > 0 ? subSolvers->getAreas()[h][v - 1] : 0,
+                    !lastV ? subSolvers->getAreas()[h][v] : 0,
+                    structAnalyzer, fdAnalyzer, boundAnalyzer
+                );
 
             if (!lastV)
-                subSolvers->getBoundsV()[h][v] = new BoundSubSolver(this, h, v, false, structAnalyzer, fdAnalyzer, boundAnalyzer);
+                subSolvers->getBoundsV()[h][v] = new BoundSubSolver( // Vertical Bound
+                    this, h, v, false,
+                    h > 0 ? subSolvers->getAreas()[h - 1][v] : 0,
+                    !lastH ? subSolvers->getAreas()[h][v] : 0,
+                    structAnalyzer, fdAnalyzer, boundAnalyzer
+                );
 
             subSolvers->getCorners()[h][v] = new CornerSubSolver(h, v, structAnalyzer, fdAnalyzer);
         }

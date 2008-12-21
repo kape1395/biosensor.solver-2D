@@ -4,7 +4,10 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(StructureAnalyzer *structAnalyzer)
+BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
+    StructureAnalyzer *structAnalyzer
+) :
+        log(log4cxx::Logger::getLogger("libbiosensor::BoundAnalyzer"))
 {
     typedef BIO_XML_NS::model::Model::bound_iterator bIt;
     typedef BIO_XML_NS::model::Bound::substance_iterator bsIt;
@@ -198,17 +201,22 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     //
     //  get diffusions in the adjacent areas.
     //
+    int hPrev = (side == LEFT   ) ? h - 1 : h;
+    int hNext = (side == RIGHT  ) ? h + 1 : h;
+    int vPrev = (side == TOP    ) ? v - 1 : v;
+    int vNext = (side == BOTTOM ) ? v + 1 : v;
+
     BIO_XML_NS::model::Symbol* diffPrev;
     BIO_XML_NS::model::Symbol* diffNext;
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
-        diffPrev = (v == 0        ) ? 0 : structAnalyzer->getDiffusion(s, h, v - 1);
-        diffNext = (v == sizeV - 1) ? 0 : structAnalyzer->getDiffusion(s, h, v    );
+        diffPrev = (v == 0        ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
+        diffNext = (v == sizeV - 1) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
     }
     else // isVertical
     {
-        diffPrev = (h == 0        ) ? 0 : structAnalyzer->getDiffusion(s, h - 1, v);
-        diffNext = (h == sizeH - 1) ? 0 : structAnalyzer->getDiffusion(s, h    , v);
+        diffPrev = (h == 0        ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
+        diffNext = (h == sizeH - 1) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
     }
     bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
     bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
@@ -316,19 +324,19 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     //
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
-        if (v != 0)
-            bounds[h][v-1][s][BOTTOM] = bsPrev;
+        if (vPrev >= 0)
+            bounds[hPrev][vPrev][s][BOTTOM] = bsPrev;
 
-        if (v != sizeV - 1)
-            bounds[h][v][s][TOP] = bsNext;
+        if (vNext < sizeV)
+            bounds[hNext][vNext][s][TOP] = bsNext;
     }
     else // isVertical
     {
-        if (h != 0)
-            bounds[h - 1][v][s][RIGHT] = bsPrev;
+        if (hPrev >= 0)
+            bounds[hPrev][vPrev][s][RIGHT] = bsPrev;
 
-        if (h != sizeH - 1)
-            bounds[h][v][s][LEFT] = bsNext;
+        if (hNext < sizeH)
+            bounds[hNext][vNext][s][LEFT] = bsNext;
     }
 }
 

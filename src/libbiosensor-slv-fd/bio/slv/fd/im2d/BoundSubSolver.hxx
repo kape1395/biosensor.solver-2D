@@ -7,7 +7,9 @@ class BoundSubSolver;
 BIO_SLV_FD_IM2D_NS_END
 
 #include "Solver.hxx"
+#include "AreaSubSolver.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
+#include "IBoundCondition.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/cfg/BoundAnalyzer.hxx>
 #include <log4cxx/logger.h>
@@ -17,7 +19,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 /**
  *  Bound solver. Mainly responsible for construction of the bound solver.
- *  \see ConstantCondition, WallCondition, MergeCondition, NullCondition.
+ *  \see ConstantCondition, WallCondition and MergeCondition.
  *
  *  XXX: Should it implement IBoundCondition?
  */
@@ -34,6 +36,10 @@ private:
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
 
+    std::vector<IBoundCondition*> boundConditions;
+
+    typedef std::vector<IBoundCondition*>::iterator BCIterator;
+
 public:
 
     /**
@@ -44,6 +50,8 @@ public:
         int positionH,
         int positionV,
         bool horizontal,
+        AreaSubSolver* areaPrev,
+        AreaSubSolver* areaNext,
         BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
         BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
         BIO_CFG_NS::BoundAnalyzer* boundAnalyzer
@@ -73,6 +81,20 @@ public:
      *
      */
     void solveAlongBackward();
+
+protected:
+
+    /**
+     *  Creates bound condition for particular specification of
+     *  substance for bound.
+     */
+    void createBoundCondition(
+        BIO_XML_NS::model::BoundSubstance * boundSubstance,
+        AreaSubSolver* areaPrev,
+        AreaSubSolver* areaNext,
+        int substance,
+        bool atStart
+    );
 
 };
 

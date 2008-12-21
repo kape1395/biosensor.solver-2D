@@ -14,6 +14,7 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     this->edgeNext = edgeNext;
     this->diffusionPrev = diffusionPrev;
     this->diffusionNext = diffusionNext;
+    this->size = edgePrev->getSize(); // it is same as in #edgePrev
 
     a = diffusionPrev / edgePrev->getStepSize();
     c = diffusionNext / edgeNext->getStepSize();

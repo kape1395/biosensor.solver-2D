@@ -138,6 +138,16 @@ public:
         bool start
     );
 
+    int getPositionH()
+    {
+        return positionH;
+    }
+
+    int getPositionV()
+    {
+        return positionV;
+    }
+
 protected:
 
     /**

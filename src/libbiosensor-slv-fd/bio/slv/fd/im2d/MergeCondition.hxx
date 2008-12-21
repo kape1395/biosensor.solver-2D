@@ -28,7 +28,7 @@ private:
     double a;   //!< Equation coefficient "a" (for the step "Through" and "Along").
     double b;   //!< Equation coefficient "b" (for the step "Through" and "Along").
     double c;   //!< Equation coefficient "c" (for the step "Through" and "Along").
-    double f;   //!< Equation coefficient "f" (for the step "Through").
+    double f;   //!< Equation coefficient "f" (for the step "Through" only).
 
 public:
 
