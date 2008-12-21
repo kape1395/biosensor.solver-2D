@@ -20,6 +20,7 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     c = diffusionNext / edgeNext->getStepSize();
     b = -(a + c);
     f = 0.0;
+    applyInitialValues();
 }
 
 
@@ -80,6 +81,14 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::solveAlongBackward()
         //  NOTE: It is enough to write C to "prev" area only.
         edgePrev->setC0(i, - (a * edgePrev->getC1(i) + c * edgeNext->getC1(i)) / b);
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::MergeCondition::applyInitialValues()
+{
+    solveAlongBackward();
 }
 
 

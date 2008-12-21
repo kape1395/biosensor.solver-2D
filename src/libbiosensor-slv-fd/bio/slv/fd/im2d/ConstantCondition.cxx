@@ -12,6 +12,7 @@ BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
     this->edge = edge;
     this->concentration = concentration;
     this->atStart = atStart;
+    applyInitialValues();
 }
 
 
@@ -75,6 +76,14 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::solveAlongBackward()
     {
         edge->setC0(i, concentration);
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::ConstantCondition::applyInitialValues()
+{
+    solveAlongBackward();
 }
 
 

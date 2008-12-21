@@ -72,6 +72,11 @@ public:
      */
     virtual void solveAlongBackward();
 
+    /**
+     *
+     */
+    virtual void applyInitialValues();
+
 };
 
 

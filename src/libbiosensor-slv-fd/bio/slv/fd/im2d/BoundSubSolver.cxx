@@ -133,6 +133,17 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
+{
+    for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
+    {
+        (*bc)->applyInitialValues();
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     BIO_XML_NS::model::BoundSubstance * boundSubstance,
     AreaSubSolver* areaPrev,

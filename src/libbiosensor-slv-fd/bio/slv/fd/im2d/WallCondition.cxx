@@ -10,6 +10,7 @@ BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
 {
     this->edge = edge;
     this->atStart = atStart;
+    applyInitialValues();
 }
 
 
@@ -73,6 +74,14 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongBackward()
     {
         edge->setC0(i, edge->getC1(i));
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::WallCondition::applyInitialValues()
+{
+    solveAlongBackward();
 }
 
 

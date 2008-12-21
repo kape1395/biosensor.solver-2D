@@ -21,9 +21,8 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  *  Bound solver. Mainly responsible for construction of the bound solver.
  *  \see ConstantCondition, WallCondition and MergeCondition.
  *
- *  XXX: Should it implement IBoundCondition?
  */
-class BoundSubSolver
+class BoundSubSolver : public IBoundCondition
 {
 private:
     log4cxx::LoggerPtr log;
@@ -63,24 +62,29 @@ public:
     virtual ~BoundSubSolver();
 
     /**
-     *
+     *  \see IBoundCondition#solveThroughForward.
      */
     void solveThroughForward();
 
     /**
-     *
+     *  \see IBoundCondition#solveThroughBackward.
      */
     void solveThroughBackward();
 
     /**
-     *
+     *  \see IBoundCondition#solveAlongForward.
      */
     void solveAlongForward();
 
     /**
-     *
+     *  \see IBoundCondition#solveAlongBackward.
      */
     void solveAlongBackward();
+
+    /**
+     *  \see IBoundCondition#applyInitialValues.
+     */
+    void applyInitialValues();
 
 protected:
 
