@@ -9,6 +9,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include "AreaSubSolver.hxx"
 #include "BoundSubSolver.hxx"
 #include "CornerSubSolver.hxx"
+#include "DataModel.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Splitted2DArea.hxx>
 #include <bio/cfg/BoundAnalyzer.hxx>
@@ -32,7 +33,8 @@ private:
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
-    SplittedSolver *subSolvers;
+    SplittedSolver* subSolvers;
+    DataModel* dataModel;
 
     /*
      *  It is used to switch this ant previous layers.

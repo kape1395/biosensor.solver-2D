@@ -66,6 +66,7 @@ am_libbiosensor_slv_fd_la_OBJECTS =  \
 	bio/slv/fd/libbiosensor_slv_fd_la-FiniteDifferencesSolverAnalyzer.lo \
 	bio/slv/fd/ex2d/libbiosensor_slv_fd_la-Solver.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo \
+	bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-BoundSubSolver.lo \
 	bio/slv/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.lo \
@@ -219,6 +220,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/slv/fd/ex2d/Solver.cxx \
     bio/slv/fd/im2d/Solver.cxx \
+    bio/slv/fd/im2d/DataModel.cxx \
     bio/slv/fd/im2d/AreaSubSolver.cxx \
     bio/slv/fd/im2d/BoundSubSolver.cxx \
     bio/slv/fd/im2d/CornerSubSolver.cxx \
@@ -235,6 +237,7 @@ EXTRA_DIST = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
     bio/slv/fd/ex2d/Solver.hxx \
     bio/slv/fd/im2d/Solver.hxx \
+    bio/slv/fd/im2d/DataModel.hxx \
     bio/slv/fd/im2d/AreaSubSolver.hxx \
     bio/slv/fd/im2d/BoundSubSolver.hxx \
     bio/slv/fd/im2d/CornerSubSolver.hxx \
@@ -351,6 +354,9 @@ bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp):
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo:  \
 	bio/slv/fd/im2d/$(am__dirstamp) \
 	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
+bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo:  \
+	bio/slv/fd/im2d/$(am__dirstamp) \
+	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo:  \
 	bio/slv/fd/im2d/$(am__dirstamp) \
 	bio/slv/fd/im2d/$(DEPDIR)/$(am__dirstamp)
@@ -384,6 +390,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-ConstantCondition.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.$(OBJEXT)
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-CornerSubSolver.lo
+	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.$(OBJEXT)
+	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.$(OBJEXT)
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-MergeCondition.lo
 	-rm -f bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.$(OBJEXT)
@@ -405,6 +413,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-BoundSubSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-ConstantCondition.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-CornerSubSolver.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-DataModel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-MergeCondition.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-Solver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-WallCondition.Plo@am__quote@
@@ -460,6 +469,13 @@ bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo: bio/slv/fd/im2d/Solver.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/fd/im2d/Solver.cxx' object='bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-Solver.lo `test -f 'bio/slv/fd/im2d/Solver.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/Solver.cxx
+
+bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo: bio/slv/fd/im2d/DataModel.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo -MD -MP -MF bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-DataModel.Tpo -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo `test -f 'bio/slv/fd/im2d/DataModel.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/DataModel.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-DataModel.Tpo bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-DataModel.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/fd/im2d/DataModel.cxx' object='bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-DataModel.lo `test -f 'bio/slv/fd/im2d/DataModel.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/DataModel.cxx
 
 bio/slv/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo: bio/slv/fd/im2d/AreaSubSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_slv_fd_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo -MD -MP -MF bio/slv/fd/im2d/$(DEPDIR)/libbiosensor_slv_fd_la-AreaSubSolver.Tpo -c -o bio/slv/fd/im2d/libbiosensor_slv_fd_la-AreaSubSolver.lo `test -f 'bio/slv/fd/im2d/AreaSubSolver.cxx' || echo '$(srcdir)/'`bio/slv/fd/im2d/AreaSubSolver.cxx

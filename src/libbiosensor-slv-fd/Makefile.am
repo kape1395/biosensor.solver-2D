@@ -10,6 +10,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/slv/fd/ex2d/Solver.cxx \
     bio/slv/fd/im2d/Solver.cxx \
+    bio/slv/fd/im2d/DataModel.cxx \
     bio/slv/fd/im2d/AreaSubSolver.cxx \
     bio/slv/fd/im2d/BoundSubSolver.cxx \
     bio/slv/fd/im2d/CornerSubSolver.cxx \
@@ -27,6 +28,7 @@ EXTRA_DIST = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
     bio/slv/fd/ex2d/Solver.hxx \
     bio/slv/fd/im2d/Solver.hxx \
+    bio/slv/fd/im2d/DataModel.hxx \
     bio/slv/fd/im2d/AreaSubSolver.hxx \
     bio/slv/fd/im2d/BoundSubSolver.hxx \
     bio/slv/fd/im2d/CornerSubSolver.hxx \

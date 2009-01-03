@@ -71,6 +71,9 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
     ////////////////////////////////////////////////////////////////////////////
 
 
+    this->dataModel = new DataModel(this);
+
+
     LOG4CXX_DEBUG(log, "Solver()... Done");
 }
 
@@ -79,6 +82,8 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
+    delete dataModel;
+    
     for (int h = 0; h <= subSolvers->sizeH(); h++)
     {
         for (int v = 0; v <= subSolvers->sizeV(); v++)
@@ -104,7 +109,7 @@ BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 /* ************************************************************************** */
 BIO_DM_NS::IDataModel* BIO_SLV_FD_IM2D_NS::Solver::getData()
 {
-    return 0;   // TODO: Implement
+    return dataModel;
 }
 
 
