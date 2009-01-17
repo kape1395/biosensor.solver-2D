@@ -12,6 +12,8 @@ using namespace BIO_XML_NS::model;
 using namespace log4cxx;
 
 #include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/slv/ISolverListener.hxx>
+#include <bio/slv/StopAtStepSL.hxx>
 
 /**
  *  Entry point for program bio-solver.
@@ -53,26 +55,46 @@ int main(int argn, char **argv)
                 }
             }
 
+            // TODO: Implement listeners in the configurable way.
+            std::vector<ISolverListener*> listeners;
+            ISolverListener* listener;
+
+
+            listeners.push_back(listener = new StopAtStepSL(solver, 0));
+            dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
+
+
             // Solve biosensor
             LOG4CXX_INFO(log, "Solving...");
             solver->solve();
 
             // Deinitialize
+            for (std::vector<ISolverListener*>::iterator sl = listeners.begin(); sl < listeners.end(); sl++)
+            {
+                delete *sl;
+            }
+            listeners.empty();
+
             delete solver;
             LOG4CXX_INFO(log, "Success");
+
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 0;
 
         }
         catch (const xml_schema::exception& e)
         {
             LOG4CXX_ERROR(log, e);
+
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
         catch (Exception& ee)
         {
             LOG4CXX_ERROR(log, ee.what());
+
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
-        XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
     }
 }

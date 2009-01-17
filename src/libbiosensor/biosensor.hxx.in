@@ -14,6 +14,10 @@
 #define BIO_DM_NS_BEGIN BIO_NS_BEGIN namespace dm {
 #define BIO_DM_NS_END BIO_NS_END }
 
+#define BIO_IO_NS BIO_NS::io
+#define BIO_IO_NS_BEGIN BIO_NS_BEGIN namespace io {
+#define BIO_IO_NS_END BIO_NS_END }
+
 #define BIO_CFG_NS BIO_NS::cfg
 #define BIO_CFG_NS_BEGIN BIO_NS_BEGIN namespace cfg {
 #define BIO_CFG_NS_END BIO_NS_END }

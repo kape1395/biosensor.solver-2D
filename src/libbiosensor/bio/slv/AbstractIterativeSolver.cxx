@@ -138,7 +138,7 @@ void AbstractIterativeSolver::invokeListeners()
 {
     for (int i = 0; i < listeners.size(); i++)
     {
-        listeners[i]->solveEventOccured(this);
+        listeners[i]->solveEventOccured();
     }
 }
 

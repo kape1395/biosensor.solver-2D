@@ -12,6 +12,11 @@ BIO_SLV_NS_BEGIN
 class ISolver
 {
 public:
+    virtual ~ISolver()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual void solve() = 0;
     virtual BIO_DM_NS::IDataModel* getData() = 0;
     virtual BIO_XML_NS::model::Model* getConfig() = 0;

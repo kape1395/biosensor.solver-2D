@@ -12,6 +12,11 @@ class ISolverListener;
 class IIterativeSolver //: public ISolver -- to avoid diamond inheritance
 {
 public:
+    virtual ~IIterativeSolver()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual void stop() = 0;
     virtual bool isStopped() = 0;
     virtual double getTimeStep() = 0;

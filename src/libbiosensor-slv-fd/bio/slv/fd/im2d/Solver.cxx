@@ -82,6 +82,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
+    LOG4CXX_DEBUG(log, "~Solver()");
     delete dataModel;
 
     for (int h = 0; h <= subSolvers->sizeH(); h++)
@@ -210,10 +211,6 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
             subSolvers->getCorners()[h][v]->solveBackward();
         }
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-    //  TODO: Switch current and previous data-layers
-    //
 
 }
 

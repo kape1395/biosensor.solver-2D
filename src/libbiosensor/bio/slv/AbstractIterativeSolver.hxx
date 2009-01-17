@@ -21,7 +21,8 @@ protected:
     std::vector<ISolverListener*> listeners;
 public:
     AbstractIterativeSolver(BIO_XML_NS::model::Model* config);
-    ~AbstractIterativeSolver();
+    virtual ~AbstractIterativeSolver();
+
     virtual void solve();
     virtual void stop();
     virtual bool isStopped();

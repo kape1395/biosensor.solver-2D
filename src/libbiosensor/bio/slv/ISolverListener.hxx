@@ -11,7 +11,12 @@ BIO_SLV_NS_BEGIN
 class ISolverListener
 {
 public:
-    virtual void solveEventOccured(IIterativeSolver* solver) = 0;
+    virtual ~ISolverListener()
+    {
+        //  Empty virtual destructor.
+    }
+
+    virtual void solveEventOccured() = 0;
 };
 
 

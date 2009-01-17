@@ -54,3 +54,20 @@
    fun:_ZN3xsd3cxx3xml3dom5parseIcEENS2_8auto_ptrIN11xercesc_2_711DOMDocumentEEERKSbIT_St11char_traitsIS8_ESaIS8_EERNS1_13error_handlerIS8_EERKNS1_10propertiesIS8_EEm
    fun:_ZN3bio3xml5model5modelERKSsN3xsd3cxx4tree5flagsERKNS6_10propertiesIcEE
 }
+{
+   xerces_memleak_1
+   Memcheck:Leak
+   fun:malloc
+   fun:uprv_malloc_3_8
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   obj:/usr/lib/libicuuc.so.38.0
+   fun:u_init_3_8
+   fun:_ZN11xercesc_2_715ICUTransServiceC1Ev
+   fun:_ZN11xercesc_2_716XMLPlatformUtils16makeTransServiceEv
+}
+

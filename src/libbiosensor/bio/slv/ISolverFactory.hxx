@@ -19,6 +19,12 @@ BIO_SLV_NS_BEGIN
 class ISolverFactory
 {
 public:
+
+    virtual ~ISolverFactory()
+    {
+        //  Empty virtual destructor.
+    }
+
     /**
      *  Create a factory from a model.
      *

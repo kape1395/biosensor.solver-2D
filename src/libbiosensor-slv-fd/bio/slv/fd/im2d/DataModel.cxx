@@ -81,7 +81,7 @@ int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountV()
 /* ************************************************************************** */
 double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 {
-    // TODO: Implement
+    // TODO: Implement getPointPositionsH()
 }
 
 
@@ -89,7 +89,7 @@ double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 /* ************************************************************************** */
 double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
 {
-    // TODO: Implement
+    // TODO: Implement getPointPositionsV()
 }
 
 
