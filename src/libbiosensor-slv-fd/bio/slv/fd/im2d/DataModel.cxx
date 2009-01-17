@@ -55,7 +55,7 @@ int BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceCount()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_XML_NS::model::Substance BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(int index)
+BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(int index)
 {
     return structAnalyzer->getSubstances()[index];
 }
@@ -126,81 +126,110 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::~Cursor()
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::left()
 {
     --currentH;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::right()
 {
     currentH++;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::top()
 {
     currentV--;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::down()
 {
     currentV++;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowStart()
 {
     currentH = 0;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowEnd()
 {
     currentH = sizeH - 1;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colStart()
 {
     currentV = 0;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colEnd()
 {
     currentV = sizeV - 1;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 bool BIO_SLV_FD_IM2D_NS::DataModel::Cursor::isValid()
 {
     return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrations()
 {
-    if (!isvalid())
+    if (!isValid())
     {
         return 0;
     }
 
+    //  Find current area
     for (
         currentAreaH = dataModel->areaCountH - 1;
-        dataModel->currentAreaH < dataModel->areaCountH;
-        currentAreaH++);
+        currentAreaH >= 0 && dataModel->areaRangesH[currentAreaH] > currentH;
+        currentAreaH--
+    );
+    for (
+        currentAreaV = dataModel->areaCountV - 1;
+        currentAreaV >= 0 && dataModel->areaRangesV[currentAreaV] > currentV;
+        currentAreaV--
+    );
 
     return this;
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
 double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::operator[] (int substanceNr)
 {
     return currentArea->getConcentration(
-               h - dataModel->areaRangesH[currentAreaH],
-               v - dataModel->areaRangesV[currentAreaV],
+               currentH - dataModel->areaRangesH[currentAreaH],
+               currentV - dataModel->areaRangesV[currentAreaV],
                substanceNr
            );
 }

@@ -56,7 +56,7 @@ public:
     /**
      *
      */
-    virtual BIO_XML_NS::model::Substance getSubstanceConf(int index);
+    virtual BIO_XML_NS::model::Substance* getSubstanceConf(int index);
 
     /**
      *
@@ -79,7 +79,10 @@ public:
     virtual double* getPointPositionsV();
 
     /**
+     *  Returns cursor, that can be used to iterate over solvers modelled area.
+     *  NOTE: Cursor, returned by this method must be deleted by the caller.
      *
+     *  \return new cursor.
      */
     virtual BIO_DM_NS::ICursor2D* newGridCursor();
 
@@ -104,12 +107,12 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
     public:
 
         /**
-         *
+         *  Constructor.
          */
         Cursor(DataModel* dataModel);
 
         /**
-         *
+         *  Destructor.
          */
         virtual ~Cursor();
 
@@ -131,7 +134,7 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
          *  Returns concentration of the substance in a current point.
          *  This is implementation of an interface IConcentrations.
          */
-        virtual double operator [] (int substanceNr) = 0;
+        virtual double operator [] (int substanceNr);
 
     };
 

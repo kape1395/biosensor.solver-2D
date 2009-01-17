@@ -16,7 +16,7 @@ class IGrid
 {
 public:
     virtual int getSubstanceCount() = 0;
-    virtual BIO_XML_NS::model::Substance getSubstanceConf(int index) = 0;
+    virtual BIO_XML_NS::model::Substance* getSubstanceConf(int index) = 0;
 };
 
 
