@@ -11,7 +11,7 @@ BIO_NS_BEGIN
  *  Parameter C is class of corners, that exists at bound crossing points.
  */
 template<class A, class B, class C>
-class Splitted2DArea        // FIXME: Manau kad reiks ismesti.
+class Splitted2DArea
 {
 private:
     int sizeH_;

@@ -11,15 +11,16 @@ BIO_DM_NS_BEGIN
 class ICursor2D
 {
 public:
-    virtual int left() = 0;
-    virtual int right() = 0;
-    virtual int top() = 0;
-    virtual int down() = 0;
+    virtual void left() = 0;
+    virtual void right() = 0;
+    virtual void top() = 0;
+    virtual void down() = 0;
     virtual void rowStart() = 0;
     virtual void rowEnd() = 0;
     virtual void colStart() = 0;
     virtual void colEnd() = 0;
-    virtual IConcentrations& operator *() = 0;
+    virtual bool isValid() = 0;
+    virtual IConcentrations* getConcentrations() = 0;
 };
 
 

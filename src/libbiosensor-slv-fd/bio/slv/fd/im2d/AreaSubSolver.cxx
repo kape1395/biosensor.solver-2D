@@ -2,6 +2,7 @@
 #include "Model.hxx"
 #include "ModelReaction.hxx"
 #include <bio/Exception.hxx>
+#include <cmath>
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -567,6 +568,15 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::~EdgeData()
 {
     delete [] data0;
     delete [] data1;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
+{
+    int sl = getLocalSubstanceIndex(s);
+    return (sl == -1) ? NAN : data[h][v][sl][this->getCurrentLayerIndex()];
 }
 
 

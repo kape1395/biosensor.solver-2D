@@ -3,9 +3,36 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::DataModel::DataModel(Solver* solver)
+BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
+    Solver* solver,
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
+)
 {
     this->solver = solver;
+    this->structAnalyzer = structAnalyzer;
+
+    areaCountH = solver->getSubSolvers()->sizeH();
+    areaCountV = solver->getSubSolvers()->sizeV();
+    areaRangesH = new int[areaCountH];
+    areaRangesV = new int[areaCountV];
+
+    int accumulatedPointCount = 0;
+    for (int h = 0; h < areaCountH; h++)
+    {
+        areaRangesH[h] = accumulatedPointCount;
+        accumulatedPointCount += solver->getSubSolvers()->getArea(h, 0)->getPointCountH() - 1;
+    }
+    pointCountH = accumulatedPointCount + 1;
+
+    accumulatedPointCount = 0;
+    for (int v = 0; v < areaCountV; v++)
+    {
+        areaRangesV[v] = accumulatedPointCount;
+        accumulatedPointCount += solver->getSubSolvers()->getArea(0, v)->getPointCountV() - 1;
+    }
+    pointCountV = accumulatedPointCount + 1;
+
 }
 
 
@@ -13,7 +40,8 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(Solver* solver)
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::DataModel::~DataModel()
 {
-
+    delete [] areaRangesH;
+    delete [] areaRangesV;
 }
 
 
@@ -21,7 +49,7 @@ BIO_SLV_FD_IM2D_NS::DataModel::~DataModel()
 /* ************************************************************************** */
 int BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceCount()
 {
-
+    return structAnalyzer->getSubstances().size();
 }
 
 
@@ -29,7 +57,7 @@ int BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceCount()
 /* ************************************************************************** */
 BIO_XML_NS::model::Substance BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(int index)
 {
-
+    return structAnalyzer->getSubstances()[index];
 }
 
 
@@ -37,7 +65,7 @@ BIO_XML_NS::model::Substance BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(int
 /* ************************************************************************** */
 int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountH()
 {
-
+    return pointCountH;
 }
 
 
@@ -45,7 +73,7 @@ int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountH()
 /* ************************************************************************** */
 int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountV()
 {
-
+    return pointCountV;
 }
 
 
@@ -53,7 +81,7 @@ int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountV()
 /* ************************************************************************** */
 double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 {
-
+    // TODO: Implement
 }
 
 
@@ -61,7 +89,7 @@ double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 /* ************************************************************************** */
 double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
 {
-
+    // TODO: Implement
 }
 
 
@@ -69,7 +97,7 @@ double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
 /* ************************************************************************** */
 BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::DataModel::newGridCursor()
 {
-
+    return new Cursor(this);
 }
 
 
@@ -80,10 +108,13 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
 )
 {
     this->dataModel = dataModel;
-    h = 0;
-    v = 0;
     sizeH = dataModel->getPointCountH();
     sizeV = dataModel->getPointCountV();
+    currentH = 0;
+    currentV = 0;
+    currentAreaH = 0;
+    currentAreaV = 0;
+    currentArea = dataModel->solver->getSubSolvers()->getArea(currentAreaH, currentAreaV);
 }
 
 
@@ -95,11 +126,83 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::~Cursor()
 }
 
 
-/* ************************************************************************** */
-/* ************************************************************************** */
-BIO_DM_NS::IConcentrations& BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrations()
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::left()
 {
-    // TODO: Implement
+    --currentH;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::right()
+{
+    currentH++;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::top()
+{
+    currentV--;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::down()
+{
+    currentV++;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowStart()
+{
+    currentH = 0;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowEnd()
+{
+    currentH = sizeH - 1;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colStart()
+{
+    currentV = 0;
+}
+
+
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colEnd()
+{
+    currentV = sizeV - 1;
+}
+
+
+bool BIO_SLV_FD_IM2D_NS::DataModel::Cursor::isValid()
+{
+    return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
+}
+
+
+BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrations()
+{
+    if (!isvalid())
+    {
+        return 0;
+    }
+
+    for (
+        currentAreaH = dataModel->areaCountH - 1;
+        dataModel->currentAreaH < dataModel->areaCountH;
+        currentAreaH++);
+
+    return this;
+}
+
+
+double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::operator[] (int substanceNr)
+{
+    return currentArea->getConcentration(
+               h - dataModel->areaRangesH[currentAreaH],
+               v - dataModel->areaRangesV[currentAreaV],
+               substanceNr
+           );
 }
 
 

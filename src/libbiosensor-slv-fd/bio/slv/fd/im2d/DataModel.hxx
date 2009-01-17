@@ -23,6 +23,14 @@ class DataModel : public BIO_DM_NS::IDataModel, public BIO_DM_NS::IGrid2D
 {
 private:
     Solver* solver;
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
+    int *areaRangesH;   // Point number, ar which starts h^th area.
+    int *areaRangesV;   // Point number, ar which starts v^th area.
+    int areaCountH;
+    int areaCountV;
+    int pointCountH;    // Total count of points in horizontal axis.
+    int pointCountV;    // Total count of points in vertical axis.
+
 
 public:
 
@@ -30,7 +38,9 @@ public:
      *  Constructor.
      */
     DataModel(
-        Solver* solver
+        Solver* solver,
+        BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+        BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
     );
 
     /**
@@ -73,20 +83,23 @@ public:
      */
     virtual BIO_DM_NS::ICursor2D* newGridCursor();
 
-    
+
 private:
-    
+
     /**
      *  Cursor...
      */
-    class Cursor : public BIO_DM_NS::ICursor2D
+class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         DataModel* dataModel;
-        int h;
-        int v;
-        int sizeH;
-        int sizeV;
+        int sizeH;      // Total size H
+        int sizeV;      // Total size V
+        int currentH;   // point index in H
+        int currentV;   // point index in V;
+        int currentAreaH;
+        int currentAreaV;
+        AreaSubSolver *currentArea;
 
     public:
 
@@ -100,52 +113,26 @@ private:
          */
         virtual ~Cursor();
 
-        virtual void left()
-        {
-            --h;
-        }
-        
-        virtual void right()
-        {
-            h++;
-        }
-    
-        virtual void top()
-        {
-            v--;
-        }
+        virtual void left();
+        virtual void right();
+        virtual void top();
+        virtual void down();
 
-        virtual void down()
-        {
-            v++;
-        }
+        virtual void rowStart();
+        virtual void rowEnd();
+        virtual void colStart();
+        virtual void colEnd();
 
-        virtual void rowStart()
-        {
-            h = 0;
-        }
+        virtual bool isValid();
 
-        virtual void rowEnd()
-        {
-            h = sizeH - 1;
-        }
+        virtual BIO_DM_NS::IConcentrations* getConcentrations();
 
-        virtual void colStart()
-        {
-            v = 0;
-        }
+        /**
+         *  Returns concentration of the substance in a current point.
+         *  This is implementation of an interface IConcentrations.
+         */
+        virtual double operator [] (int substanceNr) = 0;
 
-        virtual void colEnd()
-        {
-            v = sizeV - 1;
-        }
-
-        virtual bool isValid()
-        {
-            return h >= 0 && h < sizeH && v >= 0 && v < sizeV;
-        }
-
-        virtual BIO_DM_NS::IConcentrations& getConcentrations();
     };
 
 };

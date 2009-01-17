@@ -26,8 +26,10 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  */
 class Solver : public BIO_SLV_NS::AbstractIterativeSolver
 {
-private:
+public:
     typedef BIO_NS::Splitted2DArea<AreaSubSolver*, BoundSubSolver*, CornerSubSolver*> SplittedSolver;
+
+private:
 
     log4cxx::LoggerPtr log;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
@@ -58,6 +60,11 @@ public:
      *  Returns data-model.
      */
     virtual BIO_DM_NS::IDataModel* getData();
+
+    /**
+     *  Returns subSolvers.
+     */
+    SplittedSolver* getSubSolvers();
 
 protected:
 

@@ -9,9 +9,10 @@ BIO_DM_NS_BEGIN
 
 /**
  *  Base interface for all grid-based data models, such as finite differences
- *  data model.
+ *  data model. This interface is intented to be implemented by IDataModel
+ *  implementations.
  */
-class IGrid : public IDataModel
+class IGrid
 {
 public:
     virtual int getSubstanceCount() = 0;

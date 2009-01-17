@@ -123,6 +123,26 @@ public:
      */
     void solveVerticalBackward();
 
+    int getPositionH()
+    {
+        return positionH;
+    }
+
+    int getPositionV()
+    {
+        return positionV;
+    }
+
+    int getPointCountH()
+    {
+        return dataSizeH;
+    }
+
+    int getPointCountV()
+    {
+        return dataSizeV;
+    }
+
     /**
      *  Get object that provides access to the data
      *  at the specified edge of the area.
@@ -138,15 +158,19 @@ public:
         bool start
     );
 
-    int getPositionH()
-    {
-        return positionH;
-    }
-
-    int getPositionV()
-    {
-        return positionV;
-    }
+    /**
+     *  Get current concentration of the substance s at point (h, v).
+     *
+     *  \param s    Substance index (global).
+     *  \param h    Horizontal point index (local).
+     *  \param v    Vertical point index (local).
+     *  \return Concentration, or NaN if subscence is not defined in this area.
+     */
+    double getConcentration(
+        int h,
+        int v,
+        int s
+    );
 
 protected:
 
