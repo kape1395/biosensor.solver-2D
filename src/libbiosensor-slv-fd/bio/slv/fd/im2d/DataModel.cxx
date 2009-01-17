@@ -218,6 +218,16 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
         currentAreaV >= 0 && dataModel->areaRangesV[currentAreaV] > currentV;
         currentAreaV--
     );
+    currentArea = dataModel->solver->getSubSolvers()->getArea(
+                      currentAreaH,
+                      currentAreaV
+                  );
+
+    //std::cout << "XXX: "
+    //    << "currentArea=(" << currentAreaH << "," << currentAreaV << ") "
+    //    << "currentLPos=(" << (currentH - dataModel->areaRangesH[currentAreaH]) << ","
+    //    << (currentV - dataModel->areaRangesV[currentAreaV]) << ") "
+    //    << '\t';
 
     return this;
 }

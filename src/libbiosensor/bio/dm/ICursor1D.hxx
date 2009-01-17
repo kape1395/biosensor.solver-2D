@@ -11,6 +11,11 @@ BIO_DM_NS_BEGIN
 class ICursor1D
 {
 public:
+    virtual ~ICursor1D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int prev() = 0;
     virtual int next() = 0;
     virtual void start() = 0;

@@ -14,6 +14,7 @@ using namespace log4cxx;
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/slv/ISolverListener.hxx>
 #include <bio/slv/StopAtStepSL.hxx>
+#include <bio/io/DebugSL.hxx>
 
 /**
  *  Entry point for program bio-solver.
@@ -55,13 +56,18 @@ int main(int argn, char **argv)
                 }
             }
 
+
+
             // TODO: Implement listeners in the configurable way.
             std::vector<ISolverListener*> listeners;
             ISolverListener* listener;
 
-
-            listeners.push_back(listener = new StopAtStepSL(solver, 0));
+            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 0));
             dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
+
+            listeners.push_back(listener = new BIO_IO_NS::DebugSL(solver, std::cout));
+            dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
+
 
 
             // Solve biosensor

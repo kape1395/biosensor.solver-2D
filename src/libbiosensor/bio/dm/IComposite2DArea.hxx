@@ -12,6 +12,11 @@ BIO_DM_NS_BEGIN
 class IComposite2DArea : public IGrid2D
 {
 public:
+    virtual ~IComposite2DArea()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual IComposite2DBound* getTopBound() = 0;
     virtual IComposite2DBound* getRightBound() = 0;
     virtual IComposite2DBound* getBottomBound() = 0;

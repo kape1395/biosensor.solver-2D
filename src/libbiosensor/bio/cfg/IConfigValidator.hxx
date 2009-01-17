@@ -13,6 +13,11 @@ BIO_CFG_NS_BEGIN
 class IConfigValidator
 {
 public:
+    virtual ~IConfigValidator()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual bool validate(BIO_XML_NS::model::Model* config) = 0;
     virtual std::vector<std::string>& getFailReasons() = 0;
 };

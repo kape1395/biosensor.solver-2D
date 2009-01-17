@@ -13,6 +13,11 @@ BIO_DM_NS_BEGIN
 class IGrid2D : public IGrid
 {
 public:
+    virtual ~IGrid2D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int getPointCountH() = 0;
     virtual int getPointCountV() = 0;
     virtual double* getPointPositionsH() = 0;

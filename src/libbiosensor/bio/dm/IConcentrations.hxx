@@ -11,6 +11,11 @@ class IConcentrations
 {
 public:
 
+    virtual ~IConcentrations()
+    {
+        //  Empty virtual destructor.
+    }
+
     /**
      *  Returns concentration of the substance with index <code>substanceNr</code>.
      */

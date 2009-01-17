@@ -15,6 +15,11 @@ BIO_DM_NS_BEGIN
 class IGrid
 {
 public:
+    virtual ~IGrid()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int getSubstanceCount() = 0;
     virtual BIO_XML_NS::model::Substance* getSubstanceConf(int index) = 0;
 };

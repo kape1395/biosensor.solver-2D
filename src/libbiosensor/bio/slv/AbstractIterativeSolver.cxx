@@ -59,7 +59,7 @@ void AbstractIterativeSolver::solve()
 void AbstractIterativeSolver::stop()
 {
     stopped = true;
-    invokeListeners();
+    //invokeListeners();    FIXME: I think this is not needed or must be reported as different type of efent.
 }
 
 

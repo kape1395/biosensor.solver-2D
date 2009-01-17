@@ -12,6 +12,11 @@ BIO_DM_NS_BEGIN
 class IComposite2DCorner
 {
 public:
+    virtual ~IComposite2DCorner()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual IComposite2DBound* getTopBound() = 0;
     virtual IComposite2DBound* getRightBound() = 0;
     virtual IComposite2DBound* getBottomBound() = 0;

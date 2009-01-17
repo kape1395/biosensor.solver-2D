@@ -14,6 +14,11 @@ class Solver : public BIO_SLV_NS::AbstractIterativeSolver
 public:
     Solver(BIO_XML_NS::model::Model* config) : AbstractIterativeSolver(config) {}
 
+    virtual ~Solver()
+    {
+        //  Empty virtual destructor.
+    }
+
     /**
      *  Returns data-model.
      */

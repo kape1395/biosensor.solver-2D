@@ -12,6 +12,11 @@ BIO_DM_NS_BEGIN
 class IGrid1D : public IGrid
 {
 public:
+    virtual ~IGrid1D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int getPointCount() = 0;
     virtual double* getPointPositions() = 0;
     virtual ICursor1D* newGridCursor() = 0;

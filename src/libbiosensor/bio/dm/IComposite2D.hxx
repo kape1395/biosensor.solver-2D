@@ -14,6 +14,11 @@ BIO_DM_NS_BEGIN
 class IComposite2D : public IDataModel
 {
 public:
+    virtual ~IComposite2D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int getPartCountH() = 0;
     virtual int getPartCountV() = 0;
     virtual IComposite2DArea* getArea(int x, int y) = 0;

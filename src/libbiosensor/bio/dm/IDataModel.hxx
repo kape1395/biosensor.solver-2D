@@ -10,6 +10,12 @@ BIO_DM_NS_BEGIN
  */
 class IDataModel
 {
+public:
+
+    virtual ~IDataModel()
+    {
+        //  Empty virtual destructor.
+    }
 
 };
 

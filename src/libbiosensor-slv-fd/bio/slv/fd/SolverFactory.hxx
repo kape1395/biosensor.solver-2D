@@ -11,6 +11,11 @@ BIO_SLV_FD_NS_BEGIN
 class SolverFactory : public ISolverFactory
 {
 public:
+    virtual ~SolverFactory()
+    {
+        //  Empty virtual destructor.
+    }
+
     ISolver* create(BIO_XML_NS::model::Model* model);
 
 };

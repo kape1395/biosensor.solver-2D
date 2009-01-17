@@ -13,6 +13,11 @@ class IConcentrations;
 class IComposite1DBound
 {
 public:
+    virtual ~IComposite1DBound()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual IComposite1DArea* getNextArea() = 0;
     virtual IComposite1DArea* getPrevArea() = 0;
     virtual IConcentrations* getConcentrations() = 0;

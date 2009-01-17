@@ -12,6 +12,11 @@ class IComposite1DBound;
 class IComposite1DArea : public IGrid1D
 {
 public:
+    virtual ~IComposite1DArea()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual IComposite1DBound* getNextBound() = 0;
     virtual IComposite1DBound* getPrevBound() = 0;
 };

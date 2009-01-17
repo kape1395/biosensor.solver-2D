@@ -11,6 +11,11 @@ BIO_CFG_NS_BEGIN
 class IConfigTransformer
 {
 public:
+    virtual ~IConfigTransformer()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual BIO_XML_NS::model::Model* transform(BIO_XML_NS::model::Model* config) = 0;
 };
 

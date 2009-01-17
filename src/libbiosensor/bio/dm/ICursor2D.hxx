@@ -11,6 +11,11 @@ BIO_DM_NS_BEGIN
 class ICursor2D
 {
 public:
+    virtual ~ICursor2D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual void left() = 0;
     virtual void right() = 0;
     virtual void top() = 0;

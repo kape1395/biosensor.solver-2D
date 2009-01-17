@@ -19,7 +19,7 @@ protected:
 public:
     Exception();
     Exception(std::string string);
-    ~Exception() throw();
+    virtual ~Exception() throw();
     virtual const char* what() const throw();
 
 };

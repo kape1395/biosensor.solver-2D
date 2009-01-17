@@ -13,6 +13,11 @@ class IComposite1DBound;
 class IComposite1D : public IDataModel
 {
 public:
+    virtual ~IComposite1D()
+    {
+        //  Empty virtual destructor.
+    }
+
     virtual int getPartCount() = 0;
     virtual IComposite1DArea* getArea(int i) = 0;
     virtual IComposite1DBound* getBound(int i) = 0;
