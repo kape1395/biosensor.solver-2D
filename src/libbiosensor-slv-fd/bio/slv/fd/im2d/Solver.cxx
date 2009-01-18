@@ -77,7 +77,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
     this->dataModel = new DataModel(this, structAnalyzer, fdAnalyzer);
     this->setTimeStep(fdAnalyzer->getTimeStep());
 
-    
+
     LOG4CXX_DEBUG(log, "Solver()... Done");
 }
 

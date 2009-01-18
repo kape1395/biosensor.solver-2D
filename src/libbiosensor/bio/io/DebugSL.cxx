@@ -42,15 +42,15 @@ void BIO_IO_NS::DebugSL::solveEventOccured()
     if (iterativeSolver != 0)
     {
         out << "#"
-                << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
-                << " SolvedTime=" << iterativeSolver->getSolvedTime()
-                << std::endl;
+        << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
+        << " SolvedTime=" << iterativeSolver->getSolvedTime()
+        << std::endl;
     }
     else
     {
         out << "# SolvedIterationCount=? SolvedTime=?" << std::endl;
     }
-    
+
     out << "# h\tv";
     for (int s = 0; s < substCount; s++)
     {

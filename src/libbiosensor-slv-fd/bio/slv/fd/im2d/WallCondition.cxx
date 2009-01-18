@@ -9,10 +9,10 @@ BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::WallCondition"))
 {
     LOG4CXX_DEBUG(log, "WallCondition()");
-    
+
     this->edge = edge;
     this->atStart = atStart;
-    
+
     applyInitialValues();
 }
 

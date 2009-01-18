@@ -302,7 +302,7 @@ BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::
 void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_NS::model::Symbol* >& list,
         BIO_XML_NS::model::Axis& axis,
         bool invert
-)
+                                                          )
 {
     typedef BIO_XML_NS::model::Axis::point_iterator it_point;
     for (it_point p = axis.point().begin(); p != axis.point().end(); p++)

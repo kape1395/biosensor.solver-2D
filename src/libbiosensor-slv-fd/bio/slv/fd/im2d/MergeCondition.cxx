@@ -11,7 +11,7 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::MergeCondition"))
 {
     LOG4CXX_DEBUG(log, "MergeCondition()");
-    
+
     this->edgePrev = edgePrev;
     this->edgeNext = edgeNext;
     this->diffusionPrev = diffusionPrev;
