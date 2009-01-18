@@ -51,9 +51,9 @@
     <symbol name="0"        value="0.0"     dimension="mol/cm^2"/>
 
 
-    <solver xsi:type="s:Implicit2D" timeStep="5E-9">
-        <s:axis from="r0" to="r1" xsi:type="s:ConstantAxisPart" stepCount="2"/>
-        <s:axis from="z0" to="z1" xsi:type="s:ConstantAxisPart" stepCount="2"/>
+    <solver xsi:type="s:Implicit2D" timeStep="1E-4">
+        <s:axis from="r0" to="r1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z0" to="z1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
     </solver>
 
 </model>

@@ -91,10 +91,12 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughForward()
 {
+    LOG4CXX_DEBUG(log, "solveThroughForward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveThroughForward();
     }
+    LOG4CXX_DEBUG(log, "solveThroughForward()... Done");
 }
 
 
@@ -102,10 +104,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughBackward()
 {
+    LOG4CXX_DEBUG(log, "solveThroughBackward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveThroughBackward();
     }
+    LOG4CXX_DEBUG(log, "solveThroughBackward()... Done");
 }
 
 
@@ -113,10 +117,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongForward()
 {
+    LOG4CXX_DEBUG(log, "solveAlongForward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveAlongForward();
     }
+    LOG4CXX_DEBUG(log, "solveAlongForward()... Done");
 }
 
 
@@ -124,10 +130,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 {
+    LOG4CXX_DEBUG(log, "solveAlongBackward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveAlongBackward();
     }
+    LOG4CXX_DEBUG(log, "solveAlongBackward()... Done");
 }
 
 
@@ -135,10 +143,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
 {
+    LOG4CXX_DEBUG(log, "applyInitialValues()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->applyInitialValues();
     }
+    LOG4CXX_DEBUG(log, "applyInitialValues()... Done");
 }
 
 

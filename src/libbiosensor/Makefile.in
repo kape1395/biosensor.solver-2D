@@ -90,6 +90,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/slv/libbiosensor_la-ISolver.lo \
 	bio/slv/libbiosensor_la-ISolverListener.lo \
 	bio/slv/libbiosensor_la-ISolverFactory.lo \
+	bio/slv/libbiosensor_la-InvokeEverySL.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
 	bio/slv/libbiosensor_la-StopAtStepSL.lo
 libbiosensor_la_OBJECTS = $(am_libbiosensor_la_OBJECTS)
@@ -263,6 +264,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
     bio/slv/ISolverFactory.cxx \
+    bio/slv/InvokeEverySL.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtStepSL.cxx
 
@@ -297,6 +299,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
     bio/slv/ISolverFactory.hxx \
+    bio/slv/InvokeEverySL.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtStepSL.hxx
 
@@ -470,6 +473,8 @@ bio/slv/libbiosensor_la-ISolverListener.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-ISolverFactory.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/$(am__dirstamp) \
+	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-StopAtStepSL.lo: bio/slv/$(am__dirstamp) \
@@ -537,6 +542,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-ISolverFactory.lo
 	-rm -f bio/slv/libbiosensor_la-ISolverListener.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-ISolverListener.lo
+	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.lo
 	-rm -f bio/slv/libbiosensor_la-NullSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-NullSolver.lo
 	-rm -f bio/slv/libbiosensor_la-StopAtStepSL.$(OBJEXT)
@@ -574,6 +581,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverListener.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Plo@am__quote@
 
@@ -803,6 +811,13 @@ bio/slv/libbiosensor_la-ISolverFactory.lo: bio/slv/ISolverFactory.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/ISolverFactory.cxx' object='bio/slv/libbiosensor_la-ISolverFactory.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-ISolverFactory.lo `test -f 'bio/slv/ISolverFactory.cxx' || echo '$(srcdir)/'`bio/slv/ISolverFactory.cxx
+
+bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/InvokeEverySL.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-InvokeEverySL.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Tpo -c -o bio/slv/libbiosensor_la-InvokeEverySL.lo `test -f 'bio/slv/InvokeEverySL.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEverySL.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/InvokeEverySL.cxx' object='bio/slv/libbiosensor_la-InvokeEverySL.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-InvokeEverySL.lo `test -f 'bio/slv/InvokeEverySL.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEverySL.cxx
 
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/NullSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-NullSolver.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Tpo -c -o bio/slv/libbiosensor_la-NullSolver.lo `test -f 'bio/slv/NullSolver.cxx' || echo '$(srcdir)/'`bio/slv/NullSolver.cxx

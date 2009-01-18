@@ -34,6 +34,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
     bio/slv/ISolverFactory.cxx \
+    bio/slv/InvokeEverySL.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtStepSL.cxx
 
@@ -69,6 +70,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
     bio/slv/ISolverFactory.hxx \
+    bio/slv/InvokeEverySL.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtStepSL.hxx
 

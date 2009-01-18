@@ -92,9 +92,15 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 data[h][v][s] = new double[6];
 
                 // Apply initial conditions.
-                data[h][v][s][getCurrentLayerIndex()] = structAnalyzer->getInitialConcentration(
-                                                            substanceIndexes[s], positionH, positionV
-                                                        )->value();
+                data[h][v][s][getCurrentLayerIndex()] =
+                    structAnalyzer->getInitialConcentration(
+                        substanceIndexes[s], positionH, positionV
+                    )->value();
+                data[h][v][s][this->getPreviousLayerIndex()] =
+                    data[h][v][s][LAYER_INTERM] =
+                        data[h][v][s][LAYER_P] =
+                            data[h][v][s][LAYER_Q] =
+                                data[h][v][s][LAYER_f_R] = NAN;
             }
         }
     }
@@ -273,6 +279,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
  */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 {
+    LOG4CXX_DEBUG(log, "solveHorizontalForward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -281,6 +288,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 
     // This "solve method" is executed firstly, so we must invert layers.
     dataLayersInverted = !dataLayersInverted;
+    targetLayerIndex = LAYER_INTERM;
+
+    dumpData(std::cout, false, "solveHorizontalForward, before calculations");
 
     double timeStep = this->solver->getTimeStep();
     int layerPrev = this->getPreviousLayerIndex();
@@ -355,6 +365,10 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
             }
         }
     }
+
+    dumpData(std::cout, false, "solveHorizontalForward, after calculations");
+
+    LOG4CXX_DEBUG(log, "solveHorizontalForward()... Done");
 }
 
 
@@ -362,6 +376,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 {
+    LOG4CXX_DEBUG(log, "solveHorizontalBackward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -385,6 +400,8 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
             }
         }
     }
+    dumpData(std::cout, false, "solveHorizontalBackward, after calculations");
+    LOG4CXX_DEBUG(log, "solveHorizontalBackward()... Done");
 }
 
 
@@ -392,11 +409,15 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 {
+    LOG4CXX_DEBUG(log, "solveVerticalForward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
         return;
     }
+
+    // TODO: documentation
+    targetLayerIndex = getCurrentLayerIndex();
 
     double timeStep = this->solver->getTimeStep();
 
@@ -457,6 +478,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
             }
         }
     }
+    LOG4CXX_DEBUG(log, "solveVerticalForward()... Done");
 }
 
 
@@ -464,6 +486,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
 {
+    LOG4CXX_DEBUG(log, "solveVerticalBackward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -488,6 +511,8 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
             }
         }
     }
+    dumpData(std::cout, true, "solveVerticalBackward, after calculations");
+    LOG4CXX_DEBUG(log, "solveVerticalBackward()... Done");
 }
 
 
@@ -577,6 +602,41 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
 {
     int sl = getLocalSubstanceIndex(s);
     return (sl == -1) ? NAN : data[h][v][sl][this->getCurrentLayerIndex()];
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool verticalIsInner, std::string message)
+{
+    //return;
+    out << "/-----------  AreaSubSolver::dumpData - begin (" << message << ")" << std::endl;
+    out << "CurrentLayerIndex=" << getCurrentLayerIndex() << std::endl;
+    out
+    << (verticalIsInner ? "h\tv" : "v\th")
+    << "\ts"
+    << (getCurrentLayerIndex() == 0 ? "\tcurrent\tinterm\tprevious" :  "\tprevious\tinterm\tcurrent")
+    << "\tp\tq\tf_r"
+    << std::endl;
+    for (int i = 0; i < (verticalIsInner ? dataSizeH : dataSizeV); i++)
+    {
+        for (int j = 0; j < (verticalIsInner ? dataSizeV : dataSizeH); j++)
+        {
+            double **dataHV = verticalIsInner ? data[i][j] : data[j][i];
+            for (int s = 0; s < dataSizeS; s++)
+            {
+                double *dataHVS = dataHV[s];
+                out << i << '\t' << j << '\t' << s << '\t'
+                << dataHVS[0]  << '\t'
+                << dataHVS[1]  << '\t'
+                << dataHVS[2]  << '\t'
+                << dataHVS[3]  << '\t'
+                << dataHVS[4]  << '\t'
+                << dataHVS[5]  << std::endl;
+            }
+        }
+    }
+    out << "\\-----------  AreaSubSolver::dumpData - end (" << message << ")" << std::endl;
 }
 
 

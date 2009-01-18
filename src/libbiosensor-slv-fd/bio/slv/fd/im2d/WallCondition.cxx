@@ -6,7 +6,7 @@
 BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
     AreaSubSolver::EdgeData* edge,
     bool atStart
-) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::WallCondition"))
+) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.WallCondition"))
 {
     LOG4CXX_DEBUG(log, "WallCondition()");
 

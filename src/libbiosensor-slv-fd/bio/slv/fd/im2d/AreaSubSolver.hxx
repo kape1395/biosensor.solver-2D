@@ -10,6 +10,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <log4cxx/logger.h>
+#include <string>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -52,6 +53,13 @@ private:
      *  \see getCurrentLayerIndex() getPreviousLayerIndex()
      */
     bool dataLayersInverted;
+
+    /**
+     *  Indicates target layer of the current half-step. This variable can have
+     *  values {0, 1, 2}, i.e. {(curr|prev)Layer, intermLayer, (curr|this)Layer}.
+     *  Values for this variable are set in the solveXXX methods.
+     */
+    int targetLayerIndex;
 
     /**
      *  Diffusion coefficients for all needed substances, array size is #dataSizeS.
@@ -209,6 +217,16 @@ protected:
         return dataLayersInverted ? 0 : 2;
     }
 
+    /**
+     *  \see #targetLayerIndex.
+     */
+    int getTargetLayerIndex()
+    {
+        return targetLayerIndex;
+    }
+
+    void dumpData(std::ostream& out, bool verticalIsInner, std::string message);
+
 public:
 
     /**
@@ -284,17 +302,17 @@ public:
 
         void setC0(int index, double value)
         {
-            data0[index][solver->getCurrentLayerIndex()] = value;
+            data0[index][solver->getTargetLayerIndex()] = value;
         }
 
         double getC0(int index)
         {
-            return data0[index][solver->getCurrentLayerIndex()];
+            return data0[index][solver->getTargetLayerIndex()];
         }
 
         double getC1(int index)
         {
-            return data1[index][solver->getCurrentLayerIndex()];
+            return data1[index][solver->getTargetLayerIndex()];
         }
 
     };
