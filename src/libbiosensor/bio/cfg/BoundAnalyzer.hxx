@@ -27,8 +27,8 @@ private:
      */
     BIO_XML_NS::model::BoundSubstance* **** bounds;
 
-    int sizeH;  //!< #bounds size in h
-    int sizeV;  //!< #bounds size in v
+    int sizeH;  //!< #bounds size in h (number of areas horizontally)
+    int sizeV;  //!< #bounds size in v (number of areas vertically)
     int sizeS;  //!< #bounds size in s
 
     /**

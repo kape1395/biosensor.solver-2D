@@ -98,17 +98,17 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
                 {
                     if (isHorizontal)
                     {
-                        if (v != sizeV - 1)
+                        if (v != sizeV)
                             applyBoundCondition(h, v, s, TOP, &*bs);
                         else
-                            applyBoundCondition(h - 1, v, s, BOTTOM, &*bs);
+                            applyBoundCondition(h, v - 1, s, BOTTOM, &*bs);
                     }
                     else
                     {
-                        if (h != sizeH - 1)
+                        if (h != sizeH)
                             applyBoundCondition(h, v, s, LEFT, &*bs);
                         else
-                            applyBoundCondition(h, v - 1, s, RIGHT, &*bs);
+                            applyBoundCondition(h - 1, v, s, RIGHT, &*bs);
                     }
                 }   //  for (int v = vFrom; v < vTo; v++)
             }       //  for (int h = hFrom; h < hTo; h++)
@@ -210,13 +210,13 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     BIO_XML_NS::model::Symbol* diffNext;
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
-        diffPrev = (v == 0        ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (v == sizeV - 1) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrev = (vPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
+        diffNext = (vNext == sizeV) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
     }
     else // isVertical
     {
-        diffPrev = (h == 0        ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (h == sizeH - 1) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrev = (hPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
+        diffNext = (hNext == sizeH) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
     }
     bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
     bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;

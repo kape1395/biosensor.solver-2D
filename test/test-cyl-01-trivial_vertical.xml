@@ -32,11 +32,9 @@
         <area top="z0" bottom="z1" left="r0" right="r1"/>
     </medium>
 
-    <!--
     <bound from="r0" to="r1" at="z0">
         <substance name="S" xsi:type="b:Constant" concentration="0"/>
     </bound>
-    -->
     <bound from="r0" to="r1" at="z1">
         <substance name="S" xsi:type="b:Constant" concentration="S_0"/>
     </bound>
