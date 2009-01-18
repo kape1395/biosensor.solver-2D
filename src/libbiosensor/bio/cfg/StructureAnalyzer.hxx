@@ -226,7 +226,8 @@ private:
      */
     void fillListWithAxisPoints(
         std::vector< BIO_XML_NS::model::Symbol* >& list,
-        BIO_XML_NS::model::Axis& axis
+        BIO_XML_NS::model::Axis& axis,
+        bool inverted = false
     );
 
     /**

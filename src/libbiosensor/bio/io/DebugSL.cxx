@@ -38,6 +38,19 @@ void BIO_IO_NS::DebugSL::solveEventOccured()
 
     int substCount = grid->getSubstanceCount();
 
+    BIO_SLV_NS::IIterativeSolver* iterativeSolver = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
+    if (iterativeSolver != 0)
+    {
+        out << "#"
+                << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
+                << " SolvedTime=" << iterativeSolver->getSolvedTime()
+                << std::endl;
+    }
+    else
+    {
+        out << "# SolvedIterationCount=? SolvedTime=?" << std::endl;
+    }
+    
     out << "# h\tv";
     for (int s = 0; s < substCount; s++)
     {

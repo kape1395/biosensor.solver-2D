@@ -14,6 +14,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class WallCondition : public IBoundCondition
 {
 private:
+    log4cxx::LoggerPtr log;
     AreaSubSolver::EdgeData* edge;
     bool atStart;
 

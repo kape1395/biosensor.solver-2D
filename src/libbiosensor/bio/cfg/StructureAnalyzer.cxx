@@ -7,7 +7,7 @@
 BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     BIO_XML_NS::model::Model* config
 ) :
-        log(log4cxx::Logger::getLogger("libbiosensor::StructureAnalyzer")),
+        log(log4cxx::Logger::getLogger("libbiosensor.StructureAnalyzer")),
         axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
 {
     twoDimensional = false; // it is not very correct, but...
@@ -29,6 +29,11 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
 
     ////////////////////////////////////////////////////////////////////////////
     //  Fill pointsH and pointsV
+    //  NOTE About axes: Vertical axis is transformed in such way, that it has
+    //      direction "down", but starts at top-most point of the model.
+    //      So v==0 means top bound of the modelled area.
+    //  NOTE AGAIN: Lets try to do all in such, way that axis directionsare
+    //      used as in math, i.e. vertical axis goes from bottom to top.
     //
     if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cartesian)
     {
@@ -168,7 +173,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
                 LOG4CXX_WARN(log, "Swapping horizontal boundary points for area definition....");
                 std::swap<int>(h1, h2);
             }
-            if (v1 > v2)
+            if (v1 > v2)    // Because vertical axis has direction "down".
             {
                 LOG4CXX_WARN(log, "Swapping vertical boundary points for area definition....");
                 std::swap<int>(v1, v2);
@@ -295,14 +300,22 @@ BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::
 /* ************************************************************************** */
 /* ************************************************************************** */
 void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_NS::model::Symbol* >& list,
-        BIO_XML_NS::model::Axis& axis)
+        BIO_XML_NS::model::Axis& axis,
+        bool invert
+)
 {
     typedef BIO_XML_NS::model::Axis::point_iterator it_point;
-    for (it_point p = axis.point().begin(); p < axis.point().end(); p++)
+    for (it_point p = axis.point().begin(); p != axis.point().end(); p++)
     {
-        list.push_back(getSymbol(p->position()));
+        if (invert)
+        {
+            list.insert(list.begin(), getSymbol(p->position()));
+        }
+        else
+        {
+            list.push_back(getSymbol(p->position()));
+        }
     }
-
 }
 
 
@@ -340,7 +353,10 @@ int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(std::vector< BIO_XML_NS::model::Symbol* >& axis, std::string& pointSymbolName)
+int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
+    std::vector< BIO_XML_NS::model::Symbol* >& axis,
+    std::string& pointSymbolName
+)
 {
     int i = 0;
     for (std::vector<BIO_XML_NS::model::Symbol*>::iterator it = axis.begin(); it < axis.end(); it++, i++)

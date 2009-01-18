@@ -7,7 +7,7 @@
 BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     StructureAnalyzer *structAnalyzer
 ) :
-        log(log4cxx::Logger::getLogger("libbiosensor::BoundAnalyzer"))
+        log(log4cxx::Logger::getLogger("libbiosensor.BoundAnalyzer"))
 {
     typedef BIO_XML_NS::model::Model::bound_iterator bIt;
     typedef BIO_XML_NS::model::Bound::substance_iterator bsIt;
@@ -89,9 +89,9 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
 
             //  Here positions are positions of the points in the axes (not the area positions).
             int hFrom   = isHorizontal ? boundFrom   : boundAt;
-            int hTo     = isHorizontal ? boundTo     : boundAt;
+            int hTo     = isHorizontal ? boundTo     : boundAt + 1;
             int vFrom   = isHorizontal ? boundAt     : boundFrom;
-            int vTo     = isHorizontal ? boundAt     : boundTo;
+            int vTo     = isHorizontal ? boundAt + 1 : boundTo;
             for (int h = hFrom; h < hTo; h++)
             {
                 for (int v = vFrom; v < vTo; v++)

@@ -8,7 +8,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
     int positionV,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
-) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::CornerSubSolver"))
+) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.CornerSubSolver"))
 {
     LOG4CXX_DEBUG(log, "CornerSubSolver()");
     //  FIXME: Implement

@@ -12,7 +12,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     int positionV,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
-) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::AreaSubSolver"))
+) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.AreaSubSolver"))
 {
     using BIO_XML_NS::model::solver::Axis;
     using BIO_XML_NS::model::solver::ConstantAxisPart;

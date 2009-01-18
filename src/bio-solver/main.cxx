@@ -62,7 +62,7 @@ int main(int argn, char **argv)
             std::vector<ISolverListener*> listeners;
             ISolverListener* listener;
 
-            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 0));
+            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 1));
             dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
 
             listeners.push_back(listener = new BIO_IO_NS::DebugSL(solver, std::cout));

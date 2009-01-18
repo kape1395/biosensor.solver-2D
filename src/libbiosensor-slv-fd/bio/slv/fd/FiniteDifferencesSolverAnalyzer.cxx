@@ -121,6 +121,8 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     //  Collect axis-parts and assign them to the concrete "cells"
     ////////////////////////////////////////////////////////////////////////////
 
+    this->timeStep = fdSolver->timeStep();
+
     LOG4CXX_INFO(log, "FiniteDifferencesSolverAnalyzer()... Done");
 }
 

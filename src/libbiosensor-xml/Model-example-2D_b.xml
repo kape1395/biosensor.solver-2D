@@ -40,8 +40,8 @@
         <substance name="S"     diffusion="D_Diff_S" initial="0"/>
         <substance name="M_ox"  diffusion="D_Diff_M" initial="0"/>
         <substance name="M_red" diffusion="D_Diff_M" initial="0"/>
-        <area top="z1" bottom="z0" left="r0" right="r2"/>
-        <area top="z4" bottom="z3" left="r0" right="r2"/>
+        <area top="z0" bottom="z1" left="r0" right="r2"/>
+        <area top="z3" bottom="z4" left="r0" right="r2"/>
     </medium>
     <medium name="Omega_2">
         <substance name="S"     diffusion="D_Enz_S" initial="0"/>
@@ -61,7 +61,7 @@
             <r:product name="E_ox"/>
             <r:product name="M_red"/>
         </reaction>
-        <area top="z2" bottom="z1" left="r0" right="r2"/>
+        <area top="z1" bottom="z2" left="r0" right="r2"/>
     </medium>
     <medium name="Omega_3">
         <substance name="S"     diffusion="D_Enz_S" initial="0"/>
@@ -81,7 +81,7 @@
             <r:product name="E_ox"/>
             <r:product name="M_red"/>
         </reaction>
-        <area top="z3" bottom="z2" left="r0" right="r1"/>
+        <area top="z2" bottom="z3" left="r0" right="r1"/>
     </medium>
 
 

@@ -17,7 +17,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer
-) :  log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::BoundSubSolver"))
+) :  log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.BoundSubSolver"))
 {
     LOG4CXX_DEBUG(log, "BoundSubSolver()...");
 

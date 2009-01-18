@@ -23,6 +23,7 @@ private:
     BIO_XML_NS::model::solver::Axis** axisPartsH;
     BIO_XML_NS::model::solver::Axis** axisPartsV;
 
+    double timeStep;
 
 public:
 
@@ -48,6 +49,11 @@ public:
         return axisPartsV[index];
     }
 
+    double getTimeStep()
+    {
+        return timeStep;
+    }
+    
 };
 
 

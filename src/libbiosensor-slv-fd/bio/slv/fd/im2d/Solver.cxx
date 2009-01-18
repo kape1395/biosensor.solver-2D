@@ -1,3 +1,6 @@
+
+#include "bio/slv/AbstractIterativeSolver.hxx"
+
 #include "Solver.hxx"
 #include <bio/Exception.hxx>
 
@@ -6,7 +9,7 @@
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
         AbstractIterativeSolver(config),
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::Solver"))
+        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.Solver"))
 {
     structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
     boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
@@ -72,8 +75,9 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
 
 
     this->dataModel = new DataModel(this, structAnalyzer, fdAnalyzer);
+    this->setTimeStep(fdAnalyzer->getTimeStep());
 
-
+    
     LOG4CXX_DEBUG(log, "Solver()... Done");
 }
 

@@ -7,8 +7,10 @@ BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
     AreaSubSolver::EdgeData* edge,
     double concentration,
     bool atStart
-)
+) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::im2d::ConstantCondition"))
 {
+    LOG4CXX_DEBUG(log, "ConstantCondition()");
+
     this->edge = edge;
     this->concentration = concentration;
     this->atStart = atStart;
