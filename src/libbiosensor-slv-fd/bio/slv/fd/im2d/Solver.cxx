@@ -156,7 +156,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
     LOG4CXX_DEBUG(log, "solveIteration: Solve horizintal half-step in time, Backward");
     for (int h = subSolvers->sizeH(); h >= 0; h--)  // Backward
     {
-        for (int v = 0; v < subSolvers->sizeV(); v++)
+        for (int v = 0; v <= subSolvers->sizeV(); v++)
         {
             bool lastH = h == subSolvers->sizeH();
             bool lastV = v == subSolvers->sizeV();
@@ -178,9 +178,9 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
     //  Solve "vertical" half-step in time
     //
     LOG4CXX_DEBUG(log, "solveIteration: Solve vertical half-step in time, Forward");
-    for (int v = 0; v < subSolvers->sizeV(); v++)   // Forward
+    for (int v = 0; v <= subSolvers->sizeV(); v++)   // Forward
     {
-        for (int h = 0; h < subSolvers->sizeH(); h++)
+        for (int h = 0; h <= subSolvers->sizeH(); h++)
         {
             bool lastH = h == subSolvers->sizeH();
             bool lastV = v == subSolvers->sizeV();
@@ -200,7 +200,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
     LOG4CXX_DEBUG(log, "solveIteration: Solve vertical half-step in time, Backward");
     for (int v = subSolvers->sizeV(); v >= 0; v--)  // Backward
     {
-        for (int h = 0; h < subSolvers->sizeH(); h++)
+        for (int h = 0; h <= subSolvers->sizeH(); h++)
         {
             bool lastH = h == subSolvers->sizeH();
             bool lastV = v == subSolvers->sizeV();
