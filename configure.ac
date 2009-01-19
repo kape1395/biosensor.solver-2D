@@ -14,6 +14,7 @@ AC_PROG_LIBTOOL
 KP_PROG_XSD
 
 #### Checks for libraries.
+#                          AM_PATH_LOG4CPP(1.0)
 KP_LIB_LOG4CXX
 KP_LIB_XERCESC
 

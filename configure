@@ -19806,6 +19806,7 @@ echo "$as_me: error: unable to find xsd (http://www.codesynthesis.com/)" >&2;}
 
 
 #### Checks for libraries.
+#                          AM_PATH_LOG4CPP(1.0)
 
     { echo "$as_me:$LINENO: checking for log4cxx" >&5
 echo $ECHO_N "checking for log4cxx... $ECHO_C" >&6; }
