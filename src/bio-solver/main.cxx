@@ -64,10 +64,10 @@ int main(int argn, char **argv)
             ISolverListener* listener;
             InvokeEverySL* listenerInvokeEvery;
 
-            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 3));
+            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 3000));
             dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
 
-            listeners.push_back(listener = listenerInvokeEvery = new BIO_SLV_NS::InvokeEverySL(solver, 1));
+            listeners.push_back(listener = listenerInvokeEvery = new BIO_SLV_NS::InvokeEverySL(solver, 1000));
             dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
 
             listeners.push_back(listener = new BIO_IO_NS::DebugSL(solver, std::cout));

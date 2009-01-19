@@ -472,9 +472,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 //
                 // And now we are able to calculate layers:
                 //
-                double denominator = a * data[h - 1][v][s][LAYER_P] + b;
+                double denominator = a * data[h][v - 1][s][LAYER_P] + b;
                 dataHVS[LAYER_P] = - c / denominator;
-                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / denominator;
+                dataHVS[LAYER_Q] = (f - a * data[h][v - 1][s][LAYER_Q]) / denominator;
             }
         }
     }
@@ -609,7 +609,8 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool verticalIsInner, std::string message)
 {
-    //return;
+    return;
+
     out << "/-----------  AreaSubSolver::dumpData - begin (" << message << ")" << std::endl;
     out << "CurrentLayerIndex=" << getCurrentLayerIndex() << std::endl;
     out
