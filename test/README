@@ -1,0 +1,8 @@
+test-0050_car-trivial_vertical.xml       OK
+test-0051_car-trivial_horizontal.xml     OK
+test-0100_cyl-trivial-vertical.xml       OK
+test-0101_cyl-trivial-horizontal.xml     OK
+test-0200_car-merge_vertical.xml         OK
+test-0250_car-merge_horizontal.xml       OK
+test-1000-cyl-injected_electrode.xml     FAIL
+

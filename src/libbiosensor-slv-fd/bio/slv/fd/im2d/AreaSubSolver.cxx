@@ -75,6 +75,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     this->startPositionV = structAnalyzer->getSymbol(axisPartV->from())->value();
 
     this->dataLayersInverted = false;
+    this->targetLayerIndex = getCurrentLayerIndex();
 
 
     ////////////////////////////////////////////////////////////////////////////

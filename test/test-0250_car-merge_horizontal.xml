@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          ../src/libbiosensor-xml/Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bound    ../src/libbiosensor-xml/ModelBound.xsd
+                        http://lt.5grupe.karolis/biosensor/model/reaction ../src/libbiosensor-xml/ModelReaction.xsd
+                        http://lt.5grupe.karolis/biosensor/model/solver   ../src/libbiosensor-xml/ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/listener ../src/libbiosensor-xml/ModelListener.xsd"
+    coordinateSystem="Cartesian">
+
+
+    <axis name="x">
+        <point position="x0"/>
+        <point position="x1"/>
+        <point position="x2"/>
+    </axis>
+    <axis name="y">
+        <point position="y0"/>
+        <point position="y1"/>
+    </axis>
+
+
+    <substance name="S"/>
+
+
+    <medium name="Diffusion1">
+        <substance name="S" diffusion="D_DiffS1" initial="0"/>
+        <area top="y0" bottom="y1" left="x0" right="x1"/>
+    </medium>
+    <medium name="Diffusion2">
+        <substance name="S" diffusion="D_DiffS2" initial="0"/>
+        <area top="y0" bottom="y1" left="x1" right="x2"/>
+    </medium>
+
+    <bound from="y0" to="y1" at="x0">
+        <substance name="S" xsi:type="b:Constant" concentration="S_0"/>
+    </bound>
+    <bound from="y0" to="y1" at="x2">
+        <substance name="S" xsi:type="b:Constant" concentration="0"/>
+    </bound>
+
+
+
+    <!-- Geometry -->
+    <symbol name="x0"       value="0.0"     dimension="m"/>
+    <symbol name="x1"       value="1.0E-3"  dimension="m"/>
+    <symbol name="x2"       value="2.0E-3"  dimension="m"/>
+    <symbol name="y0"       value="0.0"     dimension="m"/>
+    <symbol name="y1"       value="1.0E-3"  dimension="m"/>
+    <symbol name="D_DiffS1" value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_DiffS2" value="1E-7"    dimension="m^2/s"/>
+    <symbol name="S_0"      value="1E-8"    dimension="mol/cm^2"/>
+    <symbol name="0"        value="0.0"     dimension="mol/cm^2"/>
+
+
+    <solver xsi:type="s:Implicit2D" timeStep="1E-4">
+        <s:axis from="x0" to="x1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="x1" to="x2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="y0" to="y1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+    </solver>
+
+</model>
