@@ -151,17 +151,13 @@
     <symbol name="k2"       value="0.0"     dimension="mol/s"/>
 
 
-    <solver xsi:type="s:Implicit2D" timeStep="5E-9">
-        <s:axis from="r0" to="r1" xsi:type="s:ConstantAxisPart" stepCount="3"/>
-        <s:axis from="r1" to="r2" xsi:type="s:ConstantAxisPart" stepCount="3"/>
-        <s:axis from="z0" to="z1" xsi:type="s:ConstantAxisPart" stepCount="3"/>
-        <s:axis from="z1" to="z2" xsi:type="s:ConstantAxisPart" stepCount="3"/>
-        <s:axis from="z2" to="z3" xsi:type="s:ConstantAxisPart" stepCount="3"/>
-        <s:axis from="z3" to="z4" xsi:type="s:ConstantAxisPart" stepCount="3"/>
+    <solver xsi:type="s:Implicit2D" timeStep="1E-4">
+        <s:axis from="r0" to="r1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="r1" to="r2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z0" to="z1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z1" to="z2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z2" to="z3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z3" to="z4" xsi:type="s:ConstantAxisPart" stepCount="200"/>
     </solver>
 
-    <listener xsi:type="l:InvokeEvery" iterations="1">
-        <l:listener xsi:type="l:StopAfter" iterations="3"/>
-    </listener>
-    
 </model>

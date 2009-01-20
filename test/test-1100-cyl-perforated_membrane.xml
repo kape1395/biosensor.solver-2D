@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          ../src/libbiosensor-xml/Model.xsd
+                        http://lt.5grupe.karolis/biosensor/model/bound    ../src/libbiosensor-xml/ModelBound.xsd
+                        http://lt.5grupe.karolis/biosensor/model/reaction ../src/libbiosensor-xml/ModelReaction.xsd
+                        http://lt.5grupe.karolis/biosensor/model/solver   ../src/libbiosensor-xml/ModelSolver.xsd
+                        http://lt.5grupe.karolis/biosensor/model/listener ../src/libbiosensor-xml/ModelListener.xsd"
+    coordinateSystem="Cylindrical">
+
+
+    <axis name="r">
+        <point position="r0"/>
+        <point position="r1"/>
+        <point position="r2"/>
+    </axis>
+    <axis name="z">
+        <point position="z0"/>
+        <point position="z1"/>
+        <point position="z2"/>
+        <point position="z3"/>
+        <point position="z4"/>
+    </axis>
+
+
+    <substance name="S"/>
+    <substance name="P"/>
+
+
+    <medium name="Omega_1">
+        <substance name="P" diffusion="D_1" initial="0"/>
+        <area top="z1" bottom="z0" left="r0" right="r2"/>
+    </medium>
+    <medium name="Omega_2">
+        <substance name="S" diffusion="D_2" initial="0"/>
+        <substance name="P" diffusion="D_2" initial="0"/>
+        <reaction xsi:type="r:MichaelisMenten" V_max="V_max" K_M="K_M" substrate="S" product="P"/>
+        <area top="z1" bottom="z2" left="r0" right="r2"/>
+        <area top="z2" bottom="z3" left="r0" right="r1"/>
+    </medium>
+    <medium name="Omega_3">
+        <substance name="S" diffusion="D_3" initial="0"/>
+        <substance name="P" diffusion="D_3" initial="0"/>
+        <area top="z3" bottom="z4" left="r0" right="r1"/>
+    </medium>
+    <medium name="Omega_3">
+        <area top="z2" bottom="z4" left="r1" right="r2"/>
+    </medium>
+
+
+    <bound from="r0" to="r2" at="z0">
+        <substance name="P" xsi:type="b:Constant" concentration="0"/>
+    </bound>
+    <bound from="r0" to="r1" at="z4">
+        <substance name="S" xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="0"/>
+    </bound>
+
+
+    <!-- Geometry -->
+    <symbol name="r0"   value="0.0"     dimension="m"/>
+    <symbol name="r1"   value="1.0E-7"  dimension="m"/>
+    <symbol name="r2"   value="1.0E-6"  dimension="m"/>
+    <symbol name="z0"   value="0.0"     dimension="m"/>
+    <symbol name="z1"   value="2.0E-6"  dimension="m"/>
+    <symbol name="z2"   value="4.0E-6"  dimension="m"/>
+    <symbol name="z3"   value="9.0E-6"  dimension="m"/>
+    <symbol name="z4"   value="1.4E-5"  dimension="m"/>
+
+    <!-- Diffusion coefficients -->
+    <symbol name="D_1"  value="1E-6"    dimension="m^2/s"/>
+    <symbol name="D_2"  value="3E-4"    dimension="m^2/s"/>
+    <symbol name="D_3"  value="6E-4"    dimension="m^2/s"/>
+
+    <!-- Concentrations -->
+    <symbol name="S_0"  value="3.3E-3"  dimension="M"/>
+    <symbol name="0"    value="0.0"     dimension="M"/>
+
+    <!-- Reaction parameters -->
+    <symbol name="V_max"  value="1E-5"  dimension="M/s"/>
+    <symbol name="K_M"    value="1E-4"  dimension="M"/>
+
+    
+    <solver xsi:type="s:Implicit2D" timeStep="1E-4">
+        <s:axis from="r0" to="r1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="r1" to="r2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z0" to="z1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z1" to="z2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z2" to="z3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z3" to="z4" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+    </solver>
+
+</model>
