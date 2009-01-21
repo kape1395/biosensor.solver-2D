@@ -5,5 +5,5 @@ test-0101_cyl-trivial-horizontal.xml           OK
 test-0200_car-merge_vertical.xml               OK
 test-0250_car-merge_horizontal.xml             OK
 test-1000-cyl-injected_electrode.xml           OK, at least stable
-test/test-1100-cyl-perforated_membrane.xml     FAIL
+test/test-1100-cyl-perforated_membrane.xml     OK, at least stable
 
