@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/transducer"
+    xmlns           ="http://lt.5grupe.karolis/biosensor/model/transducer"
+    xmlns:bio       ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+
+    <xs:import
+        namespace="http://lt.5grupe.karolis/biosensor/model"
+        schemaLocation="Model.xsd"
+    />
+
+
+    <xs:complexType name="AmperometricElectrode">
+        <xs:complexContent>
+            <xs:extension base="bio:Transducer">
+                <xs:attribute name="bound"     type="bio:BoundName"     use="required"/>
+                <xs:attribute name="substance" type="bio:SubstanceName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+
+</xs:schema>

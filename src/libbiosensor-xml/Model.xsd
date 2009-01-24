@@ -17,7 +17,7 @@
             <xs:element name="substance"    type="Substance"    minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="medium"       type="Medium"       minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="bound"        type="Bound"        minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="electrode"    type="Electrode"    minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="transducer"   type="Transducer"   minOccurs="0" maxOccurs="1"/>
             <xs:element name="symbol"       type="Symbol"       minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="solver"       type="Solver"       minOccurs="1" maxOccurs="1"/>
             <xs:element name="listener"     type="Listener"     minOccurs="0" maxOccurs="unbounded"/>
@@ -79,6 +79,7 @@
         <xs:sequence>
             <xs:element name="substance" type="BoundSubstance" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
+        <xs:attribute name="name"   type="BoundName"    use="optional"/>
         <xs:attribute name="from"   type="SymbolName"   use="optional"/>
         <xs:attribute name="to"     type="SymbolName"   use="optional"/>
         <xs:attribute name="at"     type="SymbolName"   use="required"/>
@@ -89,23 +90,9 @@
     </xs:complexType>
     
     
-    
-    <xs:complexType name="Electrode">
-        <xs:sequence>
-            <xs:element name="substrate" type="ElectrodeSubstrate"/>
-            <xs:element name="position"  type="ElectrodePosition"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="ElectrodeName" use="required"/>
-    </xs:complexType>
-    
-    <xs:complexType name="ElectrodeSubstrate">
-        <xs:attribute name="substrate" type="SubstanceName" use="required"/>
-    </xs:complexType>
-    
-    <xs:complexType name="ElectrodePosition">
-        <xs:attribute name="from"   type="SymbolName"   use="optional"/>
-        <xs:attribute name="to"     type="SymbolName"   use="optional"/>
-        <xs:attribute name="at"     type="SymbolName"   use="required"/>
+
+    <xs:complexType name="Transducer" abstract="true">
+        <xs:attribute name="name" type="TransducerName" use="required"/>
     </xs:complexType>
     
     
@@ -145,7 +132,11 @@
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
     
-    <xs:simpleType name="ElectrodeName">
+    <xs:simpleType name="BoundName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="TransducerName">
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
     

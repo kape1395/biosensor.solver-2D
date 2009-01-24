@@ -14,6 +14,7 @@
 #include "ModelBound.hxx"
 #include "ModelReaction.hxx"
 #include "Model.hxx"
+#include "ModelTransducer.hxx"
 #include "ModelSolver.hxx"
 
 #endif
