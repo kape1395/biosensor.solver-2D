@@ -22,7 +22,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  *  \see ConstantCondition, WallCondition and MergeCondition.
  *
  */
-class BoundSubSolver : public IBoundCondition
+class BoundSubSolver    // : public IBoundCondition
 {
 private:
     log4cxx::LoggerPtr log;
@@ -35,6 +35,12 @@ private:
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
 
+    /**
+     *  This array maps global substance indexes to a corresponding
+     *  bound condition.
+     */
+    IBoundCondition* * substanceToBCMap;
+    
     std::vector<IBoundCondition*> boundConditions;
 
     typedef std::vector<IBoundCondition*>::iterator BCIterator;
@@ -85,6 +91,14 @@ public:
      *  \see IBoundCondition#applyInitialValues.
      */
     void applyInitialValues();
+
+    /**
+     *  Returns current concentration of a substance.
+     *
+     *  \param x    Point index (local).
+     *  \param s    Substance index (global).
+     */
+    double getConcentration(int x, int s);
 
 protected:
 

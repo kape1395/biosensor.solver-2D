@@ -225,6 +225,9 @@ protected:
         return targetLayerIndex;
     }
 
+    /**
+     *  This method is used for debugging only.
+     */
     void dumpData(std::ostream& out, bool verticalIsInner, std::string message);
 
 public:

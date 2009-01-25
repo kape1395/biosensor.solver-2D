@@ -3,6 +3,7 @@
 #include "WallCondition.hxx"
 #include "MergeCondition.hxx"
 #include <bio/Exception.hxx>
+#include <cmath>
 
 
 /* ************************************************************************** */
@@ -29,8 +30,12 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
     this->fdAnalyzer = fdAnalyzer;
     this->boundAnalyzer = boundAnalyzer;
 
+    substanceToBCMap = new IBoundCondition*[structAnalyzer->getSubstances().size()];
+
     for (int s = 0; s < structAnalyzer->getSubstances().size(); s++)
     {
+        substanceToBCMap[s] = 0;
+
         if (horizontal)
         {
             if (positionV > 0)
@@ -82,6 +87,8 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
         delete *bc;
     }
     boundConditions.clear();
+
+    delete [] substanceToBCMap;
 
     LOG4CXX_DEBUG(log, "~BoundSubSolver()... Done");
 }
@@ -171,7 +178,6 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             structAnalyzer->getSymbol(bsConst->concentration())->value(),
             atStart
         );
-
     }
     else if (dynamic_cast<BIO_XML_NS::model::bound::Wall*>(boundSubstance) != 0)
     {
@@ -205,7 +211,26 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     if (bc != 0)
     {
         boundConditions.push_back(bc);
+        
+        if (substanceToBCMap[substance] == 0)
+        {
+            substanceToBCMap[substance] = bc;
+        }
+        else
+        {
+            throw Exception("Two bound conditions on one edge for one substance is not supported.");
+        }
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_SLV_FD_IM2D_NS::BoundSubSolver::getConcentration(int x, int s)
+{
+    return (substanceToBCMap[s])
+            ? substanceToBCMap[s]->getConcentration(x)
+            : NAN;
 }
 
 

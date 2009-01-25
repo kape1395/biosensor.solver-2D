@@ -78,6 +78,11 @@ public:
      */
     virtual void applyInitialValues();
 
+    /**
+     *
+     */
+    virtual double getConcentration(int x);
+
 };
 
 

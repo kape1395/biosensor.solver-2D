@@ -14,8 +14,8 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
 
     areaCountH = solver->getSubSolvers()->sizeH();
     areaCountV = solver->getSubSolvers()->sizeV();
-    areaRangesH = new int[areaCountH];
-    areaRangesV = new int[areaCountV];
+    areaRangesH = new int[areaCountH + 1];
+    areaRangesV = new int[areaCountV + 1];
 
     int accumulatedPointCount = 0;
     for (int h = 0; h < areaCountH; h++)
@@ -23,6 +23,7 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
         areaRangesH[h] = accumulatedPointCount;
         accumulatedPointCount += solver->getSubSolvers()->getArea(h, 0)->getPointCountH() - 1;
     }
+    areaRangesH[areaCountH] = accumulatedPointCount;
     pointCountH = accumulatedPointCount + 1;
 
     accumulatedPointCount = 0;
@@ -31,6 +32,7 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
         areaRangesV[v] = accumulatedPointCount;
         accumulatedPointCount += solver->getSubSolvers()->getArea(0, v)->getPointCountV() - 1;
     }
+    areaRangesV[areaCountV] = accumulatedPointCount;
     pointCountV = accumulatedPointCount + 1;
 
 }
@@ -218,16 +220,13 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
         currentAreaV >= 0 && dataModel->areaRangesV[currentAreaV] > currentV;
         currentAreaV--
     );
+    bool onBoundH = dataModel->areaRangesH[currentAreaH + 1] == currentH;
+    bool onBoundV = dataModel->areaRangesV[currentAreaV + 1] == currentV;
+    
     currentArea = dataModel->solver->getSubSolvers()->getArea(
                       currentAreaH,
                       currentAreaV
                   );
-
-    //std::cout << "XXX: "
-    //    << "currentArea=(" << currentAreaH << "," << currentAreaV << ") "
-    //    << "currentLPos=(" << (currentH - dataModel->areaRangesH[currentAreaH]) << ","
-    //    << (currentV - dataModel->areaRangesV[currentAreaV]) << ") "
-    //    << '\t';
 
     return this;
 }

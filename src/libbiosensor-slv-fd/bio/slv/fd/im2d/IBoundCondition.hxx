@@ -50,6 +50,14 @@ public:
      */
     virtual void applyInitialValues() = 0;
 
+    /**
+     *  Returns concentration at the specified point in the bound for
+     *  corresponding substance..
+     *
+     *  \param x Point index.
+     */
+    virtual double getConcentration(int x) = 0;
+    
 };
 
 
