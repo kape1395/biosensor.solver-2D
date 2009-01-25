@@ -100,7 +100,7 @@ public:
      *          a bound condition was generated (guessed).
      */
     std::string* getBoundName(int s, int h, int v, AreaSide side);
-    
+
 private:
 
     /**

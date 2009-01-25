@@ -43,6 +43,13 @@ public:
      */
     void solveBackward();
 
+    /**
+     *  return concentration of substance in this corner.
+     *
+     *  \param s    Global subsatnce index.
+     */
+    double getConcentration(int s);
+
 };
 
 

@@ -24,8 +24,8 @@ class DataModel : public BIO_DM_NS::IDataModel, public BIO_DM_NS::IGrid2D
 private:
     Solver* solver;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
-    int *areaRangesH;   // Point number, ar which starts h^th area.
-    int *areaRangesV;   // Point number, ar which starts v^th area.
+    int *areaRangesH;   // Point number, at which starts h^th area.
+    int *areaRangesV;   // Point number, at which starts v^th area.
     int areaCountH;
     int areaCountV;
     int pointCountH;    // Total count of points in horizontal axis.
@@ -102,7 +102,8 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
         int currentV;   // point index in V;
         int currentAreaH;
         int currentAreaV;
-        AreaSubSolver *currentArea;
+        bool currentOnBoundH;
+        bool currentOnBoundV;
 
     public:
 

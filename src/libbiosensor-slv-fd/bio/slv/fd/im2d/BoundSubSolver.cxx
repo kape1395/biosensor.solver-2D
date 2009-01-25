@@ -211,7 +211,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     if (bc != 0)
     {
         boundConditions.push_back(bc);
-        
+
         if (substanceToBCMap[substance] == 0)
         {
             substanceToBCMap[substance] = bc;
@@ -229,8 +229,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
 double BIO_SLV_FD_IM2D_NS::BoundSubSolver::getConcentration(int x, int s)
 {
     return (substanceToBCMap[s])
-            ? substanceToBCMap[s]->getConcentration(x)
-            : NAN;
+           ? substanceToBCMap[s]->getConcentration(x)
+           : NAN;
 }
 
 

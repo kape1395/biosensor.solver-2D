@@ -198,8 +198,8 @@ std::string* BIO_CFG_NS::BoundAnalyzer::getBoundName(int s, int h, int v, AreaSi
 {
     return (boundSubstances[h][v][s][side]->bound == 0 ||
             !boundSubstances[h][v][s][side]->bound->name().present())
-            ? 0
-            : &boundSubstances[h][v][s][side]->bound->name().get();
+           ? 0
+           : &boundSubstances[h][v][s][side]->bound->name().get();
 }
 
 

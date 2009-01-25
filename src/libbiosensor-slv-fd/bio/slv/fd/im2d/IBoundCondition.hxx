@@ -57,7 +57,7 @@ public:
      *  \param x Point index.
      */
     virtual double getConcentration(int x) = 0;
-    
+
 };
 
 

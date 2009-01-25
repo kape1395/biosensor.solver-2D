@@ -1,4 +1,5 @@
 #include "CornerSubSolver.hxx"
+#include <cmath>
 
 
 /* ************************************************************************** */
@@ -11,7 +12,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.CornerSubSolver"))
 {
     LOG4CXX_DEBUG(log, "CornerSubSolver()");
-    //  FIXME: Implement
+    //  FIXME: Implement CornerSubSolver(
 }
 
 
@@ -20,7 +21,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
 BIO_SLV_FD_IM2D_NS::CornerSubSolver::~CornerSubSolver()
 {
     LOG4CXX_DEBUG(log, "~CornerSubSolver()");
-    //  FIXME: Implement
+    //  FIXME: Implement ~CornerSubSolver()
 }
 
 
@@ -28,7 +29,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::~CornerSubSolver()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveForward()
 {
-    //  FIXME: Implement
+    //  FIXME: Implement solveForward()
 }
 
 
@@ -36,9 +37,14 @@ void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveBackward()
 {
-    //  FIXME: Implement
+    //  FIXME: Implement solveBackward()
 }
 
+double BIO_SLV_FD_IM2D_NS::CornerSubSolver::getConcentration(int s)
+{
+    //  FIXME: Implement getConcentration(int s)
+    return NAN;
+}
 
 /* ************************************************************************** */
 /* ************************************************************************** */

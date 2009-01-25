@@ -68,7 +68,7 @@ public:
      *
      */
     virtual double getConcentration(int x);
-    
+
 };
 
 

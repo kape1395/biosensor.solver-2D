@@ -40,7 +40,7 @@ private:
      *  bound condition.
      */
     IBoundCondition* * substanceToBCMap;
-    
+
     std::vector<IBoundCondition*> boundConditions;
 
     typedef std::vector<IBoundCondition*>::iterator BCIterator;

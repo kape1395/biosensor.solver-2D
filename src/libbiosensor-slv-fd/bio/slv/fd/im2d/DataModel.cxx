@@ -116,7 +116,6 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
     currentV = 0;
     currentAreaH = 0;
     currentAreaV = 0;
-    currentArea = dataModel->solver->getSubSolvers()->getArea(currentAreaH, currentAreaV);
 }
 
 
@@ -211,22 +210,22 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
 
     //  Find current area
     for (
-        currentAreaH = dataModel->areaCountH - 1;
-        currentAreaH >= 0 && dataModel->areaRangesH[currentAreaH] > currentH;
+        currentAreaH = dataModel->areaCountH;
+        currentAreaH > 0 && dataModel->areaRangesH[currentAreaH] > currentH;
         currentAreaH--
     );
     for (
-        currentAreaV = dataModel->areaCountV - 1;
-        currentAreaV >= 0 && dataModel->areaRangesV[currentAreaV] > currentV;
+        currentAreaV = dataModel->areaCountV;
+        currentAreaV > 0 && dataModel->areaRangesV[currentAreaV] > currentV;
         currentAreaV--
     );
-    bool onBoundH = dataModel->areaRangesH[currentAreaH + 1] == currentH;
-    bool onBoundV = dataModel->areaRangesV[currentAreaV + 1] == currentV;
-    
-    currentArea = dataModel->solver->getSubSolvers()->getArea(
-                      currentAreaH,
-                      currentAreaV
-                  );
+    currentOnBoundH = dataModel->areaRangesH[currentAreaH] == currentH;
+    currentOnBoundV = dataModel->areaRangesV[currentAreaV] == currentV;
+
+    //currentArea = dataModel->solver->getSubSolvers()->getArea(
+    //                  currentAreaH,
+    //                  currentAreaV
+    //              );
 
     return this;
 }
@@ -236,11 +235,46 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
 /* ************************************************************************** */
 double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::operator[] (int substanceNr)
 {
-    return currentArea->getConcentration(
-               currentH - dataModel->areaRangesH[currentAreaH],
-               currentV - dataModel->areaRangesV[currentAreaV],
-               substanceNr
-           );
+    if (!currentOnBoundH && !currentOnBoundV)
+    {
+        return  dataModel->solver->getSubSolvers()->getArea(
+                    currentAreaH,
+                    currentAreaV
+                )->getConcentration(
+                    currentH - dataModel->areaRangesH[currentAreaH],
+                    currentV - dataModel->areaRangesV[currentAreaV],
+                    substanceNr
+                );
+    }
+    else if (currentOnBoundH && currentOnBoundV)
+    {
+        return dataModel->solver->getSubSolvers()->getCorner(
+                   currentAreaH,
+                   currentAreaV
+               )->getConcentration(
+                   substanceNr
+               );
+    }
+    else if (currentOnBoundH)
+    {
+        return dataModel->solver->getSubSolvers()->getBoundV(
+                   currentAreaH,
+                   currentAreaV
+               ) ->getConcentration(
+                   currentV - dataModel->areaRangesV[currentAreaV],
+                   substanceNr
+               );
+    }
+    else if (currentOnBoundV)
+    {
+        return dataModel->solver->getSubSolvers()->getBoundH(
+                   currentAreaH,
+                   currentAreaV
+               ) ->getConcentration(
+                   currentH - dataModel->areaRangesH[currentAreaH],
+                   substanceNr
+               );
+    }
 }
 
 
