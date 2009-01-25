@@ -18,6 +18,26 @@ private:
     log4cxx::LoggerPtr log;
 
     /**
+     *  Internal...
+     */
+    struct BoundSubstanceInfo
+    {
+        BIO_XML_NS::model::Bound* bound;
+        BIO_XML_NS::model::BoundSubstance* boundSubstance;
+        BoundSubstanceInfo()
+        {
+            bound = 0;
+            boundSubstance = 0;
+        }
+        BoundSubstanceInfo& operator = (BoundSubstanceInfo& source)
+        {
+            bound = source.bound;
+            boundSubstance = source.boundSubstance;
+            return *this;
+        }
+    };
+
+    /**
      *  Analyzer, used to get all needed info about the model.
      */
     StructureAnalyzer *structAnalyzer;
@@ -25,11 +45,11 @@ private:
     /**
      *  Array of bound conditions, structure is (BoundSubstance*[h][v][s][side]).
      */
-    BIO_XML_NS::model::BoundSubstance* **** bounds;
+    BoundSubstanceInfo* **** boundSubstances;
 
-    int sizeH;  //!< #bounds size in h (number of areas horizontally)
-    int sizeV;  //!< #bounds size in v (number of areas vertically)
-    int sizeS;  //!< #bounds size in s
+    int sizeH;  //!< #boundSubstances size in h (number of areas horizontally)
+    int sizeV;  //!< #boundSubstances size in v (number of areas vertically)
+    int sizeS;  //!< #boundSubstances size in s
 
     /**
      *  A vector for the bounds, allocated by this class.
@@ -67,8 +87,20 @@ public:
      *  \param side Side of the area.
      *  \return     Bound specification for particular substance.
      */
-    BIO_XML_NS::model::BoundSubstance* getBound(int s, int h, int v, AreaSide side);
+    BIO_XML_NS::model::BoundSubstance* getBoundForSubstance(int s, int h, int v, AreaSide side);
 
+    /**
+     *  Returns the name of the bound, that defined specified bound condition.
+     *
+     *  \param s    Substance index as returned by StructureAnalyzer::getSubstanceIndex
+     *  \param h    Horizontal position of the area.
+     *  \param v    Vertical position of the area.
+     *  \param side Side of the area.
+     *  \return Name of the bound. 0 is returned is a name was not specified or
+     *          a bound condition was generated (guessed).
+     */
+    std::string* getBoundName(int s, int h, int v, AreaSide side);
+    
 private:
 
     /**
@@ -79,6 +111,7 @@ private:
         int v,
         int s,
         AreaSide side,
+        BIO_XML_NS::model::Bound* bProvided,
         BIO_XML_NS::model::BoundSubstance* bsProvided
     );
 

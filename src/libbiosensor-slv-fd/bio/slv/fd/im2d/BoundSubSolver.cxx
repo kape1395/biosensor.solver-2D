@@ -36,14 +36,14 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             if (positionV > 0)
             {
                 createBoundCondition(
-                    boundAnalyzer->getBound(s, positionH, positionV - 1, boundAnalyzer->BOTTOM),
+                    boundAnalyzer->getBoundForSubstance(s, positionH, positionV - 1, boundAnalyzer->BOTTOM),
                     areaPrev, areaNext, s, false
                 );
             }
             if (positionV < structAnalyzer->getPointsV().size() - 1)
             {
                 createBoundCondition(
-                    boundAnalyzer->getBound(s, positionH, positionV, boundAnalyzer->TOP),
+                    boundAnalyzer->getBoundForSubstance(s, positionH, positionV, boundAnalyzer->TOP),
                     areaPrev, areaNext, s, true
                 );
             }
@@ -53,14 +53,14 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             if (positionH > 0)
             {
                 createBoundCondition(
-                    boundAnalyzer->getBound(s, positionH - 1, positionV, boundAnalyzer->RIGHT),
+                    boundAnalyzer->getBoundForSubstance(s, positionH - 1, positionV, boundAnalyzer->RIGHT),
                     areaPrev, areaNext, s, false
                 );
             }
             if (positionH < structAnalyzer->getPointsH().size() - 1)
             {
                 createBoundCondition(
-                    boundAnalyzer->getBound(s, positionH, positionV, boundAnalyzer->LEFT),
+                    boundAnalyzer->getBoundForSubstance(s, positionH, positionV, boundAnalyzer->LEFT),
                     areaPrev, areaNext, s, true
                 );
             }

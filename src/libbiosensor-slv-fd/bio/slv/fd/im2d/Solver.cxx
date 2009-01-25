@@ -126,6 +126,14 @@ BIO_SLV_FD_IM2D_NS::Solver::SplittedSolver* BIO_SLV_FD_IM2D_NS::Solver::getSubSo
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+BIO_SLV_NS::ITransducer* BIO_SLV_FD_IM2D_NS::Solver::getTransducer()
+{
+    return transducer;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 {
     LOG4CXX_DEBUG(log, "solveIteration()...");

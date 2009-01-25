@@ -20,7 +20,7 @@ public:
     /**
      *  Constructor.
      */
-    AbstractSolver(BIO_XML_NS::model::Model* config)
+    AbstractSolver(BIO_XML_NS::model::Model* config) : ISolver()
     {
         this->config = config;
     }

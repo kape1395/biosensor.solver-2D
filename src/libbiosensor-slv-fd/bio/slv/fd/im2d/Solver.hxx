@@ -35,6 +35,7 @@ private:
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
+    BIO_SLV_NS::ITransducer* transducer;
     SplittedSolver* subSolvers;
     DataModel* dataModel;
 
@@ -57,9 +58,14 @@ public:
     virtual ~Solver();
 
     /**
-     *  Returns data-model.
+     *  Returns data model.
      */
     virtual BIO_DM_NS::IDataModel* getData();
+
+    /**
+     *  Returns transducer.
+     */
+    virtual ITransducer* getTransducer();
 
     /**
      *  Returns subSolvers.

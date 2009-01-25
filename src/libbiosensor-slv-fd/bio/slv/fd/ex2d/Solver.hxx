@@ -27,6 +27,14 @@ public:
         return 0;   // FIXME: Implement
     }
 
+    /**
+     *  Returns transducer.
+     */
+    virtual ITransducer* getTransducer()
+    {
+        return 0;   // FIXME: Implement
+    }
+
 protected:
     virtual void solveIteration() {}
 };
