@@ -12,6 +12,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include "IBoundCondition.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/cfg/BoundAnalyzer.hxx>
+#include <bio/dm/IGrid1D.hxx>
 #include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -22,7 +23,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  *  \see ConstantCondition, WallCondition and MergeCondition.
  *
  */
-class BoundSubSolver    // : public IBoundCondition
+class BoundSubSolver //: public BIO_DM_NS::IGrid1D
 {
 private:
     log4cxx::LoggerPtr log;
@@ -99,6 +100,13 @@ public:
      *  \param s    Substance index (global).
      */
     double getConcentration(int x, int s);
+
+    /*
+     *  Implementation of IGrid1D
+     */
+    //virtual int getPointCount();
+    //virtual double* getPointPositions();
+    //virtual ICursor1D* newGridCursor();
 
 protected:
 

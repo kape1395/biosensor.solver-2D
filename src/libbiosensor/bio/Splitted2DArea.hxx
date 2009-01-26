@@ -44,7 +44,7 @@ public:
     /**
      *  Destructor.
      */
-    ~Splitted2DArea()
+    virtual ~Splitted2DArea()
     {
         for (int i = 0; i < sizeH_    ; areas_  [i++].clear());
         for (int i = 0; i < sizeH_    ; boundsH_[i++].clear());

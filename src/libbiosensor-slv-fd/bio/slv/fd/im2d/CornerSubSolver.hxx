@@ -3,6 +3,7 @@
 #include "../../../../biosensor-slv-fd.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/dm/IConcentrations.hxx>
 #include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -11,7 +12,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 /**
  *
  */
-class CornerSubSolver
+class CornerSubSolver : public BIO_DM_NS::IConcentrations
 {
 private:
     log4cxx::LoggerPtr log;
@@ -49,6 +50,14 @@ public:
      *  \param s    Global subsatnce index.
      */
     double getConcentration(int s);
+
+    /**
+     *  Returns concentration of the substance with index <code>substanceNr</code>.
+     */
+    virtual double operator [] (int substanceNr)
+    {
+        getConcentration(substanceNr);
+    }
 
 };
 

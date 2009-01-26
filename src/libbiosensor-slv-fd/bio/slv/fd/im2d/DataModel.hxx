@@ -10,6 +10,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IGrid2D.hxx>
 #include <bio/dm/ICursor2D.hxx>
 #include <bio/dm/IConcentrations.hxx>
+#include <bio/dm/IComposite2D.hxx>
 #include "Solver.hxx"
 #include <log4cxx/logger.h>
 
@@ -19,7 +20,10 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 /**
  *  DataModel facade for users of Solver class.
  */
-class DataModel : public BIO_DM_NS::IDataModel, public BIO_DM_NS::IGrid2D
+class DataModel :
+            public BIO_DM_NS::IDataModel,
+            public BIO_DM_NS::IGrid2D,
+            public BIO_DM_NS::IComposite2D
 {
 private:
     Solver* solver;

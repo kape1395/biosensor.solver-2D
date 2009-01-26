@@ -1,31 +1,14 @@
 #ifndef BIO_DM_IComposite2D_HXX
 #define BIO_DM_IComposite2D_HXX
 #include "../../biosensor.hxx"
-#include "IDataModel.hxx"
-#include "IComposite2DArea.hxx"
-#include "IComposite2DBound.hxx"
-#include "IComposite2DCorner.hxx"
+#include "../Splitted2DArea.hxx"
+#include "IGrid2D.hxx"
+#include "IGrid1D.hxx"
+#include "IConcentrations.hxx"
 BIO_DM_NS_BEGIN
 
 
-/**
- *  Composite data model.
- */
-class IComposite2D : public IDataModel
-{
-public:
-    virtual ~IComposite2D()
-    {
-        //  Empty virtual destructor.
-    }
-
-    virtual int getPartCountH() = 0;
-    virtual int getPartCountV() = 0;
-    virtual IComposite2DArea* getArea(int x, int y) = 0;
-    virtual IComposite2DBound* getBoundH(int x, int y) = 0;
-    virtual IComposite2DBound* getBoundV(int x, int y) = 0;
-    virtual IComposite2DCorner* getCorner(int x, int y) = 0;
-};
+typedef BIO_NS::Splitted2DArea<IGrid2D*, IGrid1D*, IConcentrations*> IComposite2D;
 
 
 BIO_DM_NS_END

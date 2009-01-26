@@ -6,16 +6,16 @@ BIO_NS_BEGIN
 
 /**
  *  Template for structure, that holds parts of splitted 1D linear area.
- *  Parameter area is class of area (sub-area).
- *  Parameter bound is class of bounds, that surrounds sub-areas.
+ *  Parameter A is class of area (sub-area).
+ *  Parameter B is class of bounds, that surrounds sub-areas.
  */
-template<class area, class bound>
-class Splitted1DArea    // FIXME: Manau kad reiks ismesti...
+template<class A, class B>
+class Splitted1DArea
 {
 private:
     int size_;
-    std::vector<area> areas_;
-    std::vector<bound> bounds_;
+    std::vector<A> areas_;
+    std::vector<B> bounds_;
 public:
     Splitted1DArea(int size)
     {
@@ -23,7 +23,7 @@ public:
         areas_ .resize(size_    );
         bounds_.resize(size_ + 1);
     }
-    ~Splitted1DArea()
+    virtual ~Splitted1DArea()
     {
         areas_.clear();
         bounds_.clear();
@@ -33,19 +33,19 @@ public:
     {
         return size_;
     }
-    inline std::vector<area>& areas()
+    inline std::vector<A>& areas()
     {
         return areas_;
     }
-    inline std::vector<bound>& bounds()
+    inline std::vector<B>& bounds()
     {
         return bounds_;
     }
-    inline area& area(int i)
+    inline A& area(int i)
     {
         return areas_[i];
     }
-    inline bound& bound(int i)
+    inline B& bound(int i)
     {
         return bounds_[i];
     }

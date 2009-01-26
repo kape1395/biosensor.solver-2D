@@ -10,13 +10,10 @@ libbiosensor_la_SOURCES = \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
     bio/cfg/StructureAnalyzer.cxx \
+    bio/dm/CompositeSegmentSplit.cxx \
+    bio/dm/ConstantSegmentSplit.cxx \
     bio/dm/IComposite1D.cxx \
-    bio/dm/IComposite1DArea.cxx \
-    bio/dm/IComposite1DBound.cxx \
     bio/dm/IComposite2D.cxx \
-    bio/dm/IComposite2DArea.cxx \
-    bio/dm/IComposite2DBound.cxx \
-    bio/dm/IComposite2DCorner.cxx \
     bio/dm/IConcentrations.cxx \
     bio/dm/ICursor1D.cxx \
     bio/dm/ICursor2D.cxx \
@@ -24,6 +21,7 @@ libbiosensor_la_SOURCES = \
     bio/dm/IGrid.cxx \
     bio/dm/IGrid1D.cxx \
     bio/dm/IGrid2D.cxx \
+    bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
     bio/io/DebugSL.cxx \
     bio/io/GnuplotDataSL.cxx \
@@ -48,13 +46,10 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
     bio/cfg/StructureAnalyzer.hxx \
+    bio/dm/CompositeSegmentSplit.hxx \
+    bio/dm/ConstantSegmentSplit.hxx \
     bio/dm/IComposite1D.hxx \
-    bio/dm/IComposite1DArea.hxx \
-    bio/dm/IComposite1DBound.hxx \
     bio/dm/IComposite2D.hxx \
-    bio/dm/IComposite2DArea.hxx \
-    bio/dm/IComposite2DBound.hxx \
-    bio/dm/IComposite2DCorner.hxx \
     bio/dm/IConcentrations.hxx \
     bio/dm/ICursor1D.hxx \
     bio/dm/ICursor2D.hxx \
@@ -62,6 +57,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/IGrid.hxx \
     bio/dm/IGrid1D.hxx \
     bio/dm/IGrid2D.hxx \
+    bio/dm/ISegmentSplit.hxx \
     bio/dm/NullDM.hxx \
     bio/io/DebugSL.hxx \
     bio/io/GnuplotDataSL.hxx \

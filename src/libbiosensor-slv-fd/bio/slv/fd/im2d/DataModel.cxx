@@ -7,7 +7,11 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
     Solver* solver,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
-)
+) :
+        BIO_DM_NS::IComposite2D(
+            solver->getSubSolvers()->sizeH(),
+            solver->getSubSolvers()->sizeV()
+        )
 {
     this->solver = solver;
     this->structAnalyzer = structAnalyzer;

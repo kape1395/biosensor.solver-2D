@@ -66,13 +66,10 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/cfg/libbiosensor_la-IConfigTransformer.lo \
 	bio/cfg/libbiosensor_la-IConfigValidator.lo \
 	bio/cfg/libbiosensor_la-StructureAnalyzer.lo \
+	bio/dm/libbiosensor_la-CompositeSegmentSplit.lo \
+	bio/dm/libbiosensor_la-ConstantSegmentSplit.lo \
 	bio/dm/libbiosensor_la-IComposite1D.lo \
-	bio/dm/libbiosensor_la-IComposite1DArea.lo \
-	bio/dm/libbiosensor_la-IComposite1DBound.lo \
 	bio/dm/libbiosensor_la-IComposite2D.lo \
-	bio/dm/libbiosensor_la-IComposite2DArea.lo \
-	bio/dm/libbiosensor_la-IComposite2DBound.lo \
-	bio/dm/libbiosensor_la-IComposite2DCorner.lo \
 	bio/dm/libbiosensor_la-IConcentrations.lo \
 	bio/dm/libbiosensor_la-ICursor1D.lo \
 	bio/dm/libbiosensor_la-ICursor2D.lo \
@@ -80,6 +77,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/dm/libbiosensor_la-IGrid.lo \
 	bio/dm/libbiosensor_la-IGrid1D.lo \
 	bio/dm/libbiosensor_la-IGrid2D.lo \
+	bio/dm/libbiosensor_la-ISegmentSplit.lo \
 	bio/dm/libbiosensor_la-NullDM.lo \
 	bio/io/libbiosensor_la-DebugSL.lo \
 	bio/io/libbiosensor_la-GnuplotDataSL.lo \
@@ -242,13 +240,10 @@ libbiosensor_la_SOURCES = \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
     bio/cfg/StructureAnalyzer.cxx \
+    bio/dm/CompositeSegmentSplit.cxx \
+    bio/dm/ConstantSegmentSplit.cxx \
     bio/dm/IComposite1D.cxx \
-    bio/dm/IComposite1DArea.cxx \
-    bio/dm/IComposite1DBound.cxx \
     bio/dm/IComposite2D.cxx \
-    bio/dm/IComposite2DArea.cxx \
-    bio/dm/IComposite2DBound.cxx \
-    bio/dm/IComposite2DCorner.cxx \
     bio/dm/IConcentrations.cxx \
     bio/dm/ICursor1D.cxx \
     bio/dm/ICursor2D.cxx \
@@ -256,6 +251,7 @@ libbiosensor_la_SOURCES = \
     bio/dm/IGrid.cxx \
     bio/dm/IGrid1D.cxx \
     bio/dm/IGrid2D.cxx \
+    bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
     bio/io/DebugSL.cxx \
     bio/io/GnuplotDataSL.cxx \
@@ -279,13 +275,10 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
     bio/cfg/StructureAnalyzer.hxx \
+    bio/dm/CompositeSegmentSplit.hxx \
+    bio/dm/ConstantSegmentSplit.hxx \
     bio/dm/IComposite1D.hxx \
-    bio/dm/IComposite1DArea.hxx \
-    bio/dm/IComposite1DBound.hxx \
     bio/dm/IComposite2D.hxx \
-    bio/dm/IComposite2DArea.hxx \
-    bio/dm/IComposite2DBound.hxx \
-    bio/dm/IComposite2DCorner.hxx \
     bio/dm/IConcentrations.hxx \
     bio/dm/ICursor1D.hxx \
     bio/dm/ICursor2D.hxx \
@@ -293,6 +286,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/IGrid.hxx \
     bio/dm/IGrid1D.hxx \
     bio/dm/IGrid2D.hxx \
+    bio/dm/ISegmentSplit.hxx \
     bio/dm/NullDM.hxx \
     bio/io/DebugSL.hxx \
     bio/io/GnuplotDataSL.hxx \
@@ -419,19 +413,13 @@ bio/dm/$(am__dirstamp):
 bio/dm/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) bio/dm/$(DEPDIR)
 	@: > bio/dm/$(DEPDIR)/$(am__dirstamp)
+bio/dm/libbiosensor_la-CompositeSegmentSplit.lo:  \
+	bio/dm/$(am__dirstamp) bio/dm/$(DEPDIR)/$(am__dirstamp)
+bio/dm/libbiosensor_la-ConstantSegmentSplit.lo:  \
+	bio/dm/$(am__dirstamp) bio/dm/$(DEPDIR)/$(am__dirstamp)
 bio/dm/libbiosensor_la-IComposite1D.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
-bio/dm/libbiosensor_la-IComposite1DArea.lo: bio/dm/$(am__dirstamp) \
-	bio/dm/$(DEPDIR)/$(am__dirstamp)
-bio/dm/libbiosensor_la-IComposite1DBound.lo: bio/dm/$(am__dirstamp) \
-	bio/dm/$(DEPDIR)/$(am__dirstamp)
 bio/dm/libbiosensor_la-IComposite2D.lo: bio/dm/$(am__dirstamp) \
-	bio/dm/$(DEPDIR)/$(am__dirstamp)
-bio/dm/libbiosensor_la-IComposite2DArea.lo: bio/dm/$(am__dirstamp) \
-	bio/dm/$(DEPDIR)/$(am__dirstamp)
-bio/dm/libbiosensor_la-IComposite2DBound.lo: bio/dm/$(am__dirstamp) \
-	bio/dm/$(DEPDIR)/$(am__dirstamp)
-bio/dm/libbiosensor_la-IComposite2DCorner.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
 bio/dm/libbiosensor_la-IConcentrations.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
@@ -446,6 +434,8 @@ bio/dm/libbiosensor_la-IGrid.lo: bio/dm/$(am__dirstamp) \
 bio/dm/libbiosensor_la-IGrid1D.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
 bio/dm/libbiosensor_la-IGrid2D.lo: bio/dm/$(am__dirstamp) \
+	bio/dm/$(DEPDIR)/$(am__dirstamp)
+bio/dm/libbiosensor_la-ISegmentSplit.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
 bio/dm/libbiosensor_la-NullDM.lo: bio/dm/$(am__dirstamp) \
 	bio/dm/$(DEPDIR)/$(am__dirstamp)
@@ -502,20 +492,14 @@ mostlyclean-compile:
 	-rm -f bio/cfg/libbiosensor_la-IConfigValidator.lo
 	-rm -f bio/cfg/libbiosensor_la-StructureAnalyzer.$(OBJEXT)
 	-rm -f bio/cfg/libbiosensor_la-StructureAnalyzer.lo
+	-rm -f bio/dm/libbiosensor_la-CompositeSegmentSplit.$(OBJEXT)
+	-rm -f bio/dm/libbiosensor_la-CompositeSegmentSplit.lo
+	-rm -f bio/dm/libbiosensor_la-ConstantSegmentSplit.$(OBJEXT)
+	-rm -f bio/dm/libbiosensor_la-ConstantSegmentSplit.lo
 	-rm -f bio/dm/libbiosensor_la-IComposite1D.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-IComposite1D.lo
-	-rm -f bio/dm/libbiosensor_la-IComposite1DArea.$(OBJEXT)
-	-rm -f bio/dm/libbiosensor_la-IComposite1DArea.lo
-	-rm -f bio/dm/libbiosensor_la-IComposite1DBound.$(OBJEXT)
-	-rm -f bio/dm/libbiosensor_la-IComposite1DBound.lo
 	-rm -f bio/dm/libbiosensor_la-IComposite2D.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-IComposite2D.lo
-	-rm -f bio/dm/libbiosensor_la-IComposite2DArea.$(OBJEXT)
-	-rm -f bio/dm/libbiosensor_la-IComposite2DArea.lo
-	-rm -f bio/dm/libbiosensor_la-IComposite2DBound.$(OBJEXT)
-	-rm -f bio/dm/libbiosensor_la-IComposite2DBound.lo
-	-rm -f bio/dm/libbiosensor_la-IComposite2DCorner.$(OBJEXT)
-	-rm -f bio/dm/libbiosensor_la-IComposite2DCorner.lo
 	-rm -f bio/dm/libbiosensor_la-IConcentrations.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-IConcentrations.lo
 	-rm -f bio/dm/libbiosensor_la-ICursor1D.$(OBJEXT)
@@ -530,6 +514,8 @@ mostlyclean-compile:
 	-rm -f bio/dm/libbiosensor_la-IGrid1D.lo
 	-rm -f bio/dm/libbiosensor_la-IGrid2D.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-IGrid2D.lo
+	-rm -f bio/dm/libbiosensor_la-ISegmentSplit.$(OBJEXT)
+	-rm -f bio/dm/libbiosensor_la-ISegmentSplit.lo
 	-rm -f bio/dm/libbiosensor_la-NullDM.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-NullDM.lo
 	-rm -f bio/io/libbiosensor_la-DebugSL.$(OBJEXT)
@@ -571,13 +557,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigTransformer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigValidator.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-StructureAnalyzer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-CompositeSegmentSplit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-ConstantSegmentSplit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DArea.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DBound.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2D.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DArea.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DBound.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DCorner.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IConcentrations.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-ICursor1D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-ICursor2D.Plo@am__quote@
@@ -585,6 +568,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IGrid.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IGrid1D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IGrid2D.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-ISegmentSplit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-NullDM.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-DebugSL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Plo@am__quote@
@@ -660,6 +644,20 @@ bio/cfg/libbiosensor_la-StructureAnalyzer.lo: bio/cfg/StructureAnalyzer.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/cfg/libbiosensor_la-StructureAnalyzer.lo `test -f 'bio/cfg/StructureAnalyzer.cxx' || echo '$(srcdir)/'`bio/cfg/StructureAnalyzer.cxx
 
+bio/dm/libbiosensor_la-CompositeSegmentSplit.lo: bio/dm/CompositeSegmentSplit.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-CompositeSegmentSplit.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-CompositeSegmentSplit.Tpo -c -o bio/dm/libbiosensor_la-CompositeSegmentSplit.lo `test -f 'bio/dm/CompositeSegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/CompositeSegmentSplit.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-CompositeSegmentSplit.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-CompositeSegmentSplit.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/CompositeSegmentSplit.cxx' object='bio/dm/libbiosensor_la-CompositeSegmentSplit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-CompositeSegmentSplit.lo `test -f 'bio/dm/CompositeSegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/CompositeSegmentSplit.cxx
+
+bio/dm/libbiosensor_la-ConstantSegmentSplit.lo: bio/dm/ConstantSegmentSplit.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-ConstantSegmentSplit.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-ConstantSegmentSplit.Tpo -c -o bio/dm/libbiosensor_la-ConstantSegmentSplit.lo `test -f 'bio/dm/ConstantSegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/ConstantSegmentSplit.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-ConstantSegmentSplit.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-ConstantSegmentSplit.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/ConstantSegmentSplit.cxx' object='bio/dm/libbiosensor_la-ConstantSegmentSplit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-ConstantSegmentSplit.lo `test -f 'bio/dm/ConstantSegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/ConstantSegmentSplit.cxx
+
 bio/dm/libbiosensor_la-IComposite1D.lo: bio/dm/IComposite1D.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite1D.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Tpo -c -o bio/dm/libbiosensor_la-IComposite1D.lo `test -f 'bio/dm/IComposite1D.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1D.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1D.Plo
@@ -667,47 +665,12 @@ bio/dm/libbiosensor_la-IComposite1D.lo: bio/dm/IComposite1D.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite1D.lo `test -f 'bio/dm/IComposite1D.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1D.cxx
 
-bio/dm/libbiosensor_la-IComposite1DArea.lo: bio/dm/IComposite1DArea.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite1DArea.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DArea.Tpo -c -o bio/dm/libbiosensor_la-IComposite1DArea.lo `test -f 'bio/dm/IComposite1DArea.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1DArea.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DArea.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DArea.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite1DArea.cxx' object='bio/dm/libbiosensor_la-IComposite1DArea.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite1DArea.lo `test -f 'bio/dm/IComposite1DArea.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1DArea.cxx
-
-bio/dm/libbiosensor_la-IComposite1DBound.lo: bio/dm/IComposite1DBound.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite1DBound.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DBound.Tpo -c -o bio/dm/libbiosensor_la-IComposite1DBound.lo `test -f 'bio/dm/IComposite1DBound.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1DBound.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DBound.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite1DBound.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite1DBound.cxx' object='bio/dm/libbiosensor_la-IComposite1DBound.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite1DBound.lo `test -f 'bio/dm/IComposite1DBound.cxx' || echo '$(srcdir)/'`bio/dm/IComposite1DBound.cxx
-
 bio/dm/libbiosensor_la-IComposite2D.lo: bio/dm/IComposite2D.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite2D.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2D.Tpo -c -o bio/dm/libbiosensor_la-IComposite2D.lo `test -f 'bio/dm/IComposite2D.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2D.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2D.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2D.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite2D.cxx' object='bio/dm/libbiosensor_la-IComposite2D.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite2D.lo `test -f 'bio/dm/IComposite2D.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2D.cxx
-
-bio/dm/libbiosensor_la-IComposite2DArea.lo: bio/dm/IComposite2DArea.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite2DArea.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DArea.Tpo -c -o bio/dm/libbiosensor_la-IComposite2DArea.lo `test -f 'bio/dm/IComposite2DArea.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DArea.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DArea.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DArea.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite2DArea.cxx' object='bio/dm/libbiosensor_la-IComposite2DArea.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite2DArea.lo `test -f 'bio/dm/IComposite2DArea.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DArea.cxx
-
-bio/dm/libbiosensor_la-IComposite2DBound.lo: bio/dm/IComposite2DBound.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite2DBound.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DBound.Tpo -c -o bio/dm/libbiosensor_la-IComposite2DBound.lo `test -f 'bio/dm/IComposite2DBound.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DBound.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DBound.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DBound.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite2DBound.cxx' object='bio/dm/libbiosensor_la-IComposite2DBound.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite2DBound.lo `test -f 'bio/dm/IComposite2DBound.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DBound.cxx
-
-bio/dm/libbiosensor_la-IComposite2DCorner.lo: bio/dm/IComposite2DCorner.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IComposite2DCorner.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DCorner.Tpo -c -o bio/dm/libbiosensor_la-IComposite2DCorner.lo `test -f 'bio/dm/IComposite2DCorner.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DCorner.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DCorner.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-IComposite2DCorner.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IComposite2DCorner.cxx' object='bio/dm/libbiosensor_la-IComposite2DCorner.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IComposite2DCorner.lo `test -f 'bio/dm/IComposite2DCorner.cxx' || echo '$(srcdir)/'`bio/dm/IComposite2DCorner.cxx
 
 bio/dm/libbiosensor_la-IConcentrations.lo: bio/dm/IConcentrations.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-IConcentrations.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-IConcentrations.Tpo -c -o bio/dm/libbiosensor_la-IConcentrations.lo `test -f 'bio/dm/IConcentrations.cxx' || echo '$(srcdir)/'`bio/dm/IConcentrations.cxx
@@ -757,6 +720,13 @@ bio/dm/libbiosensor_la-IGrid2D.lo: bio/dm/IGrid2D.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/IGrid2D.cxx' object='bio/dm/libbiosensor_la-IGrid2D.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-IGrid2D.lo `test -f 'bio/dm/IGrid2D.cxx' || echo '$(srcdir)/'`bio/dm/IGrid2D.cxx
+
+bio/dm/libbiosensor_la-ISegmentSplit.lo: bio/dm/ISegmentSplit.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-ISegmentSplit.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-ISegmentSplit.Tpo -c -o bio/dm/libbiosensor_la-ISegmentSplit.lo `test -f 'bio/dm/ISegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/ISegmentSplit.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/dm/$(DEPDIR)/libbiosensor_la-ISegmentSplit.Tpo bio/dm/$(DEPDIR)/libbiosensor_la-ISegmentSplit.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/dm/ISegmentSplit.cxx' object='bio/dm/libbiosensor_la-ISegmentSplit.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-ISegmentSplit.lo `test -f 'bio/dm/ISegmentSplit.cxx' || echo '$(srcdir)/'`bio/dm/ISegmentSplit.cxx
 
 bio/dm/libbiosensor_la-NullDM.lo: bio/dm/NullDM.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/dm/libbiosensor_la-NullDM.lo -MD -MP -MF bio/dm/$(DEPDIR)/libbiosensor_la-NullDM.Tpo -c -o bio/dm/libbiosensor_la-NullDM.lo `test -f 'bio/dm/NullDM.cxx' || echo '$(srcdir)/'`bio/dm/NullDM.cxx
