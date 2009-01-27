@@ -136,7 +136,7 @@ void AbstractIterativeSolver::addListener(ISolverListener* listener)
  */
 void AbstractIterativeSolver::invokeListeners()
 {
-    for (int i = 0; i < listeners.size(); i++)
+    for (unsigned i = 0; i < listeners.size(); i++)
     {
         listeners[i]->solveEventOccured();
     }

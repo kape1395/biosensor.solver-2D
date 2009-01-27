@@ -56,7 +56,7 @@ public:
      */
     virtual double operator [] (int substanceNr)
     {
-        getConcentration(substanceNr);
+        return getConcentration(substanceNr);
     }
 
 };

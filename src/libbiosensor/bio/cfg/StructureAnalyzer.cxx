@@ -133,10 +133,10 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //  Fill mediums.
     //
     mediums = new BIO_XML_NS::model::Medium* *[pointsH.size()];
-    for (int h = 0; h < pointsH.size(); h++)
+    for (unsigned h = 0; h < pointsH.size(); h++)
     {
         mediums[h] = new BIO_XML_NS::model::Medium*[pointsV.size()];
-        for (int v = 0; v < pointsV.size(); v++)
+        for (unsigned v = 0; v < pointsV.size(); v++)
         {
             mediums[h][v] = 0;
         }
@@ -198,16 +198,16 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     reactions = new std::vector< BIO_XML_NS::model::MediumReaction* >*[pointsH.size()];
     diffusions = new BIO_XML_NS::model::Symbol* **[pointsH.size()];
     initialConcentrations = new BIO_XML_NS::model::Symbol* **[pointsH.size()];
-    for (int h = 0; h < pointsH.size(); h++)
+    for (unsigned h = 0; h < pointsH.size(); h++)
     {
         reactions[h] = new std::vector< BIO_XML_NS::model::MediumReaction* >[pointsV.size()];
         diffusions[h] = new BIO_XML_NS::model::Symbol* *[pointsV.size()];
         initialConcentrations[h] = new BIO_XML_NS::model::Symbol* *[pointsV.size()];
-        for (int v = 0; v < pointsV.size(); v++)
+        for (unsigned v = 0; v < pointsV.size(); v++)
         {
             diffusions[h][v] = new BIO_XML_NS::model::Symbol*[substances.size()];
             initialConcentrations[h][v] = new BIO_XML_NS::model::Symbol*[substances.size()];
-            for (int s = 0; s < substances.size(); s++)
+            for (unsigned s = 0; s < substances.size(); s++)
             {
                 diffusions[h][v][s] = 0;
                 initialConcentrations[h][v][s] = 0;
@@ -242,9 +242,9 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
     LOG4CXX_INFO(log, "~StructureAnalyzer()...");
 
     twoDimensional = false;
-    for (int h = 0; h < pointsH.size(); h++)
+    for (unsigned h = 0; h < pointsH.size(); h++)
     {
-        for (int v = 0; v < pointsV.size(); v++)
+        for (unsigned v = 0; v < pointsV.size(); v++)
         {
             delete [] diffusions[h][v];
             delete [] initialConcentrations[h][v];
@@ -288,7 +288,7 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 /* ************************************************************************** */
 BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::model::SymbolName& name)
 {
-    for (int i = 0; i < config->symbol().size(); i++)
+    for (unsigned i = 0; i < config->symbol().size(); i++)
     {
         if (config->symbol()[i].name() == name)
             return &config->symbol()[i];
@@ -389,7 +389,7 @@ int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(BIO_XML_NS::model::Substanc
 std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h, int v)
 {
     std::vector<int> indexes;
-    for (int i = 0; i < getSubstances().size(); i++)
+    for (unsigned i = 0; i < getSubstances().size(); i++)
     {
         BIO_XML_NS::model::Symbol *sym = getDiffusion(i, h, v);
         if (sym != 0)

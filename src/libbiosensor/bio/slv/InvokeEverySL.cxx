@@ -31,7 +31,7 @@ void BIO_SLV_NS::InvokeEverySL::solveEventOccured()
 {
     if (solver->getSolvedIterationCount() >= nextStop)
     {
-        for (int i = 0; i < listeners.size(); i++)
+        for (unsigned i = 0; i < listeners.size(); i++)
         {
             listeners[i]->solveEventOccured();
         }

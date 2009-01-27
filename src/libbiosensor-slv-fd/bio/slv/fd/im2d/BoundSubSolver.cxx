@@ -10,8 +10,8 @@
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
     Solver* solver,
-    int positionH,
-    int positionV,
+    unsigned positionH,
+    unsigned positionV,
     bool horizontal,
     AreaSubSolver* areaPrev,
     AreaSubSolver* areaNext,
@@ -36,7 +36,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
 
     substanceToBCMap = new IBoundCondition*[structAnalyzer->getSubstances().size()];
 
-    for (int s = 0; s < structAnalyzer->getSubstances().size(); s++)
+    for (unsigned s = 0; s < structAnalyzer->getSubstances().size(); s++)
     {
         substanceToBCMap[s] = 0;
 
@@ -259,6 +259,7 @@ BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getPointPositions(
 BIO_DM_NS::ICursor1D* BIO_SLV_FD_IM2D_NS::BoundSubSolver::newGridCursor()
 {
     //  TODO: Implement
+    return 0;
 }
 
 

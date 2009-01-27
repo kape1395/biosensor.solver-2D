@@ -20,6 +20,7 @@ BIO_SLV_NS::AmperometricElectrode::~AmperometricElectrode()
 double BIO_SLV_NS::AmperometricElectrode::getOutput()
 {
     //  TODO: Implement getOutput()
+    return 0.0;
 }
 
 /* ************************************************************************** */

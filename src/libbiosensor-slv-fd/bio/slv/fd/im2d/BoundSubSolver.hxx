@@ -54,8 +54,8 @@ public:
      */
     BoundSubSolver(
         Solver* solver,
-        int positionH,
-        int positionV,
+        unsigned positionH,
+        unsigned positionV,
         bool horizontal,
         AreaSubSolver* areaPrev,
         AreaSubSolver* areaNext,

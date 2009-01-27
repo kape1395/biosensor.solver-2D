@@ -27,28 +27,30 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
     std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsH;
     for (int h = 0; h < areaCountH; h++)
     {
+        BIO_DM_NS::ISegmentSplit* segment = fdAnalyzer->getAxisPartSegmentSplitH(h);
         areaRangesH[h] = accumulatedPointCount;
-        accumulatedPointCount += solver->getSubSolvers()->getArea(h, 0)->getPointCountH() - 1;
-        subSegmentSplitsH.push_back(fdAnalyzer->getAxisPartSegmentSplitH(h));
+        accumulatedPointCount += segment->getStepCount();
+        subSegmentSplitsH.push_back(segment);
     }
     areaRangesH[areaCountH] = accumulatedPointCount;
-    pointCountH = accumulatedPointCount + 1;
 
 
     accumulatedPointCount = 0;
     std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsV;
     for (int v = 0; v < areaCountV; v++)
     {
+        BIO_DM_NS::ISegmentSplit* segment = fdAnalyzer->getAxisPartSegmentSplitV(v);
         areaRangesV[v] = accumulatedPointCount;
-        accumulatedPointCount += solver->getSubSolvers()->getArea(0, v)->getPointCountV() - 1;
-        subSegmentSplitsV.push_back(fdAnalyzer->getAxisPartSegmentSplitV(v));
+        accumulatedPointCount += segment->getStepCount();
+        subSegmentSplitsV.push_back(segment);
     }
     areaRangesV[areaCountV] = accumulatedPointCount;
-    pointCountV = accumulatedPointCount + 1;
 
 
     segmentSplitH = new BIO_DM_NS::CompositeSegmentSplit(subSegmentSplitsH);
     segmentSplitV = new BIO_DM_NS::CompositeSegmentSplit(subSegmentSplitsV);
+    pointCountH = segmentSplitH->getPointCount();
+    pointCountV = segmentSplitV->getPointCount();
 }
 
 
@@ -270,6 +272,7 @@ double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::operator[] (int substanceNr)
                    substanceNr
                );
     }
+    return 0;   //  Control will never reach this statement.
 }
 
 
