@@ -2,25 +2,21 @@
 #define BIO_Exception_HXX
 #include "../biosensor.hxx"
 #include <string>
-#include <exception>
-#include <iostream>
-#include <sstream>
+#include <stdexcept>
 BIO_NS_BEGIN
 
 
 /**
  *  Bazinis exceptionas sitame softe.
  */
-class Exception : public std::exception //, public std::ostringstream
+class Exception : public std::logic_error
 {
 protected:
-    std::ostringstream *msg;
+    std::string message;
 
 public:
-    Exception();
-    Exception(std::string string);
+    Exception(const std::string& message);
     virtual ~Exception() throw();
-    virtual const char* what() const throw();
 
 };
 

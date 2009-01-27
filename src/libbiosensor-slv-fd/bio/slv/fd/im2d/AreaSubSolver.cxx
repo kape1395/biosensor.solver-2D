@@ -19,9 +19,16 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     using BIO_DM_NS::ConstantSegmentSplit;
 
     LOG4CXX_DEBUG(log, "AreaSubSolver()");
+
+    this->structAnalyzer = structAnalyzer;
+    this->fdAnalyzer = fdAnalyzer;
+
     this->solver = solver;
     this->positionH = positionH;
     this->positionV = positionV;
+
+    this->pointPositionsH = fdAnalyzer->getAxisPartSegmentSplitH(positionH);
+    this->pointPositionsV = fdAnalyzer->getAxisPartSegmentSplitV(positionV);
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -413,7 +420,6 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
         return;
     }
 
-    // TODO: documentation
     targetLayerIndex = getCurrentLayerIndex();
 
     double timeStep = this->solver->getTimeStep();
@@ -635,6 +641,162 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool vertica
         }
     }
     out << "\\-----------  AreaSubSolver::dumpData - end (" << message << ")" << std::endl;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+int BIO_SLV_FD_IM2D_NS::AreaSubSolver::getSubstanceCount()
+{
+    return structAnalyzer->getSubstances().size();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getSubstanceConf(int index)
+{
+    return (this->getLocalSubstanceIndex(index) != -1)
+           ? structAnalyzer->getSubstances()[index]
+           : 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getPointPositionsH()
+{
+    return this->pointPositionsH;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getPointPositionsV()
+{
+    return this->pointPositionsV;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::AreaSubSolver::newGridCursor()
+{
+    return new Cursor(this);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
+    AreaSubSolver* subSolver
+)
+{
+    this->subSolver = subSolver;
+    this->sizeH = subSolver->getPointPositionsH()->getPointCount();
+    this->sizeV = subSolver->getPointPositionsV()->getPointCount();
+    this->currentH = 0;
+    this->currentV = 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::~Cursor()
+{
+    // Nothing to do here.
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::left()
+{
+    --currentH;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::right()
+{
+    currentH++;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::top()
+{
+    currentV--;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::down()
+{
+    currentV++;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowStart()
+{
+    currentH = 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowEnd()
+{
+    currentH = sizeH - 1;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colStart()
+{
+    currentV = 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colEnd()
+{
+    currentV = sizeV - 1;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+bool BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::isValid()
+{
+    return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::getConcentrations()
+{
+    return isValid() ? this : 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::operator[] (int substanceNr)
+{
+    return subSolver->getConcentration(
+               currentH,
+               currentV,
+               substanceNr
+           );
 }
 
 

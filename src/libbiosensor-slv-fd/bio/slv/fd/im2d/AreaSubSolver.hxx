@@ -9,6 +9,9 @@ BIO_SLV_FD_IM2D_NS_END
 #include "Solver.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/dm/IGrid2D.hxx>
+#include <bio/dm/ICursor2D.hxx>
+#include <bio/dm/IConcentrations.hxx>
 #include <log4cxx/logger.h>
 #include <string>
 
@@ -18,7 +21,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 /**
  *  This solver is responsible for one homogenous rectangular area.
  */
-class AreaSubSolver
+class AreaSubSolver : public BIO_DM_NS::IGrid2D
 {
 public:
     class EdgeData;
@@ -26,9 +29,15 @@ public:
 private:
     log4cxx::LoggerPtr log;
 
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
+
     Solver *solver;
     int positionH;
     int positionV;
+
+    BIO_DM_NS::ISegmentSplit* pointPositionsH;
+    BIO_DM_NS::ISegmentSplit* pointPositionsV;
 
     static const int LAYER_INTERM = 1;
     static const int LAYER_P = 3;
@@ -180,6 +189,29 @@ public:
         int s
     );
 
+    /* ********************************************************************** */
+    /* *********    IGrid2D implementation - start                            */
+    /**
+     *  Returns number of substances, defined in the entrie model.
+     */
+    virtual int getSubstanceCount();
+
+    /**
+     *  Returns substance conf. if i^th substance exists in this sub-area.
+     *  If not - 0 is returned.
+     */
+    virtual BIO_XML_NS::model::Substance* getSubstanceConf(int index);
+
+    virtual BIO_DM_NS::ISegmentSplit* getPointPositionsH();
+
+    virtual BIO_DM_NS::ISegmentSplit* getPointPositionsV();
+
+    virtual BIO_DM_NS::ICursor2D* newGridCursor();
+
+    /* *********    IGrid2D implementation - start                            */
+    /* ********************************************************************** */
+
+
 protected:
 
     /**
@@ -319,6 +351,54 @@ public:
         }
 
     };
+
+private:
+    /**
+     *  Cursor...
+     */
+class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    {
+    private:
+        AreaSubSolver* subSolver;
+        int sizeH;      // Total size H
+        int sizeV;      // Total size V
+        int currentH;   // point index in H
+        int currentV;   // point index in V;
+
+    public:
+
+        /**
+         *  Constructor.
+         */
+        Cursor(AreaSubSolver* subSolver);
+
+        /**
+         *  Destructor.
+         */
+        virtual ~Cursor();
+
+        virtual void left();
+        virtual void right();
+        virtual void top();
+        virtual void down();
+
+        virtual void rowStart();
+        virtual void rowEnd();
+        virtual void colStart();
+        virtual void colEnd();
+
+        virtual bool isValid();
+
+        virtual BIO_DM_NS::IConcentrations* getConcentrations();
+
+        /**
+         *  Returns concentration of the substance in a current point.
+         *  This is implementation of an interface IConcentrations.
+         */
+        virtual double operator [] (int substanceNr);
+
+    };
+
 
 };
 

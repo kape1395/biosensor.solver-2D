@@ -16,11 +16,12 @@ public:
         //  Empty virtual destructor.
     }
 
-    virtual int prev() = 0;
-    virtual int next() = 0;
+    virtual void prev() = 0;
+    virtual void next() = 0;
     virtual void start() = 0;
     virtual void end() = 0;
-    virtual IConcentrations& operator *() = 0;
+    virtual bool isValid() = 0;
+    virtual IConcentrations* getConcentrations() = 0;
 };
 
 

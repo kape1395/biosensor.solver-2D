@@ -258,8 +258,7 @@ BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getPointPositions(
 /* ************************************************************************** */
 BIO_DM_NS::ICursor1D* BIO_SLV_FD_IM2D_NS::BoundSubSolver::newGridCursor()
 {
-    //  TODO: Implement
-    return 0;
+    return new Cursor(this);
 }
 
 
@@ -270,6 +269,84 @@ double BIO_SLV_FD_IM2D_NS::BoundSubSolver::getConcentration(int x, int s)
     return (substanceToBCMap[s])
            ? substanceToBCMap[s]->getConcentration(x)
            : NAN;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::Cursor(BoundSubSolver* subSolver)
+{
+    this->subSolver = subSolver;
+    this->position = 0;
+    this->pointCount = subSolver->getPointPositions()->getPointCount();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::~Cursor()
+{
+    // Nothing to do here.
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::prev()
+{
+    position--;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::next()
+{
+    position++;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::start()
+{
+    position = 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::end()
+{
+    position = pointCount - 1;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+bool BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::isValid()
+{
+    return position >= 0 && position < pointCount;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConcentrations()
+{
+    if (!isValid())
+    {
+        return 0;
+    }
+    return this;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::operator[] (int substanceNr)
+{
+    return subSolver->getConcentration(position, substanceNr);
 }
 
 

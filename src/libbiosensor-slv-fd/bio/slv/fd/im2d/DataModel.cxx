@@ -19,13 +19,35 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
 
     areaCountH = solver->getSubSolvers()->sizeH();
     areaCountV = solver->getSubSolvers()->sizeV();
-    areaRangesH = new int[areaCountH + 1];
-    areaRangesV = new int[areaCountV + 1];
+    areaRangesH = new unsigned[areaCountH + 1];
+    areaRangesV = new unsigned[areaCountV + 1];
+
+
+    for (unsigned h = 0; h <= areaCountH; h++)
+    {
+        for (unsigned v = 0; v <= areaCountV; v++)
+        {
+            bool lastH = (h == areaCountH);
+            bool lastV = (v == areaCountV);
+
+            if (!lastH && !lastV)
+                this->getArea(h, v) = solver->getSubSolvers()->getArea(h, v);
+
+            if (!lastH)
+                this->getBoundH(h, v) = solver->getSubSolvers()->getBoundH(h, v);
+
+            if (!lastV)
+                this->getBoundV(h, v) = solver->getSubSolvers()->getBoundV(h, v);
+
+            this->getCorner(h, v) = solver->getSubSolvers()->getCorner(h, v);
+        }
+    }
+
 
 
     int accumulatedPointCount = 0;
     std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsH;
-    for (int h = 0; h < areaCountH; h++)
+    for (unsigned h = 0; h < areaCountH; h++)
     {
         BIO_DM_NS::ISegmentSplit* segment = fdAnalyzer->getAxisPartSegmentSplitH(h);
         areaRangesH[h] = accumulatedPointCount;
@@ -37,7 +59,7 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
 
     accumulatedPointCount = 0;
     std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsV;
-    for (int v = 0; v < areaCountV; v++)
+    for (unsigned v = 0; v < areaCountV; v++)
     {
         BIO_DM_NS::ISegmentSplit* segment = fdAnalyzer->getAxisPartSegmentSplitV(v);
         areaRangesV[v] = accumulatedPointCount;

@@ -13,6 +13,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/cfg/BoundAnalyzer.hxx>
 #include <bio/dm/IGrid1D.hxx>
+#include <bio/dm/ICursor1D.hxx>
 #include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -147,6 +148,34 @@ protected:
         int substance,
         bool atStart
     );
+
+    /**
+     *  Cursor.
+     */
+class Cursor : public BIO_DM_NS::ICursor1D, public BIO_DM_NS::IConcentrations
+    {
+    private:
+        unsigned position;
+        unsigned pointCount;
+        BoundSubSolver* subSolver;
+
+    public:
+        Cursor(BoundSubSolver* subSolver);
+        virtual ~Cursor();
+        virtual void prev();
+        virtual void next();
+        virtual void start();
+        virtual void end();
+        virtual bool isValid();
+        virtual IConcentrations* getConcentrations();
+
+        /**
+         *  Returns concentration of the substance in a current point.
+         *  This is implementation of an interface IConcentrations.
+         */
+        virtual double operator [] (int substanceNr);
+
+    };
 
 };
 

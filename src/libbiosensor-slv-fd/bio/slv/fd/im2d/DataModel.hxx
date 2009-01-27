@@ -29,12 +29,12 @@ class DataModel :
 private:
     Solver* solver;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
-    int *areaRangesH;   // Point number, at which starts h^th area.
-    int *areaRangesV;   // Point number, at which starts v^th area.
-    int areaCountH;
-    int areaCountV;
-    int pointCountH;    // Total count of points in horizontal axis.
-    int pointCountV;    // Total count of points in vertical axis.
+    unsigned *areaRangesH;   // Point number, at which starts h^th area.
+    unsigned *areaRangesV;   // Point number, at which starts v^th area.
+    unsigned areaCountH;
+    unsigned areaCountV;
+    unsigned pointCountH;    // Total count of points in horizontal axis.
+    unsigned pointCountV;    // Total count of points in vertical axis.
     BIO_DM_NS::ISegmentSplit* segmentSplitH;
     BIO_DM_NS::ISegmentSplit* segmentSplitV;
 
@@ -92,12 +92,12 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         DataModel* dataModel;
-        int sizeH;      // Total size H
-        int sizeV;      // Total size V
-        int currentH;   // point index in H
-        int currentV;   // point index in V;
-        int currentAreaH;
-        int currentAreaV;
+        unsigned sizeH;         // Total size H
+        unsigned sizeV;         // Total size V
+        unsigned currentH;      // point index in H
+        unsigned currentV;      // point index in V;
+        unsigned currentAreaH;
+        unsigned currentAreaV;
         bool currentOnBoundH;
         bool currentOnBoundV;
 

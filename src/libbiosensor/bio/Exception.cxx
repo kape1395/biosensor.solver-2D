@@ -1,16 +1,4 @@
 #include "Exception.hxx"
-BIO_NS_BEGIN
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/**
- *  Konstruktorius.
- */
-Exception::Exception()
-{
-    this->msg = new std::ostringstream();
-}
 
 
 /* ************************************************************************** */
@@ -19,10 +7,9 @@ Exception::Exception()
  *  Konstruktorius
  *  \param string  Exception`o tekstas.
  */
-Exception::Exception(std::string string)
+BIO_NS::Exception::Exception(const std::string& message) : std::logic_error(message)
 {
-    msg = new std::ostringstream();
-    *msg << string;
+    //  Nothing to do here.
 }
 
 
@@ -31,23 +18,11 @@ Exception::Exception(std::string string)
 /**
  *  Destructor.
  */
-Exception::~Exception() throw()
+BIO_NS::Exception::~Exception() throw()
 {
-    delete msg;
+    // Nothing.
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-/**
- *  Returns exceptions message.
- */
-const char* Exception::what() const throw()
-{
-    return msg->str().c_str();
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-BIO_NS_END
