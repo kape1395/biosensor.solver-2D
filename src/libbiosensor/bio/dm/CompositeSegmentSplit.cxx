@@ -23,6 +23,7 @@ BIO_DM_NS::CompositeSegmentSplit::CompositeSegmentSplit(
         stepCount += (*split)->getStepCount();
     }
 
+
     localPointPositions = new double[getPointCount()];
     int i = 0;
     for (std::vector<ISegmentSplit*>::iterator split = subSegments.begin(); split < subSegments.end(); split++)

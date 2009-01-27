@@ -11,6 +11,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/ICursor2D.hxx>
 #include <bio/dm/IConcentrations.hxx>
 #include <bio/dm/IComposite2D.hxx>
+#include <bio/dm/ISegmentSplit.hxx>
 #include "Solver.hxx"
 #include <log4cxx/logger.h>
 
@@ -34,7 +35,8 @@ private:
     int areaCountV;
     int pointCountH;    // Total count of points in horizontal axis.
     int pointCountV;    // Total count of points in vertical axis.
-
+    BIO_DM_NS::ISegmentSplit* segmentSplitH;
+    BIO_DM_NS::ISegmentSplit* segmentSplitV;
 
 public:
 

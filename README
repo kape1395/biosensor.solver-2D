@@ -11,11 +11,11 @@ Before commit, make shure to run `make astyle'.
 make maintainer-clean  
 rm -rf local_install
 mkdir local_install
-./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O0 -ansi" && make && make install
+./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O0 -ansi -Wall" && make && make install
 
 
 Del optimizacijos ijungimo:
-./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O2 -ansi"
+./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O2 -ansi -Wall"
 
 Patestavimas:
     src/bio-solver/bio-solver src/libbiosensor-xml/Model-example-2D_b.xml

@@ -32,7 +32,7 @@ public:
      */
     virtual int getStepCount()
     {
-        getPointCount() - 1;
+        return getPointCount() - 1;
     }
 
     /**

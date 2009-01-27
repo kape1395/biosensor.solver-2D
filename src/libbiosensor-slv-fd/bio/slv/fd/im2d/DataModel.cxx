@@ -1,4 +1,5 @@
 #include "DataModel.hxx"
+#include <bio/dm/CompositeSegmentSplit.hxx>
 
 
 /* ************************************************************************** */
@@ -21,24 +22,33 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
     areaRangesH = new int[areaCountH + 1];
     areaRangesV = new int[areaCountV + 1];
 
+
     int accumulatedPointCount = 0;
+    std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsH;
     for (int h = 0; h < areaCountH; h++)
     {
         areaRangesH[h] = accumulatedPointCount;
         accumulatedPointCount += solver->getSubSolvers()->getArea(h, 0)->getPointCountH() - 1;
+        subSegmentSplitsH.push_back(fdAnalyzer->getAxisPartSegmentSplitH(h));
     }
     areaRangesH[areaCountH] = accumulatedPointCount;
     pointCountH = accumulatedPointCount + 1;
 
+
     accumulatedPointCount = 0;
+    std::vector<BIO_DM_NS::ISegmentSplit*> subSegmentSplitsV;
     for (int v = 0; v < areaCountV; v++)
     {
         areaRangesV[v] = accumulatedPointCount;
         accumulatedPointCount += solver->getSubSolvers()->getArea(0, v)->getPointCountV() - 1;
+        subSegmentSplitsV.push_back(fdAnalyzer->getAxisPartSegmentSplitV(v));
     }
     areaRangesV[areaCountV] = accumulatedPointCount;
     pointCountV = accumulatedPointCount + 1;
 
+
+    segmentSplitH = new BIO_DM_NS::CompositeSegmentSplit(subSegmentSplitsH);
+    segmentSplitV = new BIO_DM_NS::CompositeSegmentSplit(subSegmentSplitsV);
 }
 
 
@@ -48,6 +58,8 @@ BIO_SLV_FD_IM2D_NS::DataModel::~DataModel()
 {
     delete [] areaRangesH;
     delete [] areaRangesV;
+    delete segmentSplitH;
+    delete segmentSplitV;
 }
 
 
@@ -71,7 +83,7 @@ BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(in
 /* ************************************************************************** */
 BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 {
-    // TODO: Implement getPointPositionsH()
+    return segmentSplitH;
 }
 
 
@@ -79,7 +91,7 @@ BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 /* ************************************************************************** */
 BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
 {
-    // TODO: Implement getPointPositionsV()
+    return segmentSplitV;
 }
 
 
@@ -209,11 +221,6 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
     );
     currentOnBoundH = dataModel->areaRangesH[currentAreaH] == currentH;
     currentOnBoundV = dataModel->areaRangesV[currentAreaV] == currentV;
-
-    //currentArea = dataModel->solver->getSubSolvers()->getArea(
-    //                  currentAreaH,
-    //                  currentAreaV
-    //              );
 
     return this;
 }
