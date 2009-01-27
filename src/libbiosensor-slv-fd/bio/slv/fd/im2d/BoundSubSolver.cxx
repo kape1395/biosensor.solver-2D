@@ -29,6 +29,10 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
     this->structAnalyzer = structAnalyzer;
     this->fdAnalyzer = fdAnalyzer;
     this->boundAnalyzer = boundAnalyzer;
+    this->segmentSplit = horizontal
+                         ? fdAnalyzer->getAxisPartSegmentSplitH(positionH)
+                         : fdAnalyzer->getAxisPartSegmentSplitV(positionV)
+                         ;
 
     substanceToBCMap = new IBoundCondition*[structAnalyzer->getSubstances().size()];
 
@@ -221,6 +225,40 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             throw Exception("Two bound conditions on one edge for one substance is not supported.");
         }
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+int BIO_SLV_FD_IM2D_NS::BoundSubSolver::getSubstanceCount()
+{
+    return structAnalyzer->getSubstances().size();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getSubstanceConf(int index)
+{
+    return (substanceToBCMap[index])
+           ? structAnalyzer->getSubstances()[index]
+           : 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getPointPositions()
+{
+    return segmentSplit;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ICursor1D* BIO_SLV_FD_IM2D_NS::BoundSubSolver::newGridCursor()
+{
+    //  TODO: Implement
 }
 
 

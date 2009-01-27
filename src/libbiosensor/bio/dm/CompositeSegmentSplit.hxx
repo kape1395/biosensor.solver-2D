@@ -55,7 +55,7 @@ public:
         return localPointPositions[i];
     }
 
-    virtual double getStepLength(int i)
+    virtual double getStepSize(int i)
     {
         return localPointPositions[i + 1] - localPointPositions[i];
     }

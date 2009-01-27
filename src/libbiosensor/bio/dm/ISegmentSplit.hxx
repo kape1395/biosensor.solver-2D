@@ -62,7 +62,7 @@ public:
     /**
      *  Get lenght of an i^th step.
      */
-    virtual double getStepLength(int i) = 0;
+    virtual double getStepSize(int i) = 0;
 
 };
 

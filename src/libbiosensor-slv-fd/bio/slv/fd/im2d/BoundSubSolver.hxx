@@ -23,7 +23,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  *  \see ConstantCondition, WallCondition and MergeCondition.
  *
  */
-class BoundSubSolver //: public BIO_DM_NS::IGrid1D
+class BoundSubSolver : public BIO_DM_NS::IGrid1D
 {
 private:
     log4cxx::LoggerPtr log;
@@ -35,6 +35,7 @@ private:
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
+    BIO_DM_NS::ISegmentSplit* segmentSplit;
 
     /**
      *  This array maps global substance indexes to a corresponding
@@ -101,12 +102,37 @@ public:
      */
     double getConcentration(int x, int s);
 
-    /*
-     *  Implementation of IGrid1D
+
+    /* ********************************************************************** */
+    /* *********   IGrid1D implementation follows   ************************* */
+
+    /**
+     *  Returns number of substances defined in the model.
      */
-    //virtual int getPointCount();
-    //virtual double* getPointPositions();
-    //virtual ICursor1D* newGridCursor();
+    virtual int getSubstanceCount();
+
+    /**
+     *  Returns substance configurations.
+     *
+     *  \return Substance configuration or 0 if there is no bound conditions
+     *          at this bouns.
+     */
+    virtual BIO_XML_NS::model::Substance* getSubstanceConf(int index);
+
+    /**
+     *  Get positions of the area split points.
+     */
+    virtual BIO_DM_NS::ISegmentSplit* getPointPositions();
+
+    /**
+     *  Created new cursor, that can be used to get concentrations of the
+     *  substances in this bound. Client of this object must delete this
+     *  cursor.
+     */
+    virtual BIO_DM_NS::ICursor1D* newGridCursor();
+
+    /* *********   IGrid1D implementation ends   **************************** */
+    /* ********************************************************************** */
 
 protected:
 

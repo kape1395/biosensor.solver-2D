@@ -69,23 +69,7 @@ BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::DataModel::getSubstanceConf(in
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountH()
-{
-    return pointCountH;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-int BIO_SLV_FD_IM2D_NS::DataModel::getPointCountV()
-{
-    return pointCountV;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 {
     // TODO: Implement getPointPositionsH()
 }
@@ -93,7 +77,7 @@ double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsH()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_IM2D_NS::DataModel::getPointPositionsV()
 {
     // TODO: Implement getPointPositionsV()
 }
@@ -114,8 +98,8 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
 )
 {
     this->dataModel = dataModel;
-    sizeH = dataModel->getPointCountH();
-    sizeV = dataModel->getPointCountV();
+    sizeH = dataModel->getPointPositionsH()->getPointCount();
+    sizeV = dataModel->getPointPositionsV()->getPointCount();
     currentH = 0;
     currentV = 0;
     currentAreaH = 0;

@@ -66,7 +66,7 @@ public:
         return (length / stepCount) * i;
     }
 
-    virtual double getStepLength(int i)
+    virtual double getStepSize(int i)
     {
         return length / stepCount;
     }

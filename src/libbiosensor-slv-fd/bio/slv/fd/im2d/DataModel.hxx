@@ -65,22 +65,12 @@ public:
     /**
      *
      */
-    virtual int getPointCountH();
+    virtual BIO_DM_NS::ISegmentSplit* getPointPositionsH();
 
     /**
      *
      */
-    virtual int getPointCountV();
-
-    /**
-     *
-     */
-    virtual double* getPointPositionsH();
-
-    /**
-     *
-     */
-    virtual double* getPointPositionsV();
+    virtual BIO_DM_NS::ISegmentSplit* getPointPositionsV();
 
     /**
      *  Returns cursor, that can be used to iterate over solvers modelled area.

@@ -1,5 +1,6 @@
 #include "FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Exception.hxx>
+#include <bio/dm/ConstantSegmentSplit.hxx>
 #include <vector>
 
 
@@ -41,12 +42,24 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     ////////////////////////////////////////////////////////////////////////////
     //  Collect axis-parts and assign them to the concrete "cells"
     //
+    partCountH = structureAnalyzer.getPointsH().size() - 1; // intervalu yra 1 maziau nei tasku.
+    partCountV = structureAnalyzer.getPointsV().size() - 1; // intervalu yra 1 maziau nei tasku.
 
-    axisPartsH = new Axis*[structureAnalyzer.getPointsH().size() - 1];    // intervalu yra 1 maziau nei tasku.
-    axisPartsV = new Axis*[structureAnalyzer.getPointsV().size() - 1];
+    axisPartsH = new Axis*[partCountH];
+    axisPartsV = new Axis*[partCountV];
+    axisPartSegmentSplitH = new BIO_DM_NS::ISegmentSplit*[partCountH];
+    axisPartSegmentSplitV = new BIO_DM_NS::ISegmentSplit*[partCountV];
 
-    for (int i = 0; i < structureAnalyzer.getPointsH().size() - 1; axisPartsH[i++] = 0);
-    for (int i = 0; i < structureAnalyzer.getPointsV().size() - 1; axisPartsV[i++] = 0);
+    for (int i = 0; i < partCountH; i++)
+    {
+        axisPartsH[i] = 0;
+        axisPartSegmentSplitH[i] = 0;
+    }
+    for (int i = 0; i < partCountV; i++)
+    {
+        axisPartsV[i] = 0;
+        axisPartSegmentSplitV[i] = 0;
+    }
 
     std::vector<Symbol*>* symbols;
 
@@ -68,6 +81,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
             }
 
             axisPartsH[pointPosition] = &*axis;
+            axisPartSegmentSplitH[pointPosition] = this->createSegmentSplit(&*axis);
         }
     }
 
@@ -95,18 +109,19 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
                 }
 
                 axisPartsV[pointPosition] = &*axis;
+                axisPartSegmentSplitV[pointPosition] = this->createSegmentSplit(&*axis);
             }
         }
     }
 
     ////////////    Check if all intervals were covered in the config.
     int unspecifiedIntervals = 0;
-    for (int i = 0; i < structureAnalyzer.getPointsH().size() - 1; i++)
+    for (int i = 0; i < partCountH; i++)
     {
         if (axisPartsH[i] == 0)
             unspecifiedIntervals++;
     }
-    for (int i = 0; i < structureAnalyzer.getPointsV().size() - 1; i++)
+    for (int i = 0; i < partCountV; i++)
     {
         if (axisPartsV[i] == 0)
             unspecifiedIntervals++;
@@ -146,11 +161,61 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer
         delete[] axisPartsV;
         axisPartsV = 0;
     }
+
+    for (int i = 0; i < partCountH; i++)
+    {
+        if (axisPartSegmentSplitH[i])
+            delete axisPartSegmentSplitH[i];
+    }
+    delete [] axisPartSegmentSplitH;
+    axisPartSegmentSplitH = 0;
+
+    for (int i = 0; i < partCountV; i++)
+    {
+        if (axisPartSegmentSplitV[i])
+            delete axisPartSegmentSplitV[i];
+    }
+    delete [] axisPartSegmentSplitV;
+    axisPartSegmentSplitV = 0;
+
+
     //
     //  Release all old data.
     ////////////////////////////////////////////////////////////////////////////
 
     LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()... Done");
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::createSegmentSplit(
+    BIO_XML_NS::model::solver::Axis* axis
+)
+{
+    if (axis == 0)
+        return 0;
+
+    if (dynamic_cast<BIO_XML_NS::model::solver::ConstantAxisPart*>(axis) != 0)
+    {
+        BIO_XML_NS::model::solver::ConstantAxisPart* cap;
+        cap = dynamic_cast<BIO_XML_NS::model::solver::ConstantAxisPart*>(axis);
+
+        double from = structureAnalyzer.getSymbol(axis->from())->value();
+        double to = structureAnalyzer.getSymbol(axis->to())->value();
+        int count = cap->stepCount();
+
+        BIO_DM_NS::ConstantSegmentSplit* split = new BIO_DM_NS::ConstantSegmentSplit(
+            from,
+            to - from,
+            count
+        );
+        return split;
+    }
+    else
+    {
+        throw Exception("Used subclass of bio::model::solver::Axis is not supported yet.");
+    }
 }
 
 

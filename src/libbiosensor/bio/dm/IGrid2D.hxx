@@ -3,6 +3,7 @@
 #include "../../biosensor.hxx"
 #include "IGrid.hxx"
 #include "ICursor2D.hxx"
+#include "ISegmentSplit.hxx"
 
 BIO_DM_NS_BEGIN
 
@@ -18,10 +19,8 @@ public:
         //  Empty virtual destructor.
     }
 
-    virtual int getPointCountH() = 0;
-    virtual int getPointCountV() = 0;
-    virtual double* getPointPositionsH() = 0;
-    virtual double* getPointPositionsV() = 0;
+    virtual ISegmentSplit* getPointPositionsH() = 0;
+    virtual ISegmentSplit* getPointPositionsV() = 0;
     virtual ICursor2D* newGridCursor() = 0;
 };
 

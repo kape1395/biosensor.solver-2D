@@ -2,6 +2,7 @@
 #include "Model.hxx"
 #include "ModelReaction.hxx"
 #include <bio/Exception.hxx>
+#include <bio/dm/ConstantSegmentSplit.hxx>
 #include <cmath>
 
 /* ************************************************************************** */
@@ -14,8 +15,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.AreaSubSolver"))
 {
-    using BIO_XML_NS::model::solver::Axis;
-    using BIO_XML_NS::model::solver::ConstantAxisPart;
+    using BIO_DM_NS::ISegmentSplit;
+    using BIO_DM_NS::ConstantSegmentSplit;
 
     LOG4CXX_DEBUG(log, "AreaSubSolver()");
     this->solver = solver;
@@ -48,8 +49,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     //
 
 
-    ConstantAxisPart* axisPartH = dynamic_cast<ConstantAxisPart*> (fdAnalyzer->getAxisPartH(positionH));
-    ConstantAxisPart* axisPartV = dynamic_cast<ConstantAxisPart*> (fdAnalyzer->getAxisPartV(positionV));
+    ConstantSegmentSplit* axisPartH = dynamic_cast<ConstantSegmentSplit*> (fdAnalyzer->getAxisPartSegmentSplitH(positionH));
+    ConstantSegmentSplit* axisPartV = dynamic_cast<ConstantSegmentSplit*> (fdAnalyzer->getAxisPartSegmentSplitV(positionV));
     if (axisPartH == 0 || axisPartV == 0)
     {
         LOG4CXX_ERROR(log, "Only axis parts of type ConstantAxisPart are now supported.");
@@ -59,20 +60,15 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 
     this->substanceIndexes = structAnalyzer->getSubstanceIndexesInArea(positionH, positionV);
 
-    this->dataSizeH = axisPartH->stepCount() + 1;
-    this->dataSizeV = axisPartV->stepCount() + 1;
+    this->dataSizeH = axisPartH->getPointCount();
+    this->dataSizeV = axisPartV->getPointCount();
     this->dataSizeS = substanceIndexes.size();
 
-    this->stepSizeH = (structAnalyzer->getSymbol(axisPartH->to())->value() -
-                       structAnalyzer->getSymbol(axisPartH->from())->value()) /
-                      axisPartH->stepCount();
+    this->stepSizeH = axisPartH->getStepSize(0);
+    this->stepSizeV = axisPartV->getStepSize(0);
 
-    this->stepSizeV = (structAnalyzer->getSymbol(axisPartV->to())->value() -
-                       structAnalyzer->getSymbol(axisPartV->from())->value()) /
-                      axisPartV->stepCount();
-
-    this->startPositionH = structAnalyzer->getSymbol(axisPartH->from())->value();
-    this->startPositionV = structAnalyzer->getSymbol(axisPartV->from())->value();
+    this->startPositionH = axisPartH->getStartPosition();
+    this->startPositionV = axisPartV->getStartPosition();
 
     this->dataLayersInverted = false;
     this->targetLayerIndex = getCurrentLayerIndex();

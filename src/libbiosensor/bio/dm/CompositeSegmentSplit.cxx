@@ -16,6 +16,9 @@ BIO_DM_NS::CompositeSegmentSplit::CompositeSegmentSplit(
 
     for (std::vector<ISegmentSplit*>::iterator split = subSegments.begin(); split < subSegments.end(); split++)
     {
+        if (start + length != (*split)->getStartPosition())
+            throw Exception("SubSogments in CompositeSegmentSplit must go sequentialy and not interruptably.");
+
         length += (*split)->getLength();
         stepCount += (*split)->getStepCount();
     }
