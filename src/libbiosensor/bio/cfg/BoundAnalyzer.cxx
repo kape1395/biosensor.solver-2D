@@ -194,12 +194,12 @@ BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::getBoundForSubstan
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::string* BIO_CFG_NS::BoundAnalyzer::getBoundName(int s, int h, int v, AreaSide side)
+std::string* BIO_CFG_NS::BoundAnalyzer::getBoundName(int h, int v, AreaSide side)
 {
-    return (boundSubstances[h][v][s][side]->bound == 0 ||
-            !boundSubstances[h][v][s][side]->bound->name().present())
+    return (boundSubstances[h][v][0][side]->bound == 0 ||
+            !boundSubstances[h][v][0][side]->bound->name().present())
            ? 0
-           : &boundSubstances[h][v][s][side]->bound->name().get();
+           : &boundSubstances[h][v][0][side]->bound->name().get();
 }
 
 

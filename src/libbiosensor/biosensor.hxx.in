@@ -23,6 +23,7 @@
 #define BIO_CFG_NS_END BIO_NS_END }
 
 
+//#define bio BIO_NS
 //#include "bio/slv/ISolver.hxx"
 
 

@@ -10,6 +10,10 @@
 #define BIO_XML_NS_BEGIN BIO_NS_BEGIN namespace xml {
 #define BIO_XML_NS_END BIO_NS_END }
 
+#define BIO_XML_MODEL_NS BIO_XML_NS::model
+#define BIO_XML_MODEL_NS_BEGIN BIO_XML_NS_BEGIN namespace model {
+#define BIO_XML_MODEL_NS_END BIO_XML_NS_END }
+
 
 #include "ModelBound.hxx"
 #include "ModelReaction.hxx"
