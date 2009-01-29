@@ -2,22 +2,44 @@
 #define BIOSENSOR_HXX
 
 
+/** \namespace bio
+ *  Root namespace for all biosensor modelling stuff.
+ */
 #undef BIO_NS
 #define BIO_NS_BEGIN namespace BIO_NS {
 #define BIO_NS_END }
 
+/** \namespace bio::slv
+ *  Solver interfaces and some basic implementations.
+ */
 #define BIO_SLV_NS BIO_NS::slv
 #define BIO_SLV_NS_BEGIN BIO_NS_BEGIN namespace slv {
 #define BIO_SLV_NS_END BIO_NS_END }
 
+/** \namespace bio::trd
+ *  Common transducer implementations.
+ */
+#define BIO_TRD_NS       BIO_NS::trd
+#define BIO_TRD_NS_BEGIN BIO_NS_BEGIN namespace trd {
+#define BIO_TRD_NS_END   BIO_NS_END }
+
+/** \namespace bio::dm
+ *  Data structures, that are used as a contract between solver and other parts.
+ */
 #define BIO_DM_NS BIO_NS::dm
 #define BIO_DM_NS_BEGIN BIO_NS_BEGIN namespace dm {
 #define BIO_DM_NS_END BIO_NS_END }
 
+/** \namespace bio::io
+ *  Output generators.
+ */
 #define BIO_IO_NS BIO_NS::io
 #define BIO_IO_NS_BEGIN BIO_NS_BEGIN namespace io {
 #define BIO_IO_NS_END BIO_NS_END }
 
+/** \namespace bio::cfg
+ *  Configuration analyzers ant a stuff like that.
+ */
 #define BIO_CFG_NS BIO_NS::cfg
 #define BIO_CFG_NS_BEGIN BIO_NS_BEGIN namespace cfg {
 #define BIO_CFG_NS_END BIO_NS_END }

@@ -83,7 +83,6 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/io/libbiosensor_la-GnuplotDataSL.lo \
 	bio/slv/libbiosensor_la-AbstractIterativeSolver.lo \
 	bio/slv/libbiosensor_la-AbstractSolver.lo \
-	bio/slv/libbiosensor_la-AmperometricElectrode.lo \
 	bio/slv/libbiosensor_la-ErrorInDataSL.lo \
 	bio/slv/libbiosensor_la-IIterativeSolver.lo \
 	bio/slv/libbiosensor_la-ISolver.lo \
@@ -92,7 +91,8 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/slv/libbiosensor_la-ITransducer.lo \
 	bio/slv/libbiosensor_la-InvokeEverySL.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
-	bio/slv/libbiosensor_la-StopAtStepSL.lo
+	bio/slv/libbiosensor_la-StopAtStepSL.lo \
+	bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
 libbiosensor_la_OBJECTS = $(am_libbiosensor_la_OBJECTS)
 libbiosensor_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -257,7 +257,6 @@ libbiosensor_la_SOURCES = \
     bio/io/GnuplotDataSL.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
-    bio/slv/AmperometricElectrode.cxx \
     bio/slv/ErrorInDataSL.cxx \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
@@ -266,7 +265,8 @@ libbiosensor_la_SOURCES = \
     bio/slv/ITransducer.cxx \
     bio/slv/InvokeEverySL.cxx \
     bio/slv/NullSolver.cxx \
-    bio/slv/StopAtStepSL.cxx
+    bio/slv/StopAtStepSL.cxx \
+    bio/trd/AmperometricElectrode2DOnBound.cxx
 
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
@@ -292,7 +292,6 @@ nobase_pkginclude_HEADERS = \
     bio/io/GnuplotDataSL.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
-    bio/slv/AmperometricElectrode.hxx \
     bio/slv/ErrorInDataSL.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
@@ -301,7 +300,8 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEverySL.hxx \
     bio/slv/NullSolver.hxx \
-    bio/slv/StopAtStepSL.hxx
+    bio/slv/StopAtStepSL.hxx \
+    bio/trd/AmperometricElectrode2DOnBound.hxx
 
 EXTRA_DIST = \
     bio/Splitted1DArea.hxx \
@@ -459,8 +459,6 @@ bio/slv/libbiosensor_la-AbstractIterativeSolver.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-AbstractSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-AmperometricElectrode.lo:  \
-	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-ErrorInDataSL.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-IIterativeSolver.lo: bio/slv/$(am__dirstamp) \
@@ -479,6 +477,14 @@ bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-StopAtStepSL.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/trd/$(am__dirstamp):
+	@$(MKDIR_P) bio/trd
+	@: > bio/trd/$(am__dirstamp)
+bio/trd/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) bio/trd/$(DEPDIR)
+	@: > bio/trd/$(DEPDIR)/$(am__dirstamp)
+bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo:  \
+	bio/trd/$(am__dirstamp) bio/trd/$(DEPDIR)/$(am__dirstamp)
 libbiosensor.la: $(libbiosensor_la_OBJECTS) $(libbiosensor_la_DEPENDENCIES) 
 	$(libbiosensor_la_LINK) -rpath $(pkglibdir) $(libbiosensor_la_OBJECTS) $(libbiosensor_la_LIBADD) $(LIBS)
 
@@ -528,8 +534,6 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-AbstractIterativeSolver.lo
 	-rm -f bio/slv/libbiosensor_la-AbstractSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-AbstractSolver.lo
-	-rm -f bio/slv/libbiosensor_la-AmperometricElectrode.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-AmperometricElectrode.lo
 	-rm -f bio/slv/libbiosensor_la-ErrorInDataSL.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-ErrorInDataSL.lo
 	-rm -f bio/slv/libbiosensor_la-IIterativeSolver.$(OBJEXT)
@@ -548,6 +552,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-NullSolver.lo
 	-rm -f bio/slv/libbiosensor_la-StopAtStepSL.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-StopAtStepSL.lo
+	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.$(OBJEXT)
+	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -574,7 +580,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractSolver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AmperometricElectrode.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ErrorInDataSL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-IIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolver.Plo@am__quote@
@@ -584,6 +589,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Plo@am__quote@
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -763,13 +769,6 @@ bio/slv/libbiosensor_la-AbstractSolver.lo: bio/slv/AbstractSolver.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-AbstractSolver.lo `test -f 'bio/slv/AbstractSolver.cxx' || echo '$(srcdir)/'`bio/slv/AbstractSolver.cxx
 
-bio/slv/libbiosensor_la-AmperometricElectrode.lo: bio/slv/AmperometricElectrode.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-AmperometricElectrode.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-AmperometricElectrode.Tpo -c -o bio/slv/libbiosensor_la-AmperometricElectrode.lo `test -f 'bio/slv/AmperometricElectrode.cxx' || echo '$(srcdir)/'`bio/slv/AmperometricElectrode.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-AmperometricElectrode.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-AmperometricElectrode.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/AmperometricElectrode.cxx' object='bio/slv/libbiosensor_la-AmperometricElectrode.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-AmperometricElectrode.lo `test -f 'bio/slv/AmperometricElectrode.cxx' || echo '$(srcdir)/'`bio/slv/AmperometricElectrode.cxx
-
 bio/slv/libbiosensor_la-ErrorInDataSL.lo: bio/slv/ErrorInDataSL.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-ErrorInDataSL.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-ErrorInDataSL.Tpo -c -o bio/slv/libbiosensor_la-ErrorInDataSL.lo `test -f 'bio/slv/ErrorInDataSL.cxx' || echo '$(srcdir)/'`bio/slv/ErrorInDataSL.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-ErrorInDataSL.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-ErrorInDataSL.Plo
@@ -833,6 +832,13 @@ bio/slv/libbiosensor_la-StopAtStepSL.lo: bio/slv/StopAtStepSL.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopAtStepSL.lo `test -f 'bio/slv/StopAtStepSL.cxx' || echo '$(srcdir)/'`bio/slv/StopAtStepSL.cxx
 
+bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo: bio/trd/AmperometricElectrode2DOnBound.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo -MD -MP -MF bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Tpo -c -o bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo `test -f 'bio/trd/AmperometricElectrode2DOnBound.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricElectrode2DOnBound.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Tpo bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/trd/AmperometricElectrode2DOnBound.cxx' object='bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo `test -f 'bio/trd/AmperometricElectrode2DOnBound.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricElectrode2DOnBound.cxx
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -843,6 +849,7 @@ clean-libtool:
 	-rm -rf bio/dm/.libs bio/dm/_libs
 	-rm -rf bio/io/.libs bio/io/_libs
 	-rm -rf bio/slv/.libs bio/slv/_libs
+	-rm -rf bio/trd/.libs bio/trd/_libs
 install-nobase_pkgincludeHEADERS: $(nobase_pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
@@ -973,6 +980,8 @@ distclean-generic:
 	-rm -f bio/io/$(am__dirstamp)
 	-rm -f bio/slv/$(DEPDIR)/$(am__dirstamp)
 	-rm -f bio/slv/$(am__dirstamp)
+	-rm -f bio/trd/$(DEPDIR)/$(am__dirstamp)
+	-rm -f bio/trd/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -983,7 +992,7 @@ clean-am: clean-generic clean-libtool clean-pkglibLTLIBRARIES \
 	mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf bio/$(DEPDIR) bio/cfg/$(DEPDIR) bio/dm/$(DEPDIR) bio/io/$(DEPDIR) bio/slv/$(DEPDIR)
+	-rm -rf bio/$(DEPDIR) bio/cfg/$(DEPDIR) bio/dm/$(DEPDIR) bio/io/$(DEPDIR) bio/slv/$(DEPDIR) bio/trd/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -1017,7 +1026,7 @@ install-ps: install-ps-am
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf bio/$(DEPDIR) bio/cfg/$(DEPDIR) bio/dm/$(DEPDIR) bio/io/$(DEPDIR) bio/slv/$(DEPDIR)
+	-rm -rf bio/$(DEPDIR) bio/cfg/$(DEPDIR) bio/dm/$(DEPDIR) bio/io/$(DEPDIR) bio/slv/$(DEPDIR) bio/trd/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

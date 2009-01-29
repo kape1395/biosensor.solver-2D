@@ -1,11 +1,11 @@
-#include "AmperometricElectrode.hxx"
+#include "AmperometricElectrode2DOnBound.hxx"
 #include "../Exception.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::AmperometricElectrode::BoundAddress::BoundAddress(
+BIO_TRD_NS::AmperometricElectrode2DOnBound::BoundAddress::BoundAddress(
     BIO_DM_NS::IGrid2D* area,
     BIO_CFG_NS::BoundAnalyzer::AreaSide side
 )
@@ -18,7 +18,7 @@ BIO_SLV_NS::AmperometricElectrode::BoundAddress::BoundAddress(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::AmperometricElectrode::BoundAddress::~BoundAddress()
+BIO_TRD_NS::AmperometricElectrode2DOnBound::BoundAddress::~BoundAddress()
 {
     delete this->cursor;
 }
@@ -26,8 +26,8 @@ BIO_SLV_NS::AmperometricElectrode::BoundAddress::~BoundAddress()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::AmperometricElectrode::AmperometricElectrode(
-    ISolver* solver,
+BIO_TRD_NS::AmperometricElectrode2DOnBound::AmperometricElectrode2DOnBound(
+    BIO_SLV_NS::ISolver* solver,
     BIO_XML_MODEL_NS::BoundName& boundName,
     BIO_XML_MODEL_NS::SubstanceName& substanceName
 )
@@ -62,7 +62,7 @@ BIO_SLV_NS::AmperometricElectrode::AmperometricElectrode(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool BIO_SLV_NS::AmperometricElectrode::addBoundCondition(
+bool BIO_TRD_NS::AmperometricElectrode2DOnBound::addBoundCondition(
     int h,
     int v,
     BIO_CFG_NS::BoundAnalyzer::AreaSide side
@@ -97,7 +97,7 @@ bool BIO_SLV_NS::AmperometricElectrode::addBoundCondition(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::AmperometricElectrode::~AmperometricElectrode()
+BIO_TRD_NS::AmperometricElectrode2DOnBound::~AmperometricElectrode2DOnBound()
 {
     for (std::vector<BoundAddress*>::iterator b = bounds.begin(); b < bounds.end(); b++)
     {
@@ -109,7 +109,7 @@ BIO_SLV_NS::AmperometricElectrode::~AmperometricElectrode()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_SLV_NS::AmperometricElectrode::getOutput()
+double BIO_TRD_NS::AmperometricElectrode2DOnBound::getOutput()
 {
     //  TODO: Implement getOutput()
     return 0.0;

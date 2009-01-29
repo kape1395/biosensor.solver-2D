@@ -27,7 +27,6 @@ libbiosensor_la_SOURCES = \
     bio/io/GnuplotDataSL.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
-    bio/slv/AmperometricElectrode.cxx \
     bio/slv/ErrorInDataSL.cxx \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
@@ -36,7 +35,8 @@ libbiosensor_la_SOURCES = \
     bio/slv/ITransducer.cxx \
     bio/slv/InvokeEverySL.cxx \
     bio/slv/NullSolver.cxx \
-    bio/slv/StopAtStepSL.cxx
+    bio/slv/StopAtStepSL.cxx \
+    bio/trd/AmperometricElectrode2DOnBound.cxx
 
 
 nobase_pkginclude_HEADERS = \
@@ -63,7 +63,6 @@ nobase_pkginclude_HEADERS = \
     bio/io/GnuplotDataSL.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
-    bio/slv/AmperometricElectrode.hxx \
     bio/slv/ErrorInDataSL.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
@@ -72,7 +71,8 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEverySL.hxx \
     bio/slv/NullSolver.hxx \
-    bio/slv/StopAtStepSL.hxx
+    bio/slv/StopAtStepSL.hxx \
+    bio/trd/AmperometricElectrode2DOnBound.hxx
 
 EXTRA_DIST = \
     bio/Splitted1DArea.hxx \

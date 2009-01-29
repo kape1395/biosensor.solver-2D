@@ -1,8 +1,8 @@
-#ifndef BIO_SLV_AmperometricElectrode_HXX
-#define BIO_SLV_AmperometricElectrode_HXX
-#include "ISolver.hxx"
-#include "ITransducer.hxx"
+#ifndef BIO_TRD_AmperometricElectrode2DOnBound_HXX
+#define BIO_TRD_AmperometricElectrode2DOnBound_HXX
 #include "../../biosensor.hxx"
+#include "../slv/ISolver.hxx"
+#include "../slv/ITransducer.hxx"
 #include "../cfg/BoundAnalyzer.hxx"
 #include "../dm/IDataModel.hxx"
 #include "../dm/IGrid2D.hxx"
@@ -12,13 +12,13 @@
 #include <biosensor-xml.hxx>
 #include <string>
 #include <vector>
-BIO_SLV_NS_BEGIN
+BIO_TRD_NS_BEGIN
 
 
 /**
  *  Transducer: AmperometricElectrode.
  */
-class AmperometricElectrode : public ITransducer
+class AmperometricElectrode2DOnBound : public BIO_SLV_NS::ITransducer
 {
 private:
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
@@ -39,13 +39,13 @@ private:
     std::vector<BoundAddress*> bounds;
 
 public:
-    AmperometricElectrode(
-        ISolver* solver,
+    AmperometricElectrode2DOnBound(
+        BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::BoundName& boundName,
         BIO_XML_MODEL_NS::SubstanceName& substanceName
     );
 
-    virtual ~AmperometricElectrode();
+    virtual ~AmperometricElectrode2DOnBound();
 
     /**
      *  Returns output of the transducer.
@@ -66,5 +66,5 @@ private:
 
 
 
-BIO_SLV_NS_END
+BIO_TRD_NS_END
 #endif
