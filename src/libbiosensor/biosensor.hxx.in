@@ -1,6 +1,10 @@
 #ifndef BIOSENSOR_HXX
 #define BIOSENSOR_HXX
 
+/** \mainpage
+ *  This is a biosensor modelling software.
+ */
+
 
 /** \namespace bio
  *  Root namespace for all biosensor modelling stuff.

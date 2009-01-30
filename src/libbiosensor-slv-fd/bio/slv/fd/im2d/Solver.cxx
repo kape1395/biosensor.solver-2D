@@ -1,5 +1,6 @@
 #include "bio/slv/AbstractIterativeSolver.hxx"
 #include "Solver.hxx"
+#include <bio/trd/AmperometricElectrode2DOnBound.hxx>
 #include <bio/Exception.hxx>
 
 
@@ -76,6 +77,32 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
     this->setTimeStep(fdAnalyzer->getTimeStep());
 
 
+    ////////////////////////////////////////////////////////////////////////////
+    //  Initialize transducer.
+    //
+    transducer = 0;
+    if (config->transducer().present())
+    {
+        using namespace BIO_XML_MODEL_NS::transducer;
+        AmperometricElectrode* transAE = dynamic_cast<AmperometricElectrode*>(&config->transducer().get());
+        if (transAE)
+        {
+            transducer = new BIO_TRD_NS::AmperometricElectrode2DOnBound(
+                this,
+                transAE->bound(),
+                transAE->substance()
+            );
+        }
+        else
+        {
+            throw Exception("Transducer type not supported.");
+        }
+    }
+    //
+    //  Initialize transducer.
+    ////////////////////////////////////////////////////////////////////////////
+
+
     LOG4CXX_DEBUG(log, "Solver()... Done");
 }
 
@@ -85,6 +112,13 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
     LOG4CXX_DEBUG(log, "~Solver()");
+
+    if (transducer)
+    {
+        delete transducer;
+        transducer = 0;
+    }
+
     delete dataModel;
 
     for (int h = 0; h <= subSolvers->sizeH(); h++)
