@@ -95,7 +95,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
         }
         else
         {
-            throw Exception("Transducer type not supported.");
+            throw Exception("A transducer type is not supported.");
         }
     }
     //

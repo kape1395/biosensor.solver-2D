@@ -12,14 +12,20 @@
         namespace="http://lt.5grupe.karolis/biosensor/model"
         schemaLocation="Model.xsd">
     </xs:import>
-    
+
+
+    <xs:attributeGroup name="StepInTime">
+        <xs:attribute name="stepCount"  type="xs:int"   use="optional"/>
+        <xs:attribute name="time"       type="xs:float" use="optional"/>
+    </xs:attributeGroup>
     
     
     <xs:complexType name="FiniteDifferences">
         <xs:complexContent>
             <xs:extension base="m:Solver">
                 <xs:sequence>
-                    <xs:element name="axis" type="Axis" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="axis"             type="Axis"             minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="stopCondition"    type="StopCondition"    minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="timeStep" type="xs:double" use="required"/>
             </xs:extension>
@@ -72,6 +78,82 @@
         </xs:complexContent>
     </xs:complexType>
     
+
     
+    <!-- ******************************************************************* -->
+    <!-- ******************************************************************* -->
+    <xs:complexType name="ConcentrationProfile">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CurrentDensity">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SteadyStateHalfTime">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SteadyState">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput">
+                <xs:sequence>
+                    <xs:element name="output" type="m:SolverOutput" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Kinetic">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput">
+                <xs:sequence>
+                    <xs:element name="output" type="m:SolverOutput" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="StepInTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+
+    <!-- ******************************************************************* -->
+    <!-- ******************************************************************* -->
+    <xs:complexType name="StopCondition" abstract="true">
+    </xs:complexType>
     
+    <xs:complexType name="StopConditionValidAfter">
+        <xs:complexContent>
+            <xs:extension base="StopCondition">
+                <xs:sequence>
+                    <xs:element name="stopCondition" type="StopCondition" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attributeGroup ref="StepInTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="FailIfAbove">
+        <xs:complexContent>
+            <xs:extension base="StopCondition">
+                <xs:attributeGroup ref="StepInTime"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="CurrentDensityGradient">
+        <xs:complexContent>
+            <xs:extension base="StopCondition">
+                <xs:attribute name="lessThan" type="xs:float" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- ******************************************************************* -->
 </xs:schema>

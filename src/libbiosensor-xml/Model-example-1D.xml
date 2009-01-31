@@ -4,13 +4,15 @@
     xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
     xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
     xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
-    xmlns:l="http://lt.5grupe.karolis/biosensor/model/listener"
+    xmlns:t="http://lt.5grupe.karolis/biosensor/model/transducer"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://lt.5grupe.karolis/biosensor/model          Model.xsd
-                        http://lt.5grupe.karolis/biosensor/model/bound    ModelBound.xsd
-                        http://lt.5grupe.karolis/biosensor/model/reaction ModelReaction.xsd
-                        http://lt.5grupe.karolis/biosensor/model/solver   ModelSolver.xsd
-                        http://lt.5grupe.karolis/biosensor/model/listener ModelListener.xsd"
+    xsi:schemaLocation="
+        http://lt.5grupe.karolis/biosensor/model            Model.xsd
+        http://lt.5grupe.karolis/biosensor/model/bound      ModelBound.xsd
+        http://lt.5grupe.karolis/biosensor/model/reaction   ModelReaction.xsd
+        http://lt.5grupe.karolis/biosensor/model/solver     ModelSolver.xsd
+        http://lt.5grupe.karolis/biosensor/model/transducer ModelTransducer.xsd
+        "
     coordinateSystem="Linear">
 
     <axis name="x">
@@ -32,7 +34,7 @@
             V_max="V_max_Per"
             K_M="K_M_Per"
         />
-        <area from="x1" to="x2"/>
+        <area from="x3" to="x4"/>
     </medium>
     <medium name="Enzyme">
         <substance name="S" diffusion="D_Enz_S" initial="S_0"/>
@@ -47,21 +49,23 @@
     </medium>
     <medium name="SelectiveMembrane">
         <substance name="P" diffusion="D_Sel_P" initial="P_0"/>
-        <area from="x3" to="x4"/>
+        <area from="x1" to="x2"/>
     </medium>
 
-    <bound at="x1">
+    <bound at="x4">
         <substance name="S" xsi:type="b:Constant" concentration="S_Ext"/>
         <substance name="P" xsi:type="b:Constant" concentration="P_Ext"/>
     </bound>
-    <bound at="x4">
+    <bound at="x1" name="ElectrodeBound">
         <substance name="P" xsi:type="b:Constant" concentration="E_0"/>
     </bound>
 
-    <electrode name="Electrode">
-        <substrate substrate="P"/>
-        <position at="x4"/>
-    </electrode>
+    <transducer
+        name="electrode"
+        xsi:type="t:AmperometricElectrode"
+        bound="ElectrodeBound"
+        substance="P"
+    />
 
     <symbol name="S_Ext"        value="7.5E-7"  dimension="mol/cm^2"/>
     <symbol name="P_Ext"        value="0.0"     dimension="mol/cm^2"/>
@@ -80,9 +84,26 @@
     <symbol name="x3"           value="1.2E-3"  dimension="m"/>
     <symbol name="x4"           value="1.4E-3"  dimension="m"/>
 
-    <solver xsi:type="s:Explicit1D" timeStep="5E-9">
+    <solver xsi:type="s:Explicit1D" timeStep="5E-5">
+        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
+            <s:output name="concentrations"   xsi:type="s:ConcentrationProfile"/>
+            <s:output name="currentDensity"   xsi:type="s:CurrentDensity"/>
+        </output>
+        <output name="steadyState" xsi:type="s:SteadyState">
+            <s:output name="profile"      xsi:type="s:ConcentrationProfile"/>
+            <s:output name="density"      xsi:type="s:CurrentDensity"/>
+            <s:output name="halfTime"     xsi:type="s:SteadyStateHalfTime"/>
+        </output>
         <s:axis from="x1" to="x2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
         <s:axis from="x2" to="x3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:stopCondition xsi:type="s:StopConditionValidAfter" stepCount="1000">
+            <s:stopCondition xsi:type="s:CurrentDensityGradient" lessThan="0.0001"/>
+        </s:stopCondition>
+        <s:stopCondition
+            xsi:type="s:FailIfAbove"
+            stepCount="1000000"
+            time="100"
+        />
     </solver>
 
 </model>

@@ -20,7 +20,6 @@
             <xs:element name="transducer"   type="Transducer"   minOccurs="0" maxOccurs="1"/>
             <xs:element name="symbol"       type="Symbol"       minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="solver"       type="Solver"       minOccurs="1" maxOccurs="1"/>
-            <xs:element name="listener"     type="Listener"     minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="coordinateSystem" type="CoordinateSystem" use="required"/>
     </xs:complexType>
@@ -105,11 +104,15 @@
     
     
     <xs:complexType name="Solver" abstract="true">
+        <xs:sequence>
+            <xs:element name="output" type="SolverOutput" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
     </xs:complexType>
-    
 
-    <xs:complexType name="Listener" abstract="true">
+    <xs:complexType name="SolverOutput" abstract="true">
+        <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
+
     
 
     <xs:simpleType name="CoordinateSystem">

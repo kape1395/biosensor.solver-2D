@@ -23,5 +23,15 @@
     </xs:complexType>
 
 
+    <xs:complexType name="InjectedElectrode">
+        <xs:complexContent>
+            <xs:extension base="bio:Transducer">
+                <xs:attribute name="medium"    type="bio:MediumName"    use="required"/>
+                <xs:attribute name="substance" type="bio:SubstanceName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
+
+    
 </xs:schema>
