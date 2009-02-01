@@ -7,15 +7,8 @@
 #include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <Model.hxx>
-
-using namespace BIO_NS;
-using namespace BIO_SLV_NS;
-using namespace BIO_XML_NS::model;
-
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/slv/ISolverListener.hxx>
-#include <bio/slv/InvokeEverySL.hxx>
-#include <bio/slv/StopAtStepSL.hxx>
 #include <bio/io/DebugSL.hxx>
 
 /**
@@ -23,6 +16,10 @@ using namespace BIO_XML_NS::model;
  */
 int main(int argn, char **argv)
 {
+    using namespace BIO_NS;
+    using namespace BIO_SLV_NS;
+    using namespace BIO_XML_NS::model;
+
     //LoggerPtr log(Logger::getLogger("bio-solver"));
     log4cpp::PropertyConfigurator::configure("log4cpp.properties");
     log4cpp::Category& log = log4cpp::Category::getInstance("bio-solver");
@@ -64,11 +61,12 @@ int main(int argn, char **argv)
 
 
             // TODO: Implement listeners in the configurable way.
+            /*
             std::vector<ISolverListener*> listeners;
             ISolverListener* listener;
             InvokeEverySL* listenerInvokeEvery;
 
-            listeners.push_back(listener = new BIO_SLV_NS::StopAtStepSL(solver, 2));
+            listeners.push_back(listener = new BIO_SLV_NS::StopAtSpecifiedPoint(solver));
             dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
 
             listeners.push_back(listener = listenerInvokeEvery = new BIO_SLV_NS::InvokeEverySL(solver, 1000));
@@ -76,6 +74,7 @@ int main(int argn, char **argv)
 
             listeners.push_back(listener = new BIO_IO_NS::DebugSL(solver, std::cout));
             listenerInvokeEvery->addListener(listener);
+             */
 
 
 
@@ -84,11 +83,13 @@ int main(int argn, char **argv)
             solver->solve();
 
             // Deinitialize
+            /*
             for (std::vector<ISolverListener*>::iterator sl = listeners.begin(); sl < listeners.end(); sl++)
             {
                 delete *sl;
             }
             listeners.empty();
+             */
 
             delete solver;
             log.info("Success");

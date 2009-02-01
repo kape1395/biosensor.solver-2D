@@ -5,7 +5,10 @@ libbiosensor_la_LIBADD  = \
     ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_la_SOURCES = \
+    bio/DelegatingFactory.cxx \
     bio/Exception.cxx \
+    bio/IFactory.cxx \ 
+    bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
@@ -34,14 +37,19 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolverFactory.cxx \
     bio/slv/ITransducer.cxx \
     bio/slv/InvokeEverySL.cxx \
+    bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
-    bio/slv/StopAtStepSL.cxx \
-    bio/trd/AmperometricElectrode2DOnBound.cxx
+    bio/slv/StopAtSpecifiedPoint.cxx \
+    bio/trd/AmperometricElectrode2DOnBound.cxx \
+    bio/trd/AmperometricInjectedElectrode2D.cxx
 
 
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
+    bio/DelegatingFactory.hxx \
     bio/Exception.hxx \
+    bio/IFactory.hxx \ 
+    bio/MainFactory.hxx \
     bio/cfg/BoundAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
@@ -70,9 +78,11 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolverFactory.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEverySL.hxx \
+    bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
-    bio/slv/StopAtStepSL.hxx \
-    bio/trd/AmperometricElectrode2DOnBound.hxx
+    bio/slv/StopAtSpecifiedPoint.hxx \
+    bio/trd/AmperometricElectrode2DOnBound.hxx \
+    bio/trd/AmperometricInjectedElectrode2D.hxx
 
 EXTRA_DIST = \
     bio/Splitted1DArea.hxx \

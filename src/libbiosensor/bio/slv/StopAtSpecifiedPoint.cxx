@@ -1,24 +1,24 @@
-#include "StopAtStepSL.hxx"
+#include "StopAtSpecifiedPoint.hxx"
 #include "../Exception.hxx"
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::StopAtStepSL::StopAtStepSL(
-    ISolver* solver,
-    long stepNumber
-) : log(log4cxx::Logger::getLogger("libbiosensor::StopAtStepSL"))
+BIO_SLV_NS::StopAtSpecifiedPoint::StopAtSpecifiedPoint(
+    ISolver* solver
+) : log(log4cxx::Logger::getLogger("libbiosensor::StopAtSpecifiedPoint"))
 {
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
-    this->stepNumber = stepNumber;
+    this->stepCount = 0;
+    this->time = 0.0;
 
     if (this->solver == 0)
-        throw Exception("StopAtStepSL: Solver must implement IIterativeSolver");
+        throw Exception("StopAtSpecifiedPoint: Solver must implement IIterativeSolver");
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_NS::StopAtStepSL::~StopAtStepSL()
+BIO_SLV_NS::StopAtSpecifiedPoint::~StopAtSpecifiedPoint()
 {
     //  Nothing to do here.
 }
@@ -26,12 +26,15 @@ BIO_SLV_NS::StopAtStepSL::~StopAtStepSL()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_SLV_NS::StopAtStepSL::solveEventOccured()
+void BIO_SLV_NS::StopAtSpecifiedPoint::solveEventOccured()
 {
-    if (solver->getSolvedIterationCount() >= stepNumber && !solver->isStopped())
+    if (!solver->isStopped() && (
+                (stepCount != 0 && solver->getSolvedIterationCount() >= stepCount) ||
+                (time      != 0 && solver->getSolvedTime()           >= time     )
+            ))
     {
         solver->stop();
-        LOG4CXX_INFO(log, "Solver is stopped by request at a specified step.");
+        LOG4CXX_INFO(log, "Solver is stopped by request at a specified time or stepCount.");
     }
 }
 

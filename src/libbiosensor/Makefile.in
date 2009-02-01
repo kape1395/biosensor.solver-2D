@@ -61,7 +61,10 @@ LTLIBRARIES = $(pkglib_LTLIBRARIES)
 libbiosensor_la_DEPENDENCIES =  \
 	../libbiosensor-xml/libbiosensor-xml.la
 am__dirstamp = $(am__leading_dot)dirstamp
-am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
+am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
+	bio/libbiosensor_la-Exception.lo \
+	bio/libbiosensor_la-IFactory.lo \
+	bio/libbiosensor_la-MainFactory.lo \
 	bio/cfg/libbiosensor_la-BoundAnalyzer.lo \
 	bio/cfg/libbiosensor_la-IConfigTransformer.lo \
 	bio/cfg/libbiosensor_la-IConfigValidator.lo \
@@ -90,9 +93,11 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-Exception.lo \
 	bio/slv/libbiosensor_la-ISolverFactory.lo \
 	bio/slv/libbiosensor_la-ITransducer.lo \
 	bio/slv/libbiosensor_la-InvokeEverySL.lo \
+	bio/slv/libbiosensor_la-InvokeNotBefore.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
-	bio/slv/libbiosensor_la-StopAtStepSL.lo \
-	bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
+	bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo \
+	bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo \
+	bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo
 libbiosensor_la_OBJECTS = $(am_libbiosensor_la_OBJECTS)
 libbiosensor_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -235,7 +240,10 @@ libbiosensor_la_LIBADD = \
     ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_la_SOURCES = \
+    bio/DelegatingFactory.cxx \
     bio/Exception.cxx \
+    bio/IFactory.cxx \
+    bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
@@ -264,13 +272,18 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolverFactory.cxx \
     bio/slv/ITransducer.cxx \
     bio/slv/InvokeEverySL.cxx \
+    bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
-    bio/slv/StopAtStepSL.cxx \
-    bio/trd/AmperometricElectrode2DOnBound.cxx
+    bio/slv/StopAtSpecifiedPoint.cxx \
+    bio/trd/AmperometricElectrode2DOnBound.cxx \
+    bio/trd/AmperometricInjectedElectrode2D.cxx
 
 nobase_pkginclude_HEADERS = \
     biosensor.hxx \
+    bio/DelegatingFactory.hxx \
     bio/Exception.hxx \
+    bio/IFactory.hxx \
+    bio/MainFactory.hxx \
     bio/cfg/BoundAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
@@ -299,9 +312,11 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolverFactory.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEverySL.hxx \
+    bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
-    bio/slv/StopAtStepSL.hxx \
-    bio/trd/AmperometricElectrode2DOnBound.hxx
+    bio/slv/StopAtSpecifiedPoint.hxx \
+    bio/trd/AmperometricElectrode2DOnBound.hxx \
+    bio/trd/AmperometricInjectedElectrode2D.hxx
 
 EXTRA_DIST = \
     bio/Splitted1DArea.hxx \
@@ -391,7 +406,13 @@ bio/$(am__dirstamp):
 bio/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) bio/$(DEPDIR)
 	@: > bio/$(DEPDIR)/$(am__dirstamp)
+bio/libbiosensor_la-DelegatingFactory.lo: bio/$(am__dirstamp) \
+	bio/$(DEPDIR)/$(am__dirstamp)
 bio/libbiosensor_la-Exception.lo: bio/$(am__dirstamp) \
+	bio/$(DEPDIR)/$(am__dirstamp)
+bio/libbiosensor_la-IFactory.lo: bio/$(am__dirstamp) \
+	bio/$(DEPDIR)/$(am__dirstamp)
+bio/libbiosensor_la-MainFactory.lo: bio/$(am__dirstamp) \
 	bio/$(DEPDIR)/$(am__dirstamp)
 bio/cfg/$(am__dirstamp):
 	@$(MKDIR_P) bio/cfg
@@ -473,10 +494,12 @@ bio/slv/libbiosensor_la-ITransducer.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-InvokeNotBefore.lo: bio/slv/$(am__dirstamp) \
+	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-StopAtStepSL.lo: bio/slv/$(am__dirstamp) \
-	bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo:  \
+	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/trd/$(am__dirstamp):
 	@$(MKDIR_P) bio/trd
 	@: > bio/trd/$(am__dirstamp)
@@ -484,6 +507,8 @@ bio/trd/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) bio/trd/$(DEPDIR)
 	@: > bio/trd/$(DEPDIR)/$(am__dirstamp)
 bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo:  \
+	bio/trd/$(am__dirstamp) bio/trd/$(DEPDIR)/$(am__dirstamp)
+bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo:  \
 	bio/trd/$(am__dirstamp) bio/trd/$(DEPDIR)/$(am__dirstamp)
 libbiosensor.la: $(libbiosensor_la_OBJECTS) $(libbiosensor_la_DEPENDENCIES) 
 	$(libbiosensor_la_LINK) -rpath $(pkglibdir) $(libbiosensor_la_OBJECTS) $(libbiosensor_la_LIBADD) $(LIBS)
@@ -528,8 +553,14 @@ mostlyclean-compile:
 	-rm -f bio/io/libbiosensor_la-DebugSL.lo
 	-rm -f bio/io/libbiosensor_la-GnuplotDataSL.$(OBJEXT)
 	-rm -f bio/io/libbiosensor_la-GnuplotDataSL.lo
+	-rm -f bio/libbiosensor_la-DelegatingFactory.$(OBJEXT)
+	-rm -f bio/libbiosensor_la-DelegatingFactory.lo
 	-rm -f bio/libbiosensor_la-Exception.$(OBJEXT)
 	-rm -f bio/libbiosensor_la-Exception.lo
+	-rm -f bio/libbiosensor_la-IFactory.$(OBJEXT)
+	-rm -f bio/libbiosensor_la-IFactory.lo
+	-rm -f bio/libbiosensor_la-MainFactory.$(OBJEXT)
+	-rm -f bio/libbiosensor_la-MainFactory.lo
 	-rm -f bio/slv/libbiosensor_la-AbstractIterativeSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-AbstractIterativeSolver.lo
 	-rm -f bio/slv/libbiosensor_la-AbstractSolver.$(OBJEXT)
@@ -548,17 +579,24 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-ITransducer.lo
 	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.lo
+	-rm -f bio/slv/libbiosensor_la-InvokeNotBefore.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-InvokeNotBefore.lo
 	-rm -f bio/slv/libbiosensor_la-NullSolver.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-NullSolver.lo
-	-rm -f bio/slv/libbiosensor_la-StopAtStepSL.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-StopAtStepSL.lo
+	-rm -f bio/slv/libbiosensor_la-StopAtSpecifiedPoint.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.$(OBJEXT)
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
+	-rm -f bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.$(OBJEXT)
+	-rm -f bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@bio/$(DEPDIR)/libbiosensor_la-DelegatingFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/$(DEPDIR)/libbiosensor_la-Exception.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/$(DEPDIR)/libbiosensor_la-IFactory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/$(DEPDIR)/libbiosensor_la-MainFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-BoundAnalyzer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigTransformer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/cfg/$(DEPDIR)/libbiosensor_la-IConfigValidator.Plo@am__quote@
@@ -587,9 +625,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverListener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ITransducer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Plo@am__quote@
 
 .cxx.o:
 @am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -615,12 +655,33 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
 
+bio/libbiosensor_la-DelegatingFactory.lo: bio/DelegatingFactory.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/libbiosensor_la-DelegatingFactory.lo -MD -MP -MF bio/$(DEPDIR)/libbiosensor_la-DelegatingFactory.Tpo -c -o bio/libbiosensor_la-DelegatingFactory.lo `test -f 'bio/DelegatingFactory.cxx' || echo '$(srcdir)/'`bio/DelegatingFactory.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/$(DEPDIR)/libbiosensor_la-DelegatingFactory.Tpo bio/$(DEPDIR)/libbiosensor_la-DelegatingFactory.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/DelegatingFactory.cxx' object='bio/libbiosensor_la-DelegatingFactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/libbiosensor_la-DelegatingFactory.lo `test -f 'bio/DelegatingFactory.cxx' || echo '$(srcdir)/'`bio/DelegatingFactory.cxx
+
 bio/libbiosensor_la-Exception.lo: bio/Exception.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/libbiosensor_la-Exception.lo -MD -MP -MF bio/$(DEPDIR)/libbiosensor_la-Exception.Tpo -c -o bio/libbiosensor_la-Exception.lo `test -f 'bio/Exception.cxx' || echo '$(srcdir)/'`bio/Exception.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/$(DEPDIR)/libbiosensor_la-Exception.Tpo bio/$(DEPDIR)/libbiosensor_la-Exception.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/Exception.cxx' object='bio/libbiosensor_la-Exception.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/libbiosensor_la-Exception.lo `test -f 'bio/Exception.cxx' || echo '$(srcdir)/'`bio/Exception.cxx
+
+bio/libbiosensor_la-IFactory.lo: bio/IFactory.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/libbiosensor_la-IFactory.lo -MD -MP -MF bio/$(DEPDIR)/libbiosensor_la-IFactory.Tpo -c -o bio/libbiosensor_la-IFactory.lo `test -f 'bio/IFactory.cxx' || echo '$(srcdir)/'`bio/IFactory.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/$(DEPDIR)/libbiosensor_la-IFactory.Tpo bio/$(DEPDIR)/libbiosensor_la-IFactory.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/IFactory.cxx' object='bio/libbiosensor_la-IFactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/libbiosensor_la-IFactory.lo `test -f 'bio/IFactory.cxx' || echo '$(srcdir)/'`bio/IFactory.cxx
+
+bio/libbiosensor_la-MainFactory.lo: bio/MainFactory.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/libbiosensor_la-MainFactory.lo -MD -MP -MF bio/$(DEPDIR)/libbiosensor_la-MainFactory.Tpo -c -o bio/libbiosensor_la-MainFactory.lo `test -f 'bio/MainFactory.cxx' || echo '$(srcdir)/'`bio/MainFactory.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/$(DEPDIR)/libbiosensor_la-MainFactory.Tpo bio/$(DEPDIR)/libbiosensor_la-MainFactory.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/MainFactory.cxx' object='bio/libbiosensor_la-MainFactory.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/libbiosensor_la-MainFactory.lo `test -f 'bio/MainFactory.cxx' || echo '$(srcdir)/'`bio/MainFactory.cxx
 
 bio/cfg/libbiosensor_la-BoundAnalyzer.lo: bio/cfg/BoundAnalyzer.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/cfg/libbiosensor_la-BoundAnalyzer.lo -MD -MP -MF bio/cfg/$(DEPDIR)/libbiosensor_la-BoundAnalyzer.Tpo -c -o bio/cfg/libbiosensor_la-BoundAnalyzer.lo `test -f 'bio/cfg/BoundAnalyzer.cxx' || echo '$(srcdir)/'`bio/cfg/BoundAnalyzer.cxx
@@ -818,6 +879,13 @@ bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/InvokeEverySL.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-InvokeEverySL.lo `test -f 'bio/slv/InvokeEverySL.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEverySL.cxx
 
+bio/slv/libbiosensor_la-InvokeNotBefore.lo: bio/slv/InvokeNotBefore.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-InvokeNotBefore.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Tpo -c -o bio/slv/libbiosensor_la-InvokeNotBefore.lo `test -f 'bio/slv/InvokeNotBefore.cxx' || echo '$(srcdir)/'`bio/slv/InvokeNotBefore.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/InvokeNotBefore.cxx' object='bio/slv/libbiosensor_la-InvokeNotBefore.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-InvokeNotBefore.lo `test -f 'bio/slv/InvokeNotBefore.cxx' || echo '$(srcdir)/'`bio/slv/InvokeNotBefore.cxx
+
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/NullSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-NullSolver.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Tpo -c -o bio/slv/libbiosensor_la-NullSolver.lo `test -f 'bio/slv/NullSolver.cxx' || echo '$(srcdir)/'`bio/slv/NullSolver.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo
@@ -825,12 +893,12 @@ bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/NullSolver.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-NullSolver.lo `test -f 'bio/slv/NullSolver.cxx' || echo '$(srcdir)/'`bio/slv/NullSolver.cxx
 
-bio/slv/libbiosensor_la-StopAtStepSL.lo: bio/slv/StopAtStepSL.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-StopAtStepSL.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Tpo -c -o bio/slv/libbiosensor_la-StopAtStepSL.lo `test -f 'bio/slv/StopAtStepSL.cxx' || echo '$(srcdir)/'`bio/slv/StopAtStepSL.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-StopAtStepSL.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopAtStepSL.cxx' object='bio/slv/libbiosensor_la-StopAtStepSL.lo' libtool=yes @AMDEPBACKSLASH@
+bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo: bio/slv/StopAtSpecifiedPoint.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Tpo -c -o bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo `test -f 'bio/slv/StopAtSpecifiedPoint.cxx' || echo '$(srcdir)/'`bio/slv/StopAtSpecifiedPoint.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopAtSpecifiedPoint.cxx' object='bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopAtStepSL.lo `test -f 'bio/slv/StopAtStepSL.cxx' || echo '$(srcdir)/'`bio/slv/StopAtStepSL.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo `test -f 'bio/slv/StopAtSpecifiedPoint.cxx' || echo '$(srcdir)/'`bio/slv/StopAtSpecifiedPoint.cxx
 
 bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo: bio/trd/AmperometricElectrode2DOnBound.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo -MD -MP -MF bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Tpo -c -o bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo `test -f 'bio/trd/AmperometricElectrode2DOnBound.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricElectrode2DOnBound.cxx
@@ -838,6 +906,13 @@ bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo: bio/trd/AmperometricE
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/trd/AmperometricElectrode2DOnBound.cxx' object='bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo `test -f 'bio/trd/AmperometricElectrode2DOnBound.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricElectrode2DOnBound.cxx
+
+bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo: bio/trd/AmperometricInjectedElectrode2D.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo -MD -MP -MF bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Tpo -c -o bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo `test -f 'bio/trd/AmperometricInjectedElectrode2D.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricInjectedElectrode2D.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Tpo bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/trd/AmperometricInjectedElectrode2D.cxx' object='bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo `test -f 'bio/trd/AmperometricInjectedElectrode2D.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricInjectedElectrode2D.cxx
 
 mostlyclean-libtool:
 	-rm -f *.lo
