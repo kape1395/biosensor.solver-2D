@@ -34,7 +34,6 @@ libbiosensor_la_SOURCES = \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
-    bio/slv/ISolverFactory.cxx \
     bio/slv/ITransducer.cxx \
     bio/slv/InvokeEverySL.cxx \
     bio/slv/InvokeNotBefore.cxx \
@@ -75,7 +74,6 @@ nobase_pkginclude_HEADERS = \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
-    bio/slv/ISolverFactory.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEverySL.hxx \
     bio/slv/InvokeNotBefore.hxx \

@@ -11,6 +11,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include "CornerSubSolver.hxx"
 #include "DataModel.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
+#include <bio/IFactory.hxx>
 #include <bio/Splitted2DArea.hxx>
 #include <bio/cfg/BoundAnalyzer.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
@@ -50,7 +51,10 @@ public:
     /**
      *  Constructor.
      */
-    Solver(BIO_XML_NS::model::Model* config);
+    Solver(
+        BIO_XML_NS::model::Model* config,
+        BIO_NS::IFactory* factory
+    );
 
     /**
      *  Destructor.

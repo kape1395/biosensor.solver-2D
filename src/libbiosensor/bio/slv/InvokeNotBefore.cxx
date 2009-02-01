@@ -20,7 +20,27 @@ BIO_SLV_NS::InvokeNotBefore::InvokeNotBefore(
 /* ************************************************************************** */
 BIO_SLV_NS::InvokeNotBefore::~InvokeNotBefore()
 {
-    //  Nothing to do here.
+    for (SLVector::iterator l = listenersToDelete.begin(); l < listenersToDelete.end(); l++)
+    {
+        delete *l;
+    }
+    listeners.clear();
+    listenersToDelete.clear();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_NS::InvokeNotBefore::addListener(
+    BIO_SLV_NS::ISolverListener* listener,
+    bool deleteAtDestruction
+)
+{
+    listeners.push_back(listener);
+    if (deleteAtDestruction)
+    {
+        listenersToDelete.push_back(listener);
+    }
 }
 
 
@@ -32,8 +52,7 @@ void BIO_SLV_NS::InvokeNotBefore::solveEventOccured()
             (time      != 0 && solver->getSolvedTime()           >= time     )
        )
     {
-        for (std::vector<BIO_SLV_NS::ISolverListener*>::iterator l = listeners.begin();
-                l < listeners.end(); l++)
+        for (SLVector::iterator l = listeners.begin(); l < listeners.end(); l++)
         {
             (*l)->solveEventOccured();
         }

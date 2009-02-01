@@ -16,6 +16,7 @@ class DelegatingFactory : public IFactory
 {
 protected:
     std::vector<IFactory*> factories;
+    std::vector<IFactory*> factoriesToDelete;
 
 
 public:
@@ -33,7 +34,7 @@ public:
     /**
      *
      */
-    void addFactory(IFactory* factory);
+    void addFactory(IFactory* factory, bool deleteAtDestruction);
 
     /**
      *  Create a solver from a model.

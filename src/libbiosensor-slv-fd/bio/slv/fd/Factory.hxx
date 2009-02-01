@@ -1,18 +1,14 @@
-#ifndef BIO_MainFactory_HXX
-#define BIO_MainFactory_HXX
-#include "../biosensor.hxx"
-#include "IFactory.hxx"
-#include "slv/ISolver.hxx"
-#include "slv/ISolverListener.hxx"
-#include <biosensor-xml.hxx>
-#include <vector>
-
-BIO_NS_BEGIN
+#ifndef BIO_SLV_FD_Factory_HXX
+#define BIO_SLV_FD_Factory_HXX
+#include "../../../biosensor-slv-fd.hxx"
+#include <bio/IFactory.hxx>
+BIO_SLV_FD_NS_BEGIN
 
 
 /**
+ *  Created solvers, that relates to this module (libbiosensor-slf-fd).
  */
-class MainFactory : public IFactory
+class Factory : public IFactory
 {
 private:
     IFactory* rootFactory;
@@ -22,12 +18,12 @@ public:
     /**
      *
      */
-    MainFactory(IFactory* rootFactory);
+    Factory(IFactory* rootFactory);
 
     /**
      *
      */
-    virtual ~MainFactory();
+    virtual ~Factory();
 
     /**
      *  Create a solver from a model.
@@ -66,6 +62,5 @@ public:
 
 };
 
-BIO_NS_END
-
+BIO_SLV_FD_NS_END
 #endif

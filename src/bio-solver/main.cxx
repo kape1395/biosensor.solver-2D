@@ -1,15 +1,20 @@
+
+#include "bio/DelegatingFactory.hxx"
+
 #include <iostream>
 //#include <log4cxx/logger.h>
 #include <log4cpp/Category.hh>
 #include <log4cpp/PropertyConfigurator.hh>
 #include <bio/Exception.hxx>
+#include <bio/MainFactory.hxx>
+#include <bio/DelegatingFactory.hxx>
 #include <bio/slv/ISolver.hxx>
 #include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <Model.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
-#include <bio/slv/ISolverListener.hxx>
-#include <bio/io/DebugSL.hxx>
+//#include <bio/slv/ISolverListener.hxx>
+//#include <bio/io/DebugSL.hxx>
 
 /**
  *  Entry point for program bio-solver.
@@ -43,56 +48,36 @@ int main(int argn, char **argv)
             log.info("Parsing config file...");
             const std::string uri = std::string(argv[1]);
             std::auto_ptr<Model> model(BIO_XML_NS::model::model(uri));
+            log.info("Parsing config file... Done");
 
+
+            // Construct factories.
+            DelegatingFactory* factory = new DelegatingFactory();
+            factory->addFactory(new BIO_NS::MainFactory(factory), true);
+            factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
+
+            
             // Create solver
             log.info("Creating solver...");
-            ISolver* solver = 0;
+            ISolver* solver;
+            if ((solver = factory->createSolver(&*model)) == 0)
             {
-                // FIXME: Only one solver factory exists for now, so we are using it explicitly
-                BIO_SLV_FD_NS::SolverFactory solverFactory;
-
-                if ((solver = solverFactory.create(&*model)) == 0)
-                {
-                    log.error("I dont know how to create requested solver.");
-                    return 2;
-                }
+                log.error("I dont know how to create requested solver.");
+                return 2;
             }
+            log.info("Creating solver... Done");
+            
 
-
-
-            // TODO: Implement listeners in the configurable way.
-            /*
-            std::vector<ISolverListener*> listeners;
-            ISolverListener* listener;
-            InvokeEverySL* listenerInvokeEvery;
-
-            listeners.push_back(listener = new BIO_SLV_NS::StopAtSpecifiedPoint(solver));
-            dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
-
-            listeners.push_back(listener = listenerInvokeEvery = new BIO_SLV_NS::InvokeEverySL(solver, 1000));
-            dynamic_cast<IIterativeSolver*>(solver)->addListener(listener);
-
-            listeners.push_back(listener = new BIO_IO_NS::DebugSL(solver, std::cout));
-            listenerInvokeEvery->addListener(listener);
-             */
-
-
-
-            // Solve biosensor
+            // Simulate operation of the biosensor
             log.info("Solving...");
             solver->solve();
+            log.info("Solving... Done");
 
-            // Deinitialize
-            /*
-            for (std::vector<ISolverListener*>::iterator sl = listeners.begin(); sl < listeners.end(); sl++)
-            {
-                delete *sl;
-            }
-            listeners.empty();
-             */
 
             delete solver;
+            delete factory;
             log.info("Success");
+
 
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             log4cpp::Category::shutdown();

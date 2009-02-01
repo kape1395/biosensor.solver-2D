@@ -6,7 +6,7 @@ libbiosensor_slv_fd_la_LIBADD  = \
     ../libbiosensor-xml/libbiosensor-xml.la
 
 libbiosensor_slv_fd_la_SOURCES = \
-    bio/slv/fd/SolverFactory.cxx \
+    bio/slv/fd/Factory.cxx \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/slv/fd/ex2d/Solver.cxx \
     bio/slv/fd/im2d/Solver.cxx \
@@ -21,10 +21,10 @@ libbiosensor_slv_fd_la_SOURCES = \
 
 nobase_pkginclude_HEADERS = \
     biosensor-slv-fd.hxx \
-    bio/slv/fd/SolverFactory.hxx
+    bio/slv/fd/Factory.hxx
 
 EXTRA_DIST = \
-    bio/slv/fd/SolverFactory.hxx \
+    bio/slv/fd/Factory.hxx \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
     bio/slv/fd/ex2d/Solver.hxx \
     bio/slv/fd/im2d/Solver.hxx \

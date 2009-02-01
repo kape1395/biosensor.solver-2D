@@ -7,7 +7,10 @@
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
+BIO_SLV_FD_IM2D_NS::Solver::Solver(
+    BIO_XML_NS::model::Model* config,
+    BIO_NS::IFactory* factory
+) :
         AbstractIterativeSolver(config),
         log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.Solver"))
 {
@@ -81,32 +84,16 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(BIO_XML_NS::model::Model* config) :
     ////////////////////////////////////////////////////////////////////////////
     //  Initialize transducer.
     //
-    transducer = 0;
-    if (config->transducer().present()) //  FIXME: Move this implementation to some factory class.
+    if (config->transducer().present())
     {
-        using namespace BIO_XML_MODEL_NS::transducer;
-        AmperometricElectrode*  transAE = dynamic_cast<AmperometricElectrode*>(&config->transducer().get());
-        InjectedElectrode*      transIE = dynamic_cast<InjectedElectrode*    >(&config->transducer().get());
-        if (transAE)
+        if (!(transducer = factory->createTransducer(this, &config->transducer().get())))
         {
-            transducer = new BIO_TRD_NS::AmperometricElectrode2DOnBound(
-                this,
-                transAE->bound(),
-                transAE->substance()
-            );
+            throw Exception("A transducer type is not supported.");
         }
-        else if (transIE)
-        {
-            transducer = new BIO_TRD_NS::AmperometricInjectedElectrode2D(
-                this,
-                transIE->medium(),
-                transIE->substance()
-            );
-        }
-        else
-        {
-            throw Exception("A transducer type is not supported by this solver.");
-        }
+    }
+    else
+    {
+        transducer = 0;
     }
     //
     //  Initialize transducer.

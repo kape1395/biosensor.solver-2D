@@ -13,12 +13,14 @@ BIO_SLV_NS_BEGIN
 class InvokeNotBefore : public ISolverListener
 {
 private:
+    typedef std::vector<BIO_SLV_NS::ISolverListener*> SLVector;
     log4cxx::LoggerPtr log;
     IIterativeSolver* solver;
     long stepCount;
     double time;
 
-    std::vector<BIO_SLV_NS::ISolverListener*> listeners;
+    SLVector listeners;
+    SLVector listenersToDelete;
 
 public:
     /**
@@ -50,12 +52,15 @@ public:
     }
 
     /**
+     *  Add sub-listener.
      *
+     *  \param listener             Sublistener.
+     *  \param deleteAtDestruction  Delete listener at destruction.
      */
-    void addListener(BIO_SLV_NS::ISolverListener* listener)
-    {
-        listeners.push_back(listener);
-    }
+    void addListener(
+        BIO_SLV_NS::ISolverListener* listener,
+        bool deleteAtDestruction
+    );
 
     /**
      *  EventListener.

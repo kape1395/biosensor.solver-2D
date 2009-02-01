@@ -11,13 +11,21 @@ BIO_NS::DelegatingFactory::DelegatingFactory()
 BIO_NS::DelegatingFactory::~DelegatingFactory()
 {
     factories.clear();
+    for (std::vector<IFactory*>::iterator ftd = factoriesToDelete.begin();
+            ftd < factoriesToDelete.end(); ftd++)
+    {
+        delete *ftd;
+    }
+    factoriesToDelete.clear();
 }
 
 
 /* ************************************************************************** */
-void BIO_NS::DelegatingFactory::addFactory(IFactory* factory)
+void BIO_NS::DelegatingFactory::addFactory(IFactory* factory, bool deleteAtDestruction)
 {
     factories.push_back(factory);
+    if (deleteAtDestruction)
+        factoriesToDelete.push_back(factory);
 }
 
 
