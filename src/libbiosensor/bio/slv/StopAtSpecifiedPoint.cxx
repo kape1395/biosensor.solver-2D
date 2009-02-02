@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 BIO_SLV_NS::StopAtSpecifiedPoint::StopAtSpecifiedPoint(
     ISolver* solver
-) : log(log4cxx::Logger::getLogger("libbiosensor::StopAtSpecifiedPoint"))
+) : log(log4cxx::Logger::getLogger("libbiosensor.StopAtSpecifiedPoint"))
 {
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
     this->stepCount = 0;

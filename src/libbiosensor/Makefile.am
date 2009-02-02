@@ -26,8 +26,12 @@ libbiosensor_la_SOURCES = \
     bio/dm/IGrid2D.cxx \
     bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
-    bio/io/DebugSL.cxx \
-    bio/io/GnuplotDataSL.cxx \
+    bio/io/ConcentrationProfile.cxx \
+    bio/io/CurrentDensity.cxx \
+    bio/io/FilesystemOutputContext.cxx \
+    bio/io/IOutput.cxx \
+    bio/io/IOutputContext.cxx \
+    bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
     bio/slv/ErrorInDataSL.cxx \
@@ -66,8 +70,12 @@ nobase_pkginclude_HEADERS = \
     bio/dm/IGrid2D.hxx \
     bio/dm/ISegmentSplit.hxx \
     bio/dm/NullDM.hxx \
-    bio/io/DebugSL.hxx \
-    bio/io/GnuplotDataSL.hxx \
+    bio/io/ConcentrationProfile.hxx \
+    bio/io/CurrentDensity.hxx \
+    bio/io/FilesystemOutputContext.hxx \
+    bio/io/IOutput.hxx \
+    bio/io/IOutputContext.hxx \
+    bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
     bio/slv/ErrorInDataSL.hxx \

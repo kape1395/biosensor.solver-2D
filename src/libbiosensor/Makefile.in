@@ -82,8 +82,12 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
 	bio/dm/libbiosensor_la-IGrid2D.lo \
 	bio/dm/libbiosensor_la-ISegmentSplit.lo \
 	bio/dm/libbiosensor_la-NullDM.lo \
-	bio/io/libbiosensor_la-DebugSL.lo \
-	bio/io/libbiosensor_la-GnuplotDataSL.lo \
+	bio/io/libbiosensor_la-ConcentrationProfile.lo \
+	bio/io/libbiosensor_la-CurrentDensity.lo \
+	bio/io/libbiosensor_la-FilesystemOutputContext.lo \
+	bio/io/libbiosensor_la-IOutput.lo \
+	bio/io/libbiosensor_la-IOutputContext.lo \
+	bio/io/libbiosensor_la-SteadyStateHalfTime.lo \
 	bio/slv/libbiosensor_la-AbstractIterativeSolver.lo \
 	bio/slv/libbiosensor_la-AbstractSolver.lo \
 	bio/slv/libbiosensor_la-ErrorInDataSL.lo \
@@ -260,8 +264,12 @@ libbiosensor_la_SOURCES = \
     bio/dm/IGrid2D.cxx \
     bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
-    bio/io/DebugSL.cxx \
-    bio/io/GnuplotDataSL.cxx \
+    bio/io/ConcentrationProfile.cxx \
+    bio/io/CurrentDensity.cxx \
+    bio/io/FilesystemOutputContext.cxx \
+    bio/io/IOutput.cxx \
+    bio/io/IOutputContext.cxx \
+    bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
     bio/slv/ErrorInDataSL.cxx \
@@ -299,8 +307,12 @@ nobase_pkginclude_HEADERS = \
     bio/dm/IGrid2D.hxx \
     bio/dm/ISegmentSplit.hxx \
     bio/dm/NullDM.hxx \
-    bio/io/DebugSL.hxx \
-    bio/io/GnuplotDataSL.hxx \
+    bio/io/ConcentrationProfile.hxx \
+    bio/io/CurrentDensity.hxx \
+    bio/io/FilesystemOutputContext.hxx \
+    bio/io/IOutput.hxx \
+    bio/io/IOutputContext.hxx \
+    bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
     bio/slv/ErrorInDataSL.hxx \
@@ -463,9 +475,17 @@ bio/io/$(am__dirstamp):
 bio/io/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) bio/io/$(DEPDIR)
 	@: > bio/io/$(DEPDIR)/$(am__dirstamp)
-bio/io/libbiosensor_la-DebugSL.lo: bio/io/$(am__dirstamp) \
+bio/io/libbiosensor_la-ConcentrationProfile.lo:  \
+	bio/io/$(am__dirstamp) bio/io/$(DEPDIR)/$(am__dirstamp)
+bio/io/libbiosensor_la-CurrentDensity.lo: bio/io/$(am__dirstamp) \
 	bio/io/$(DEPDIR)/$(am__dirstamp)
-bio/io/libbiosensor_la-GnuplotDataSL.lo: bio/io/$(am__dirstamp) \
+bio/io/libbiosensor_la-FilesystemOutputContext.lo:  \
+	bio/io/$(am__dirstamp) bio/io/$(DEPDIR)/$(am__dirstamp)
+bio/io/libbiosensor_la-IOutput.lo: bio/io/$(am__dirstamp) \
+	bio/io/$(DEPDIR)/$(am__dirstamp)
+bio/io/libbiosensor_la-IOutputContext.lo: bio/io/$(am__dirstamp) \
+	bio/io/$(DEPDIR)/$(am__dirstamp)
+bio/io/libbiosensor_la-SteadyStateHalfTime.lo: bio/io/$(am__dirstamp) \
 	bio/io/$(DEPDIR)/$(am__dirstamp)
 bio/slv/$(am__dirstamp):
 	@$(MKDIR_P) bio/slv
@@ -544,10 +564,18 @@ mostlyclean-compile:
 	-rm -f bio/dm/libbiosensor_la-ISegmentSplit.lo
 	-rm -f bio/dm/libbiosensor_la-NullDM.$(OBJEXT)
 	-rm -f bio/dm/libbiosensor_la-NullDM.lo
-	-rm -f bio/io/libbiosensor_la-DebugSL.$(OBJEXT)
-	-rm -f bio/io/libbiosensor_la-DebugSL.lo
-	-rm -f bio/io/libbiosensor_la-GnuplotDataSL.$(OBJEXT)
-	-rm -f bio/io/libbiosensor_la-GnuplotDataSL.lo
+	-rm -f bio/io/libbiosensor_la-ConcentrationProfile.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-ConcentrationProfile.lo
+	-rm -f bio/io/libbiosensor_la-CurrentDensity.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-CurrentDensity.lo
+	-rm -f bio/io/libbiosensor_la-FilesystemOutputContext.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-FilesystemOutputContext.lo
+	-rm -f bio/io/libbiosensor_la-IOutput.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-IOutput.lo
+	-rm -f bio/io/libbiosensor_la-IOutputContext.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-IOutputContext.lo
+	-rm -f bio/io/libbiosensor_la-SteadyStateHalfTime.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-SteadyStateHalfTime.lo
 	-rm -f bio/libbiosensor_la-DelegatingFactory.$(OBJEXT)
 	-rm -f bio/libbiosensor_la-DelegatingFactory.lo
 	-rm -f bio/libbiosensor_la-Exception.$(OBJEXT)
@@ -607,8 +635,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-IGrid2D.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-ISegmentSplit.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/dm/$(DEPDIR)/libbiosensor_la-NullDM.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-DebugSL.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-ConcentrationProfile.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-CurrentDensity.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-FilesystemOutputContext.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-IOutput.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-IOutputContext.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ErrorInDataSL.Plo@am__quote@
@@ -794,19 +826,47 @@ bio/dm/libbiosensor_la-NullDM.lo: bio/dm/NullDM.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/dm/libbiosensor_la-NullDM.lo `test -f 'bio/dm/NullDM.cxx' || echo '$(srcdir)/'`bio/dm/NullDM.cxx
 
-bio/io/libbiosensor_la-DebugSL.lo: bio/io/DebugSL.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-DebugSL.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-DebugSL.Tpo -c -o bio/io/libbiosensor_la-DebugSL.lo `test -f 'bio/io/DebugSL.cxx' || echo '$(srcdir)/'`bio/io/DebugSL.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-DebugSL.Tpo bio/io/$(DEPDIR)/libbiosensor_la-DebugSL.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/DebugSL.cxx' object='bio/io/libbiosensor_la-DebugSL.lo' libtool=yes @AMDEPBACKSLASH@
+bio/io/libbiosensor_la-ConcentrationProfile.lo: bio/io/ConcentrationProfile.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-ConcentrationProfile.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-ConcentrationProfile.Tpo -c -o bio/io/libbiosensor_la-ConcentrationProfile.lo `test -f 'bio/io/ConcentrationProfile.cxx' || echo '$(srcdir)/'`bio/io/ConcentrationProfile.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-ConcentrationProfile.Tpo bio/io/$(DEPDIR)/libbiosensor_la-ConcentrationProfile.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/ConcentrationProfile.cxx' object='bio/io/libbiosensor_la-ConcentrationProfile.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-DebugSL.lo `test -f 'bio/io/DebugSL.cxx' || echo '$(srcdir)/'`bio/io/DebugSL.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-ConcentrationProfile.lo `test -f 'bio/io/ConcentrationProfile.cxx' || echo '$(srcdir)/'`bio/io/ConcentrationProfile.cxx
 
-bio/io/libbiosensor_la-GnuplotDataSL.lo: bio/io/GnuplotDataSL.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-GnuplotDataSL.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Tpo -c -o bio/io/libbiosensor_la-GnuplotDataSL.lo `test -f 'bio/io/GnuplotDataSL.cxx' || echo '$(srcdir)/'`bio/io/GnuplotDataSL.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Tpo bio/io/$(DEPDIR)/libbiosensor_la-GnuplotDataSL.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/GnuplotDataSL.cxx' object='bio/io/libbiosensor_la-GnuplotDataSL.lo' libtool=yes @AMDEPBACKSLASH@
+bio/io/libbiosensor_la-CurrentDensity.lo: bio/io/CurrentDensity.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-CurrentDensity.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-CurrentDensity.Tpo -c -o bio/io/libbiosensor_la-CurrentDensity.lo `test -f 'bio/io/CurrentDensity.cxx' || echo '$(srcdir)/'`bio/io/CurrentDensity.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-CurrentDensity.Tpo bio/io/$(DEPDIR)/libbiosensor_la-CurrentDensity.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/CurrentDensity.cxx' object='bio/io/libbiosensor_la-CurrentDensity.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-GnuplotDataSL.lo `test -f 'bio/io/GnuplotDataSL.cxx' || echo '$(srcdir)/'`bio/io/GnuplotDataSL.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-CurrentDensity.lo `test -f 'bio/io/CurrentDensity.cxx' || echo '$(srcdir)/'`bio/io/CurrentDensity.cxx
+
+bio/io/libbiosensor_la-FilesystemOutputContext.lo: bio/io/FilesystemOutputContext.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-FilesystemOutputContext.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-FilesystemOutputContext.Tpo -c -o bio/io/libbiosensor_la-FilesystemOutputContext.lo `test -f 'bio/io/FilesystemOutputContext.cxx' || echo '$(srcdir)/'`bio/io/FilesystemOutputContext.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-FilesystemOutputContext.Tpo bio/io/$(DEPDIR)/libbiosensor_la-FilesystemOutputContext.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/FilesystemOutputContext.cxx' object='bio/io/libbiosensor_la-FilesystemOutputContext.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-FilesystemOutputContext.lo `test -f 'bio/io/FilesystemOutputContext.cxx' || echo '$(srcdir)/'`bio/io/FilesystemOutputContext.cxx
+
+bio/io/libbiosensor_la-IOutput.lo: bio/io/IOutput.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-IOutput.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-IOutput.Tpo -c -o bio/io/libbiosensor_la-IOutput.lo `test -f 'bio/io/IOutput.cxx' || echo '$(srcdir)/'`bio/io/IOutput.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-IOutput.Tpo bio/io/$(DEPDIR)/libbiosensor_la-IOutput.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/IOutput.cxx' object='bio/io/libbiosensor_la-IOutput.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-IOutput.lo `test -f 'bio/io/IOutput.cxx' || echo '$(srcdir)/'`bio/io/IOutput.cxx
+
+bio/io/libbiosensor_la-IOutputContext.lo: bio/io/IOutputContext.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-IOutputContext.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-IOutputContext.Tpo -c -o bio/io/libbiosensor_la-IOutputContext.lo `test -f 'bio/io/IOutputContext.cxx' || echo '$(srcdir)/'`bio/io/IOutputContext.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-IOutputContext.Tpo bio/io/$(DEPDIR)/libbiosensor_la-IOutputContext.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/IOutputContext.cxx' object='bio/io/libbiosensor_la-IOutputContext.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-IOutputContext.lo `test -f 'bio/io/IOutputContext.cxx' || echo '$(srcdir)/'`bio/io/IOutputContext.cxx
+
+bio/io/libbiosensor_la-SteadyStateHalfTime.lo: bio/io/SteadyStateHalfTime.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-SteadyStateHalfTime.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Tpo -c -o bio/io/libbiosensor_la-SteadyStateHalfTime.lo `test -f 'bio/io/SteadyStateHalfTime.cxx' || echo '$(srcdir)/'`bio/io/SteadyStateHalfTime.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Tpo bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/SteadyStateHalfTime.cxx' object='bio/io/libbiosensor_la-SteadyStateHalfTime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-SteadyStateHalfTime.lo `test -f 'bio/io/SteadyStateHalfTime.cxx' || echo '$(srcdir)/'`bio/io/SteadyStateHalfTime.cxx
 
 bio/slv/libbiosensor_la-AbstractIterativeSolver.lo: bio/slv/AbstractIterativeSolver.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-AbstractIterativeSolver.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-AbstractIterativeSolver.Tpo -c -o bio/slv/libbiosensor_la-AbstractIterativeSolver.lo `test -f 'bio/slv/AbstractIterativeSolver.cxx' || echo '$(srcdir)/'`bio/slv/AbstractIterativeSolver.cxx

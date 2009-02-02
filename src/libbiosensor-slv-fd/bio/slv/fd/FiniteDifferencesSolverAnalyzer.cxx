@@ -1,6 +1,13 @@
+
+#include "ModelSolver.hxx"
+
+
+#include "bio/slv/IIterativeSolver.hxx"
+
 #include "FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Exception.hxx>
 #include <bio/dm/ConstantSegmentSplit.hxx>
+#include <bio/slv/ISolverListener.hxx>
 #include <vector>
 
 
@@ -13,7 +20,7 @@
 BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     BIO_XML_NS::model::Model* config
 ) :
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd::FiniteDifferencesSolverAnalyzer")),
+        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.FiniteDifferencesSolverAnalyzer")),
         structureAnalyzer(config)
 {
     this->config = 0;
@@ -184,6 +191,57 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer
     ////////////////////////////////////////////////////////////////////////////
 
     LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()... Done");
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_XML_MODEL_NS::solver::FiniteDifferences* BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::getFDSolverConfig()
+{
+    return dynamic_cast<BIO_XML_MODEL_NS::solver::FiniteDifferences*>(&config->solver());
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::configureOutputs(
+    BIO_SLV_NS::ISolver*          solver,
+    BIO_SLV_NS::IIterativeSolver* iterativeSolver,
+    BIO_NS::IFactory* factory
+)
+{
+    BIO_XML_MODEL_NS::solver::FiniteDifferences* fd = getFDSolverConfig();
+
+    for (BIO_XML_MODEL_NS::Solver::output_iterator out = fd->output().begin(); out < fd->output().end(); out++)
+    {
+        BIO_SLV_NS::ISolverListener* listener = factory->createOutput(solver, &*out);
+        if (!listener)
+            throw Exception("Unsupported output configuration.");
+
+        iterativeSolver->addListener(listener, true);
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::configureStopConditions(
+    BIO_SLV_NS::ISolver*          solver,
+    BIO_SLV_NS::IIterativeSolver* iterativeSolver,
+    BIO_NS::IFactory*             factory
+)
+{
+    BIO_XML_MODEL_NS::solver::FiniteDifferences* fd = getFDSolverConfig();
+
+    for (BIO_XML_MODEL_NS::solver::FiniteDifferences::stopCondition_iterator sc = fd->stopCondition().begin();
+            sc < fd->stopCondition().end(); sc++)
+    {
+        BIO_SLV_NS::ISolverListener* listener = factory->createStopCondition(solver, &*sc);
+        if (!listener)
+            throw Exception("Unsupported stopCondition configuration.");
+
+        iterativeSolver->addListener(listener, true);
+    }
 }
 
 

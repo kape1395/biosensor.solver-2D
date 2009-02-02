@@ -23,7 +23,7 @@ public:
     virtual void setTimeStep(double timeStep) = 0;
     virtual long getSolvedIterationCount() = 0;
     virtual double getSolvedTime() = 0;
-    virtual void addListener(ISolverListener* listener) = 0;
+    virtual void addListener(ISolverListener* listener, bool deleteOnDestruction) = 0;
 };
 
 

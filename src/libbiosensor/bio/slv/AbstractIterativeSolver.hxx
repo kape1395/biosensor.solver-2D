@@ -13,12 +13,14 @@ class ISolverListener;
  */
 class AbstractIterativeSolver : public AbstractSolver, public IIterativeSolver
 {
-protected:
+private:
     double timeStep;
     double timeSolved;
     long   iterationsSolved;
     bool   stopped;
     std::vector<ISolverListener*> listeners;
+    std::vector<ISolverListener*> listenersToDelete;
+
 public:
     AbstractIterativeSolver(BIO_XML_NS::model::Model* config);
     virtual ~AbstractIterativeSolver();
@@ -30,10 +32,12 @@ public:
     virtual void setTimeStep(double timeStep);
     virtual long getSolvedIterationCount();
     virtual double getSolvedTime();
-    virtual void addListener(ISolverListener* listener);
+    virtual void addListener(ISolverListener* listener, bool deleteOnDestruction);
+
 protected:
     virtual void invokeListeners();
     virtual void solveIteration() = 0;
+
 };
 
 

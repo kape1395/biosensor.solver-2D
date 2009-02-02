@@ -1,31 +1,33 @@
-#include "DebugSL.hxx"
+#include "ConcentrationProfile.hxx"
 #include "../Exception.hxx"
-#include "../dm/IGrid2D.hxx"
-#include "iostream"
+#include <iostream>
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_IO_NS::DebugSL::DebugSL(
+BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
+    std::string& name,
+    long indexed,
     BIO_SLV_NS::ISolver* solver,
-    std::ostream& output
-) :
-        log(log4cxx::Logger::getLogger("libbiosensor::DebugSL")),
-        out(output)
+    BIO_IO_NS::IOutputContext* outputContext
+) : log(log4cxx::Logger::getLogger("libbiosensor.ConcentrationProfile"))
 {
+    this->name = name;
+    this->indexed = indexed;
+    this->currentIndex = 0;
     this->solver = solver;
-    this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData());
+    this->outputContext = outputContext;
 
-    if (grid == 0)
+    if ((this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData())) == 0)
     {
-        throw Exception("DebugSL: IGrid2D Datamodel is required");
+        throw Exception("ConcentrationProfile: IGrid2D DataModel is required");
     }
-    cursor = grid->newGridCursor();
+    this->cursor = this->grid->newGridCursor();
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_IO_NS::DebugSL::~DebugSL()
+BIO_IO_NS::ConcentrationProfile::~ConcentrationProfile()
 {
     delete cursor;
 }
@@ -33,30 +35,35 @@ BIO_IO_NS::DebugSL::~DebugSL()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::DebugSL::solveEventOccured()
+void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
 {
-
+    using BIO_SLV_NS::IIterativeSolver;
     int substCount = grid->getSubstanceCount();
 
-    BIO_SLV_NS::IIterativeSolver* iterativeSolver = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
+    std::ostream* out = indexed
+                        ? outputContext->getOutputStream(name, currentIndex)
+                        : outputContext->getOutputStream(name);
+
+
+    IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
     if (iterativeSolver != 0)
     {
-        out << "#"
+        (*out) << "#"
         << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
-        << " SolvedTime=" << iterativeSolver->getSolvedTime()
+        << " SolvedTime="           << iterativeSolver->getSolvedTime()
         << std::endl;
     }
     else
     {
-        out << "# SolvedIterationCount=? SolvedTime=?" << std::endl;
+        (*out) << "# SolvedIterationCount=? SolvedTime=?" << std::endl;
     }
 
-    out << "# h\tv";
+    (*out) << "# h\tv";
     for (int s = 0; s < substCount; s++)
     {
-        out << '\t' << grid->getSubstanceConf(s)->name();
+        (*out) << '\t' << grid->getSubstanceConf(s)->name();
     }
-    out << std::endl;
+    (*out) << std::endl;
 
     int h;
     int v;
@@ -68,16 +75,18 @@ void BIO_IO_NS::DebugSL::solveEventOccured()
         {
             BIO_DM_NS::IConcentrations* concentrations = cursor->getConcentrations();
 
-            out << h << '\t' << v;
+            (*out) << h << '\t' << v;
             for (int s = 0; s < substCount; s++)
             {
-                out << '\t' << (*concentrations)[s];
+                (*out) << '\t' << (*concentrations)[s];
             }
-            out << std::endl;
+            (*out) << std::endl;
         }
         cursor->rowStart();
     }
 
+    outputContext->close(out);
+    currentIndex++;
 }
 
 

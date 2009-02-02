@@ -56,7 +56,7 @@ int main(int argn, char **argv)
             factory->addFactory(new BIO_NS::MainFactory(factory), true);
             factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
 
-            
+
             // Create solver
             log.info("Creating solver...");
             ISolver* solver;
@@ -66,7 +66,7 @@ int main(int argn, char **argv)
                 return 2;
             }
             log.info("Creating solver... Done");
-            
+
 
             // Simulate operation of the biosensor
             log.info("Solving...");

@@ -17,6 +17,7 @@ AbstractIterativeSolver::AbstractIterativeSolver(
     iterationsSolved = 0;
     stopped = true;
     listeners.clear();
+    listenersToDelete.clear();
 }
 
 
@@ -28,6 +29,12 @@ AbstractIterativeSolver::AbstractIterativeSolver(
 AbstractIterativeSolver::~AbstractIterativeSolver()
 {
     // nothing
+    for (unsigned i = 0; i < listenersToDelete.size(); i++)
+    {
+        delete listenersToDelete[i];
+    }
+    listeners.clear();
+    listenersToDelete.clear();
 }
 
 
@@ -123,9 +130,14 @@ double AbstractIterativeSolver::getSolvedTime()
 /**
  *  Register new listener.
  */
-void AbstractIterativeSolver::addListener(ISolverListener* listener)
+void AbstractIterativeSolver::addListener(
+    ISolverListener* listener,
+    bool deleteOnDestruction
+)
 {
     this->listeners.push_back(listener);
+    if (deleteOnDestruction)
+        this->listenersToDelete.push_back(listener);
 }
 
 

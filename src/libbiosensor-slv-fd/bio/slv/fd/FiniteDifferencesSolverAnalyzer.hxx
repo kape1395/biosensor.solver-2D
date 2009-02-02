@@ -2,6 +2,8 @@
 #define BIO_SLV_FD_FiniteDifferencesSolverAnalyzer_HXX
 #include "../../../biosensor-slv-fd.hxx"
 #include <biosensor-xml.hxx>
+#include <bio/IFactory.hxx>
+#include <bio/slv/IIterativeSolver.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
 #include <vector>
@@ -84,6 +86,30 @@ public:
     {
         return timeStep;
     }
+
+    /**
+     *
+     */
+    BIO_XML_MODEL_NS::solver::FiniteDifferences* getFDSolverConfig();
+
+    /**
+     *  Returns output configurations.
+     *  TODO: Move this to a more generic solver config analyzer.
+     */
+    void configureOutputs(
+        BIO_SLV_NS::ISolver*            solver,
+        BIO_SLV_NS::IIterativeSolver*   iterativeSolver,
+        BIO_NS::IFactory*               factory
+    );
+
+    /**
+     *
+     */
+    void configureStopConditions(
+        BIO_SLV_NS::ISolver*            solver,
+        BIO_SLV_NS::IIterativeSolver*   iterativeSolver,
+        BIO_NS::IFactory*               factory
+    );
 
 protected:
     BIO_DM_NS::ISegmentSplit* createSegmentSplit(BIO_XML_NS::model::solver::Axis* axis);

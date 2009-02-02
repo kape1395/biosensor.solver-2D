@@ -5,6 +5,9 @@
 #include <bio/dm/ConstantSegmentSplit.hxx>
 #include <cmath>
 
+#undef LOG4CXX_DEBUG
+#define LOG4CXX_DEBUG(a, b)
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
