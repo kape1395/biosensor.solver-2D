@@ -5,6 +5,7 @@
 #include <string>
 #include <ostream>
 #include <istream>
+#include <vector>
 BIO_IO_NS_BEGIN
 
 
@@ -13,6 +14,12 @@ BIO_IO_NS_BEGIN
  */
 class FilesystemOutputContext : public IOutputContext
 {
+private:
+    std::string baseDir;
+    std::vector<std::string> fileNames;
+    std::vector<std::ostream*> openOStreams;
+    std::vector<std::istream*> openIStreams;
+
 public:
 
     /**
@@ -20,7 +27,7 @@ public:
      *
      *  \param destDir  Destination directory.
      */
-    FilesystemOutputContext(std::string& destDir);
+    FilesystemOutputContext(std::string& baseDir);
 
     /**
      *  Destructor.
@@ -66,6 +73,10 @@ public:
      *  Close all opened streams.
      */
     virtual void close();
+
+protected:
+    std::string getFileName(std::string& name);
+    std::string getFileName(std::string& name, long index);
 
 };
 

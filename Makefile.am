@@ -1,4 +1,7 @@
 SUBDIRS = src
+ACLOCAL_AMFLAGS = -I acinclude
+
+#AM_LDLFAGS=$(AM_LDLFAGS) $(BOOST_FILESYSTEM_LIB) $(BOOST_LDFLAGS) -lboost_filesystem
 
 EXTRA_DIST = \
     Doxyfile \

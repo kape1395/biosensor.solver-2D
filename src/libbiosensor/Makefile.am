@@ -7,7 +7,7 @@ libbiosensor_la_LIBADD  = \
 libbiosensor_la_SOURCES = \
     bio/DelegatingFactory.cxx \
     bio/Exception.cxx \
-    bio/IFactory.cxx \ 
+    bio/IFactory.cxx \
     bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
@@ -51,7 +51,7 @@ nobase_pkginclude_HEADERS = \
     biosensor.hxx \
     bio/DelegatingFactory.hxx \
     bio/Exception.hxx \
-    bio/IFactory.hxx \ 
+    bio/IFactory.hxx \
     bio/MainFactory.hxx \
     bio/cfg/BoundAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \

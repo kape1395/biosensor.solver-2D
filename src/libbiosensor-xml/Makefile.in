@@ -39,8 +39,9 @@ DIST_COMMON = $(nobase_dist_pkgdata_DATA) $(nobase_pkginclude_HEADERS) \
 	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/biosensor-xml.hxx.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/acinclude/ax_boost_base.m4 \
+	$(top_srcdir)/acinclude/ax_boost_filesystem.m4 \
+	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -96,6 +97,9 @@ AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BIO_NS = @BIO_NS@
+BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
+BOOST_FILESYSTEM_LIB = @BOOST_FILESYSTEM_LIB@
+BOOST_LDFLAGS = @BOOST_LDFLAGS@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@

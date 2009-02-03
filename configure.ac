@@ -3,6 +3,7 @@ AC_INIT([biosensor], [0.3.1])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
+#AC_CONFIG_MACRO_DIR([acinclude])
 AM_INIT_AUTOMAKE([subdir-objects -Wall])
 
 ASTYLE_OPTS="--style=ansi --options=none"
@@ -22,6 +23,9 @@ KP_LIB_XERCESC
 
 #### Checks for header files.
 # ...
+AX_BOOST_BASE([1.33.1])
+AX_BOOST_FILESYSTEM
+LIBS="$LIBS $BOOST_FILESYSTEM_LIB"
 
 #### Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
