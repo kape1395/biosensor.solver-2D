@@ -83,7 +83,9 @@ std::istream* BIO_IO_NS::FilesystemOutputContext::getInputStream(const std::stri
 /* ************************************************************************** */
 void BIO_IO_NS::FilesystemOutputContext::close(std::ostream* stream)
 {
-    for (std::map<std::string, std::ofstream*>::iterator i = openOStreams.begin(); i != openOStreams.end(); i++)
+    bool deleted = false;
+    for (std::map<std::string, std::ofstream*>::iterator i = openOStreams.begin();
+            i != openOStreams.end() && !deleted; i++)
     {
         if (i->second == stream)
         {
@@ -91,6 +93,7 @@ void BIO_IO_NS::FilesystemOutputContext::close(std::ostream* stream)
             i->second->close();
             delete i->second;
             openOStreams.erase(i);
+            deleted = true;
         }
     }
 }
