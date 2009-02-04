@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:t="http://lt.5grupe.karolis/biosensor/model/transducer"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://lt.5grupe.karolis/biosensor/model            src/libbiosensor-xml/Model.xsd
+        http://lt.5grupe.karolis/biosensor/model/bound      src/libbiosensor-xml/ModelBound.xsd
+        http://lt.5grupe.karolis/biosensor/model/reaction   src/libbiosensor-xml/ModelReaction.xsd
+        http://lt.5grupe.karolis/biosensor/model/solver     src/libbiosensor-xml/ModelSolver.xsd
+        http://lt.5grupe.karolis/biosensor/model/transducer src/libbiosensor-xml/ModelTransducer.xsd
+        "
+    coordinateSystem="Cylindrical">
+
+
+    <axis name="r">
+        <point position="r_0"/>
+        <point position="r_1"/>
+        <point position="r_2"/>
+    </axis>
+    <axis name="z">
+        <point position="z_0"/>
+        <point position="z_1"/>
+        <point position="z_2"/>
+        <point position="z_3"/>
+    </axis>
+
+
+    <substance name="S"/>
+    <substance name="P"/>
+    <substance name="E_{ox}"/>
+    <substance name="E_{red}"/>
+    <substance name="M_{ox}"/>
+    <substance name="M_{red}"/>
+
+
+    <medium name="\Omega_1">
+        <substance name="S"       diffusion="D_Diff_S" initial="0"/>
+        <substance name="M_{ox}"  diffusion="D_Diff_M" initial="0"/>
+        <substance name="M_{red}" diffusion="D_Diff_M" initial="0"/>
+        <area top="z_0" bottom="z_1" left="r_0" right="r_2"/>
+    </medium>
+    <medium name="\Omega_2">
+        <substance name="S"       diffusion="D_Enz_S" initial="0"/>
+        <substance name="E_{ox}"  diffusion="D_Enz_E" initial="E_0"/>
+        <substance name="E_{red}" diffusion="D_Enz_E" initial="0"/>
+        <substance name="M_{ox}"  diffusion="D_Enz_M" initial="0"/>
+        <substance name="M_{red}" diffusion="D_Enz_M" initial="0"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k_1">
+            <r:substrate name="E_{ox}"/>
+            <r:substrate name="S"/>
+            <r:product name="E_{red}"/>
+            <r:product name="P"/>
+        </reaction>
+        <reaction xsi:type="r:ReductionOxidation" rate="k_2">
+            <r:substrate name="E_{red}"/>
+            <r:substrate name="M_{ox}"/>
+            <r:product name="E_{ox}"/>
+            <r:product name="M_{red}"/>
+        </reaction>
+        <area top="z_1" bottom="z_2" left="r_0" right="r_2"/>
+    </medium>
+    <medium name="\Omega_3">
+        <substance name="S"     diffusion="D_Enz_S" initial="0"/>
+        <substance name="E_{ox}"  diffusion="D_Enz_E" initial="E_0"/>
+        <substance name="E_{red}" diffusion="D_Enz_E" initial="0"/>
+        <substance name="M_{ox}"  diffusion="D_Enz_M" initial="0"/>
+        <substance name="M_{red}" diffusion="D_Enz_M" initial="0"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k_1">
+            <r:substrate name="E_{ox}"/>
+            <r:substrate name="S"/>
+            <r:product name="E_{red}"/>
+            <r:product name="P"/>
+        </reaction>
+        <reaction xsi:type="r:ReductionOxidation" rate="k_2">
+            <r:substrate name="E_{red}"/>
+            <r:substrate name="M_{ox}"/>
+            <r:product name="E_{ox}"/>
+            <r:product name="M_{red}"/>
+        </reaction>
+        <area top="z_2" bottom="z_3" left="r_0" right="r_1"/>
+    </medium>
+
+
+    <bound from="z_0" to="z_3" at="r_0">
+        <substance name="S"       xsi:type="b:Wall"/>
+        <substance name="M_{ox}"  xsi:type="b:Wall"/>
+        <substance name="M_{red}" xsi:type="b:Wall"/>
+    </bound>
+    <bound from="z_1" to="z_3" at="r_0">
+        <substance name="E_{ox}"  xsi:type="b:Wall"/>
+        <substance name="E_{red}" xsi:type="b:Wall"/>
+    </bound>
+    <bound from="z_0" to="z_2" at="r_2">
+        <substance name="S"       xsi:type="b:Wall"/>
+        <substance name="M_{ox}"  xsi:type="b:Wall"/>
+        <substance name="M_{red}" xsi:type="b:Wall"/>
+    </bound>
+    <bound from="z_1" to="z_2" at="r_2">
+        <substance name="E_{ox}"  xsi:type="b:Wall"/>
+        <substance name="E_{red}" xsi:type="b:Wall"/>
+    </bound>
+    <bound from="r_0" to="r_2" at="z_0">
+        <substance name="S"       xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="M_{ox}"  xsi:type="b:Constant" concentration="M_0"/>
+        <substance name="M_{red}" xsi:type="b:Constant" concentration="0"  />
+    </bound>
+    <bound from="r_0" to="r_1" at="z_3">
+        <substance name="S"       xsi:type="b:Wall"/>
+        <substance name="E_{ox}"  xsi:type="b:Wall"/>
+        <substance name="E_{red}" xsi:type="b:Wall"/>
+        <substance name="M_{ox}"  xsi:type="b:Wall"/>
+        <substance name="M_{red}" xsi:type="b:Wall"/>
+    </bound>
+
+
+    <transducer
+        name="electrode"
+        xsi:type="t:InjectedElectrode"
+        medium="\Omega_2"
+        substance="M_{red}"
+    />
+
+
+    <!-- Geometry -->
+    <symbol name="r_0" value="0.0"      dimension="m"/>
+    <symbol name="r_1" value="1.0E-7"   dimension="m"/>
+    <symbol name="r_2" value="1.0E-6"   dimension="m"/>
+    <symbol name="z_0" value="0.0"      dimension="m"/>
+    <symbol name="z_1" value="3.000E-4" dimension="m"/>
+    <symbol name="z_2" value="3.004E-4" dimension="m"/>
+    <symbol name="z_3" value="3.104E-4" dimension="m"/>
+
+    <!-- Diffusion coefficients -->
+    <symbol name="D_Enz_S"  value="1E-6" dimension="m^2 / s"/>
+    <symbol name="D_Enz_E"  value="1E-6" dimension="m^2 / s"/>
+    <symbol name="D_Enz_M"  value="1E-6" dimension="m^2 / s"/>
+    <symbol name="D_Diff_S" value="1E-6" dimension="m^2 / s"/>
+    <symbol name="D_Diff_M" value="1E-6" dimension="m^2 / s"/>
+
+    <!-- Concentrations -->
+    <symbol name="E_0" value="3.0E-3" dimension="mol / m^3"/>
+    <symbol name="M_0" value="1.0E-1" dimension="mol / m^3"/>
+    <symbol name="S_0" value="1.0E2"  dimension="mol / m^3"/>
+    <symbol name="0"   value="0.0"    dimension="mol / m^3"/>
+
+    <!-- Reaction rates -->
+    <symbol name="k_1" value="1E7"  dimension="mol / m^3 s"/>
+    <symbol name="k_2" value="1E10" dimension="mol / m^3 s"/>
+
+
+    <solver xsi:type="s:Implicit2D" timeStep="1E-9">
+        <!-- Add startFrom, endAt... -->
+        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
+            <!--s:step stepCount="1000"/>
+            <s:from step="1000"/>
+            <s:to step="1000"/-->
+            <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
+            <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
+        </output>
+        <!--output name="steadyState" xsi:type="s:SteadyState">
+            <s:output name="profile"        xsi:type="s:ConcentrationProfile"/>
+            <s:output name="density"        xsi:type="s:CurrentDensity"/>
+            < ! - -utput name="halfTime"       xsi:type="s:SteadyStateHalfTime"/- - >
+        </output-->
+        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:stopCondition
+            xsi:type="s:StopConditionValidAfter"
+            stepCount="1000">
+            <!--s:stopCondition
+                xsi:type="s:CurrentDensityGradient"
+                lessThan="0.0001"
+            /-->
+        </s:stopCondition>
+        <s:stopCondition
+            xsi:type="s:FailIfAbove"
+            stepCount="100000000"
+        />
+    </solver>
+
+</model>

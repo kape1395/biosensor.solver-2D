@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:t="http://lt.5grupe.karolis/biosensor/model/transducer"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://lt.5grupe.karolis/biosensor/model            ../src/libbiosensor-xml/Model.xsd
+        http://lt.5grupe.karolis/biosensor/model/bound      ../src/libbiosensor-xml/ModelBound.xsd
+        http://lt.5grupe.karolis/biosensor/model/reaction   ../src/libbiosensor-xml/ModelReaction.xsd
+        http://lt.5grupe.karolis/biosensor/model/solver     ../src/libbiosensor-xml/ModelSolver.xsd
+        http://lt.5grupe.karolis/biosensor/model/transducer ../src/libbiosensor-xml/ModelTransducer.xsd
+        "
+    coordinateSystem="Cartesian">
+
+
+    <axis name="x">
+        <point position="x_0"/>
+        <point position="x_1"/>
+    </axis>
+    <axis name="y">
+        <point position="y_0"/>
+        <point position="y_1"/>
+    </axis>
+
+
+    <substance name="S_1"/>
+    <substance name="S_2"/>
+    <substance name="P_1"/>
+    <substance name="P_2"/>
+
+
+    <medium name="\Omega_1">
+        <substance name="S_1" diffusion="D_0" initial="S_0"/>
+        <substance name="S_2" diffusion="D_0" initial="S_0"/>
+        <substance name="P_1" diffusion="D_0" initial="0"/>
+        <substance name="P_2" diffusion="D_0" initial="0"/>
+        <reaction xsi:type="r:ReductionOxidation" rate="k_1">
+            <r:substrate name="S_1"/>
+            <r:substrate name="S_2"/>
+            <r:product name="P_1"/>
+            <r:product name="P_2"/>
+        </reaction>
+        <area top="y_1" bottom="y_0" left="x_0" right="x_1"/>
+    </medium>
+
+    <bound at="x_0" from="y_0" to="y_1">
+        <substance name="S_1" xsi:type="b:Wall"/>
+        <substance name="S_2" xsi:type="b:Wall"/>
+        <substance name="P_1" xsi:type="b:Wall"/>
+        <substance name="P_2" xsi:type="b:Wall"/>
+    </bound>
+    <bound at="x_1" from="y_0" to="y_1">
+        <substance name="S_1" xsi:type="b:Wall"/>
+        <substance name="S_2" xsi:type="b:Wall"/>
+        <substance name="P_1" xsi:type="b:Wall"/>
+        <substance name="P_2" xsi:type="b:Wall"/>
+    </bound>
+    <bound at="y_0" from="x_0" to="x_1">
+        <substance name="S_1" xsi:type="b:Wall"/>
+        <substance name="S_2" xsi:type="b:Wall"/>
+        <substance name="P_1" xsi:type="b:Wall"/>
+        <substance name="P_2" xsi:type="b:Wall"/>
+    </bound>
+    <bound at="y_1" from="x_0" to="x_1">
+        <substance name="S_1" xsi:type="b:Wall"/>
+        <substance name="S_2" xsi:type="b:Wall"/>
+        <substance name="P_1" xsi:type="b:Wall"/>
+        <substance name="P_2" xsi:type="b:Wall"/>
+    </bound>
+    
+    <!-- Geometry -->
+    <symbol name="x_0" value="0.0" dimension="m"/>
+    <symbol name="x_1" value="1.0" dimension="m"/>
+    <symbol name="y_0" value="0.0" dimension="m"/>
+    <symbol name="y_1" value="1.0" dimension="m"/>
+
+
+    <!-- Concentrations -->
+    <symbol name="S_0" value="1.0E2"  dimension="mol / m^3"/>
+    <symbol name="0"   value="0.0"    dimension="mol / m^3"/>
+
+    <!-- Reaction rates -->
+    <symbol name="k_1" value="1E7"  dimension="mol / m^3 s"/>
+
+    <!-- -->
+    <symbol name="D_0"  value="1.0" dimension="m^2 / s"/>
+
+
+
+    <solver xsi:type="s:Implicit2D" timeStep="1E-11">
+        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1">
+            <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
+        </output>
+        <s:axis from="x_0" to="x_1" xsi:type="s:ConstantAxisPart" stepCount="100"/>
+        <s:axis from="y_0" to="y_1" xsi:type="s:ConstantAxisPart" stepCount="100"/>
+        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="1000"/>
+    </solver>
+
+</model>

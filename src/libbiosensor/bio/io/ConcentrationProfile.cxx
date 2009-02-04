@@ -1,6 +1,7 @@
 #include "ConcentrationProfile.hxx"
 #include "../Exception.hxx"
 #include <iostream>
+#include <sstream>
 #include <cmath>
 
 /* ************************************************************************** */
@@ -58,12 +59,12 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
         (*out) << "# SolvedIterationCount=? SolvedTime=?" << std::endl;
     }
 
-    (*out) << "# h\tv";
+    std::stringstream header;
+    header << "# h\tv";
     for (int s = 0; s < substCount; s++)
     {
-        (*out) << '\t' << grid->getSubstanceConf(s)->name();
+        header << '\t' << grid->getSubstanceConf(s)->name();
     }
-    (*out) << std::endl;
 
     int h;
     int v;
@@ -71,6 +72,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
     cursor->rowStart();
     for (v = 0; cursor->isValid(); v++, cursor->down())
     {
+        (*out) << std::endl << header.str() << std::endl;
         for (h = 0; cursor->isValid(); h++, cursor->right())
         {
             BIO_DM_NS::IConcentrations* concentrations = cursor->getConcentrations();
