@@ -27,7 +27,7 @@ public:
      *
      *  \param name Name for a destination.
      */
-    virtual std::ostream* getOutputStream(std::string& name) = 0;
+    virtual std::ostream* getOutputStream(const std::string& name) = 0;
 
     /**
      *  Create or get existing indexed output stream by name.
@@ -35,14 +35,14 @@ public:
      *  \param name     Name for a destination.
      *  \param index    Index number for a destination.
      */
-    virtual std::ostream* getOutputStream(std::string& name, long index) = 0;
+    virtual std::ostream* getOutputStream(const std::string& name, long index) = 0;
 
     /**
      *  Create or get existing output stream by name.
      *
      *  \param name Name for a destination.
      */
-    virtual std::istream* getInputStream(std::string& name) = 0;
+    virtual std::istream* getInputStream(const std::string& name) = 0;
 
     /**
      *  Create or get existing indexed output stream by name.
@@ -50,7 +50,7 @@ public:
      *  \param name     Name for a destination.
      *  \param index    Index number for a destination.
      */
-    virtual std::istream* getInputStream(std::string& name, long index) = 0;
+    virtual std::istream* getInputStream(const std::string& name, long index) = 0;
 
     /**
      *  Close specified stream.

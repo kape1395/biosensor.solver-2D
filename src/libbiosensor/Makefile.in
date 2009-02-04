@@ -88,6 +88,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
 	bio/io/libbiosensor_la-FilesystemOutputContext.lo \
 	bio/io/libbiosensor_la-IOutput.lo \
 	bio/io/libbiosensor_la-IOutputContext.lo \
+	bio/io/libbiosensor_la-IRepeatable.lo \
 	bio/io/libbiosensor_la-SteadyStateHalfTime.lo \
 	bio/slv/libbiosensor_la-AbstractIterativeSolver.lo \
 	bio/slv/libbiosensor_la-AbstractSolver.lo \
@@ -96,7 +97,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
 	bio/slv/libbiosensor_la-ISolver.lo \
 	bio/slv/libbiosensor_la-ISolverListener.lo \
 	bio/slv/libbiosensor_la-ITransducer.lo \
-	bio/slv/libbiosensor_la-InvokeEverySL.lo \
+	bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo \
 	bio/slv/libbiosensor_la-InvokeNotBefore.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
 	bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo \
@@ -273,6 +274,7 @@ libbiosensor_la_SOURCES = \
     bio/io/FilesystemOutputContext.cxx \
     bio/io/IOutput.cxx \
     bio/io/IOutputContext.cxx \
+    bio/io/IRepeatable.cxx \
     bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
@@ -281,7 +283,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
     bio/slv/ITransducer.cxx \
-    bio/slv/InvokeEverySL.cxx \
+    bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
@@ -316,6 +318,7 @@ nobase_pkginclude_HEADERS = \
     bio/io/FilesystemOutputContext.hxx \
     bio/io/IOutput.hxx \
     bio/io/IOutputContext.hxx \
+    bio/io/IRepeatable.hxx \
     bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
@@ -324,7 +327,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
     bio/slv/ITransducer.hxx \
-    bio/slv/InvokeEverySL.hxx \
+    bio/slv/InvokeEveryTimeStep.hxx \
     bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \
@@ -489,6 +492,8 @@ bio/io/libbiosensor_la-IOutput.lo: bio/io/$(am__dirstamp) \
 	bio/io/$(DEPDIR)/$(am__dirstamp)
 bio/io/libbiosensor_la-IOutputContext.lo: bio/io/$(am__dirstamp) \
 	bio/io/$(DEPDIR)/$(am__dirstamp)
+bio/io/libbiosensor_la-IRepeatable.lo: bio/io/$(am__dirstamp) \
+	bio/io/$(DEPDIR)/$(am__dirstamp)
 bio/io/libbiosensor_la-SteadyStateHalfTime.lo: bio/io/$(am__dirstamp) \
 	bio/io/$(DEPDIR)/$(am__dirstamp)
 bio/slv/$(am__dirstamp):
@@ -511,8 +516,8 @@ bio/slv/libbiosensor_la-ISolverListener.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-ITransducer.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
-bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/$(am__dirstamp) \
-	bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo:  \
+	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-InvokeNotBefore.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
@@ -578,6 +583,8 @@ mostlyclean-compile:
 	-rm -f bio/io/libbiosensor_la-IOutput.lo
 	-rm -f bio/io/libbiosensor_la-IOutputContext.$(OBJEXT)
 	-rm -f bio/io/libbiosensor_la-IOutputContext.lo
+	-rm -f bio/io/libbiosensor_la-IRepeatable.$(OBJEXT)
+	-rm -f bio/io/libbiosensor_la-IRepeatable.lo
 	-rm -f bio/io/libbiosensor_la-SteadyStateHalfTime.$(OBJEXT)
 	-rm -f bio/io/libbiosensor_la-SteadyStateHalfTime.lo
 	-rm -f bio/libbiosensor_la-DelegatingFactory.$(OBJEXT)
@@ -602,8 +609,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-ISolverListener.lo
 	-rm -f bio/slv/libbiosensor_la-ITransducer.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-ITransducer.lo
-	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.$(OBJEXT)
-	-rm -f bio/slv/libbiosensor_la-InvokeEverySL.lo
+	-rm -f bio/slv/libbiosensor_la-InvokeEveryTimeStep.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo
 	-rm -f bio/slv/libbiosensor_la-InvokeNotBefore.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-InvokeNotBefore.lo
 	-rm -f bio/slv/libbiosensor_la-NullSolver.$(OBJEXT)
@@ -644,6 +651,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-FilesystemOutputContext.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-IOutput.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-IOutputContext.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-IRepeatable.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractIterativeSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-AbstractSolver.Plo@am__quote@
@@ -652,7 +660,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ISolverListener.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-ITransducer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEveryTimeStep.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Plo@am__quote@
@@ -865,6 +873,13 @@ bio/io/libbiosensor_la-IOutputContext.lo: bio/io/IOutputContext.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-IOutputContext.lo `test -f 'bio/io/IOutputContext.cxx' || echo '$(srcdir)/'`bio/io/IOutputContext.cxx
 
+bio/io/libbiosensor_la-IRepeatable.lo: bio/io/IRepeatable.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-IRepeatable.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-IRepeatable.Tpo -c -o bio/io/libbiosensor_la-IRepeatable.lo `test -f 'bio/io/IRepeatable.cxx' || echo '$(srcdir)/'`bio/io/IRepeatable.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-IRepeatable.Tpo bio/io/$(DEPDIR)/libbiosensor_la-IRepeatable.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/io/IRepeatable.cxx' object='bio/io/libbiosensor_la-IRepeatable.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/io/libbiosensor_la-IRepeatable.lo `test -f 'bio/io/IRepeatable.cxx' || echo '$(srcdir)/'`bio/io/IRepeatable.cxx
+
 bio/io/libbiosensor_la-SteadyStateHalfTime.lo: bio/io/SteadyStateHalfTime.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/io/libbiosensor_la-SteadyStateHalfTime.lo -MD -MP -MF bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Tpo -c -o bio/io/libbiosensor_la-SteadyStateHalfTime.lo `test -f 'bio/io/SteadyStateHalfTime.cxx' || echo '$(srcdir)/'`bio/io/SteadyStateHalfTime.cxx
 @am__fastdepCXX_TRUE@	mv -f bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Tpo bio/io/$(DEPDIR)/libbiosensor_la-SteadyStateHalfTime.Plo
@@ -921,12 +936,12 @@ bio/slv/libbiosensor_la-ITransducer.lo: bio/slv/ITransducer.cxx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-ITransducer.lo `test -f 'bio/slv/ITransducer.cxx' || echo '$(srcdir)/'`bio/slv/ITransducer.cxx
 
-bio/slv/libbiosensor_la-InvokeEverySL.lo: bio/slv/InvokeEverySL.cxx
-@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-InvokeEverySL.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Tpo -c -o bio/slv/libbiosensor_la-InvokeEverySL.lo `test -f 'bio/slv/InvokeEverySL.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEverySL.cxx
-@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEverySL.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/InvokeEverySL.cxx' object='bio/slv/libbiosensor_la-InvokeEverySL.lo' libtool=yes @AMDEPBACKSLASH@
+bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo: bio/slv/InvokeEveryTimeStep.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEveryTimeStep.Tpo -c -o bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo `test -f 'bio/slv/InvokeEveryTimeStep.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEveryTimeStep.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEveryTimeStep.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-InvokeEveryTimeStep.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/InvokeEveryTimeStep.cxx' object='bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-InvokeEverySL.lo `test -f 'bio/slv/InvokeEverySL.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEverySL.cxx
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-InvokeEveryTimeStep.lo `test -f 'bio/slv/InvokeEveryTimeStep.cxx' || echo '$(srcdir)/'`bio/slv/InvokeEveryTimeStep.cxx
 
 bio/slv/libbiosensor_la-InvokeNotBefore.lo: bio/slv/InvokeNotBefore.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-InvokeNotBefore.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Tpo -c -o bio/slv/libbiosensor_la-InvokeNotBefore.lo `test -f 'bio/slv/InvokeNotBefore.cxx' || echo '$(srcdir)/'`bio/slv/InvokeNotBefore.cxx

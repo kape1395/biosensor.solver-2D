@@ -31,6 +31,7 @@ libbiosensor_la_SOURCES = \
     bio/io/FilesystemOutputContext.cxx \
     bio/io/IOutput.cxx \
     bio/io/IOutputContext.cxx \
+    bio/io/IRepeatable.cxx \
     bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
@@ -39,7 +40,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
     bio/slv/ITransducer.cxx \
-    bio/slv/InvokeEverySL.cxx \
+    bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
@@ -75,6 +76,7 @@ nobase_pkginclude_HEADERS = \
     bio/io/FilesystemOutputContext.hxx \
     bio/io/IOutput.hxx \
     bio/io/IOutputContext.hxx \
+    bio/io/IRepeatable.hxx \
     bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
@@ -83,7 +85,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
     bio/slv/ITransducer.hxx \
-    bio/slv/InvokeEverySL.hxx \
+    bio/slv/InvokeEveryTimeStep.hxx \
     bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \

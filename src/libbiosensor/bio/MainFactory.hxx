@@ -2,6 +2,7 @@
 #define BIO_MainFactory_HXX
 #include "../biosensor.hxx"
 #include "IFactory.hxx"
+#include "io/IOutputContext.hxx"
 #include "slv/ISolver.hxx"
 #include "slv/ISolverListener.hxx"
 #include <biosensor-xml.hxx>
@@ -15,14 +16,18 @@ BIO_NS_BEGIN
 class MainFactory : public IFactory
 {
 private:
-    IFactory* rootFactory;
+    BIO_NS::IFactory* rootFactory;
+    BIO_IO_NS::IOutputContext* outputContext;
 
 public:
 
     /**
      *
      */
-    MainFactory(IFactory* rootFactory);
+    MainFactory(
+        BIO_NS::IFactory* rootFactory,
+        BIO_IO_NS::IOutputContext* outputContext
+    );
 
     /**
      *

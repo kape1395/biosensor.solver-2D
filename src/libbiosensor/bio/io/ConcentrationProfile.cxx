@@ -7,13 +7,12 @@
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     std::string& name,
-    long indexed,
     BIO_SLV_NS::ISolver* solver,
     BIO_IO_NS::IOutputContext* outputContext
 ) : log(log4cxx::Logger::getLogger("libbiosensor.ConcentrationProfile"))
 {
     this->name = name;
-    this->indexed = indexed;
+    this->indexed = false;
     this->currentIndex = 0;
     this->solver = solver;
     this->outputContext = outputContext;

@@ -2,10 +2,13 @@
 #define BIO_IO_FilesystemOutputContext_HXX
 #include "../../biosensor.hxx"
 #include "IOutputContext.hxx"
+#include <map>
 #include <string>
 #include <ostream>
 #include <istream>
+#include <fstream>
 #include <vector>
+#include <boost/filesystem.hpp>
 BIO_IO_NS_BEGIN
 
 
@@ -15,10 +18,11 @@ BIO_IO_NS_BEGIN
 class FilesystemOutputContext : public IOutputContext
 {
 private:
-    std::string baseDir;
+    boost::filesystem::path baseDirPath;
     std::vector<std::string> fileNames;
-    std::vector<std::ostream*> openOStreams;
-    std::vector<std::istream*> openIStreams;
+    //std::vector<std::ostream*> openOStreams;
+    //std::vector<std::istream*> openIStreams;
+    std::map<std::string, std::ofstream*> openOStreams;
 
 public:
 
@@ -27,7 +31,7 @@ public:
      *
      *  \param destDir  Destination directory.
      */
-    FilesystemOutputContext(std::string& baseDir);
+    FilesystemOutputContext(const std::string& baseDir);
 
     /**
      *  Destructor.
@@ -39,7 +43,7 @@ public:
      *
      *  \param name Name for a destination.
      */
-    virtual std::ostream* getOutputStream(std::string& name);
+    virtual std::ostream* getOutputStream(const std::string& name);
 
     /**
      *  Create or get existing indexed output stream by name.
@@ -47,14 +51,14 @@ public:
      *  \param name     Name for a destination.
      *  \param index    Index number for a destination.
      */
-    virtual std::ostream* getOutputStream(std::string& name, long index);
+    virtual std::ostream* getOutputStream(const std::string& name, long index);
 
     /**
      *  Create or get existing output stream by name.
      *
      *  \param name Name for a destination.
      */
-    virtual std::istream* getInputStream(std::string& name);
+    virtual std::istream* getInputStream(const std::string& name);
 
     /**
      *  Create or get existing indexed output stream by name.
@@ -62,7 +66,7 @@ public:
      *  \param name     Name for a destination.
      *  \param index    Index number for a destination.
      */
-    virtual std::istream* getInputStream(std::string& name, long index);
+    virtual std::istream* getInputStream(const std::string& name, long index);
 
     /**
      *  Close specified stream.
@@ -75,8 +79,16 @@ public:
     virtual void close();
 
 protected:
-    std::string getFileName(std::string& name);
-    std::string getFileName(std::string& name, long index);
+
+    /**
+     *
+     */
+    boost::filesystem::path getFilePath(const std::string& name) const;
+
+    /**
+     *
+     */
+    std::string createIndexedFileName(const std::string& name, long index) const;
 
 };
 

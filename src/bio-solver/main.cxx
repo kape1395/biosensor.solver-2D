@@ -8,6 +8,8 @@
 #include <bio/Exception.hxx>
 #include <bio/MainFactory.hxx>
 #include <bio/DelegatingFactory.hxx>
+#include <bio/io/IOutputContext.hxx>
+#include <bio/io/FilesystemOutputContext.hxx>
 #include <bio/slv/ISolver.hxx>
 #include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
@@ -22,6 +24,7 @@
 int main(int argn, char **argv)
 {
     using namespace BIO_NS;
+    using namespace BIO_IO_NS;
     using namespace BIO_SLV_NS;
     using namespace BIO_XML_NS::model;
 
@@ -30,10 +33,11 @@ int main(int argn, char **argv)
     log4cpp::Category& log = log4cpp::Category::getInstance("bio-solver");
 
 
-    if (argn == 1)
+    if (argn != 3)
     {
-        printf("usage: bio-solver <file-name>\n");
+        printf("usage: bio-solver <file-name> <output-dir>\n");
         printf("\tfile-name\tBiosensor configuration XML file\n");
+        printf("\toutput-dir\tOutput directory. Must not exist on invocation.\n");
         return 1;
     }
     else
@@ -52,8 +56,10 @@ int main(int argn, char **argv)
 
 
             // Construct factories.
+            IOutputContext* outputContext = new FilesystemOutputContext(std::string(argv[2]));
+
             DelegatingFactory* factory = new DelegatingFactory();
-            factory->addFactory(new BIO_NS::MainFactory(factory), true);
+            factory->addFactory(new BIO_NS::MainFactory(factory, outputContext), true);
             factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
 
 
@@ -76,6 +82,7 @@ int main(int argn, char **argv)
 
             delete solver;
             delete factory;
+            delete outputContext;
             log.info("Success");
 
 

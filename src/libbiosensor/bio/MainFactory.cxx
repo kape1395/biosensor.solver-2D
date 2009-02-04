@@ -1,15 +1,22 @@
 #include "MainFactory.hxx"
+#include "io/ConcentrationProfile.hxx"
+#include "io/CurrentDensity.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/InvokeNotBefore.hxx"
+#include "slv/InvokeEveryTimeStep.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
 #include "trd/AmperometricInjectedElectrode2D.hxx"
 #include "Exception.hxx"
 
 
 /* ************************************************************************** */
-BIO_NS::MainFactory::MainFactory(IFactory* rootFactory)
+BIO_NS::MainFactory::MainFactory(
+    BIO_NS::IFactory* rootFactory,
+    BIO_IO_NS::IOutputContext* outputContext
+)
 {
     this->rootFactory = rootFactory;
+    this->outputContext = outputContext;
 }
 
 
@@ -95,8 +102,93 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
     BIO_XML_MODEL_NS::SolverOutput* output
 )
 {
-    //  TODO: Implement
-    return 0;
+    using namespace BIO_XML_MODEL_NS;
+    using namespace BIO_XML_MODEL_NS::solver;
+
+    if (dynamic_cast<BIO_XML_MODEL_NS::solver::Kinetic*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        Kinetic* kinetic = dynamic_cast<Kinetic*>(output);
+
+        if (!(kinetic->time().present() || kinetic->stepCount().present()))
+            throw BIO_NS::Exception("At least one of time and stepCount must be specified for solver::Kinetic");
+
+
+        BIO_SLV_NS::InvokeEveryTimeStep* out = new BIO_SLV_NS::InvokeEveryTimeStep(solver);
+
+        if (kinetic->stepCount().present())
+            out->setStepByStepCount(kinetic->stepCount().get());
+
+        if (kinetic->time().present())
+            out->setStepByTime(kinetic->time().get());
+
+
+        Kinetic::output_sequence& subOuts = kinetic->output();
+        for (Kinetic::output_iterator o = subOuts.begin(); o < subOuts.end(); o++)
+        {
+            BIO_SLV_NS::ISolverListener* subOut = rootFactory->createOutput(solver, &*o);
+            if (dynamic_cast<BIO_IO_NS::IRepeatable*>(subOut))
+            {
+                dynamic_cast<BIO_IO_NS::IRepeatable*>(subOut)->setRepeatable(true);
+            }
+            out->addListener(subOut, true);
+        }
+
+        return out;
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::SteadyState*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        // TODO: Implement
+        throw BIO_NS::Exception("BIO_XML_MODEL_NS::solver::SteadyState is not implemented yet");
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::ConcentrationProfile*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
+            output->name(),
+            solver,
+            outputContext
+        );
+
+        return out;
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::CurrentDensity*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        BIO_IO_NS::CurrentDensity* out = new BIO_IO_NS::CurrentDensity(
+            output->name(),
+            solver,
+            outputContext
+        );
+
+        return out;
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::SteadyStateHalfTime*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        // TODO: Implement
+        throw BIO_NS::Exception("BIO_XML_MODEL_NS::solver::SteadyStateHalfTime is not implemented yet");
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 

@@ -5,6 +5,7 @@
 #include "../dm/ICursor2D.hxx"
 #include "IOutput.hxx"
 #include "IOutputContext.hxx"
+#include "IRepeatable.hxx"
 #include <log4cxx/logger.h>
 #include <string>
 BIO_IO_NS_BEGIN
@@ -13,7 +14,7 @@ BIO_IO_NS_BEGIN
 /**
  *
  */
-class ConcentrationProfile : public BIO_IO_NS::IOutput
+class ConcentrationProfile : public BIO_IO_NS::IOutput, public BIO_IO_NS::IRepeatable
 {
 private:
     log4cxx::LoggerPtr log;
@@ -34,7 +35,6 @@ public:
      */
     ConcentrationProfile(
         std::string& name,
-        long indexed,
         BIO_SLV_NS::ISolver* solver,
         BIO_IO_NS::IOutputContext* outputContext
     );
@@ -48,6 +48,14 @@ public:
      *  EventListener.
      */
     virtual void solveEventOccured();
+
+    /**
+     *  ...
+     */
+    virtual void setRepeatable(bool repeatable)
+    {
+        this->indexed = repeatable;
+    }
 
 };
 
