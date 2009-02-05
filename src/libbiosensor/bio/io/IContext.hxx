@@ -1,5 +1,5 @@
-#ifndef BIO_IO_IOutputContext_HXX
-#define BIO_IO_IOutputContext_HXX
+#ifndef BIO_IO_IContext_HXX
+#define BIO_IO_IContext_HXX
 #include "../../biosensor.hxx"
 #include <string>
 #include <ostream>
@@ -10,14 +10,14 @@ BIO_IO_NS_BEGIN
 /**
  *
  */
-class IOutputContext
+class IContext
 {
 public:
 
     /**
      *  Destructor.
      */
-    virtual ~IOutputContext()
+    virtual ~IContext()
     {
         //  Empty virtual constructor.
     }

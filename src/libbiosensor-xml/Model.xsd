@@ -56,7 +56,7 @@
     
     <xs:complexType name="MediumSubstance">
         <xs:attribute name="name"       type="SubstanceName" use="required"/>
-        <xs:attribute name="diffusion"  type="SymbolName"    use="required"/>
+        <xs:attribute name="diffusion"  type="SymbolName"    use="optional"/>
         <xs:attribute name="initial"    type="SymbolName"    use="required"/>
     </xs:complexType>
     

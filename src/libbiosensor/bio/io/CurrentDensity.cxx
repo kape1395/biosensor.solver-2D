@@ -7,12 +7,12 @@
 BIO_IO_NS::CurrentDensity::CurrentDensity(
     std::string& name,
     BIO_SLV_NS::ISolver* solver,
-    BIO_IO_NS::IOutputContext* outputContext
+    BIO_IO_NS::IContext* Context
 ) : log(log4cxx::Logger::getLogger("libbiosensor.CurrentDensity"))
 {
     this->name = name;
     this->solver = solver;
-    this->outputContext = outputContext;
+    this->Context = Context;
     this->output = 0;
 }
 
@@ -22,7 +22,7 @@ BIO_IO_NS::CurrentDensity::CurrentDensity(
 BIO_IO_NS::CurrentDensity::~CurrentDensity()
 {
     if (output)
-        outputContext->close(output);
+        Context->close(output);
     output = 0;
 }
 
@@ -33,7 +33,7 @@ void BIO_IO_NS::CurrentDensity::solveEventOccured()
 {
     if (!output)
     {
-        output = outputContext->getOutputStream(name);
+        output = Context->getOutputStream(name);
         (*output) << "# Iteration\tTime\tCurrentDensity" << std::endl;
     }
 

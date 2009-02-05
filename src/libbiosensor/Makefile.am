@@ -28,9 +28,9 @@ libbiosensor_la_SOURCES = \
     bio/dm/NullDM.cxx \
     bio/io/ConcentrationProfile.cxx \
     bio/io/CurrentDensity.cxx \
-    bio/io/FilesystemOutputContext.cxx \
+    bio/io/FilesystemContext.cxx \
     bio/io/IOutput.cxx \
-    bio/io/IOutputContext.cxx \
+    bio/io/IContext.cxx \
     bio/io/IRepeatable.cxx \
     bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
@@ -73,9 +73,9 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/io/ConcentrationProfile.hxx \
     bio/io/CurrentDensity.hxx \
-    bio/io/FilesystemOutputContext.hxx \
+    bio/io/FilesystemContext.hxx \
     bio/io/IOutput.hxx \
-    bio/io/IOutputContext.hxx \
+    bio/io/IContext.hxx \
     bio/io/IRepeatable.hxx \
     bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \

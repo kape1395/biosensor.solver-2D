@@ -1,4 +1,4 @@
-#include "FilesystemOutputContext.hxx"
+#include "FilesystemContext.hxx"
 #include <sstream>
 #include <iomanip>
 #include <fstream>
@@ -11,7 +11,7 @@ namespace bf = boost::filesystem;
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_IO_NS::FilesystemOutputContext::FilesystemOutputContext(
+BIO_IO_NS::FilesystemContext::FilesystemContext(
     const std::string& baseDir
 ) : baseDirPath(baseDir)
 {
@@ -28,7 +28,7 @@ BIO_IO_NS::FilesystemOutputContext::FilesystemOutputContext(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_IO_NS::FilesystemOutputContext::~FilesystemOutputContext()
+BIO_IO_NS::FilesystemContext::~FilesystemContext()
 {
     close();
 }
@@ -36,7 +36,7 @@ BIO_IO_NS::FilesystemOutputContext::~FilesystemOutputContext()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::ostream* BIO_IO_NS::FilesystemOutputContext::getOutputStream(const std::string& name)
+std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name)
 {
     for (std::vector<std::string>::iterator fn = fileNames.begin(); fn < fileNames.end(); fn++)
     {
@@ -55,7 +55,7 @@ std::ostream* BIO_IO_NS::FilesystemOutputContext::getOutputStream(const std::str
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::ostream* BIO_IO_NS::FilesystemOutputContext::getOutputStream(const std::string& name, long index)
+std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name, long index)
 {
     return getOutputStream(createIndexedFileName(name, index));
 }
@@ -63,7 +63,7 @@ std::ostream* BIO_IO_NS::FilesystemOutputContext::getOutputStream(const std::str
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::istream* BIO_IO_NS::FilesystemOutputContext::getInputStream(const std::string& name)
+std::istream* BIO_IO_NS::FilesystemContext::getInputStream(const std::string& name)
 {
     // TODO: Implement.
     return 0;
@@ -72,7 +72,7 @@ std::istream* BIO_IO_NS::FilesystemOutputContext::getInputStream(const std::stri
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::istream* BIO_IO_NS::FilesystemOutputContext::getInputStream(const std::string& name, long index)
+std::istream* BIO_IO_NS::FilesystemContext::getInputStream(const std::string& name, long index)
 {
     // TODO: Implement.
     return 0;
@@ -81,7 +81,7 @@ std::istream* BIO_IO_NS::FilesystemOutputContext::getInputStream(const std::stri
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::FilesystemOutputContext::close(std::ostream* stream)
+void BIO_IO_NS::FilesystemContext::close(std::ostream* stream)
 {
     bool deleted = false;
     for (std::map<std::string, std::ofstream*>::iterator i = openOStreams.begin();
@@ -101,7 +101,7 @@ void BIO_IO_NS::FilesystemOutputContext::close(std::ostream* stream)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::FilesystemOutputContext::close()
+void BIO_IO_NS::FilesystemContext::close()
 {
     for (std::map<std::string, std::ofstream*>::iterator i = openOStreams.begin(); i != openOStreams.end(); i++)
     {
@@ -115,7 +115,7 @@ void BIO_IO_NS::FilesystemOutputContext::close()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bf::path BIO_IO_NS::FilesystemOutputContext::getFilePath(const std::string& name) const
+bf::path BIO_IO_NS::FilesystemContext::getFilePath(const std::string& name) const
 {
     bf::path filePath(baseDirPath);
     filePath /= name;
@@ -125,7 +125,7 @@ bf::path BIO_IO_NS::FilesystemOutputContext::getFilePath(const std::string& name
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::string BIO_IO_NS::FilesystemOutputContext::createIndexedFileName(const std::string& name, long index) const
+std::string BIO_IO_NS::FilesystemContext::createIndexedFileName(const std::string& name, long index) const
 {
     std::stringstream fileName;
     fileName << name << '-';

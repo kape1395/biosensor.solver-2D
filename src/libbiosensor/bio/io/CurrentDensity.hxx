@@ -3,7 +3,7 @@
 #include "../../biosensor.hxx"
 #include "../slv/ISolver.hxx"
 #include "IOutput.hxx"
-#include "IOutputContext.hxx"
+#include "IContext.hxx"
 #include <log4cxx/logger.h>
 #include <string>
 #include <ostream>
@@ -20,7 +20,7 @@ private:
 
     std::string name;
     BIO_SLV_NS::ISolver* solver;
-    BIO_IO_NS::IOutputContext* outputContext;
+    BIO_IO_NS::IContext* Context;
 
     std::ostream* output;
 
@@ -31,7 +31,7 @@ public:
     CurrentDensity(
         std::string& name,
         BIO_SLV_NS::ISolver* solver,
-        BIO_IO_NS::IOutputContext* outputContext
+        BIO_IO_NS::IContext* Context
     );
 
     /**

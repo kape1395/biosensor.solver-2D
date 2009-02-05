@@ -1,7 +1,7 @@
-#ifndef BIO_IO_FilesystemOutputContext_HXX
-#define BIO_IO_FilesystemOutputContext_HXX
+#ifndef BIO_IO_FilesystemContext_HXX
+#define BIO_IO_FilesystemContext_HXX
 #include "../../biosensor.hxx"
-#include "IOutputContext.hxx"
+#include "IContext.hxx"
 #include <map>
 #include <string>
 #include <ostream>
@@ -15,7 +15,7 @@ BIO_IO_NS_BEGIN
 /**
  *
  */
-class FilesystemOutputContext : public IOutputContext
+class FilesystemContext : public IContext
 {
 private:
     boost::filesystem::path baseDirPath;
@@ -31,12 +31,12 @@ public:
      *
      *  \param destDir  Destination directory.
      */
-    FilesystemOutputContext(const std::string& baseDir);
+    FilesystemContext(const std::string& baseDir);
 
     /**
      *  Destructor.
      */
-    virtual ~FilesystemOutputContext();
+    virtual ~FilesystemContext();
 
     /**
      *  Create or get existing output stream by name.

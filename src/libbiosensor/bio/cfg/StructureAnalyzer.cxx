@@ -8,8 +8,11 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     BIO_XML_NS::model::Model* config
 ) :
         log(log4cxx::Logger::getLogger("libbiosensor.StructureAnalyzer")),
-        axisPoint0(BIO_XML_NS::model::SymbolName("axisPoint0"), 0)
+        axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
+        diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
 {
+    axisPoint0.dimension("m");
+    diffusion0.dimension("m^2/s");
     twoDimensional = false; // it is not very correct, but...
     reactions = 0;
     diffusions = 0;
@@ -217,7 +220,9 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
                 for (it_diff diffusion = mediums[h][v]->substance().begin(); diffusion < mediums[h][v]->substance().end(); diffusion++)
                 {
                     int substIdx = getSubstanceIndex(diffusion->name());
-                    diffusions[h][v][substIdx] = getSymbol(diffusion->diffusion());
+                    diffusions[h][v][substIdx] = (diffusion->diffusion().present())
+                            ? getSymbol(diffusion->diffusion().get())
+                            : &diffusion0;
                     initialConcentrations[h][v][substIdx] = getSymbol(diffusion->initial());
                 }
                 for (it_reac reaction = mediums[h][v]->reaction().begin(); reaction < mediums[h][v]->reaction().end(); reaction++)

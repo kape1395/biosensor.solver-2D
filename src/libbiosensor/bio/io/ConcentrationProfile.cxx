@@ -9,14 +9,14 @@
 BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     std::string& name,
     BIO_SLV_NS::ISolver* solver,
-    BIO_IO_NS::IOutputContext* outputContext
+    BIO_IO_NS::IContext* Context
 ) : log(log4cxx::Logger::getLogger("libbiosensor.ConcentrationProfile"))
 {
     this->name = name;
     this->indexed = false;
     this->currentIndex = 0;
     this->solver = solver;
-    this->outputContext = outputContext;
+    this->Context = Context;
 
     if ((this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData())) == 0)
     {
@@ -42,8 +42,8 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
     int substCount = grid->getSubstanceCount();
 
     std::ostream* out = indexed
-                        ? outputContext->getOutputStream(name, currentIndex)
-                        : outputContext->getOutputStream(name);
+                        ? Context->getOutputStream(name, currentIndex)
+                        : Context->getOutputStream(name);
 
 
     IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
@@ -87,7 +87,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
         cursor->rowStart();
     }
 
-    outputContext->close(out);
+    Context->close(out);
     currentIndex++;
 }
 

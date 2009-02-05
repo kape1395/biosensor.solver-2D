@@ -4,7 +4,7 @@
 #include "../dm/IGrid2D.hxx"
 #include "../dm/ICursor2D.hxx"
 #include "IOutput.hxx"
-#include "IOutputContext.hxx"
+#include "IContext.hxx"
 #include "IRepeatable.hxx"
 #include <log4cxx/logger.h>
 #include <string>
@@ -21,7 +21,7 @@ private:
 
     std::string name;
     BIO_SLV_NS::ISolver* solver;
-    BIO_IO_NS::IOutputContext* outputContext;
+    BIO_IO_NS::IContext* Context;
 
     BIO_DM_NS::IGrid2D* grid;
     BIO_DM_NS::ICursor2D* cursor;
@@ -36,7 +36,7 @@ public:
     ConcentrationProfile(
         std::string& name,
         BIO_SLV_NS::ISolver* solver,
-        BIO_IO_NS::IOutputContext* outputContext
+        BIO_IO_NS::IContext* Context
     );
 
     /**

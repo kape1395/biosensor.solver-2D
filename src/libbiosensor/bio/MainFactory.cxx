@@ -12,11 +12,11 @@
 /* ************************************************************************** */
 BIO_NS::MainFactory::MainFactory(
     BIO_NS::IFactory* rootFactory,
-    BIO_IO_NS::IOutputContext* outputContext
+    BIO_IO_NS::IContext* Context
 )
 {
     this->rootFactory = rootFactory;
-    this->outputContext = outputContext;
+    this->Context = Context;
 }
 
 
@@ -155,7 +155,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
             output->name(),
             solver,
-            outputContext
+            Context
         );
 
         return out;
@@ -169,7 +169,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         BIO_IO_NS::CurrentDensity* out = new BIO_IO_NS::CurrentDensity(
             output->name(),
             solver,
-            outputContext
+            Context
         );
 
         return out;

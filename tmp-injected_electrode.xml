@@ -39,14 +39,16 @@
 
     <medium name="\Omega_1">
         <substance name="S"       diffusion="D_Diff_S" initial="0"/>
+        <substance name="P"       diffusion="D_Diff_S" initial="0"/>
         <substance name="M_{ox}"  diffusion="D_Diff_M" initial="0"/>
         <substance name="M_{red}" diffusion="D_Diff_M" initial="0"/>
         <area top="z_0" bottom="z_1" left="r_0" right="r_2"/>
     </medium>
     <medium name="\Omega_2">
         <substance name="S"       diffusion="D_Enz_S" initial="0"/>
-        <substance name="E_{ox}"  diffusion="D_Enz_E" initial="E_0"/>
-        <substance name="E_{red}" diffusion="D_Enz_E" initial="0"/>
+        <substance name="P"       diffusion="D_Enz_S" initial="0"/>
+        <substance name="E_{ox}"                      initial="E_0"/>
+        <substance name="E_{red}"                     initial="0"/>
         <substance name="M_{ox}"  diffusion="D_Enz_M" initial="0"/>
         <substance name="M_{red}" diffusion="D_Enz_M" initial="0"/>
         <reaction xsi:type="r:ReductionOxidation" rate="k_1">
@@ -64,9 +66,10 @@
         <area top="z_1" bottom="z_2" left="r_0" right="r_2"/>
     </medium>
     <medium name="\Omega_3">
-        <substance name="S"     diffusion="D_Enz_S" initial="0"/>
-        <substance name="E_{ox}"  diffusion="D_Enz_E" initial="E_0"/>
-        <substance name="E_{red}" diffusion="D_Enz_E" initial="0"/>
+        <substance name="S"       diffusion="D_Enz_S" initial="0"/>
+        <substance name="P"       diffusion="D_Enz_S" initial="0"/>
+        <substance name="E_{ox}"                      initial="E_0"/>
+        <substance name="E_{red}"                     initial="0"/>
         <substance name="M_{ox}"  diffusion="D_Enz_M" initial="0"/>
         <substance name="M_{red}" diffusion="D_Enz_M" initial="0"/>
         <reaction xsi:type="r:ReductionOxidation" rate="k_1">
@@ -85,7 +88,7 @@
     </medium>
 
 
-    <bound from="z_0" to="z_3" at="r_0">
+    <!--bound from="z_0" to="z_3" at="r_0">
         <substance name="S"       xsi:type="b:Wall"/>
         <substance name="M_{ox}"  xsi:type="b:Wall"/>
         <substance name="M_{red}" xsi:type="b:Wall"/>
@@ -102,19 +105,20 @@
     <bound from="z_1" to="z_2" at="r_2">
         <substance name="E_{ox}"  xsi:type="b:Wall"/>
         <substance name="E_{red}" xsi:type="b:Wall"/>
-    </bound>
+    </bound-->
     <bound from="r_0" to="r_2" at="z_0">
         <substance name="S"       xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="P"       xsi:type="b:Constant" concentration="0"/>
         <substance name="M_{ox}"  xsi:type="b:Constant" concentration="M_0"/>
         <substance name="M_{red}" xsi:type="b:Constant" concentration="0"  />
     </bound>
-    <bound from="r_0" to="r_1" at="z_3">
+    <!--bound from="r_0" to="r_1" at="z_3">
         <substance name="S"       xsi:type="b:Wall"/>
         <substance name="E_{ox}"  xsi:type="b:Wall"/>
         <substance name="E_{red}" xsi:type="b:Wall"/>
         <substance name="M_{ox}"  xsi:type="b:Wall"/>
         <substance name="M_{red}" xsi:type="b:Wall"/>
-    </bound>
+    </bound-->
 
 
     <transducer
@@ -135,21 +139,20 @@
     <symbol name="z_3" value="3.104E-4" dimension="m"/>
 
     <!-- Diffusion coefficients -->
-    <symbol name="D_Enz_S"  value="1E-6" dimension="m^2 / s"/>
-    <symbol name="D_Enz_E"  value="1E-6" dimension="m^2 / s"/>
-    <symbol name="D_Enz_M"  value="1E-6" dimension="m^2 / s"/>
-    <symbol name="D_Diff_S" value="1E-6" dimension="m^2 / s"/>
-    <symbol name="D_Diff_M" value="1E-6" dimension="m^2 / s"/>
+    <symbol name="D_Enz_S"  value="3.0E-4" dimension="m^2/s"/>
+    <symbol name="D_Enz_M"  value="3.0E-4" dimension="m^2/s"/>
+    <symbol name="D_Diff_S" value="6.0E-4" dimension="m^2/s"/>
+    <symbol name="D_Diff_M" value="6.0E-4" dimension="m^2/s"/>
 
     <!-- Concentrations -->
-    <symbol name="E_0" value="3.0E-3" dimension="mol / m^3"/>
-    <symbol name="M_0" value="1.0E-1" dimension="mol / m^3"/>
-    <symbol name="S_0" value="1.0E2"  dimension="mol / m^3"/>
-    <symbol name="0"   value="0.0"    dimension="mol / m^3"/>
+    <symbol name="E_0" value="3.0E-3" dimension="mol/m^3"/>
+    <symbol name="M_0" value="1.0E-1" dimension="mol/m^3"/>
+    <symbol name="S_0" value="1.0E2"  dimension="mol/m^3"/>
+    <symbol name="0"   value="0.0"    dimension="mol/m^3"/>
 
     <!-- Reaction rates -->
-    <symbol name="k_1" value="1E7"  dimension="mol / m^3 s"/>
-    <symbol name="k_2" value="1E10" dimension="mol / m^3 s"/>
+    <symbol name="k_1" value="1E7"  dimension="mol/m^3 s"/>
+    <symbol name="k_2" value="1E10" dimension="mol/m^3 s"/>
 
 
     <solver xsi:type="s:Implicit2D" timeStep="1E-9">

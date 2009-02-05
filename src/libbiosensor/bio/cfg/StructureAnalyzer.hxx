@@ -28,7 +28,8 @@ private:
     BIO_XML_NS::model::Medium* ** mediums;                          // Medium* [h][v]
 
     /// Position for the case, when these was Linear (one-dimensional) coordinate system.
-    BIO_XML_NS::model::Symbol axisPoint0;
+    BIO_XML_MODEL_NS::Symbol axisPoint0;
+    BIO_XML_MODEL_NS::Symbol diffusion0;
 
 public:
 

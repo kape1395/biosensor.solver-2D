@@ -8,8 +8,8 @@
 #include <bio/Exception.hxx>
 #include <bio/MainFactory.hxx>
 #include <bio/DelegatingFactory.hxx>
-#include <bio/io/IOutputContext.hxx>
-#include <bio/io/FilesystemOutputContext.hxx>
+#include <bio/io/IContext.hxx>
+#include <bio/io/FilesystemContext.hxx>
 #include <bio/slv/ISolver.hxx>
 #include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
@@ -56,10 +56,10 @@ int main(int argn, char **argv)
 
 
             // Construct factories.
-            IOutputContext* outputContext = new FilesystemOutputContext(std::string(argv[2]));
+            IContext* Context = new FilesystemContext(std::string(argv[2]));
 
             DelegatingFactory* factory = new DelegatingFactory();
-            factory->addFactory(new BIO_NS::MainFactory(factory, outputContext), true);
+            factory->addFactory(new BIO_NS::MainFactory(factory, Context), true);
             factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
 
 
@@ -82,7 +82,7 @@ int main(int argn, char **argv)
 
             delete solver;
             delete factory;
-            delete outputContext;
+            delete Context;
             log.info("Success");
 
 
