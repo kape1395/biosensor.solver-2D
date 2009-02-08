@@ -39,6 +39,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     /////////////////////////////////////////////////////////////
     //  Get all bound specs from the model.
     //
+    LOG4CXX_INFO(log, "Applying all provided bound conditions...");
     BIO_XML_NS::model::Model *model = structAnalyzer->getConfig();
     for (bIt b = model->bound().begin(); b < model->bound().end(); b++)
     {
@@ -118,6 +119,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         ////////////////////////////////
 
     }   //  for (bIt b = model->bound().begin(); b < model->bound().end(); b++)
+    LOG4CXX_INFO(log, "Applying all provided bound conditions... Done");
     //
     //  Get all bound specs from the model.
     /////////////////////////////////////////////////////////////
@@ -125,6 +127,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     /////////////////////////////////////////////////////////////
     //  Guess all missing bound conditions (or fail to do that)
     //
+    LOG4CXX_INFO(log, "Trying to guess all remaining bound conditions...");
     for (int h = 0; h < sizeH; h++)
     {
         for (int v = 0; v < sizeV; v++)
@@ -145,7 +148,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
             }
         }
     }
-
+    LOG4CXX_INFO(log, "Trying to guess all remaining bound conditions... Done");
     //
     //  Guess all missing bound conditions (or fail to do that)
     /////////////////////////////////////////////////////////////
@@ -234,8 +237,18 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         diffPrev = (hPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
         diffNext = (hNext == sizeH) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
     }
-    bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
-    bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
+    //// FIXME: This solution (with *Null) is not correct.
+    //          We must analze situations when there is no diffusion and when
+    //          there is no substance in the area differently.
+    //
+    //  Assumption that no substance is the same as diffusion is 0 is not
+    //  really correct. This is false in those cases, when substance has no
+    //  diffusion but participates in a reaction. Example of such substance
+    //  is an enzyme.
+    //bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
+    //bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
+    bool diffPrevIsNull = diffPrev == 0;
+    bool diffNextIsNull = diffNext == 0;
 
 
     BIO_XML_NS::model::SubstanceName& substanceName = structAnalyzer->getSubstances()[s]->name();
@@ -249,7 +262,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         //
         if (dynamic_cast<BIO_XML_NS::model::bound::Merge*>(bsProvided))
         {
-            if (diffPrevIsZero || diffNextIsZero)
+            if (diffPrevIsNull || diffNextIsNull)
                 throw Exception("In one of the sides of Merge bound is no substance or diffusion is 0.");
 
             bsPrev.bound            = bProvided;
@@ -260,13 +273,13 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         else if (dynamic_cast<BIO_XML_NS::model::bound::Constant*>(bsProvided) ||
                  dynamic_cast<BIO_XML_NS::model::bound::Wall*>(bsProvided))
         {
-            if (diffPrevIsZero && diffNextIsZero)
+            if (diffPrevIsNull && diffNextIsNull)
                 throw Exception("Both sides of 'Wall' or 'Constant' bound have no substrate of diffusions are 0.");
 
-            if (!diffPrevIsZero && !diffNextIsZero)
+            if (!diffPrevIsNull && !diffNextIsNull)
                 throw Exception("Both sides of 'Wall' or 'Constant' bound have non 0 diffusions so I think the model is inconsistent");
 
-            if (diffPrevIsZero)
+            if (diffPrevIsNull)
             {
                 bsPrev.bound = 0;
                 allocatedBoundConditions.push_back(
@@ -275,7 +288,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
                 bsNext.bound = bProvided;
                 bsNext.boundSubstance = bsProvided;
             }
-            else // diffNextIsZero
+            else // diffNextIsNull
             {
                 bsPrev.bound = bProvided;
                 bsPrev.boundSubstance = bsProvided;
@@ -287,7 +300,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         }
         else if (dynamic_cast<BIO_XML_NS::model::bound::Null*>(bsProvided))
         {
-            if (!diffPrevIsZero || !diffNextIsZero)
+            if (!diffPrevIsNull || !diffNextIsNull)
                 throw Exception("One of the sides of 'Null' bound have non 0 diffusions so I think the model is inconsistent");
 
             bsPrev.bound            = bProvided;
@@ -304,14 +317,14 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     {
         // try to guess correct BS
 
-        if (!diffPrevIsZero && !diffNextIsZero)
+        if (!diffPrevIsNull && !diffNextIsNull)
         {
             bsPrev.bound = bsNext.bound = 0;
             allocatedBoundConditions.push_back(
                 bsPrev.boundSubstance = bsNext.boundSubstance = new BIO_XML_NS::model::bound::Merge(substanceName)
             );
         }
-        else if (diffPrevIsZero && diffNextIsZero)
+        else if (diffPrevIsNull && diffNextIsNull)
         {
             bsPrev.bound = bsNext.bound = 0;
             allocatedBoundConditions.push_back(
@@ -322,7 +335,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         {
             //  Is this always correct?
             //  Maybe restrict this to internal bounds only?
-            if (diffPrevIsZero)
+            if (diffPrevIsNull)
             {
                 bsPrev.bound = bsNext.bound = 0;
                 allocatedBoundConditions.push_back(
@@ -332,7 +345,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
                     bsNext.boundSubstance = new BIO_XML_NS::model::bound::Wall(substanceName)
                 );
             }
-            else // diffNextIsZero
+            else // diffNextIsNull
             {
                 bsPrev.bound = bsNext.bound = 0;
                 allocatedBoundConditions.push_back(

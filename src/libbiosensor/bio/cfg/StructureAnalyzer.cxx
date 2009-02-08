@@ -221,8 +221,8 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
                 {
                     int substIdx = getSubstanceIndex(diffusion->name());
                     diffusions[h][v][substIdx] = (diffusion->diffusion().present())
-                            ? getSymbol(diffusion->diffusion().get())
-                            : &diffusion0;
+                                                 ? getSymbol(diffusion->diffusion().get())
+                                                 : &diffusion0;
                     initialConcentrations[h][v][substIdx] = getSymbol(diffusion->initial());
                 }
                 for (it_reac reaction = mediums[h][v]->reaction().begin(); reaction < mediums[h][v]->reaction().end(); reaction++)

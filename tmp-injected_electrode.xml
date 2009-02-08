@@ -92,12 +92,12 @@
         <substance name="S"       xsi:type="b:Wall"/>
         <substance name="M_{ox}"  xsi:type="b:Wall"/>
         <substance name="M_{red}" xsi:type="b:Wall"/>
-    </bound>
+    </bound-->
     <bound from="z_1" to="z_3" at="r_0">
         <substance name="E_{ox}"  xsi:type="b:Wall"/>
         <substance name="E_{red}" xsi:type="b:Wall"/>
     </bound>
-    <bound from="z_0" to="z_2" at="r_2">
+    <!--bound from="z_0" to="z_2" at="r_2">
         <substance name="S"       xsi:type="b:Wall"/>
         <substance name="M_{ox}"  xsi:type="b:Wall"/>
         <substance name="M_{red}" xsi:type="b:Wall"/>
@@ -156,11 +156,7 @@
 
 
     <solver xsi:type="s:Implicit2D" timeStep="1E-9">
-        <!-- Add startFrom, endAt... -->
-        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
-            <!--s:step stepCount="1000"/>
-            <s:from step="1000"/>
-            <s:to step="1000"/-->
+        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1">
             <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
             <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
         </output>
@@ -169,11 +165,11 @@
             <s:output name="density"        xsi:type="s:CurrentDensity"/>
             < ! - -utput name="halfTime"       xsi:type="s:SteadyStateHalfTime"/- - >
         </output-->
-        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="20"/>
-        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="20"/>
-        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="20"/>
-        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="20"/>
-        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="20"/>
+        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
         <s:stopCondition
             xsi:type="s:StopConditionValidAfter"
             stepCount="1000">
@@ -182,10 +178,7 @@
                 lessThan="0.0001"
             /-->
         </s:stopCondition>
-        <s:stopCondition
-            xsi:type="s:FailIfAbove"
-            stepCount="100000000"
-        />
+        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="3"/>
     </solver>
 
 </model>

@@ -1,4 +1,5 @@
 #include "MergeCondition.hxx"
+#include <string>
 
 
 /* ************************************************************************** */
@@ -10,7 +11,9 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     double diffusionNext
 ) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.MergeCondition"))
 {
-    LOG4CXX_DEBUG(log, "MergeCondition()");
+    std::ostringstream message;
+    message << "MergeCondition(dp=" << diffusionPrev << " dn=" << diffusionNext << ")";
+    LOG4CXX_DEBUG(log, message.str());
 
     this->edgePrev = edgePrev;
     this->edgeNext = edgeNext;
@@ -18,8 +21,15 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     this->diffusionNext = diffusionNext;
     this->size = edgePrev->getSize(); // it is same as in #edgePrev
 
-    a = diffusionPrev / edgePrev->getStepSize();
-    c = diffusionNext / edgeNext->getStepSize();
+    if (diffusionPrev == 0 && diffusionNext == 0)   //  FIXME: Solve this issue somehow... maybe using bound condition implemented by area solver.
+    {
+        LOG4CXX_WARN(log, "I dont know now whet to do on bounds with both sides have diffusion 0, so...");
+        this->diffusionPrev = 1.0;
+        this->diffusionNext = 1.0;
+    }
+
+    a = this->diffusionPrev / edgePrev->getStepSize();
+    c = this->diffusionNext / edgeNext->getStepSize();
     b = -(a + c);
     f = 0.0;
     applyInitialValues();

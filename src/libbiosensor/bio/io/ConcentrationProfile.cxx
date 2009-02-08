@@ -1,5 +1,6 @@
 #include "ConcentrationProfile.hxx"
 #include "../Exception.hxx"
+#include "../dm/ISegmentSplit.hxx"
 #include <iostream>
 #include <sstream>
 #include <cmath>
@@ -60,7 +61,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
     }
 
     std::stringstream header;
-    header << "# h\tv";
+    header << "# pos_h\tpos_v\tidx_h\tidx_v";
     for (int s = 0; s < substCount; s++)
     {
         header << '\t' << grid->getSubstanceConf(s)->name();
@@ -77,7 +78,11 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
         {
             BIO_DM_NS::IConcentrations* concentrations = cursor->getConcentrations();
 
-            (*out) << h << '\t' << v;
+            (*out)
+            << grid->getPointPositionsH()->getPointPosition(h) << '\t'
+            << grid->getPointPositionsV()->getPointPosition(v) << '\t'
+            << h << '\t' << v
+            ;
             for (int s = 0; s < substCount; s++)
             {
                 (*out) << '\t' << (*concentrations)[s];
