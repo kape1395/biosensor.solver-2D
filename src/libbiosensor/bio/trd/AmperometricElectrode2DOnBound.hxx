@@ -21,6 +21,10 @@ BIO_TRD_NS_BEGIN
 class AmperometricElectrode2DOnBound : public BIO_SLV_NS::ITransducer
 {
 private:
+    static const double CONST_n_e  = 2.0;
+    static const double CONST_F    = 96485.0;
+
+private:
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
     BIO_DM_NS::IComposite2D* dataModel;
@@ -28,15 +32,41 @@ private:
     BIO_XML_MODEL_NS::SubstanceName substanceName;
     int substanceIndex;
 
-    struct BoundAddress
+
+    /**
+     *
+     */
+    class BoundIntegrator
     {
-        BoundAddress(BIO_DM_NS::IGrid2D* area, BIO_CFG_NS::BoundAnalyzer::AreaSide side);
-        ~BoundAddress();
+    private:
         BIO_DM_NS::IGrid2D* area;
-        BIO_DM_NS::ICursor2D* cursor;
+        BIO_DM_NS::ICursor2D* cursor0;  // Cursor on bound
+        BIO_DM_NS::ICursor2D* cursor1;  // Cursor on next line at bound.
         BIO_CFG_NS::BoundAnalyzer::AreaSide side;
+        double D;           //!<  Diffusion coefficient
+        bool cylindrical;   //!<  Coordiname system is cylidrical.
+        bool horizontal;    //!<  Is this bound horizontal?
+        BIO_DM_NS::ISegmentSplit* pointsParallel;
+        BIO_DM_NS::ISegmentSplit* pointsPerpendicular;
+        double perpendicularStepSize;
+        double integrationLinePosition;
+
+    public:
+        BoundIntegrator(
+            BIO_DM_NS::IGrid2D* area,
+            BIO_CFG_NS::BoundAnalyzer::AreaSide side,
+            double diffusion,
+            bool cylindricalCoordinates
+        );
+        ~BoundIntegrator();
+        double integrate(int substanceIndex);
+
+    private:
+        void goToStart();
+        void goToNext();
+        double getIntagrationElement(int substanceIndex, int pointIndex);
     };
-    std::vector<BoundAddress*> bounds;
+    std::vector<BoundIntegrator*> bounds;
 
 public:
     AmperometricElectrode2DOnBound(

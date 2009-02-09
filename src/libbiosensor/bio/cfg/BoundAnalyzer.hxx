@@ -92,13 +92,14 @@ public:
     /**
      *  Returns the name of the bound, that defined specified bound condition.
      *
+     *  \param s    Substance index as returned by StructureAnalyzer::getSubstanceIndex
      *  \param h    Horizontal position of the area.
      *  \param v    Vertical position of the area.
      *  \param side Side of the area.
      *  \return Name of the bound. 0 is returned is a name was not specified or
      *          a bound condition was generated (guessed).
      */
-    std::string* getBoundName(int h, int v, AreaSide side);
+    std::string* getBoundName(int s, int h, int v, AreaSide side);
 
 private:
 

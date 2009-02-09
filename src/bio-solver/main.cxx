@@ -3,8 +3,8 @@
 
 #include <iostream>
 //#include <log4cxx/logger.h>
-#include <log4cpp/Category.hh>
-#include <log4cpp/PropertyConfigurator.hh>
+//#include <log4cpp/Category.hh>
+//#include <log4cpp/PropertyConfigurator.hh>
 #include <bio/Exception.hxx>
 #include <bio/MainFactory.hxx>
 #include <bio/DelegatingFactory.hxx>
@@ -29,8 +29,8 @@ int main(int argn, char **argv)
     using namespace BIO_XML_NS::model;
 
     //LoggerPtr log(Logger::getLogger("bio-solver"));
-    log4cpp::PropertyConfigurator::configure("log4cpp.properties");
-    log4cpp::Category& log = log4cpp::Category::getInstance("bio-solver");
+    //log4cpp::PropertyConfigurator::configure("log4cpp.properties");
+    //log4cpp::Category& log = log4cpp::Category::getInstance("bio-solver");
 
 
     if (argn != 3)
@@ -42,17 +42,17 @@ int main(int argn, char **argv)
     }
     else
     {
-        log.debug("Starting");
+        //log.debug("Starting");
 
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
         try
         {
 
             // Parse file
-            log.info("Parsing config file...");
+            //log.info("Parsing config file...");
             const std::string uri = std::string(argv[1]);
             std::auto_ptr<Model> model(BIO_XML_NS::model::model(uri));
-            log.info("Parsing config file... Done");
+            //log.info("Parsing config file... Done");
 
 
             // Construct factories.
@@ -64,47 +64,49 @@ int main(int argn, char **argv)
 
 
             // Create solver
-            log.info("Creating solver...");
+            //log.info("Creating solver...");
             ISolver* solver;
             if ((solver = factory->createSolver(&*model)) == 0)
             {
-                log.error("I dont know how to create requested solver.");
+                //log.error("I dont know how to create requested solver.");
                 return 2;
             }
-            log.info("Creating solver... Done");
+            //log.info("Creating solver... Done");
 
 
             // Simulate operation of the biosensor
-            log.info("Solving...");
+            //log.info("Solving...");
             solver->solve();
-            log.info("Solving... Done");
+            //log.info("Solving... Done");
 
 
             delete solver;
             delete factory;
             delete Context;
-            log.info("Success");
+            //log.info("Success");
 
 
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            log4cpp::Category::shutdown();
+            //log4cpp::Category::shutdown();
             return 0;
 
         }
         catch (const xml_schema::exception& e)
         {
-            log.error(e.what());
+            std::cout << "ERROR: " << e.what() << std::endl;
+            //log.error(e.what());
 
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            log4cpp::Category::shutdown();
+            //log4cpp::Category::shutdown();
             return 2;
         }
         catch (Exception& ee)
         {
-            log.error(ee.what());
+            std::cout << "ERROR: " << ee.what() << std::endl;
+            //log.error(ee.what());
 
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            log4cpp::Category::shutdown();
+            //log4cpp::Category::shutdown();
             return 2;
         }
     }

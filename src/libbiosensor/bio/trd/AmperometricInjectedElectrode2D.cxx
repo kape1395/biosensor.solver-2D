@@ -15,7 +15,7 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
     /*
     if ((dataModel == dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())) == 0)
     {
-        throw Exception("AmperometricElectrode: Data model must implement IComposite2D.");
+        throw Exception("InjectedElectrode: Data model must implement IComposite2D.");
     }
     this->structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(solver->getConfig());
     this->boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
