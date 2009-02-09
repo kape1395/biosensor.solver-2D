@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model
+    xmlns  ="http://lt.5grupe.karolis/biosensor/model"
+    xmlns:b="http://lt.5grupe.karolis/biosensor/model/bound"
+    xmlns:r="http://lt.5grupe.karolis/biosensor/model/reaction"
+    xmlns:s="http://lt.5grupe.karolis/biosensor/model/solver"
+    xmlns:t="http://lt.5grupe.karolis/biosensor/model/transducer"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://lt.5grupe.karolis/biosensor/model            ../src/libbiosensor-xml/Model.xsd
+        http://lt.5grupe.karolis/biosensor/model/bound      ../src/libbiosensor-xml/ModelBound.xsd
+        http://lt.5grupe.karolis/biosensor/model/reaction   ../src/libbiosensor-xml/ModelReaction.xsd
+        http://lt.5grupe.karolis/biosensor/model/solver     ../src/libbiosensor-xml/ModelSolver.xsd
+        http://lt.5grupe.karolis/biosensor/model/transducer ../src/libbiosensor-xml/ModelTransducer.xsd
+        "
+    coordinateSystem="Cartesian">
+
+
+    <axis name="x">
+        <point position="x_0"/>
+        <point position="x_1"/>
+    </axis>
+    <axis name="y">
+        <point position="z_0"/>
+        <point position="z_1"/>
+        <point position="z_2"/>
+        <point position="z_4"/>
+    </axis>
+
+
+    <substance name="S"/>
+    <substance name="P"/>
+
+
+    <medium name="Omega_1 (selective membrane)">
+        <substance name="P" diffusion="D_1" initial="0"/>
+        <area top="z_1" bottom="z_0" left="x_0" right="x_1"/>
+    </medium>
+    <medium name="Omega_2 (enzyme)">
+        <substance name="S" diffusion="D_2" initial="0"/>
+        <substance name="P" diffusion="D_2" initial="0"/>
+        <reaction xsi:type="r:MichaelisMenten" V_max="V_max_2" K_M="K_M" substrate="S" product="P"/>
+        <area top="z_2" bottom="z_1" left="x_0" right="x_1"/>
+    </medium>
+    <medium name="Omega^*_3 (homogenized perforated membrane)">
+        <substance name="S" diffusion="D^*_3" initial="0"/>
+        <substance name="P" diffusion="D^*_3" initial="0"/>
+        <reaction xsi:type="r:MichaelisMenten" V_max="V_max_3" K_M="K_M" substrate="S" product="P"/>
+        <area top="z_4" bottom="z_2"  left="x_0" right="x_1"/>
+    </medium>
+
+
+    <bound from="x_0" to="x_1" at="z_0" name="electrodeSurface">
+        <substance name="P" xsi:type="b:Constant" concentration="0"/>
+    </bound>
+    <bound from="x_0" to="x_1" at="z_4">
+        <substance name="S" xsi:type="b:Constant" concentration="S_0"/>
+        <substance name="P" xsi:type="b:Constant" concentration="0"/>
+    </bound>
+
+
+    <transducer
+        name="electrode"
+        xsi:type="t:AmperometricElectrode"
+        bound="electrodeSurface"
+        substance="P"
+    />
+
+    <!-- Geometry -->
+    <symbol name="x_0"   value="0.0"     dimension="m"/>
+    <symbol name="x_1"   value="1.0"     dimension="m"/>
+    <symbol name="z_0"   value="0.0"     dimension="m"/>
+    <symbol name="z_1"   value="2E-6"    dimension="m"/>
+    <symbol name="z_2"   value="4E-6"    dimension="m"/>
+    <symbol name="z_4"   value="14E-6"   dimension="m"/>
+
+    <!-- Diffusion coefficients -->
+    <symbol name="D_1"      value="1E-12"                   dimension="m^2/s"/>
+    <symbol name="D_2"      value="3E-10"                   dimension="m^2/s"/>
+    <symbol name="D^*_3"    value="4.5549174604878327E-12"  dimension="m^2/s"/>
+
+    <!-- Concentrations -->
+    <symbol name="S_0"  value="1E-4"    dimension="mol/m^3"/>
+    <symbol name="0"    value="0.0"     dimension="mol/m^3"/>
+
+    <!-- Reaction parameters -->
+    <symbol name="V_max_2"  value="1E-2"  dimension="mol/m^3*s"/>
+    <symbol name="V_max_3"  value="1E-4"  dimension="mol/m^3*s"/>
+    <symbol name="K_M"      value="1E-1"  dimension="mol/m^3"/>
+
+    
+    <solver xsi:type="s:Implicit2D" timeStep="1E-4">
+        <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
+            <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
+            <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
+        </output>
+        <s:axis from="x_0" to="x_1" xsi:type="s:ConstantAxisPart" stepCount="2"/>
+        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_2" to="z_4" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="1000000"/>
+    </solver>
+
+</model>

@@ -94,7 +94,8 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::solveAlongForward()
  */
 void BIO_SLV_FD_IM2D_NS::MergeCondition::solveAlongBackward()
 {
-    for (int i = 1; i < size - 1; i++)
+    //for (int i = 1; i < size - 1; i++)
+    for (int i = 0; i < size; i++)
     {
         //  NOTE: It is enough to write C to "prev" area only.
         double c0 = - (a * edgePrev->getC1(i) + c * edgeNext->getC1(i)) / b;

@@ -95,6 +95,8 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::~AmperometricElectrode2DOnBound()
         delete *b;
     }
     bounds.clear();
+    delete boundAnalyzer;
+    delete structAnalyzer;
 }
 
 

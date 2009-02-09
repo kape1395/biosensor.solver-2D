@@ -73,7 +73,8 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::WallCondition::solveAlongBackward()
 {
-    for (int i = 1; i < edge->getSize() - 1; i++)
+    //for (int i = 1; i < edge->getSize() - 1; i++)
+    for (int i = 0; i < edge->getSize(); i++)
     {
         edge->setC0(i, edge->getC1(i));
     }

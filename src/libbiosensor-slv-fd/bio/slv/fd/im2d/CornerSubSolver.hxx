@@ -10,7 +10,8 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 
 /**
- *
+ *  Corners now are implemented by solving bounds for corner points too,
+ *  when solving along the bound.
  */
 class CornerSubSolver : public BIO_DM_NS::IConcentrations
 {
