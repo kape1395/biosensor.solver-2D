@@ -1,5 +1,5 @@
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [0.3.1])
+AC_INIT([biosensor], [0.3.2])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/bios
 AM_INIT_AUTOMAKE([subdir-objects -Wall])
 
 ASTYLE_OPTS="--style=ansi --options=none"
-CXXFLAGS=-g -O2 -ansi -Wall
+CXXFLAGS="-g -O2 -ansi -Wall"
 
 
 #### Checks for programs.
@@ -43,7 +43,11 @@ AC_MSG_NOTICE([Using root namespace: $ROOTNS])
 AC_DEFINE_UNQUOTED([BIO_NS], [$ROOTNS], [Library namespace.])
 
 
+AC_DEFINE_UNQUOTED([BIO_VERSION], ["$PACKAGE_VERSION"], [A biosensor simulation package version])
+
+
 AC_SUBST(BIO_NS, [$ROOTNS])
+AC_SUBST(BIO_VERSION)
 AC_SUBST(ASTYLE_OPTS)
 AC_CONFIG_FILES([
     Makefile

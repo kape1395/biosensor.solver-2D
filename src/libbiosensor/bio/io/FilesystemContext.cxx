@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <boost/filesystem.hpp>
+#include <log4cxx/config_auto.h>
 #include "../Exception.hxx"
 
 namespace bf = boost::filesystem;
@@ -23,6 +24,9 @@ BIO_IO_NS::FilesystemContext::FilesystemContext(
     {
         throw BIO_NS::Exception("Unable to create directory base directory");
     }
+    std::ostream* readme = getOutputStream("README");
+    (*readme) << "Version: " << BIO_VERSION << std::endl;
+    close(readme);
 }
 
 
@@ -31,6 +35,16 @@ BIO_IO_NS::FilesystemContext::FilesystemContext(
 BIO_IO_NS::FilesystemContext::~FilesystemContext()
 {
     close();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::FilesystemContext::setConfiguration(std::istream& config)
+{
+    std::ostream* out = getOutputStream("model-original.xml");
+    (*out) << config.rdbuf();
+    close(out);
 }
 
 
@@ -118,7 +132,7 @@ bf::path BIO_IO_NS::FilesystemContext::getFilePath(const std::string& name) cons
 {
     bf::path filePath(baseDirPath);
     filePath /= name;
-    return filePath.string();
+    return filePath;
 }
 
 

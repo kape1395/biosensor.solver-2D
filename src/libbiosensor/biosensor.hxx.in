@@ -6,6 +6,9 @@
  */
 
 
+#undef BIO_VERSION
+
+
 /** \namespace bio
  *  Root namespace for all biosensor modelling stuff.
  */

@@ -1,7 +1,6 @@
-
-#include "bio/DelegatingFactory.hxx"
-
 #include <iostream>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 //#include <log4cxx/logger.h>
 //#include <log4cpp/Category.hh>
 //#include <log4cpp/PropertyConfigurator.hh>
@@ -47,6 +46,7 @@ int main(int argn, char **argv)
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
         try
         {
+            boost::filesystem::path configPath(argv[1]);
 
             // Parse file
             //log.info("Parsing config file...");
@@ -56,10 +56,17 @@ int main(int argn, char **argv)
 
 
             // Construct factories.
-            IContext* Context = new FilesystemContext(std::string(argv[2]));
+            IContext* context = new FilesystemContext(std::string(argv[2]));
+            {
+                std::filebuf configFileBuf;
+                configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+                std::istream configIStream(&configFileBuf);
+                context->setConfiguration(configIStream);
+                configFileBuf.close();
+            }
 
             DelegatingFactory* factory = new DelegatingFactory();
-            factory->addFactory(new BIO_NS::MainFactory(factory, Context), true);
+            factory->addFactory(new BIO_NS::MainFactory(factory, context), true);
             factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
 
 
@@ -82,7 +89,7 @@ int main(int argn, char **argv)
 
             delete solver;
             delete factory;
-            delete Context;
+            delete context;
             //log.info("Success");
 
 

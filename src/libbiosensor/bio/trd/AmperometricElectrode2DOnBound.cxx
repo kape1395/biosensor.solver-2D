@@ -50,12 +50,12 @@ bool BIO_TRD_NS::AmperometricElectrode2DOnBound::addBoundCondition(
     using namespace BIO_XML_NS::model::bound;
     using namespace BIO_CFG_NS;
 
-    
+
     //if (boundAnalyzer->getBoundName(h, v, side))
     //    std::cout << "DEBUG: BoundName=" << *boundAnalyzer->getBoundName(h, v, side) << std::endl;
     //else
     //    std::cout << "DEBUG: BoundName=0" << std::endl;
-    
+
     std::string* currentBoundName = boundAnalyzer->getBoundName(substanceIndex, h, v, side);
     if (!currentBoundName || boundName.compare(*currentBoundName) != 0)
         return false;
@@ -186,7 +186,7 @@ double BIO_TRD_NS::AmperometricElectrode2DOnBound::BoundIntegrator::integrate(in
 {
     //std::cout << "DEBUG: integrate" << std::endl;
     goToStart();
-    
+
     double sum = 0.0;
     double firstPointValue = getIntagrationElement(substanceIndex, 0);
     double lastPointValue;
