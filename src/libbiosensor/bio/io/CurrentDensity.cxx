@@ -34,13 +34,13 @@ void BIO_IO_NS::CurrentDensity::solveEventOccured()
     if (!output)
     {
         output = Context->getOutputStream(name);
-        (*output) << "# Iteration\tTime\tCurrentDensity" << std::endl;
+        (*output) << "# Time\tStep\tCurrentDensity" << std::endl;
     }
 
     BIO_SLV_NS::IIterativeSolver* iterativeSolver = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
     if (iterativeSolver)
     {
-        (*output) << iterativeSolver->getSolvedIterationCount() << '\t' << iterativeSolver->getSolvedTime();
+        (*output) << iterativeSolver->getSolvedTime() << '\t' << iterativeSolver->getSolvedIterationCount();
     }
     else
     {
