@@ -44,6 +44,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
+    bio/slv/StopByCurrentDensityGradient.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx
 
@@ -89,6 +90,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \
+    bio/slv/StopByCurrentDensityGradient.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \
     bio/trd/AmperometricInjectedElectrode2D.hxx
 

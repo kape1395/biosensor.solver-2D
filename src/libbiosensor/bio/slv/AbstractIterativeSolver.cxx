@@ -63,7 +63,7 @@ void AbstractIterativeSolver::solve()
 /**
  *  Stop the solver.
  */
-void AbstractIterativeSolver::stop()
+void AbstractIterativeSolver::stop(bool steadyStateReached)
 {
     stopped = true;
     //invokeListeners();    FIXME: I think this is not needed or must be reported as different type of efent.

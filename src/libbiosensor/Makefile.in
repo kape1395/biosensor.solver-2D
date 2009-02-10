@@ -101,6 +101,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
 	bio/slv/libbiosensor_la-InvokeNotBefore.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
 	bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo \
+	bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo \
 	bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo \
 	bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo
 libbiosensor_la_OBJECTS = $(am_libbiosensor_la_OBJECTS)
@@ -288,6 +289,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
+    bio/slv/StopByCurrentDensityGradient.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx
 
@@ -332,6 +334,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/InvokeNotBefore.hxx \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \
+    bio/slv/StopByCurrentDensityGradient.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \
     bio/trd/AmperometricInjectedElectrode2D.hxx
 
@@ -525,6 +528,8 @@ bio/slv/libbiosensor_la-NullSolver.lo: bio/slv/$(am__dirstamp) \
 	bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo:  \
+	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/trd/$(am__dirstamp):
 	@$(MKDIR_P) bio/trd
 	@: > bio/trd/$(am__dirstamp)
@@ -618,6 +623,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-NullSolver.lo
 	-rm -f bio/slv/libbiosensor_la-StopAtSpecifiedPoint.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo
+	-rm -f bio/slv/libbiosensor_la-StopByCurrentDensityGradient.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.$(OBJEXT)
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
 	-rm -f bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.$(OBJEXT)
@@ -665,6 +672,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-InvokeNotBefore.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-NullSolver.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopByCurrentDensityGradient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Plo@am__quote@
 
@@ -964,6 +972,13 @@ bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo: bio/slv/StopAtSpecifiedPoint.cx
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopAtSpecifiedPoint.cxx' object='bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo `test -f 'bio/slv/StopAtSpecifiedPoint.cxx' || echo '$(srcdir)/'`bio/slv/StopAtSpecifiedPoint.cxx
+
+bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo: bio/slv/StopByCurrentDensityGradient.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-StopByCurrentDensityGradient.Tpo -c -o bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo `test -f 'bio/slv/StopByCurrentDensityGradient.cxx' || echo '$(srcdir)/'`bio/slv/StopByCurrentDensityGradient.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-StopByCurrentDensityGradient.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-StopByCurrentDensityGradient.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopByCurrentDensityGradient.cxx' object='bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo `test -f 'bio/slv/StopByCurrentDensityGradient.cxx' || echo '$(srcdir)/'`bio/slv/StopByCurrentDensityGradient.cxx
 
 bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo: bio/trd/AmperometricElectrode2DOnBound.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo -MD -MP -MF bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Tpo -c -o bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo `test -f 'bio/trd/AmperometricElectrode2DOnBound.cxx' || echo '$(srcdir)/'`bio/trd/AmperometricElectrode2DOnBound.cxx

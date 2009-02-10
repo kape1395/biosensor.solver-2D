@@ -26,7 +26,7 @@ public:
     virtual ~AbstractIterativeSolver();
 
     virtual void solve();
-    virtual void stop();
+    virtual void stop(bool steadyStateReached = false);
     virtual bool isStopped();
     virtual double getTimeStep();
     virtual void setTimeStep(double timeStep);

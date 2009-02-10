@@ -17,7 +17,7 @@ public:
         //  Empty virtual destructor.
     }
 
-    virtual void stop() = 0;
+    virtual void stop(bool steadyStateReached = false) = 0;
     virtual bool isStopped() = 0;
     virtual double getTimeStep() = 0;
     virtual void setTimeStep(double timeStep) = 0;

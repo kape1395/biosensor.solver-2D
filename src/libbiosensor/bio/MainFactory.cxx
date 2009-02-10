@@ -2,6 +2,7 @@
 #include "io/ConcentrationProfile.hxx"
 #include "io/CurrentDensity.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
+#include "slv/StopByCurrentDensityGradient.hxx"
 #include "slv/InvokeNotBefore.hxx"
 #include "slv/InvokeEveryTimeStep.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
@@ -94,9 +95,20 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
     }
     else if (dynamic_cast<BIO_XML_MODEL_NS::solver::CurrentDensityGradient*>(stopCondition))
     {
-        throw Exception("StopCondition CurrentDensityGradient not implemented yet");
+        using BIO_XML_MODEL_NS::solver::CurrentDensityGradient;
+        CurrentDensityGradient* scg = dynamic_cast<CurrentDensityGradient*>(stopCondition);
+
+        BIO_SLV_NS::StopByCurrentDensityGradient* stop = new BIO_SLV_NS::StopByCurrentDensityGradient(
+            solver,
+            scg->lessThan(),
+            scg->normalized()
+        );
+        return stop;
     }
-    return 0;
+    else
+    {
+        return 0;
+    }
 }
 
 

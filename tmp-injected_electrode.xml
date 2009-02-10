@@ -149,12 +149,13 @@
         <s:stopCondition
             xsi:type="s:StopConditionValidAfter"
             stepCount="1000">
-            <!--s:stopCondition
+            <s:stopCondition
                 xsi:type="s:CurrentDensityGradient"
                 lessThan="0.0001"
-            /-->
+                normalized="true"
+            />
         </s:stopCondition>
-        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="500000"/>
+        <s:stopCondition xsi:type="s:FailIfAbove" stepCount="500000000"/>
     </solver>
 
 </model>

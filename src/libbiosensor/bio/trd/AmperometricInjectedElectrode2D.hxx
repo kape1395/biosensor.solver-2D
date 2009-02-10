@@ -30,7 +30,7 @@ private:
     BIO_DM_NS::IComposite2D* dataModel;
     BIO_XML_MODEL_NS::MediumName mediumName;
     BIO_XML_MODEL_NS::SubstanceName substanceName;
-    
+
     int substanceIndex;
     double reactionSpeed;
 
@@ -38,7 +38,7 @@ private:
 
     double calculatedOutput;
     long   calculatedOutputForStep;
-    
+
 public:
     AmperometricInjectedElectrode2D(
         BIO_SLV_NS::ISolver* solver,
@@ -55,12 +55,12 @@ public:
     virtual double getOutput();
 
 private:
-    
+
     /**
      *
      */
     double integrateArea(BIO_DM_NS::IGrid2D* area);
-    
+
 };
 
 

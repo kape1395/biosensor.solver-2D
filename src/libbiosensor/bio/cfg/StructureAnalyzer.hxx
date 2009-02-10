@@ -195,7 +195,7 @@ public:
      *  \return MediumName or 0, if no Medium or name exists for that area.
      */
     BIO_XML_MODEL_NS::MediumName* getMediumName(int h, int v);
-    
+
     /**
      *  Finds symbol definition by the name.
      *

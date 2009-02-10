@@ -19,7 +19,7 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
     if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
         throw Exception("InjectedElectrode: DataModel must implement IComposite2D.");
 
-    
+
     this->solver = solver;
     this->structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(solver->getConfig());
     this->mediumName = mediumName;
@@ -46,14 +46,14 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
                 }
                 if (!substanceFound)
                     throw Exception("InjectedElectrode: substance not exists in the specified medium.");
-                
+
                 areas.push_back(dataModel->getArea(h, v));
             } // if name
         }
     }
     if (areas.size() == 0)
         throw Exception("InjectedElectrode: No areas were found with specified medium name.");
-    
+
     this->calculatedOutput = 0.0;
     this->calculatedOutputForStep = -1;
 }
@@ -87,7 +87,7 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
     }
 
     integralValue *= CONST_F * CONST_n_e * reactionSpeed;
-    
+
     //
     //  Divide by surface.
     //
@@ -110,7 +110,7 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
     }
 
 
-    
+
     calculatedOutput = integralValue;
     calculatedOutputForStep = iterative->getSolvedIterationCount();
 
@@ -131,20 +131,20 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGr
         for (cursor->rowStart(), h = 0; cursor->isValid(); cursor->right(), h++)
         {
             double coefficient = 1.0;
-            
+
             if ((h == 0) || (h == area->getPointPositionsH()->getPointCount() - 1))
                 coefficient /= 2.0;
-            
+
             if ((v == 0) || (v == area->getPointPositionsV()->getPointCount() - 1))
                 coefficient /= 2.0;
-            
+
             if (structAnalyzer->isCoordinateSystemCylindrical())
                 coefficient *= area->getPointPositionsH()->getPointPosition(h);
-            
+
             sum += coefficient * (*cursor->getConcentrations())[substanceIndex];
         }
     }
-    
+
     delete cursor;
     return sum;
 }

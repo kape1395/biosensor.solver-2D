@@ -14,10 +14,10 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::AmperometricElectrode2DOnBound(
 {
     if (!dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver))
         throw Exception("AmperometricElectrode: Solver must implement IIterativeSolver.");
-    
+
     if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
         throw Exception("AmperometricElectrode: Data model must implement IComposite2D.");
-    
+
     this->solver = solver;
     this->structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(solver->getConfig());
     this->boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
@@ -38,7 +38,7 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::AmperometricElectrode2DOnBound(
     }
     if (bounds.size() == 0)
         throw Exception("AmperometricElectrode: No bound was found with specified name.");
-    
+
     this->calculatedOutput = 0.0;
     this->calculatedOutputForStep = -1;
 }
