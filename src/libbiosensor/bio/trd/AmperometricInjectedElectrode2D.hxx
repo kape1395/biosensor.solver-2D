@@ -21,17 +21,30 @@ BIO_TRD_NS_BEGIN
 class AmperometricInjectedElectrode2D : public BIO_SLV_NS::ITransducer
 {
 private:
+    static const double CONST_n_e  = 2.0;
+    static const double CONST_F    = 96485.0;
+
+private:
+    BIO_SLV_NS::ISolver* solver;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_DM_NS::IComposite2D* dataModel;
     BIO_XML_MODEL_NS::MediumName mediumName;
     BIO_XML_MODEL_NS::SubstanceName substanceName;
+    
     int substanceIndex;
+    double reactionSpeed;
 
+    std::vector<BIO_DM_NS::IGrid2D*> areas;
+
+    double calculatedOutput;
+    long   calculatedOutputForStep;
+    
 public:
     AmperometricInjectedElectrode2D(
         BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::MediumName& mediumName,
-        BIO_XML_MODEL_NS::SubstanceName& substanceName
+        BIO_XML_MODEL_NS::SubstanceName& substanceName,
+        BIO_XML_MODEL_NS::SymbolName& reactionSpeedSymbolName
     );
 
     virtual ~AmperometricInjectedElectrode2D();
@@ -42,7 +55,12 @@ public:
     virtual double getOutput();
 
 private:
-
+    
+    /**
+     *
+     */
+    double integrateArea(BIO_DM_NS::IGrid2D* area);
+    
 };
 
 

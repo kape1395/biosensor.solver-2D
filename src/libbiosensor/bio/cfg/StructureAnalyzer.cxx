@@ -291,6 +291,17 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+BIO_XML_MODEL_NS::MediumName* BIO_CFG_NS::StructureAnalyzer::getMediumName(int h, int v)
+{
+    if (!mediums[h][v])
+        return 0;
+
+    return &mediums[h][v]->name();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::model::SymbolName& name)
 {
     for (unsigned i = 0; i < config->symbol().size(); i++)

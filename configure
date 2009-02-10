@@ -2442,7 +2442,7 @@ am__tar='${AMTAR} chof - "$$tardir"'; am__untar='${AMTAR} xf -'
 
 
 ASTYLE_OPTS="--style=ansi --options=none"
-CXXFLAGS="-g -O2 -ansi -Wall"
+#CXXFLAGS="-g -O2 -ansi -Wall"
 
 
 #### Checks for programs.

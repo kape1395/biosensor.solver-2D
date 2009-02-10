@@ -33,3 +33,9 @@ autoreconf --install
 ################################################################################
 apt-get install build-essential dh-make debhelper devscripts 
 /usr/share/doc/maint-guide/maint-guide.en.pdf.gz
+
+###############################
+##  Number of code lines.
+##
+wc `find src/bio-editor src/bio-solver src/libbiosensor src/libbiosensor-slv-fd -name *.?xx && find src/libbiosensor-xml -name *.xsd`
+

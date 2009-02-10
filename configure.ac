@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/bios
 AM_INIT_AUTOMAKE([subdir-objects -Wall])
 
 ASTYLE_OPTS="--style=ansi --options=none"
-CXXFLAGS="-g -O2 -ansi -Wall"
+#CXXFLAGS="-g -O2 -ansi -Wall"
 
 
 #### Checks for programs.

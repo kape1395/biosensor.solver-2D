@@ -25,12 +25,16 @@ private:
     static const double CONST_F    = 96485.0;
 
 private:
+    BIO_SLV_NS::ISolver* solver;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
     BIO_DM_NS::IComposite2D* dataModel;
     BIO_XML_MODEL_NS::BoundName boundName;
     BIO_XML_MODEL_NS::SubstanceName substanceName;
     int substanceIndex;
+
+    double calculatedOutput;
+    long   calculatedOutputForStep;
 
 
     /**

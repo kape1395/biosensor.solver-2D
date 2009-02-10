@@ -10,6 +10,7 @@
 
 
 /* ************************************************************************** */
+/* ************************************************************************** */
 BIO_NS::MainFactory::MainFactory(
     BIO_NS::IFactory* rootFactory,
     BIO_IO_NS::IContext* Context
@@ -21,12 +22,14 @@ BIO_NS::MainFactory::MainFactory(
 
 
 /* ************************************************************************** */
+/* ************************************************************************** */
 BIO_NS::MainFactory::~MainFactory()
 {
     //  Nothing to do here.
 }
 
 
+/* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_NS::ISolver* BIO_NS::MainFactory::createSolver(
     BIO_XML_MODEL_NS::Model* model
@@ -37,6 +40,7 @@ BIO_SLV_NS::ISolver* BIO_NS::MainFactory::createSolver(
 }
 
 
+/* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
     BIO_SLV_NS::ISolver* solver,
@@ -96,6 +100,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
 }
 
 
+/* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
     BIO_SLV_NS::ISolver* solver,
@@ -193,6 +198,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
 
 
 /* ************************************************************************** */
+/* ************************************************************************** */
 BIO_SLV_NS::ITransducer* BIO_NS::MainFactory::createTransducer(
     BIO_SLV_NS::ISolver* solver,
     BIO_XML_MODEL_NS::Transducer* transducer
@@ -214,7 +220,8 @@ BIO_SLV_NS::ITransducer* BIO_NS::MainFactory::createTransducer(
         return new BIO_TRD_NS::AmperometricInjectedElectrode2D(
                    solver,
                    transIE->medium(),
-                   transIE->substance()
+                   transIE->substance(),
+                   transIE->reactionSpeed()
                );
     }
     return 0;

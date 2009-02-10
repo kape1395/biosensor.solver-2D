@@ -1,6 +1,7 @@
 #include "AmperometricElectrode2DOnBound.hxx"
 #include "../Exception.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
+#include "../slv/IIterativeSolver.hxx"
 
 
 /* ************************************************************************** */
@@ -11,10 +12,13 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::AmperometricElectrode2DOnBound(
     BIO_XML_MODEL_NS::SubstanceName& substanceName
 )
 {
-    if ((dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())) == 0)
-    {
+    if (!dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver))
+        throw Exception("AmperometricElectrode: Solver must implement IIterativeSolver.");
+    
+    if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
         throw Exception("AmperometricElectrode: Data model must implement IComposite2D.");
-    }
+    
+    this->solver = solver;
     this->structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(solver->getConfig());
     this->boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
     this->boundName = boundName;
@@ -33,9 +37,10 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::AmperometricElectrode2DOnBound(
         }
     }
     if (bounds.size() == 0)
-    {
         throw Exception("AmperometricElectrode: No bound was found with specified name.");
-    }
+    
+    this->calculatedOutput = 0.0;
+    this->calculatedOutputForStep = -1;
 }
 
 
@@ -51,21 +56,9 @@ bool BIO_TRD_NS::AmperometricElectrode2DOnBound::addBoundCondition(
     using namespace BIO_CFG_NS;
 
 
-    //if (boundAnalyzer->getBoundName(h, v, side))
-    //    std::cout << "DEBUG: BoundName=" << *boundAnalyzer->getBoundName(h, v, side) << std::endl;
-    //else
-    //    std::cout << "DEBUG: BoundName=0" << std::endl;
-
     std::string* currentBoundName = boundAnalyzer->getBoundName(substanceIndex, h, v, side);
     if (!currentBoundName || boundName.compare(*currentBoundName) != 0)
         return false;
-
-    //Constant* bound = dynamic_cast<Constant*>(boundAnalyzer->getBoundForSubstance(substanceIndex, h, v, side));
-    //if (!bound)
-    //    throw Exception("AmperometricElectrode: only Constant bound condition is supported");
-    //
-    //if (!structAnalyzer->getSymbol(bound->concentration())->value() != 0.0)
-    //    throw Exception("AmperometricElectrode: constant condition must have 0 as value.");
 
     bool nonConstAndHoriz =
         ((side == BIO_CFG_NS::BoundAnalyzer::TOP || side == BIO_CFG_NS::BoundAnalyzer::BOTTOM)) &&
@@ -104,6 +97,11 @@ BIO_TRD_NS::AmperometricElectrode2DOnBound::~AmperometricElectrode2DOnBound()
 /* ************************************************************************** */
 double BIO_TRD_NS::AmperometricElectrode2DOnBound::getOutput()
 {
+    BIO_SLV_NS::IIterativeSolver* iterative = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
+    if (calculatedOutputForStep == iterative->getSolvedIterationCount())
+    {
+        return calculatedOutput;
+    }
 
     double integralValue = 0.0;
     for (std::vector<BoundIntegrator*>::iterator bound = bounds.begin(); bound < bounds.end(); bound++)
@@ -131,6 +129,9 @@ double BIO_TRD_NS::AmperometricElectrode2DOnBound::getOutput()
         double areaWidth = structAnalyzer->getPointsH()[structAnalyzer->getPointsH().size() - 1]->value();
         integralValue /= areaWidth;
     }
+
+    calculatedOutput = integralValue;
+    calculatedOutputForStep = iterative->getSolvedIterationCount();
 
     return integralValue;
 }
@@ -189,7 +190,7 @@ double BIO_TRD_NS::AmperometricElectrode2DOnBound::BoundIntegrator::integrate(in
 
     double sum = 0.0;
     double firstPointValue = getIntagrationElement(substanceIndex, 0);
-    double lastPointValue;
+    double lastPointValue = 0.0;
     for (int pointIndex = 0; cursor0->isValid(); goToNext(), pointIndex++)
     {
         sum += lastPointValue = getIntagrationElement(substanceIndex, pointIndex);

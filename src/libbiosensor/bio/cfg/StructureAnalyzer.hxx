@@ -174,6 +174,7 @@ public:
     }
 
     /**
+     *  \deprecated Use more concrete methods instead of this.
      *  Returns medium by the specified position.
      *
      *  \param h Horizontal (x) coordinate of the area.
@@ -186,6 +187,15 @@ public:
         return mediums[h][v];
     }
 
+    /**
+     *  Returns a medium name for a specified area.
+     *
+     *  \param h Horizontal (x) coordinate of the area.
+     *  \param v Vertical (y) coordinate of the area.
+     *  \return MediumName or 0, if no Medium or name exists for that area.
+     */
+    BIO_XML_MODEL_NS::MediumName* getMediumName(int h, int v);
+    
     /**
      *  Finds symbol definition by the name.
      *
