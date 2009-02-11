@@ -131,7 +131,7 @@
     <symbol name="k_2" value="1E4"  dimension="m^3/mol*s"/>
 
 
-    <solver xsi:type="s:Implicit2D" timeStep="1E-5">
+    <solver xsi:type="s:Implicit2D" timeStep="1E-6">
         <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
             <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
             <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
@@ -141,11 +141,11 @@
             <s:output name="density"        xsi:type="s:CurrentDensity"/>
             < ! - -utput name="halfTime"       xsi:type="s:SteadyStateHalfTime"/- - >
         </output-->
-        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="50"/>
-        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="50"/>
+        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
         <s:stopCondition
             xsi:type="s:StopConditionValidAfter"
             stepCount="1000">

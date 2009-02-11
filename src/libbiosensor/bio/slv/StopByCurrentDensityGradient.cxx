@@ -1,6 +1,7 @@
 #include "StopByCurrentDensityGradient.hxx"
 #include "../Exception.hxx"
 #include <iostream>
+#include <cmath>
 
 
 /* ************************************************************************** */
@@ -72,7 +73,7 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
 
     std::cout << "DEBUG: StopByCurrentDensityGradient: grad=" << grad << "\tgradNormalized=" << gradNormalized << std::endl;
 
-    if ((normalized ? gradNormalized : grad) < gradient)
+    if (std::abs(normalized ? gradNormalized : grad) < gradient)
     {
         iterativeSolver->stop(true);
         LOG4CXX_INFO(log, "Solver reached a steady state");
