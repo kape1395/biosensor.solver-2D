@@ -47,6 +47,12 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
                 if (!substanceFound)
                     throw Exception("InjectedElectrode: substance not exists in the specified medium.");
 
+                if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsH()))
+                    throw Exception("InjectedElectrode: only grid with constant steps is supported");
+
+                if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsV()))
+                    throw Exception("InjectedElectrode: only grid with constant steps is supported");
+
                 areas.push_back(dataModel->getArea(h, v));
             } // if name
         }
@@ -123,6 +129,10 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
 double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGrid2D* area)
 {
     BIO_DM_NS::ICursor2D* cursor = area->newGridCursor();
+    double stepH = area->getPointPositionsH()->getStepSize(0);  // NOTE: Only valid constant step segment
+    double stepV = area->getPointPositionsV()->getStepSize(0);  // NOTE: Only valid constant step segment
+    int pointCountH = area->getPointPositionsH()->getPointCount();
+    int pointCountV = area->getPointPositionsV()->getPointCount();
     int h;
     int v;
     double sum = 0.0;
@@ -132,16 +142,18 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGr
         {
             double coefficient = 1.0;
 
-            if ((h == 0) || (h == area->getPointPositionsH()->getPointCount() - 1))
+            if ((h == 0) || (h == pointCountH - 1))
                 coefficient /= 2.0;
 
-            if ((v == 0) || (v == area->getPointPositionsV()->getPointCount() - 1))
+            if ((v == 0) || (v == pointCountV - 1))
                 coefficient /= 2.0;
 
             if (structAnalyzer->isCoordinateSystemCylindrical())
                 coefficient *= area->getPointPositionsH()->getPointPosition(h);
 
-            sum += coefficient * (*cursor->getConcentrations())[substanceIndex];
+            sum += coefficient
+                   * (*cursor->getConcentrations())[substanceIndex]
+                   * stepH * stepV;
         }
     }
 
