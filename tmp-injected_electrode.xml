@@ -38,9 +38,9 @@
 
 
     <medium name="\Omega_1">
-        <substance name="S"       diffusion="D_Diff_S" initial="0"/>
+        <substance name="S"       diffusion="D_Diff_S" initial="S_0"/>
         <substance name="P"       diffusion="D_Diff_S" initial="0"/>
-        <substance name="M_{ox}"  diffusion="D_Diff_M" initial="0"/>
+        <substance name="M_{ox}"  diffusion="D_Diff_M" initial="M_0"/>
         <substance name="M_{red}" diffusion="D_Diff_M" initial="0"/>
         <area top="z_0" bottom="z_1" left="r_0" right="r_2"/>
     </medium>
@@ -127,11 +127,11 @@
     <symbol name="0"   value="0.0"    dimension="mol/m^3"/>
 
     <!-- Reaction rates -->
-    <symbol name="k_1" value="1E7"  dimension="mol/m^3 s"/>
-    <symbol name="k_2" value="1E10" dimension="mol/m^3 s"/>
+    <symbol name="k_1" value="1E1"  dimension="m^3/mol*s"/>
+    <symbol name="k_2" value="1E4"  dimension="m^3/mol*s"/>
 
 
-    <solver xsi:type="s:Implicit2D" timeStep="1E-6">
+    <solver xsi:type="s:Implicit2D" timeStep="1E-5">
         <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
             <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
             <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
