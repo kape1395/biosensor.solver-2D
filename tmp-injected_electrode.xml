@@ -131,7 +131,7 @@
     <symbol name="k_2" value="1E4"  dimension="m^3/mol*s"/>
 
 
-    <solver xsi:type="s:Implicit2D" timeStep="1E-6">
+    <solver xsi:type="s:Implicit2D" timeStep="1E-3">
         <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
             <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
             <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>

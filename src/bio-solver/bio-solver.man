@@ -6,12 +6,14 @@ bio-solver \- Biosensor modeller
 .SH SYNOPSIS
 .B bio-solver
 .I model-file
+.I output-dir
 .\" ============================================================================
 .SH DESCRIPTION
 .B bio-solver
 performs simulations of the biosensor, specified in 
 .IR model-file ,
-which describes biosensor in XML format.
+which describes biosensor in XML format. An output is written to a directory
+.IR output-dir .
 .\" ============================================================================
 .SH AUTHOR
 Karolis Petrauskas <k dot petrauskas at gmail dot com>
