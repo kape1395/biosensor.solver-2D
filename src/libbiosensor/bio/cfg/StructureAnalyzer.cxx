@@ -1,5 +1,7 @@
 #include "StructureAnalyzer.hxx"
 #include "../Exception.hxx"
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::StructureAnalyzer: "
 
 
 /* ************************************************************************** */
@@ -7,7 +9,6 @@
 BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     BIO_XML_NS::model::Model* config
 ) :
-        log(log4cxx::Logger::getLogger("libbiosensor.StructureAnalyzer")),
         axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
         diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
 {
@@ -26,7 +27,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     typedef BIO_XML_NS::model::Medium::substance_iterator it_diff;
     typedef BIO_XML_NS::model::Medium::reaction_iterator it_reac;
 
-    LOG4CXX_INFO(log, "StructureAnalyzer()...");
+    LOG_INFO(LOGGER << "StructureAnalyzer()...");
 
     this->config = config;
 
@@ -40,7 +41,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //
     if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cartesian)
     {
-        LOG4CXX_DEBUG(log, "Found coordinate system \"Cartesian\", axes will be x and y.");
+        LOG_DEBUG(LOGGER << "Found coordinate system \"Cartesian\", axes will be x and y.");
         this->twoDimensional = true;
         bool found_h = false;
         bool found_v = false;
@@ -60,13 +61,13 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
         }
         if (!(found_h && found_v))
         {
-            LOG4CXX_ERROR(log, "Both axes \"x\" and \"y\" are needed but some of them not found.");
+            LOG_ERROR(LOGGER << "Both axes \"x\" and \"y\" are needed but some of them not found.");
             throw Exception("Missing axis");
         }
     }
     else if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cylindrical)
     {
-        LOG4CXX_DEBUG(log, "Found coordinate system \"Cylindrical\", axes will be r and z.");
+        LOG_DEBUG(LOGGER << "Found coordinate system \"Cylindrical\", axes will be r and z.");
         this->twoDimensional = true;
         bool found_h = false;
         bool found_v = false;
@@ -86,13 +87,13 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
         }
         if (!(found_h && found_v))
         {
-            LOG4CXX_ERROR(log, "Both axes \"r\" and \"z\" are needed but some of them not found.");
+            LOG_ERROR(LOGGER << "Both axes \"r\" and \"z\" are needed but some of them not found.");
             throw Exception("Missing axis");
         }
     }
     else if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Linear)
     {
-        LOG4CXX_DEBUG(log, "Found coordinate system \"Linear\", axis will be x.");
+        LOG_DEBUG(LOGGER << "Found coordinate system \"Linear\", axis will be x.");
         this->twoDimensional = false;
         bool found = false;
         for (it_axis axis = config->axis().begin(); axis < config->axis().end(); axis++)
@@ -105,14 +106,14 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
         }
         if (!found)
         {
-            LOG4CXX_ERROR(log, "Axis  \"x\" is needed but not found.");
+            LOG_ERROR(LOGGER << "Axis  \"x\" is needed but not found.");
             throw Exception("Missing axis");
         }
         pointsV.push_back(&axisPoint0);
     }
     else
     {
-        LOG4CXX_ERROR(log, "I dont know coordinate system, specified in the configuration.");
+        LOG_ERROR(LOGGER << "I dont know coordinate system, specified in the configuration.");
         throw Exception("Unknown coordinate system.");
     }
     //
@@ -168,17 +169,17 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             }
             if (h1 == -1 || h2 == -1 || v1 == -1 || v2 == -1)
             {
-                LOG4CXX_ERROR(log, "Some of needed coordinates are not specified in medium`s area");
+                LOG_ERROR(LOGGER << "Some of needed coordinates are not specified in medium`s area");
                 throw Exception("Invalid configuration");
             }
             if (h1 > h2)
             {
-                LOG4CXX_WARN(log, "Swapping horizontal boundary points for area definition....");
+                LOG_WARN(LOGGER << "Swapping horizontal boundary points for area definition....");
                 std::swap<int>(h1, h2);
             }
             if (v1 > v2)    // Because vertical axis has direction "down".
             {
-                LOG4CXX_WARN(log, "Swapping vertical boundary points for area definition....");
+                LOG_WARN(LOGGER << "Swapping vertical boundary points for area definition....");
                 std::swap<int>(v1, v2);
             }
             for (int h = h1; h < h2; h++)
@@ -236,7 +237,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //  Fill diffusions and reactions.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG4CXX_INFO(log, "StructureAnalyzer()... Done");
+    LOG_INFO(LOGGER << "StructureAnalyzer()... Done");
 }
 
 
@@ -244,7 +245,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
 /* ************************************************************************** */
 BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 {
-    LOG4CXX_INFO(log, "~StructureAnalyzer()...");
+    LOG_INFO(LOGGER << "~StructureAnalyzer()...");
 
     twoDimensional = false;
     for (unsigned h = 0; h < pointsH.size(); h++)
@@ -285,7 +286,7 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 
     config = 0;
 
-    LOG4CXX_INFO(log, "~StructureAnalyzer()... Done");
+    LOG_INFO(LOGGER << "~StructureAnalyzer()... Done");
 }
 
 
@@ -380,7 +381,7 @@ int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
         if ((*it)->name() == pointSymbolName)
             return i;
     }
-    LOG4CXX_ERROR(log, "Point, specified in medium area is not found in corresponding area.");
+    LOG_ERROR(LOGGER << "Point, specified in medium area is not found in corresponding area.");
     throw Exception("Invalid configuration");
 }
 
@@ -395,7 +396,7 @@ int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(BIO_XML_NS::model::Substanc
         if ((*it)->name() == substanceName)
             return i;
     }
-    LOG4CXX_ERROR(log, "Substance nor found by name.");
+    LOG_ERROR(LOGGER << "Substance nor found by name.");
     throw Exception("Invalid configuration");
 }
 

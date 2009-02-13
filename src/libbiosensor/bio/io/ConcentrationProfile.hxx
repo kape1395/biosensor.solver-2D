@@ -6,7 +6,6 @@
 #include "IOutput.hxx"
 #include "IContext.hxx"
 #include "IRepeatable.hxx"
-#include <log4cxx/logger.h>
 #include <string>
 BIO_IO_NS_BEGIN
 
@@ -17,7 +16,6 @@ BIO_IO_NS_BEGIN
 class ConcentrationProfile : public BIO_IO_NS::IOutput, public BIO_IO_NS::IRepeatable
 {
 private:
-    log4cxx::LoggerPtr log;
 
     std::string name;
     BIO_SLV_NS::ISolver* solver;

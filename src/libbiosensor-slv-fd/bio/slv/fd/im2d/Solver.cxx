@@ -3,6 +3,8 @@
 #include <bio/trd/AmperometricElectrode2DOnBound.hxx>
 #include <bio/trd/AmperometricInjectedElectrode2D.hxx>
 #include <bio/Exception.hxx>
+#include <bio/Logging.hxx>
+#define LOGGER "libbiosensor-slv-fd::im2d::Solver: "
 
 
 /* ************************************************************************** */
@@ -10,31 +12,27 @@
 BIO_SLV_FD_IM2D_NS::Solver::Solver(
     BIO_XML_NS::model::Model* config,
     BIO_NS::IFactory* factory
-) :
-        AbstractIterativeSolver(config),
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.Solver"))
+) : AbstractIterativeSolver(config)
 {
     structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
     boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
     fdAnalyzer = new BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer(config);
 
-    LOG4CXX_DEBUG(log, "Solver()...");
+    LOG_DEBUG(LOGGER << "Solver()...");
 
     if (!structAnalyzer->isTwoDimensional())
     {
-        LOG4CXX_ERROR(log, "Config is not two-dimensional, this solver supports only two-dimensional models");
+        LOG_ERROR(LOGGER << "Config is not two-dimensional, this solver supports only two-dimensional models");
         throw Exception("Unsuppordet model");
     }
 
-    char message[1000];
 
     subSolvers = new SplittedSolver(
         structAnalyzer->getPointsH().size() - 1,
         structAnalyzer->getPointsV().size() - 1
     );
 
-    sprintf(message, "SubSolver grid has sizeH=%i sizeV=%i", subSolvers->sizeH(), subSolvers->sizeV());
-    LOG4CXX_DEBUG(log, message);
+    LOG_DEBUG(LOGGER << "SubSolver grid has sizeH=" << subSolvers->sizeH() << " sizeV=" << subSolvers->sizeV());
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -109,7 +107,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
     //  Add listeners.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG4CXX_DEBUG(log, "Solver()... Done");
+    LOG_DEBUG(LOGGER << "Solver()... Done");
 }
 
 
@@ -117,7 +115,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
-    LOG4CXX_DEBUG(log, "~Solver()");
+    LOG_DEBUG(LOGGER << "~Solver()");
 
     if (transducer)
     {
@@ -176,12 +174,12 @@ BIO_SLV_NS::ITransducer* BIO_SLV_FD_IM2D_NS::Solver::getTransducer()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 {
-    //LOG4CXX_DEBUG(log, "solveIteration()...");
+    LOG_DEBUG(LOGGER << "solveIteration(" << getSolvedIterationCount() << ")...");
 
     ////////////////////////////////////////////////////////////////////////////
     //  Solve "horizintal" half-step in time
     //
-    //LOG4CXX_DEBUG(log, "solveIteration: Solve horizintal half-step in time, Forward");
+    LOG_TRACE(LOGGER << "solveIteration: Solve horizintal half-step in time, Forward");
     for (int h = 0; h <= subSolvers->sizeH(); h++)   // Forward
     {
         for (int v = 0; v <= subSolvers->sizeV(); v++)
@@ -201,7 +199,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
             subSolvers->getCorners()[h][v]->solveForward();
         }
     }
-    //LOG4CXX_DEBUG(log, "solveIteration: Solve horizintal half-step in time, Backward");
+    LOG_TRACE(LOGGER << "solveIteration: Solve horizintal half-step in time, Backward");
     for (int h = subSolvers->sizeH(); h >= 0; h--)  // Backward
     {
         for (int v = 0; v <= subSolvers->sizeV(); v++)
@@ -225,7 +223,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
     ////////////////////////////////////////////////////////////////////////////
     //  Solve "vertical" half-step in time
     //
-    //LOG4CXX_DEBUG(log, "solveIteration: Solve vertical half-step in time, Forward");
+    LOG_TRACE(LOGGER << "solveIteration: Solve vertical half-step in time, Forward");
     for (int v = 0; v <= subSolvers->sizeV(); v++)   // Forward
     {
         for (int h = 0; h <= subSolvers->sizeH(); h++)
@@ -245,7 +243,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
             subSolvers->getCorners()[h][v]->solveForward();
         }
     }
-    //LOG4CXX_DEBUG(log, "solveIteration: Solve vertical half-step in time, Backward");
+    LOG_TRACE(LOGGER << "solveIteration: Solve vertical half-step in time, Backward");
     for (int v = subSolvers->sizeV(); v >= 0; v--)  // Backward
     {
         for (int h = 0; h <= subSolvers->sizeH(); h++)
@@ -266,7 +264,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
         }
     }
 
-    LOG4CXX_DEBUG(log, "solveIteration()... Done");
+    LOG_TRACE(LOGGER << "solveIteration()... Done");
 }
 
 

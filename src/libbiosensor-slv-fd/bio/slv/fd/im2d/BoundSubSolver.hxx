@@ -14,7 +14,6 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/cfg/BoundAnalyzer.hxx>
 #include <bio/dm/IGrid1D.hxx>
 #include <bio/dm/ICursor1D.hxx>
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -27,7 +26,6 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class BoundSubSolver : public BIO_DM_NS::IGrid1D
 {
 private:
-    log4cxx::LoggerPtr log;
 
     Solver* solver;
     int positionH;

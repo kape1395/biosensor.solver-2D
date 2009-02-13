@@ -6,7 +6,7 @@
 /* ************************************************************************** */
 BIO_SLV_NS::InvokeEveryTimeStep::InvokeEveryTimeStep(
     ISolver* solver
-) : log(log4cxx::Logger::getLogger("libbiosensor.InvokeEveryTimeStep"))
+)
 {
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
     this->stepByStep = 0l;

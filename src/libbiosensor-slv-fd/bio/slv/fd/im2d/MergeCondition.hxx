@@ -3,7 +3,6 @@
 #include "../../../../biosensor-slv-fd.hxx"
 #include "IBoundCondition.hxx"
 #include "AreaSubSolver.hxx"
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -19,7 +18,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class MergeCondition : public IBoundCondition
 {
 private:
-    log4cxx::LoggerPtr log;
+
     AreaSubSolver::EdgeData* edgePrev;
     AreaSubSolver::EdgeData* edgeNext;
     double diffusionPrev;

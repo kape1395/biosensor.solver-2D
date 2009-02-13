@@ -4,7 +4,6 @@
 #include "StructureAnalyzer.hxx"
 #include <biosensor-xml.hxx>
 #include <vector>
-#include <log4cxx/logger.h>
 BIO_CFG_NS_BEGIN
 
 
@@ -15,7 +14,6 @@ BIO_CFG_NS_BEGIN
 class BoundAnalyzer
 {
 private:
-    log4cxx::LoggerPtr log;
 
     /**
      *  Internal...

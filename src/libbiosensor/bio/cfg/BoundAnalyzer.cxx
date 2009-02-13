@@ -1,13 +1,14 @@
 #include "BoundAnalyzer.hxx"
 #include "../Exception.hxx"
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::BoundAnalyzer: "
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     StructureAnalyzer *structAnalyzer
-) :
-        log(log4cxx::Logger::getLogger("libbiosensor.BoundAnalyzer"))
+)
 {
     typedef BIO_XML_NS::model::Model::bound_iterator bIt;
     typedef BIO_XML_NS::model::Bound::substance_iterator bsIt;
@@ -39,7 +40,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     /////////////////////////////////////////////////////////////
     //  Get all bound specs from the model.
     //
-    LOG4CXX_INFO(log, "Applying all provided bound conditions...");
+    LOG_INFO(LOGGER << "Applying all provided bound conditions...");
     BIO_XML_NS::model::Model *model = structAnalyzer->getConfig();
     for (bIt b = model->bound().begin(); b < model->bound().end(); b++)
     {
@@ -74,7 +75,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         int boundTo     = structAnalyzer->getPointIndexInAxis(parallelAxis, b->to().get());
         if (boundFrom > boundTo)
         {
-            LOG4CXX_WARN(log, "Swapping bound attributes 'from' and 'to'");
+            LOG_WARN(LOGGER << "Swapping bound attributes 'from' and 'to'");
             std::swap<int>(boundFrom, boundTo);
         }
         //
@@ -119,7 +120,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         ////////////////////////////////
 
     }   //  for (bIt b = model->bound().begin(); b < model->bound().end(); b++)
-    LOG4CXX_INFO(log, "Applying all provided bound conditions... Done");
+    LOG_INFO(LOGGER << "Applying all provided bound conditions... Done");
     //
     //  Get all bound specs from the model.
     /////////////////////////////////////////////////////////////
@@ -127,7 +128,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     /////////////////////////////////////////////////////////////
     //  Guess all missing bound conditions (or fail to do that)
     //
-    LOG4CXX_INFO(log, "Trying to guess all remaining bound conditions...");
+    LOG_INFO(LOGGER << "Trying to guess all remaining bound conditions...");
     for (int h = 0; h < sizeH; h++)
     {
         for (int v = 0; v < sizeV; v++)
@@ -148,7 +149,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
             }
         }
     }
-    LOG4CXX_INFO(log, "Trying to guess all remaining bound conditions... Done");
+    LOG_INFO(LOGGER << "Trying to guess all remaining bound conditions... Done");
     //
     //  Guess all missing bound conditions (or fail to do that)
     /////////////////////////////////////////////////////////////

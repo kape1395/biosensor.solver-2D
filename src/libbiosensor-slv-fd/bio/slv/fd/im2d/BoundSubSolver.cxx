@@ -2,12 +2,12 @@
 #include "ConstantCondition.hxx"
 #include "WallCondition.hxx"
 #include "MergeCondition.hxx"
+#include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include <cmath>
 #include <string>
+#define LOGGER "libbiosensor-slv-fd::im2d::BoundSubSolver: "
 
-//#undef LOG4CXX_DEBUG
-//#define LOG4CXX_DEBUG(a, b)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -21,11 +21,9 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer
-) :  log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.BoundSubSolver"))
+)
 {
-    std::ostringstream message;
-    message << "BoundSubSolver(posH=" << positionH << ", posV=" << positionV << ", horiz=" << horizontal << ")...";
-    LOG4CXX_DEBUG(log, message.str());
+    LOG_DEBUG(LOGGER << "BoundSubSolver(posH=" << positionH << ", posV=" << positionV << ", horiz=" << horizontal << ")...");
 
     this->solver = solver;
     this->positionH = positionH;
@@ -81,7 +79,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
         }
     }
 
-    LOG4CXX_DEBUG(log, "BoundSubSolver()... Done");
+    LOG_DEBUG(LOGGER << "BoundSubSolver()... Done");
 }
 
 
@@ -89,7 +87,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 {
-    LOG4CXX_DEBUG(log, "~BoundSubSolver()...");
+    LOG_DEBUG(LOGGER << "~BoundSubSolver()...");
 
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
@@ -99,7 +97,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 
     delete [] substanceToBCMap;
 
-    LOG4CXX_DEBUG(log, "~BoundSubSolver()... Done");
+    LOG_DEBUG(LOGGER << "~BoundSubSolver()... Done");
 }
 
 
@@ -107,12 +105,12 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughForward()
 {
-    //LOG4CXX_DEBUG(log, "solveThroughForward()...");
+    LOG_TRACE(LOGGER << "solveThroughForward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveThroughForward();
     }
-    //LOG4CXX_DEBUG(log, "solveThroughForward()... Done");
+    LOG_TRACE(LOGGER << "solveThroughForward()... Done");
 }
 
 
@@ -120,12 +118,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughBackward()
 {
-    //LOG4CXX_DEBUG(log, "solveThroughBackward()...");
+    LOG_TRACE(LOGGER << "solveThroughBackward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveThroughBackward();
     }
-    //LOG4CXX_DEBUG(log, "solveThroughBackward()... Done");
+    LOG_TRACE(LOGGER << "solveThroughBackward()... Done");
 }
 
 
@@ -133,12 +131,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveThroughBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongForward()
 {
-    //LOG4CXX_DEBUG(log, "solveAlongForward()...");
+    LOG_TRACE(LOGGER << "solveAlongForward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveAlongForward();
     }
-    //LOG4CXX_DEBUG(log, "solveAlongForward()... Done");
+    LOG_TRACE(LOGGER << "solveAlongForward()... Done");
 }
 
 
@@ -146,12 +144,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 {
-    //LOG4CXX_DEBUG(log, "solveAlongBackward()...");
+    LOG_TRACE(LOGGER << "solveAlongBackward()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->solveAlongBackward();
     }
-    //LOG4CXX_DEBUG(log, "solveAlongBackward()... Done");
+    LOG_TRACE(LOGGER << "solveAlongBackward()... Done");
 }
 
 
@@ -159,12 +157,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::solveAlongBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
 {
-    //LOG4CXX_DEBUG(log, "applyInitialValues()...");
+    LOG_DEBUG(LOGGER << "applyInitialValues()...");
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
         (*bc)->applyInitialValues();
     }
-    //LOG4CXX_DEBUG(log, "applyInitialValues()... Done");
+    LOG_DEBUG(LOGGER << "applyInitialValues()... Done");
 }
 
 

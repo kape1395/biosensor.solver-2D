@@ -1,12 +1,11 @@
 #include "AreaSubSolver.hxx"
 #include "Model.hxx"
 #include "ModelReaction.hxx"
+#include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include <bio/dm/ConstantSegmentSplit.hxx>
 #include <cmath>
-
-#undef LOG4CXX_DEBUG
-#define LOG4CXX_DEBUG(a, b)
+#define LOGGER "libbiosensor-slv-fd::im2d::AreaSubSolver: "
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -16,12 +15,12 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     int positionV,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
-) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.AreaSubSolver"))
+)
 {
     using BIO_DM_NS::ISegmentSplit;
     using BIO_DM_NS::ConstantSegmentSplit;
 
-    LOG4CXX_DEBUG(log, "AreaSubSolver()");
+    LOG_DEBUG(LOGGER << "AreaSubSolver()");
 
     this->structAnalyzer = structAnalyzer;
     this->fdAnalyzer = fdAnalyzer;
@@ -63,7 +62,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     ConstantSegmentSplit* axisPartV = dynamic_cast<ConstantSegmentSplit*> (fdAnalyzer->getAxisPartSegmentSplitV(positionV));
     if (axisPartH == 0 || axisPartV == 0)
     {
-        LOG4CXX_ERROR(log, "Only axis parts of type ConstantAxisPart are now supported.");
+        LOG_ERROR(LOGGER << "Only axis parts of type ConstantAxisPart are now supported.");
         throw Exception("Invalid coonf.");
     }
 
@@ -151,7 +150,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 int substP = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rMM->product()));
                 if (substS == -1 || substP == -1)
                 {
-                    LOG4CXX_ERROR(log, "For MM reaction both S and P must have diffusion decined in the medium.");
+                    LOG_ERROR(LOGGER << "For MM reaction both S and P must have diffusion decined in the medium.");
                     throw Exception("Unsupported reaction.");
                 }
 
@@ -173,7 +172,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                         rRO->product()[1].coefficient() != 1
                    )
                 {
-                    LOG4CXX_ERROR(log, "Implementation of RO reaction is limited: 2S + 2P without coefficients");
+                    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited: 2S + 2P without coefficients");
                     throw Exception("Unsupported reaction.");
                 }
 
@@ -184,7 +183,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 double rate = structAnalyzer->getSymbol(rRO->rate())->value();
                 if (substS1 == -1 || substS2 == -1)
                 {
-                    LOG4CXX_ERROR(log, "For RO reaction both S1 and S2 must have diffusion decined in the medium.");
+                    LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion decined in the medium.");
                     throw Exception("Unsupported reaction.");
                 }
 
@@ -241,7 +240,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 {
-    LOG4CXX_DEBUG(log, "~AreaSubSolver()");
+    LOG_DEBUG(LOGGER << "~AreaSubSolver()");
 
 
     for (std::vector<EdgeData*>::iterator e = edges.begin(); e < edges.end(); e++)
@@ -286,7 +285,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
  */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 {
-    LOG4CXX_DEBUG(log, "solveHorizontalForward()...");
+    LOG_TRACE(LOGGER << "solveHorizontalForward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -375,7 +374,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 
     dumpData(std::cout, false, "solveHorizontalForward, after calculations");
 
-    LOG4CXX_DEBUG(log, "solveHorizontalForward()... Done");
+    LOG_TRACE(LOGGER << "solveHorizontalForward()... Done");
 }
 
 
@@ -383,7 +382,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 {
-    LOG4CXX_DEBUG(log, "solveHorizontalBackward()...");
+    LOG_TRACE(LOGGER << "solveHorizontalBackward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -408,7 +407,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
         }
     }
     dumpData(std::cout, false, "solveHorizontalBackward, after calculations");
-    LOG4CXX_DEBUG(log, "solveHorizontalBackward()... Done");
+    LOG_TRACE(LOGGER << "solveHorizontalBackward()... Done");
 }
 
 
@@ -416,7 +415,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 {
-    LOG4CXX_DEBUG(log, "solveVerticalForward()...");
+    LOG_TRACE(LOGGER << "solveVerticalForward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -484,7 +483,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
             }
         }
     }
-    LOG4CXX_DEBUG(log, "solveVerticalForward()... Done");
+    LOG_TRACE(LOGGER << "solveVerticalForward()... Done");
 }
 
 
@@ -492,7 +491,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
 {
-    LOG4CXX_DEBUG(log, "solveVerticalBackward()...");
+    LOG_TRACE(LOGGER << "solveVerticalBackward()...");
     if (dataSizeS == 0)
     {
         // Nothing to solve...
@@ -518,7 +517,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
         }
     }
     dumpData(std::cout, true, "solveVerticalBackward, after calculations");
-    LOG4CXX_DEBUG(log, "solveVerticalBackward()... Done");
+    LOG_TRACE(LOGGER << "solveVerticalBackward()... Done");
 }
 
 

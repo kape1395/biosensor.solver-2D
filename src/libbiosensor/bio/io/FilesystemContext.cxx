@@ -4,7 +4,6 @@
 #include <fstream>
 #include <string>
 #include <boost/filesystem.hpp>
-#include <log4cxx/config_auto.h>
 #include "../Exception.hxx"
 
 namespace bf = boost::filesystem;

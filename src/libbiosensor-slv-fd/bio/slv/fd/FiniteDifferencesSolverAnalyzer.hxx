@@ -7,7 +7,6 @@
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
 #include <vector>
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_NS_BEGIN
 
@@ -18,7 +17,6 @@ BIO_SLV_FD_NS_BEGIN
 class FiniteDifferencesSolverAnalyzer
 {
 private:
-    log4cxx::LoggerPtr log;
 
     BIO_XML_NS::model::Model* config;
 

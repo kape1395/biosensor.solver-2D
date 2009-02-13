@@ -8,7 +8,7 @@ BIO_IO_NS::CurrentDensity::CurrentDensity(
     std::string& name,
     BIO_SLV_NS::ISolver* solver,
     BIO_IO_NS::IContext* Context
-) : log(log4cxx::Logger::getLogger("libbiosensor.CurrentDensity"))
+)
 {
     this->name = name;
     this->solver = solver;

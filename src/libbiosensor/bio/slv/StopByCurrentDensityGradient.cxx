@@ -2,6 +2,8 @@
 #include "../Exception.hxx"
 #include <iostream>
 #include <cmath>
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::StopByCurrentDensityGradient: "
 
 
 /* ************************************************************************** */
@@ -11,7 +13,7 @@ BIO_SLV_NS::StopByCurrentDensityGradient::StopByCurrentDensityGradient(
     double gradient,
     bool normalized,
     long checkEveryNumberOfSteps
-) : log(log4cxx::Logger::getLogger("libbiosensor.StopByCurrentDensityGradient"))
+)
 {
     this->iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
     this->transducer = solver->getTransducer();
@@ -76,7 +78,7 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
     if (std::abs(normalized ? gradNormalized : grad) < gradient)
     {
         iterativeSolver->stop(true);
-        LOG4CXX_INFO(log, "Solver reached a steady state");
+        LOG_INFO(LOGGER << "Solver reached a steady state");
     }
 }
 

@@ -16,7 +16,6 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/cfg/BoundAnalyzer.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/slv/AbstractIterativeSolver.hxx>
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -32,7 +31,6 @@ public:
 
 private:
 
-    log4cxx::LoggerPtr log;
     BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;

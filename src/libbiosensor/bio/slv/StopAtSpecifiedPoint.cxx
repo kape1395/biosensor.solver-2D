@@ -1,11 +1,13 @@
 #include "StopAtSpecifiedPoint.hxx"
 #include "../Exception.hxx"
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::StopAtSpecifiedPoint: "
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_NS::StopAtSpecifiedPoint::StopAtSpecifiedPoint(
     ISolver* solver
-) : log(log4cxx::Logger::getLogger("libbiosensor.StopAtSpecifiedPoint"))
+)
 {
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
     this->stepCount = 0;
@@ -34,7 +36,7 @@ void BIO_SLV_NS::StopAtSpecifiedPoint::solveEventOccured()
             ))
     {
         solver->stop();
-        LOG4CXX_INFO(log, "Solver is stopped by request at a specified time or stepCount.");
+        LOG_INFO(LOGGER << "Solver is stopped by request at a specified time or stepCount.");
     }
 }
 

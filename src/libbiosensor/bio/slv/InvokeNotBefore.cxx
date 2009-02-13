@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 BIO_SLV_NS::InvokeNotBefore::InvokeNotBefore(
     ISolver* solver
-) : log(log4cxx::Logger::getLogger("libbiosensor::InvokeNotBefore"))
+)
 {
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
     this->stepCount = 0;

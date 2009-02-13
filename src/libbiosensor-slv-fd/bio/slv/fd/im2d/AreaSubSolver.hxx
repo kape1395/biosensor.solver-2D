@@ -12,7 +12,6 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IGrid2D.hxx>
 #include <bio/dm/ICursor2D.hxx>
 #include <bio/dm/IConcentrations.hxx>
-#include <log4cxx/logger.h>
 #include <string>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -27,7 +26,6 @@ public:
     class EdgeData;
 
 private:
-    log4cxx::LoggerPtr log;
 
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;

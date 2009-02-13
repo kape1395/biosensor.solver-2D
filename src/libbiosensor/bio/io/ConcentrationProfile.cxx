@@ -11,7 +11,7 @@ BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     std::string& name,
     BIO_SLV_NS::ISolver* solver,
     BIO_IO_NS::IContext* Context
-) : log(log4cxx::Logger::getLogger("libbiosensor.ConcentrationProfile"))
+)
 {
     this->name = name;
     this->indexed = false;

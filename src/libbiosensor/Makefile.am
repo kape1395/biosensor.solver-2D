@@ -95,6 +95,7 @@ nobase_pkginclude_HEADERS = \
     bio/trd/AmperometricInjectedElectrode2D.hxx
 
 EXTRA_DIST = \
+    bio/Logging.hxx \
     bio/Splitted1DArea.hxx \
     bio/Splitted2DArea.hxx
 

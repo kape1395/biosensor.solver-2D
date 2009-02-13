@@ -1,14 +1,12 @@
-
 #include "ModelSolver.hxx"
-
-
 #include "bio/slv/IIterativeSolver.hxx"
-
 #include "FiniteDifferencesSolverAnalyzer.hxx"
+#include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include <bio/dm/ConstantSegmentSplit.hxx>
 #include <bio/slv/ISolverListener.hxx>
 #include <vector>
+#define LOGGER "libbiosensor-slv-fd::FiniteDifferencesSolverAnalyzer: "
 
 
 /* ************************************************************************** */
@@ -19,9 +17,7 @@
  */
 BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     BIO_XML_NS::model::Model* config
-) :
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.FiniteDifferencesSolverAnalyzer")),
-        structureAnalyzer(config)
+) : structureAnalyzer(config)
 {
     this->config = 0;
     this->axisPartsH = 0;
@@ -34,14 +30,14 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     typedef std::vector<Symbol*>::iterator Symbol_it;
     typedef FiniteDifferences::axis_iterator Axis_it;
 
-    LOG4CXX_INFO(log, "FiniteDifferencesSolverAnalyzer()...");
+    LOG_INFO(LOGGER << "FiniteDifferencesSolverAnalyzer()...");
 
     this->config = config;
 
     FiniteDifferences* fdSolver = dynamic_cast<FiniteDifferences*>(&config->solver());
     if (!fdSolver)
     {
-        LOG4CXX_ERROR(log, "Received configuration with non FiniteDifferences solver. I dont know what to do with it.");
+        LOG_ERROR(LOGGER << "Received configuration with non FiniteDifferences solver. I dont know what to do with it.");
         throw Exception("Invalid solver spec.");
     }
 
@@ -83,7 +79,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
             if (axis->to() != (*(point+1))->name())
             {
-                LOG4CXX_ERROR(log, "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
+                LOG_ERROR(LOGGER << "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
                 throw Exception("Invalid solver spec.");
             }
 
@@ -111,7 +107,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
                 if (axis->to() != (*(point+1))->name())
                 {
-                    LOG4CXX_ERROR(log, "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
+                    LOG_ERROR(LOGGER << "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
                     throw Exception("Invalid solver spec.");
                 }
 
@@ -135,7 +131,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     }
     if (unspecifiedIntervals)
     {
-        LOG4CXX_ERROR(log, "Not all axis parts are specified by solver/axis elements");
+        LOG_ERROR(LOGGER << "Not all axis parts are specified by solver/axis elements");
         throw Exception("Invalid solver spec.");
     }
 
@@ -145,7 +141,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
     this->timeStep = fdSolver->timeStep();
 
-    LOG4CXX_INFO(log, "FiniteDifferencesSolverAnalyzer()... Done");
+    LOG_INFO(LOGGER << "FiniteDifferencesSolverAnalyzer()... Done");
 }
 
 
@@ -153,7 +149,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 /* ************************************************************************** */
 BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer()
 {
-    LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()...");
+    LOG_INFO(LOGGER << "~FiniteDifferencesSolverAnalyzer()...");
 
     ////////////////////////////////////////////////////////////////////////////
     //  Release all old data.
@@ -190,7 +186,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer
     //  Release all old data.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG4CXX_INFO(log, "~FiniteDifferencesSolverAnalyzer()... Done");
+    LOG_INFO(LOGGER << "~FiniteDifferencesSolverAnalyzer()... Done");
 }
 
 

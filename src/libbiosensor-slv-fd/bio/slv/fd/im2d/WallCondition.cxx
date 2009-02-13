@@ -1,14 +1,15 @@
 #include "WallCondition.hxx"
-
+#include <bio/Logging.hxx>
+#define LOGGER "libbiosensor-slv-fd::im2d::WallCondition: "
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
     AreaSubSolver::EdgeData* edge,
     bool atStart
-) : log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.WallCondition"))
+)
 {
-    LOG4CXX_DEBUG(log, "WallCondition()");
+    LOG_DEBUG(LOGGER << "WallCondition()");
 
     this->edge = edge;
     this->atStart = atStart;

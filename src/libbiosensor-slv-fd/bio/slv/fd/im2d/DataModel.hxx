@@ -13,7 +13,6 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IComposite2D.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
 #include "Solver.hxx"
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 

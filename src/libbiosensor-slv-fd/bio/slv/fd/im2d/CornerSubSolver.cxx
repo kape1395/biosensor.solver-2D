@@ -1,8 +1,8 @@
 #include "CornerSubSolver.hxx"
 #include <cmath>
+#include <bio/Logging.hxx>
+#define LOGGER "libbiosensor-slv-fd::im2d::CornerSubSolver: "
 
-#undef LOG4CXX_DEBUG
-#define LOG4CXX_DEBUG(a, b)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -11,11 +11,9 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
     int positionV,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
-) :
-        BIO_DM_NS::IConcentrations(),
-        log(log4cxx::Logger::getLogger("libbiosensor-slv-fd.im2d.CornerSubSolver"))
+) : BIO_DM_NS::IConcentrations()
 {
-    LOG4CXX_DEBUG(log, "CornerSubSolver()");
+    LOG_DEBUG(LOGGER << "CornerSubSolver()");
     //  FIXME: Implement CornerSubSolver(
 }
 
@@ -24,7 +22,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::CornerSubSolver::~CornerSubSolver()
 {
-    LOG4CXX_DEBUG(log, "~CornerSubSolver()");
+    LOG_DEBUG(LOGGER << "~CornerSubSolver()");
     //  FIXME: Implement ~CornerSubSolver()
 }
 

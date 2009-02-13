@@ -2,7 +2,6 @@
 #define BIO_SLV_StopByCurrentDensityGradient_HXX
 #include "../../biosensor.hxx"
 #include "ISolverListener.hxx"
-#include <log4cxx/logger.h>
 BIO_SLV_NS_BEGIN
 
 
@@ -14,7 +13,6 @@ class StopByCurrentDensityGradient : public ISolverListener
 private:
     class NextStepListener;
 
-    log4cxx::LoggerPtr log;
     BIO_SLV_NS::IIterativeSolver* iterativeSolver;
     BIO_SLV_NS::ITransducer* transducer;
 

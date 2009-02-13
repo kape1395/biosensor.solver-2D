@@ -4,7 +4,6 @@
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/IConcentrations.hxx>
-#include <log4cxx/logger.h>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -15,9 +14,6 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  */
 class CornerSubSolver : public BIO_DM_NS::IConcentrations
 {
-private:
-    log4cxx::LoggerPtr log;
-
 public:
 
     /**

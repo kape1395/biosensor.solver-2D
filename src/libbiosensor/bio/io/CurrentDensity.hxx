@@ -4,7 +4,6 @@
 #include "../slv/ISolver.hxx"
 #include "IOutput.hxx"
 #include "IContext.hxx"
-#include <log4cxx/logger.h>
 #include <string>
 #include <ostream>
 BIO_IO_NS_BEGIN
@@ -16,7 +15,6 @@ BIO_IO_NS_BEGIN
 class CurrentDensity : public BIO_IO_NS::IOutput
 {
 private:
-    log4cxx::LoggerPtr log;
 
     std::string name;
     BIO_SLV_NS::ISolver* solver;
