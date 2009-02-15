@@ -176,6 +176,12 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 {
     LOG_DEBUG(LOGGER << "solveIteration(" << getSolvedIterationCount() << ")...");
 
+    if (getSolvedIterationCount() % 10000 == 0 && getSolvedIterationCount() > 0)
+    {
+        LOG_WARN(LOGGER << "solveIteration: Stupid implementation of the variable step by time is still wowking");
+        setTimeStep(getTimeStep() * 1.1);
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     //  Solve "horizintal" half-step in time
     //

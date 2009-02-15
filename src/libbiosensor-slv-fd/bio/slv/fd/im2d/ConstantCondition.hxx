@@ -13,7 +13,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class ConstantCondition : public IBoundCondition
 {
 private:
-    
+
     AreaSubSolver::EdgeData* edge;
     double concentration;
     bool atStart;

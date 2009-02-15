@@ -1,7 +1,9 @@
 #include "AmperometricInjectedElectrode2D.hxx"
+#include "../Logging.hxx"
 #include "../Exception.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
 #include "../slv/IIterativeSolver.hxx"
+#define LOGGER "libbiosensor::AmperometricInjectedElectrode2D: "
 
 
 /* ************************************************************************** */
@@ -86,6 +88,8 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
         return calculatedOutput;
     }
 
+    LOG_DEBUG(LOGGER << "getOutput()...");
+
     double integralValue = 0.0;
     for (unsigned i = 0; i < areas.size(); i++)
     {
@@ -120,6 +124,8 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
     calculatedOutput = integralValue;
     calculatedOutputForStep = iterative->getSolvedIterationCount();
 
+    LOG_DEBUG(LOGGER << "getOutput()... Done, result=" << integralValue);
+
     return integralValue;
 }
 
@@ -128,6 +134,8 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
 /* ************************************************************************** */
 double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGrid2D* area)
 {
+    LOG_DEBUG(LOGGER << "integrateArea()...");
+
     BIO_DM_NS::ICursor2D* cursor = area->newGridCursor();
     double stepH = area->getPointPositionsH()->getStepSize(0);  // NOTE: Only valid constant step segment
     double stepV = area->getPointPositionsV()->getStepSize(0);  // NOTE: Only valid constant step segment
@@ -136,9 +144,9 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGr
     int h;
     int v;
     double sum = 0.0;
-    for (cursor->colStart(), v = 0; cursor->isValid(); cursor->down(), v++)
+    for (cursor->colStart(), v = 0; cursor->rowStart(), cursor->isValid(); cursor->down(), v++)
     {
-        for (cursor->rowStart(), h = 0; cursor->isValid(); cursor->right(), h++)
+        for (h = 0; cursor->isValid(); cursor->right(), h++)
         {
             double coefficient = 1.0;
 
@@ -154,10 +162,19 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGr
             sum += coefficient
                    * (*cursor->getConcentrations())[substanceIndex]
                    * stepH * stepV;
+
+            LOG_TRACE(LOGGER << "integrateArea:"
+                      << "\th=" << h
+                      << "\tv=" << v
+                      << "\tS=" << (*cursor->getConcentrations())[substanceIndex]
+                      << "\tC=" << coefficient
+                     );
         }
     }
 
     delete cursor;
+
+    LOG_DEBUG(LOGGER << "integrateArea()... Done, result=" << sum);
     return sum;
 }
 

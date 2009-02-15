@@ -59,6 +59,11 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::solveEventOccured()
         nextStepForCheck    = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 
         nextStepListener->listenForNextStep(iterativeSolver->getSolvedIterationCount());
+
+        LOG_DEBUG(LOGGER << "solveEventOccured:"
+                  << " prevCurrentDensity=" << prevCurrentDensity
+                  << "\tprevTime=" << prevTime
+                 );
     }
 }
 
@@ -73,12 +78,17 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
     double grad = (thisCurrentDensity - prevCurrentDensity) / (thisTime - prevTime);
     double gradNormalized = grad * thisTime / thisCurrentDensity;
 
-    std::cout << "DEBUG: StopByCurrentDensityGradient: grad=" << grad << "\tgradNormalized=" << gradNormalized << std::endl;
+    LOG_DEBUG(LOGGER << "processNextStep:"
+              << " thisCurrentDensity="   << thisCurrentDensity
+              << "\tthisTime="            << thisTime
+              << "\tgrad="                << grad
+              << "\tgradNormalized="      << gradNormalized
+             );
 
     if (std::abs(normalized ? gradNormalized : grad) < gradient)
     {
         iterativeSolver->stop(true);
-        LOG_INFO(LOGGER << "Solver reached a steady state");
+        LOG_INFO(LOGGER << "The solver reached a steady state");
     }
 }
 

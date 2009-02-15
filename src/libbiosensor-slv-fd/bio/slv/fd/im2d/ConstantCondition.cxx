@@ -17,7 +17,7 @@ BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
     this->concentration = concentration;
     this->atStart = atStart;
     applyInitialValues();
-    
+
     LOG_DEBUG(LOGGER << "ConstantCondition()... Done");
 }
 

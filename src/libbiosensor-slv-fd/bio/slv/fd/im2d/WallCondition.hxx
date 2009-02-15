@@ -13,7 +13,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class WallCondition : public IBoundCondition
 {
 private:
-    
+
     AreaSubSolver::EdgeData* edge;
     bool atStart;
 
