@@ -101,6 +101,7 @@ am_libbiosensor_la_OBJECTS = bio/libbiosensor_la-DelegatingFactory.lo \
 	bio/slv/libbiosensor_la-NullSolver.lo \
 	bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo \
 	bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo \
+	bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo \
 	bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo \
 	bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo \
 	bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.lo
@@ -289,6 +290,7 @@ libbiosensor_la_SOURCES = \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
     bio/slv/StopByCurrentDensityGradient.cxx \
+    bio/slv/StopIfSumOfConcentrationsNonConst.cxx \
     bio/slv/StopIfInvalidConcentrations.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx
@@ -335,6 +337,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/StopAtSpecifiedPoint.hxx \
     bio/slv/StopByCurrentDensityGradient.hxx \
     bio/slv/StopIfInvalidConcentrations.hxx \
+    bio/slv/StopIfSumOfConcentrationsNonConst.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \
     bio/trd/AmperometricInjectedElectrode2D.hxx
 
@@ -529,6 +532,8 @@ bio/slv/libbiosensor_la-StopAtSpecifiedPoint.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
+bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo:  \
+	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo:  \
 	bio/slv/$(am__dirstamp) bio/slv/$(DEPDIR)/$(am__dirstamp)
 bio/trd/$(am__dirstamp):
@@ -626,6 +631,8 @@ mostlyclean-compile:
 	-rm -f bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo
 	-rm -f bio/slv/libbiosensor_la-StopIfInvalidConcentrations.$(OBJEXT)
 	-rm -f bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo
+	-rm -f bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.$(OBJEXT)
+	-rm -f bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.$(OBJEXT)
 	-rm -f bio/trd/libbiosensor_la-AmperometricElectrode2DOnBound.lo
 	-rm -f bio/trd/libbiosensor_la-AmperometricInjectedElectrode2D.$(OBJEXT)
@@ -674,6 +681,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopAtSpecifiedPoint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopByCurrentDensityGradient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopIfInvalidConcentrations.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@bio/slv/$(DEPDIR)/libbiosensor_la-StopIfSumOfConcentrationsNonConst.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricElectrode2DOnBound.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@bio/trd/$(DEPDIR)/libbiosensor_la-AmperometricInjectedElectrode2D.Plo@am__quote@
 
@@ -973,6 +981,13 @@ bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo: bio/slv/StopByCurrentDe
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopByCurrentDensityGradient.cxx' object='bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopByCurrentDensityGradient.lo `test -f 'bio/slv/StopByCurrentDensityGradient.cxx' || echo '$(srcdir)/'`bio/slv/StopByCurrentDensityGradient.cxx
+
+bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo: bio/slv/StopIfSumOfConcentrationsNonConst.cxx
+@am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-StopIfSumOfConcentrationsNonConst.Tpo -c -o bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo `test -f 'bio/slv/StopIfSumOfConcentrationsNonConst.cxx' || echo '$(srcdir)/'`bio/slv/StopIfSumOfConcentrationsNonConst.cxx
+@am__fastdepCXX_TRUE@	mv -f bio/slv/$(DEPDIR)/libbiosensor_la-StopIfSumOfConcentrationsNonConst.Tpo bio/slv/$(DEPDIR)/libbiosensor_la-StopIfSumOfConcentrationsNonConst.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='bio/slv/StopIfSumOfConcentrationsNonConst.cxx' object='bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bio/slv/libbiosensor_la-StopIfSumOfConcentrationsNonConst.lo `test -f 'bio/slv/StopIfSumOfConcentrationsNonConst.cxx' || echo '$(srcdir)/'`bio/slv/StopIfSumOfConcentrationsNonConst.cxx
 
 bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo: bio/slv/StopIfInvalidConcentrations.cxx
 @am__fastdepCXX_TRUE@	$(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbiosensor_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo -MD -MP -MF bio/slv/$(DEPDIR)/libbiosensor_la-StopIfInvalidConcentrations.Tpo -c -o bio/slv/libbiosensor_la-StopIfInvalidConcentrations.lo `test -f 'bio/slv/StopIfInvalidConcentrations.cxx' || echo '$(srcdir)/'`bio/slv/StopIfInvalidConcentrations.cxx

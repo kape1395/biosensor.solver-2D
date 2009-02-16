@@ -153,6 +153,19 @@
         </xs:complexContent>
     </xs:complexType>
     
+    <xs:complexType name="FailISumOfConcentrationsNonConst">
+        <xs:complexContent>
+            <xs:extension base="StopCondition">
+                <xs:sequence>
+                    <xs:element name="substance" type="m:SubstanceName" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+                <xs:attribute name="medium" type="m:MediumName" use="required"/>
+                <xs:attribute name="sum"    type="m:SymbolName" use="required"/>
+                <xs:attribute name="error"  type="xs:double"    use="required"/>
+           </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="CurrentDensityGradient">
         <xs:complexContent>
             <xs:extension base="StopCondition">

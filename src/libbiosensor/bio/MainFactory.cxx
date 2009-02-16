@@ -1,9 +1,13 @@
+
+#include "ModelSolver.hxx"
+
 #include "MainFactory.hxx"
 #include "io/ConcentrationProfile.hxx"
 #include "io/CurrentDensity.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
 #include "slv/StopIfInvalidConcentrations.hxx"
+#include "slv/StopIfSumOfConcentrationsNonConst.hxx"
 #include "slv/InvokeNotBefore.hxx"
 #include "slv/InvokeEveryTimeStep.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
@@ -75,6 +79,32 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
 
         return new BIO_SLV_NS::StopIfInvalidConcentrations(solver);
 
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::FailISumOfConcentrationsNonConst*>(stopCondition))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+
+        BIO_XML_MODEL_NS::solver::FailISumOfConcentrationsNonConst* fail;
+        fail = dynamic_cast<BIO_XML_MODEL_NS::solver::FailISumOfConcentrationsNonConst*>(stopCondition);
+
+        std::vector<BIO_XML_MODEL_NS::SubstanceName*> substances;
+        for (unsigned i = 0; i < fail->substance().size(); i++)
+        {
+            substances.push_back(&fail->substance()[i]);
+        }
+
+        BIO_SLV_NS::StopIfSumOfConcentrationsNonConst* stop;
+        stop = new BIO_SLV_NS::StopIfSumOfConcentrationsNonConst(
+            solver,
+            fail->medium(),
+            fail->sum(),
+            fail->error(),
+            substances
+        );
+        return stop;
         /* ****************************************************************** */
         /* ****************************************************************** */
     }

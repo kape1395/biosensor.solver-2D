@@ -16,7 +16,6 @@ class StopIfInvalidConcentrations : public ISolverListener
 private:
 
     BIO_SLV_NS::IIterativeSolver* iterativeSolver;
-    BIO_SLV_NS::ITransducer* transducer;
     BIO_DM_NS::IComposite2D* dataModel;
 
     long checkEveryNumberOfSteps;

@@ -15,7 +15,6 @@ BIO_SLV_NS::StopIfInvalidConcentrations::StopIfInvalidConcentrations(
 )
 {
     this->iterativeSolver = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
-    this->transducer = solver->getTransducer();
     this->dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData());
     this->checkEveryNumberOfSteps = checkEveryNumberOfSteps;
 
