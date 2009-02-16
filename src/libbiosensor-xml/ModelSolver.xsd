@@ -147,6 +147,12 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="FailIfInvalidConcentrations">
+        <xs:complexContent>
+            <xs:extension base="StopCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
     <xs:complexType name="CurrentDensityGradient">
         <xs:complexContent>
             <xs:extension base="StopCondition">

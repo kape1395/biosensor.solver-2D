@@ -47,12 +47,12 @@ public:
      */
     virtual void solveEventOccured();
 
+private:
+
     /**
      *  Receives event, that the next step occured.
      */
     void processNextStep();
-
-private:
 
     /**
      *

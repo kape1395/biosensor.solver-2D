@@ -3,6 +3,7 @@
 #include "io/CurrentDensity.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
+#include "slv/StopIfInvalidConcentrations.hxx"
 #include "slv/InvokeNotBefore.hxx"
 #include "slv/InvokeEveryTimeStep.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
@@ -64,6 +65,16 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
             stop->setTime(fia->time().get());
         }
         return stop;
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::FailIfInvalidConcentrations*>(stopCondition))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+
+        return new BIO_SLV_NS::StopIfInvalidConcentrations(solver);
+
         /* ****************************************************************** */
         /* ****************************************************************** */
     }
