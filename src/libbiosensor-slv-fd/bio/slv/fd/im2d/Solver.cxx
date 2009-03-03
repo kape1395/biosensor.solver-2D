@@ -67,7 +67,23 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
                     structAnalyzer, fdAnalyzer, boundAnalyzer
                 );
 
-            subSolvers->getCorners()[h][v] = new CornerSubSolver(h, v, structAnalyzer, fdAnalyzer);
+        }
+    }
+    for (int h = 0; h <= subSolvers->sizeH(); h++)
+    {
+        for (int v = 0; v <= subSolvers->sizeV(); v++)
+        {
+            bool lastH = h == subSolvers->sizeH();
+            bool lastV = v == subSolvers->sizeV();
+
+            subSolvers->getCorners()[h][v] = new CornerSubSolver(
+                this, h, v,
+                v > 0   ? subSolvers->getBoundsV()[h][v - 1] : 0,   //  top
+                !lastH  ? subSolvers->getBoundsH()[h][v]     : 0,   //  right
+                !lastV  ? subSolvers->getBoundsV()[h][v]     : 0,   //  bottom
+                h > 0   ? subSolvers->getBoundsH()[h - 1][v] : 0,   //  left
+                structAnalyzer, fdAnalyzer
+            );
         }
     }
     //
