@@ -347,7 +347,7 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConce
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::operator[] (int substanceNr)
+double BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConcentration(int substanceNr)
 {
     return subSolver->getConcentration(position, substanceNr);
 }

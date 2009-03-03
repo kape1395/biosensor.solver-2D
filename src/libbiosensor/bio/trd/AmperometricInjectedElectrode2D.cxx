@@ -160,13 +160,13 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::integrateArea(BIO_DM_NS::IGr
                 coefficient *= area->getPointPositionsH()->getPointPosition(h);
 
             sum += coefficient
-                   * (*cursor->getConcentrations())[substanceIndex]
+                   * cursor->getConcentrations()->getConcentration(substanceIndex)
                    * stepH * stepV;
 
             LOG_TRACE(LOGGER << "integrateArea:"
                       << "\th=" << h
                       << "\tv=" << v
-                      << "\tS=" << (*cursor->getConcentrations())[substanceIndex]
+                      << "\tS=" << cursor->getConcentrations()->getConcentration(substanceIndex)
                       << "\tC=" << coefficient
                      );
         }

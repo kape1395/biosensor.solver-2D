@@ -171,7 +171,7 @@ class Cursor : public BIO_DM_NS::ICursor1D, public BIO_DM_NS::IConcentrations
          *  Returns concentration of the substance in a current point.
          *  This is implementation of an interface IConcentrations.
          */
-        virtual double operator [] (int substanceNr);
+        virtual double getConcentration(int substanceNr);
 
     };
 

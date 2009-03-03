@@ -142,7 +142,7 @@ bool BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::checkSubArea(BIO_DM_NS::IGri
             double sum = 0.0;
             for (unsigned i = 0; i < substanceIncexes.size(); i++)
             {
-                sum += (*concentrations)[i];
+                sum += concentrations->getConcentration(i);
             }
             if ((std::abs(constant - sum) / constant) > error)
             {

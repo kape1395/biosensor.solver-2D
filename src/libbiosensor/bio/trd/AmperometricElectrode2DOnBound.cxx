@@ -273,8 +273,8 @@ double BIO_TRD_NS::AmperometricElectrode2DOnBound::BoundIntegrator::getIntagrati
     //  Calculate derivate (f(b) - f(a) / distance)
     //
     double value = (
-                       (*cursor1->getConcentrations())[substanceIndex] -
-                       (*cursor0->getConcentrations())[substanceIndex]
+                       cursor1->getConcentrations()->getConcentration(substanceIndex) -
+                       cursor0->getConcentrations()->getConcentration(substanceIndex)
                    )
                    / perpendicularStepSize;
 

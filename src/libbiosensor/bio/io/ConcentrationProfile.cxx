@@ -85,7 +85,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
             ;
             for (int s = 0; s < substCount; s++)
             {
-                (*out) << '\t' << (*concentrations)[s];
+                (*out) << '\t' << concentrations->getConcentration(s);
             }
             (*out) << std::endl;
         }

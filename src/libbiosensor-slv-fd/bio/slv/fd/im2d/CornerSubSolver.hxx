@@ -64,14 +64,6 @@ public:
      */
     double getConcentration(int s);
 
-    /**
-     *  Returns concentration of the substance with index <code>substanceNr</code>.
-     */
-    virtual double operator [] (int substanceNr)
-    {
-        return getConcentration(substanceNr);
-    }
-
 };
 
 

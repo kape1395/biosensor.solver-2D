@@ -19,7 +19,7 @@ public:
     /**
      *  Returns concentration of the substance with index <code>substanceNr</code>.
      */
-    virtual double operator [] (int substanceNr) = 0;
+    virtual double getConcentration(int substanceNr) = 0;
 
 };
 

@@ -252,7 +252,7 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::operator[] (int substanceNr)
+double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentration(int substanceNr)
 {
     if (!currentOnBoundH && !currentOnBoundV)
     {

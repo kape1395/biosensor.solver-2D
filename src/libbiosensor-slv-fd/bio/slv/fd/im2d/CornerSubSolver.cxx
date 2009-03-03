@@ -80,7 +80,7 @@ void BIO_SLV_FD_IM2D_NS::CornerSubSolver::solveBackward()
 
 double BIO_SLV_FD_IM2D_NS::CornerSubSolver::getConcentration(int s)
 {
-    return cursors[s] ? (*cursors[s]->getConcentrations())[s] : NAN;
+    return cursors[s] ? cursors[s]->getConcentrations()->getConcentration(s) : NAN;
 }
 
 /* ************************************************************************** */
