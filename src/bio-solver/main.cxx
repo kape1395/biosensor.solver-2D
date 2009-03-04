@@ -54,9 +54,9 @@ int main(int argn, char **argv)
                 std::filebuf configFileBuf;
                 configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
                 std::istream configIStream(&configFileBuf);
-                
+
                 model = BIO_XML_NS::model::model(configIStream);
-                
+
                 configFileBuf.close();
             }
             LOG_INFO(LOGGER << "Parsing config file... Done");
@@ -68,9 +68,9 @@ int main(int argn, char **argv)
                 std::filebuf configFileBuf;
                 configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
                 std::istream configIStream(&configFileBuf);
-                
+
                 context->setConfiguration(configIStream);
-                
+
                 configFileBuf.close();
             }
 
