@@ -1,6 +1,6 @@
 #include "Factory.hxx"
 #include <bio/Logging.hxx>
-#include <bio/Exception.cxx>
+#include <bio/Exception.hxx>
 #include "ex2d/Solver.hxx"
 #include "im2d/Solver.hxx"
 #define LOGGER "libbiosensor-slv-fd: "

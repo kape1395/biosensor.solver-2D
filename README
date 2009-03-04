@@ -22,6 +22,9 @@ Patestavimas:
   arba
     valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiosensor-xml/Model-example-2D_b.xml
 
+Galutiniam kompiliavimui (release):
+./configure CXXFLAGS=-O2 --enable-static --disable-shared --prefix `pwd`/test-install
+
 
 ################################################################################
 ##    Cia matyt reikia paleisti kai pakeiciama konfiguracija

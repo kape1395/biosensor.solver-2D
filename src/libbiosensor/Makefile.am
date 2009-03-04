@@ -26,6 +26,7 @@ libbiosensor_la_SOURCES = \
     bio/dm/IGrid2D.cxx \
     bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
+    bio/io/AveragedConcentration.cxx \
     bio/io/ConcentrationProfile.cxx \
     bio/io/CurrentDensity.cxx \
     bio/io/FilesystemContext.cxx \
@@ -74,6 +75,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/IGrid2D.hxx \
     bio/dm/ISegmentSplit.hxx \
     bio/dm/NullDM.hxx \
+    bio/io/AveragedConcentration.hxx \
     bio/io/ConcentrationProfile.hxx \
     bio/io/CurrentDensity.hxx \
     bio/io/FilesystemContext.hxx \

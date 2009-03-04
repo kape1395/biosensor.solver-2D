@@ -1,9 +1,7 @@
-
-#include "ModelSolver.hxx"
-
 #include "MainFactory.hxx"
 #include "io/ConcentrationProfile.hxx"
 #include "io/CurrentDensity.hxx"
+#include "io/AveragedConcentration.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
 #include "slv/StopIfInvalidConcentrations.hxx"
@@ -19,11 +17,11 @@
 /* ************************************************************************** */
 BIO_NS::MainFactory::MainFactory(
     BIO_NS::IFactory* rootFactory,
-    BIO_IO_NS::IContext* Context
+    BIO_IO_NS::IContext* context
 )
 {
     this->rootFactory = rootFactory;
-    this->Context = Context;
+    this->context = context;
 }
 
 
@@ -213,7 +211,25 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
             output->name(),
             solver,
-            Context
+            context
+        );
+
+        return out;
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::AveragedConcentration*>(output))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+        BIO_XML_MODEL_NS::solver::AveragedConcentration* outputConf;
+        outputConf = dynamic_cast<BIO_XML_MODEL_NS::solver::AveragedConcentration*>(output);
+
+        BIO_IO_NS::AveragedConcentration* out = new BIO_IO_NS::AveragedConcentration(
+            output->name(),
+            solver,
+            context,
+            outputConf->medium().present() ? &outputConf->medium().get() : 0
         );
 
         return out;
@@ -227,7 +243,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         BIO_IO_NS::CurrentDensity* out = new BIO_IO_NS::CurrentDensity(
             output->name(),
             solver,
-            Context
+            context
         );
 
         return out;

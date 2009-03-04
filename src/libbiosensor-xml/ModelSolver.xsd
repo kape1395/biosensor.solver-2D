@@ -94,6 +94,14 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="AveragedConcentration">
+        <xs:complexContent>
+            <xs:extension base="m:SolverOutput">
+                <xs:attribute name="medium" type="m:MediumName" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
     <xs:complexType name="SteadyStateHalfTime">
         <xs:complexContent>
             <xs:extension base="m:SolverOutput"/>

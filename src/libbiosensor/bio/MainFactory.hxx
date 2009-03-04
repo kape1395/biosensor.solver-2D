@@ -17,7 +17,7 @@ class MainFactory : public IFactory
 {
 private:
     BIO_NS::IFactory* rootFactory;
-    BIO_IO_NS::IContext* Context;
+    BIO_IO_NS::IContext* context;
 
 public:
 
@@ -26,7 +26,7 @@ public:
      */
     MainFactory(
         BIO_NS::IFactory* rootFactory,
-        BIO_IO_NS::IContext* Context
+        BIO_IO_NS::IContext* context
     );
 
     /**

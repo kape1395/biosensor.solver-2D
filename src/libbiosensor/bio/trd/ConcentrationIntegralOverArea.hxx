@@ -40,6 +40,15 @@ public:
     );
 
     /**
+     *  Construct integrator for substance concentration over all biosensor.
+     */
+    ConcentrationIntegralOverArea(
+        BIO_SLV_NS::ISolver* solver,
+        BIO_XML_MODEL_NS::SubstanceName& substanceName,
+        BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+    );
+
+    /**
      *  Destructor.
      */
     virtual ~ConcentrationIntegralOverArea();

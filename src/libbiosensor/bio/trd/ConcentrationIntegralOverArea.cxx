@@ -60,6 +60,53 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
 }
 
 
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
+    BIO_SLV_NS::ISolver* solver,
+    BIO_XML_MODEL_NS::SubstanceName& substanceName,
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+)
+{
+    BIO_DM_NS::IComposite2D* dataModel = 0;
+
+    if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
+        throw Exception("ConcentrationIntegralOverArea: DataModel must implement IComposite2D.");
+
+    this->structAnalyzer = structAnalyzer;
+    this->substanceName = substanceName;
+    this->substanceIndex = structAnalyzer->getSubstanceIndex(substanceName);
+
+
+    for (int h = 0; h < dataModel->sizeH(); h++)
+    {
+        for (int v = 0; v < dataModel->sizeV(); v++)
+        {
+            std::vector<int> localSubstIndexes = structAnalyzer->getSubstanceIndexesInArea(h, v);
+            bool substanceFound = false;
+            for (unsigned i = 0; i < localSubstIndexes.size(); i++)
+            {
+                if (localSubstIndexes[i] == substanceIndex)
+                {
+                    substanceFound = true;
+                    break;
+                }
+            }
+            if (substanceFound)
+            {
+                if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsH()))
+                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+
+                if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsV()))
+                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+
+                areas.push_back(dataModel->getArea(h, v));
+            }
+        }
+    }
+    if (areas.size() == 0)
+        throw Exception("ConcentrationIntegralOverArea: No areas were found with specified medium name.");
+}
 
 
 /* ************************************************************************** */
