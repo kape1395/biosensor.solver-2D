@@ -42,21 +42,35 @@ int main(int argn, char **argv)
         try
         {
             boost::filesystem::path configPath(argv[1]);
+            boost::filesystem::path outputPath(argv[2]);
+
+            LOG_INFO(LOGGER << "Using configuration file : " << configPath.file_string());
+            LOG_INFO(LOGGER << "Using output directory   : " << outputPath.directory_string());
 
             // Parse file
             LOG_INFO(LOGGER << "Parsing config file...");
-            const std::string uri = std::string(argv[1]);
-            std::auto_ptr<Model> model(BIO_XML_NS::model::model(uri));
-            LOG_INFO(LOGGER << "Parsing config file... Done");
-
-
-            // Construct factories.
-            IContext* context = new FilesystemContext(std::string(argv[2]));
+            std::auto_ptr<Model> model;
             {
                 std::filebuf configFileBuf;
                 configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
                 std::istream configIStream(&configFileBuf);
+                
+                model = BIO_XML_NS::model::model(configIStream);
+                
+                configFileBuf.close();
+            }
+            LOG_INFO(LOGGER << "Parsing config file... Done");
+
+
+            // Construct factories.
+            IContext* context = new FilesystemContext(outputPath.directory_string());
+            {
+                std::filebuf configFileBuf;
+                configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+                std::istream configIStream(&configFileBuf);
+                
                 context->setConfiguration(configIStream);
+                
                 configFileBuf.close();
             }
 
