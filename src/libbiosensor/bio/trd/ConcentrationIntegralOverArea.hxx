@@ -60,6 +60,13 @@ public:
      */
     virtual double integrate();
 
+    /**
+     *  Returns area of the region, over which integration is performed.
+     *
+     *  \return area.
+     */
+    virtual double getArea();
+
 private:
 
     /**

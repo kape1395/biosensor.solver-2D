@@ -1,6 +1,7 @@
 #include "StructureAnalyzer.hxx"
 #include "../Exception.hxx"
 #include "../Logging.hxx"
+#include <algorithm>
 #define LOGGER "libbiosensor::StructureAnalyzer: "
 
 
@@ -414,6 +415,28 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h,
             indexes.push_back(i);
         }
     }
+    return indexes;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInMedium(BIO_XML_MODEL_NS::MediumName& name)
+{
+    typedef BIO_XML_NS::model::Model::medium_iterator it_m;
+    typedef BIO_XML_NS::model::Medium::substance_iterator it_ms;
+    std::vector<int> indexes;
+
+    for (it_m m = config->medium().begin(); m < config->medium().end(); m++)
+    {
+        for (it_ms ms = m->substance().begin(); ms < m->substance().end(); ms++)
+        {
+            indexes.push_back(getSubstanceIndex(ms->name()));
+        }
+    }
+
+    std::sort(indexes.begin(), indexes.end());
+
     return indexes;
 }
 

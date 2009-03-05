@@ -185,3 +185,20 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateSubArea(BIO_DM_NS::IG
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+double BIO_TRD_NS::ConcentrationIntegralOverArea::getArea()
+{
+    LOG_TRACE(LOGGER << "getArea()...");
+
+    double area = 0.0;
+    for (unsigned i = 0; i < areas.size(); i++)
+    {
+        area += areas[i]->getPointPositionsH()->getLength() * areas[i]->getPointPositionsV()->getLength();
+    }
+
+    LOG_TRACE(LOGGER << "getArea()... Done, result=" << area);
+    return area;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */

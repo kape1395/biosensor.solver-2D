@@ -130,6 +130,14 @@ public:
     std::vector<int> getSubstanceIndexesInArea(int h, int v);
 
     /**
+     *  Returns indexes of the substances, that are defined in the specified medium.
+     *
+     *  \param name Medium name.
+     *  \return vector of indexes (see also getSubstanceIndex).
+     */
+    std::vector<int> getSubstanceIndexesInMedium(BIO_XML_MODEL_NS::MediumName& name);
+
+    /**
      *  Get the reactions in the specified area.
      *
      *  \param h Horizontal (x) coordinate of the area.

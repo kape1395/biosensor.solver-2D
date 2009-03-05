@@ -1,12 +1,15 @@
 #ifndef BIO_IO_AveragedConcentration_HXX
 #define BIO_IO_AveragedConcentration_HXX
 #include "../../biosensor.hxx"
+#include "../cfg/StructureAnalyzer.hxx"
 #include "../slv/ISolver.hxx"
+#include "../trd/ConcentrationIntegralOverArea.hxx"
 #include "IOutput.hxx"
 #include "IContext.hxx"
 #include <biosensor-xml.hxx>
 #include <string>
 #include <ostream>
+#include <vector>
 BIO_IO_NS_BEGIN
 
 
@@ -19,13 +22,18 @@ BIO_IO_NS_BEGIN
 class AveragedConcentration : public BIO_IO_NS::IOutput
 {
 private:
-
+    typedef std::vector<BIO_TRD_NS::ConcentrationIntegralOverArea*> Integrals;
+    typedef std::vector<BIO_XML_MODEL_NS::Substance*> Substances;
     std::string name;
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_NS::ISolver* solver;
     BIO_IO_NS::IContext* context;
     BIO_XML_MODEL_NS::MediumName* medium;
 
     std::ostream* output;
+
+    Substances substances;
+    Integrals integrals;
 
 public:
     /**
