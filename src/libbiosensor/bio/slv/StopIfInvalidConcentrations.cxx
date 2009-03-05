@@ -63,6 +63,9 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::solveEventOccured()
             }
         }
     }
+    LOG_INFO(LOGGER << "Validation successful");
+
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 }
 
 

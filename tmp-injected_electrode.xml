@@ -133,19 +133,20 @@
 
     <solver xsi:type="s:Implicit2D" timeStep="1E-5">
         <output name="kinetic" xsi:type="s:Kinetic" stepCount="1000">
-            <s:output name="concentrations" xsi:type="s:ConcentrationProfile"/>
-            <s:output name="currentDensity" xsi:type="s:CurrentDensity"/>
+            <s:output name="concentrations"         xsi:type="s:ConcentrationProfile"/>
+            <s:output name="currentDensity"         xsi:type="s:CurrentDensity"/>
+            <s:output name="averagedConcentrations" xsi:type="s:AveragedConcentration"/>
         </output>
         <!--output name="steadyState" xsi:type="s:SteadyState">
             <s:output name="profile"        xsi:type="s:ConcentrationProfile"/>
             <s:output name="density"        xsi:type="s:CurrentDensity"/>
             < ! - -utput name="halfTime"       xsi:type="s:SteadyStateHalfTime"/- - >
         </output-->
-        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="500"/>
-        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="500"/>
-        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="500"/>
-        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="500"/>
-        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="500"/>
+        <s:axis from="r_0" to="r_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="r_1" to="r_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_0" to="z_1" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_1" to="z_2" xsi:type="s:ConstantAxisPart" stepCount="200"/>
+        <s:axis from="z_2" to="z_3" xsi:type="s:ConstantAxisPart" stepCount="200"/>
         <s:stopCondition
             xsi:type="s:StopConditionValidAfter"
             stepCount="1000">
@@ -156,6 +157,19 @@
             />
         </s:stopCondition>
         <s:stopCondition xsi:type="s:FailIfAbove" stepCount="500000000"/>
+        <s:stopCondition xsi:type="s:FailIfInvalidConcentrations"/>
+        <s:stopCondition
+            xsi:type="s:FailISumOfConcentrationsNonConst"
+            medium="\Omega_2" sum="E_0" error="1E-6">
+            <s:substance>E_{ox}</s:substance>
+            <s:substance>E_{red}</s:substance>
+        </s:stopCondition>
+        <s:stopCondition
+            xsi:type="s:FailISumOfConcentrationsNonConst"
+            medium="\Omega_3" sum="E_0" error="1E-2">
+            <s:substance>E_{ox}</s:substance>
+            <s:substance>E_{red}</s:substance>
+        </s:stopCondition>
     </solver>
 
 </model>

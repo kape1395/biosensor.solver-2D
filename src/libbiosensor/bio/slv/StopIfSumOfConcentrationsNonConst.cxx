@@ -19,6 +19,7 @@ BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::StopIfSumOfConcentrationsNonConst
     long checkEveryNumberOfSteps
 )
 {
+    this->mediumName = mediumName;
     this->iterativeSolver = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
     this->error = error;
     this->checkEveryNumberOfSteps = checkEveryNumberOfSteps;
@@ -125,6 +126,9 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
             break;
         }
     }
+    LOG_INFO(LOGGER << "Validation for medium " << mediumName << " successful");
+
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 }
 
 
@@ -142,8 +146,9 @@ bool BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::checkSubArea(BIO_DM_NS::IGri
             double sum = 0.0;
             for (unsigned i = 0; i < substanceIncexes.size(); i++)
             {
-                sum += concentrations->getConcentration(i);
+                sum += concentrations->getConcentration(substanceIncexes[i]);
             }
+
             if ((std::abs(constant - sum) / constant) > error)
             {
                 return false;

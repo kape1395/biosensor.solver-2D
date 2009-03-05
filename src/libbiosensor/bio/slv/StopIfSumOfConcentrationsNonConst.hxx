@@ -19,6 +19,7 @@ class StopIfSumOfConcentrationsNonConst : public ISolverListener
 private:
 
     BIO_SLV_NS::IIterativeSolver* iterativeSolver;
+    BIO_XML_MODEL_NS::MediumName mediumName;
     double constant;
     double error;
     std::vector<int> substanceIncexes;
