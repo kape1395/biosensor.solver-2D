@@ -4,6 +4,7 @@
 #include "../dm/IComposite2D.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
 #include "../slv/IIterativeSolver.hxx"
+#include <cmath>
 #define LOGGER "libbiosensor::ConcentrationIntegralOverArea: "
 
 
@@ -16,6 +17,8 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer
 )
 {
+    CONST_PI = std::atan2(0,-1);
+
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
     if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
@@ -187,6 +190,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateSubArea(BIO_DM_NS::IG
 /* ************************************************************************** */
 double BIO_TRD_NS::ConcentrationIntegralOverArea::getArea()
 {
+    //  FIXME: Coordinate system must be taken into account.
     LOG_TRACE(LOGGER << "getArea()...");
 
     double area = 0.0;
@@ -197,6 +201,58 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::getArea()
 
     LOG_TRACE(LOGGER << "getArea()... Done, result=" << area);
     return area;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_TRD_NS::ConcentrationIntegralOverArea::getVolume()
+{
+    LOG_TRACE(LOGGER << "getVolume()...");
+
+    double volume = 0.0;
+    for (unsigned i = 0; i < areas.size(); i++)
+    {
+        if (structAnalyzer->isCoordinateSystemCylindrical())
+        {
+            double r1 = areas[i]->getPointPositionsH()->getStartPosition();
+            double r2 = areas[i]->getPointPositionsH()->getLength() + r1;
+            double z  = areas[i]->getPointPositionsV()->getLength();
+            volume += CONST_PI * z * (r2 * r2 - r1 * r1);
+        }
+        else if (structAnalyzer->isCoordinateSystemCartesian())
+        {
+            double x = areas[i]->getPointPositionsH()->getLength();
+            double y = areas[i]->getPointPositionsV()->getLength();
+            volume += x * y;
+        }
+        else
+        {
+            throw BIO_NS::Exception("ConcentrationIntegralOverArea::getVolume: Unsupported coordinate system");
+        }
+    }
+
+    LOG_TRACE(LOGGER << "getVolume()... Done, result=" << volume);
+    return volume;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateOverVolume()
+{
+    if (structAnalyzer->isCoordinateSystemCylindrical())
+    {
+        return integrate() * 2.0 * CONST_PI;
+    }
+    else if (structAnalyzer->isCoordinateSystemCartesian())
+    {
+        return integrate();
+    }
+    else
+    {
+        throw BIO_NS::Exception("ConcentrationIntegralOverArea::getVolume: Unsupported coordinate system");
+    }
 }
 
 

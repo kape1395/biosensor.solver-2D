@@ -83,7 +83,7 @@ bool BIO_SLV_NS::StopIfInvalidConcentrations::checkSubArea(BIO_DM_NS::IGrid2D* a
             for (int s = 0; s < area->getSubstanceCount(); s++)
             {
                 double c = concentrations->getConcentration(s);
-                if (area->getSubstanceConf(s) && (std::isnan(s) || s < 0))
+                if (area->getSubstanceConf(s) && (std::isnan(c) || c < 0))
                 {
                     LOG_WARN(LOGGER << "An invalid concentration value " << c
                              << " found for the substance "

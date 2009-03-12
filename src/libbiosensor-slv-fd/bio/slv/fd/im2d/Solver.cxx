@@ -194,8 +194,12 @@ void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 
     if (getSolvedIterationCount() % 10000 == 0 && getSolvedIterationCount() > 0)
     {
-        LOG_WARN(LOGGER << "solveIteration: Stupid implementation of the variable step by time is still wowking");
-        setTimeStep(getTimeStep() * 1.1);
+        double newTimeStep = getTimeStep() * 1.1;
+        if (newTimeStep <= 0.002)
+        {
+            LOG_WARN(LOGGER << "solveIteration: Stupid implementation of the variable step by time is still working, newTimeStep=" << newTimeStep);
+            setTimeStep(newTimeStep);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////

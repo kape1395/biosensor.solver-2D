@@ -16,6 +16,7 @@ BIO_TRD_NS_BEGIN
 class ConcentrationIntegralOverArea
 {
 private:
+    double CONST_PI;
 
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
 
@@ -61,11 +62,29 @@ public:
     virtual double integrate();
 
     /**
+     *
+     */
+    virtual double integrateOverVolume();
+
+    /**
      *  Returns area of the region, over which integration is performed.
      *
      *  \return area.
      */
     virtual double getArea();
+
+    /**
+     *
+     */
+    virtual double getVolume();
+
+    /**
+     *  returns sub-areas, over which integrations is performed.
+     */
+    virtual const std::vector<BIO_DM_NS::IGrid2D*>& getIntegratedAreas()
+    {
+        return areas;
+    }
 
 private:
 

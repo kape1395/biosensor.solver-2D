@@ -1,6 +1,7 @@
 #include "AveragedConcentration.hxx"
 #include "../Exception.hxx"
 #include <iostream>
+#include <cmath>
 
 
 /* ************************************************************************** */
@@ -99,7 +100,7 @@ void BIO_IO_NS::AveragedConcentration::solveEventOccured()
 
     for (Integrals::iterator i = integrals.begin(); i < integrals.end(); i++)
     {
-        (*output) << '\t' << ((*i)->integrate() / (*i)->getArea());
+        (*output) << '\t' << ((*i)->integrateOverVolume() / (*i)->getVolume());
     }
     (*output) << std::endl;
 }
