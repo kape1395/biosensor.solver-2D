@@ -16,7 +16,7 @@ BIO_TRD_NS_BEGIN
 class ConcentrationIntegralOverArea
 {
 private:
-    double CONST_PI;
+    const double CONST_PI;
 
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
 
