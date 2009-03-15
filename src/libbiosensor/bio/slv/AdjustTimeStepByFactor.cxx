@@ -45,10 +45,12 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
     if (iterativeSolver->getSolvedIterationCount() >= nextStepForAdjustment)
     {
         double newTimeStep = iterativeSolver->getTimeStep() * factor;
+
         if (maxTimeStep > 0.0 && newTimeStep > maxTimeStep)
         {
             newTimeStep = maxTimeStep;
         }
+
         if (newTimeStep != iterativeSolver->getTimeStep())
         {
             LOG_INFO(LOGGER << "Changing time step."
@@ -59,6 +61,8 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
                     );
             iterativeSolver->setTimeStep(newTimeStep);
         }
+
+        nextStepForAdjustment = iterativeSolver->getSolvedIterationCount() + adjustEveryNumberOfSteps;
     }
 }
 
