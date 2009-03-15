@@ -45,6 +45,14 @@ public:
     );
 
     /**
+     *  Create time step adjuster by specification.
+     */
+    virtual BIO_SLV_NS::ISolverListener* createTimeStepAdjuster(
+        BIO_SLV_NS::ISolver* solver,
+        BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
+    );
+
+    /**
      *
      */
     virtual BIO_SLV_NS::ISolverListener* createOutput(

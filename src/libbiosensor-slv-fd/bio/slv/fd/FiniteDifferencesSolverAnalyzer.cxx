@@ -243,6 +243,27 @@ void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::configureStopConditions(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::configureTimeStepAdjusters(
+    BIO_SLV_NS::ISolver*          solver,
+    BIO_SLV_NS::IIterativeSolver* iterativeSolver,
+    BIO_NS::IFactory*             factory
+)
+{
+    BIO_XML_MODEL_NS::solver::FiniteDifferences* fd = getFDSolverConfig();
+
+    if (fd->timeStepAdjuster().present())
+    {
+        BIO_SLV_NS::ISolverListener* listener = factory->createTimeStepAdjuster(solver, &(fd->timeStepAdjuster().get()));
+        if (!listener)
+            throw Exception("Unsupported timeStepAdjuster configuration.");
+
+        iterativeSolver->addListener(listener, true);
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::createSegmentSplit(
     BIO_XML_NS::model::solver::Axis* axis
 )

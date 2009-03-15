@@ -109,6 +109,15 @@ public:
         BIO_NS::IFactory*               factory
     );
 
+    /**
+     *
+     */
+    void configureTimeStepAdjusters(
+        BIO_SLV_NS::ISolver*            solver,
+        BIO_SLV_NS::IIterativeSolver*   iterativeSolver,
+        BIO_NS::IFactory*               factory
+    );
+
 protected:
     BIO_DM_NS::ISegmentSplit* createSegmentSplit(BIO_XML_NS::model::solver::Axis* axis);
 

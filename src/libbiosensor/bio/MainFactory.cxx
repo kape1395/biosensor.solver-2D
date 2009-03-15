@@ -2,6 +2,7 @@
 #include "io/ConcentrationProfile.hxx"
 #include "io/CurrentDensity.hxx"
 #include "io/AveragedConcentration.hxx"
+#include "slv/AdjustTimeStepByFactor.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
 #include "slv/StopIfInvalidConcentrations.hxx"
@@ -143,6 +144,33 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
             scg->normalized()
         );
         return stop;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
+    BIO_SLV_NS::ISolver* solver,
+    BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
+)
+{
+    if (dynamic_cast<BIO_XML_MODEL_NS::solver::SimpleTimeStepAdjuster*>(timeStepAdjuster))
+    {
+        using BIO_XML_MODEL_NS::solver::SimpleTimeStepAdjuster;
+        SimpleTimeStepAdjuster* simpleTSA = dynamic_cast<SimpleTimeStepAdjuster*>(timeStepAdjuster);
+
+        BIO_SLV_NS::AdjustTimeStepByFactor* tsa = new BIO_SLV_NS::AdjustTimeStepByFactor(
+            solver,
+            simpleTSA->factor(),
+            simpleTSA->everyStepCount(),
+            simpleTSA->maxStepSize().present() ? simpleTSA->maxStepSize().get() : 0.0
+        );
+        return tsa;
     }
     else
     {

@@ -75,6 +75,17 @@ BIO_SLV_NS::ISolverListener* BIO_SLV_FD_NS::Factory::createStopCondition(
 
 
 /* ************************************************************************** */
+BIO_SLV_NS::ISolverListener* BIO_SLV_FD_NS::Factory::createTimeStepAdjuster(
+    BIO_SLV_NS::ISolver* solver,
+    BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
+)
+{
+    //  This factory is supplying no time step adjusters.
+    return 0;
+}
+
+
+/* ************************************************************************** */
 BIO_SLV_NS::ISolverListener* BIO_SLV_FD_NS::Factory::createOutput(
     BIO_SLV_NS::ISolver* solver,
     BIO_XML_MODEL_NS::SolverOutput* output

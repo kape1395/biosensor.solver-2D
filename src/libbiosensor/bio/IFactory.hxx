@@ -10,6 +10,7 @@ BIO_NS_BEGIN
 
 
 /**
+ *  Factory interface, that is implemented by all something-suplying modules.
  */
 class IFactory
 {
@@ -31,16 +32,33 @@ public:
         BIO_XML_MODEL_NS::Model* model
     ) = 0;
 
+    /**
+     *  Create stop condition by specification.
+     */
     virtual BIO_SLV_NS::ISolverListener* createStopCondition(
         BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::solver::StopCondition* stopCondition
     ) = 0;
 
+    /**
+     *  Create time step adjuster by specification.
+     */
+    virtual BIO_SLV_NS::ISolverListener* createTimeStepAdjuster(
+        BIO_SLV_NS::ISolver* solver,
+        BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
+    ) = 0;
+
+    /**
+     *  Create output generator by specification.
+     */
     virtual BIO_SLV_NS::ISolverListener* createOutput(
         BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::SolverOutput* output
     ) = 0;
 
+    /**
+     *  Create transducer by specification.
+     */
     virtual BIO_SLV_NS::ITransducer* createTransducer(
         BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::Transducer* transducer

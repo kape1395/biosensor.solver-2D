@@ -429,9 +429,12 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInMedium(BIO_
 
     for (it_m m = config->medium().begin(); m < config->medium().end(); m++)
     {
-        for (it_ms ms = m->substance().begin(); ms < m->substance().end(); ms++)
+        if (m->name().compare(name) == 0)
         {
-            indexes.push_back(getSubstanceIndex(ms->name()));
+            for (it_ms ms = m->substance().begin(); ms < m->substance().end(); ms++)
+            {
+                indexes.push_back(getSubstanceIndex(ms->name()));
+            }
         }
     }
 

@@ -119,6 +119,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
     //
     fdAnalyzer->configureOutputs(this, this, factory);
     fdAnalyzer->configureStopConditions(this, this, factory);
+    fdAnalyzer->configureTimeStepAdjusters(this, this, factory);
     //
     //  Add listeners.
     ////////////////////////////////////////////////////////////////////////////
@@ -191,16 +192,6 @@ BIO_SLV_NS::ITransducer* BIO_SLV_FD_IM2D_NS::Solver::getTransducer()
 void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 {
     LOG_DEBUG(LOGGER << "solveIteration(" << getSolvedIterationCount() << ")...");
-
-    if (getSolvedIterationCount() % 10000 == 0 && getSolvedIterationCount() > 0)
-    {
-        double newTimeStep = getTimeStep() * 1.1;
-        if (newTimeStep <= 0.002)
-        {
-            LOG_WARN(LOGGER << "solveIteration: Stupid implementation of the variable step by time is still working, newTimeStep=" << newTimeStep);
-            setTimeStep(newTimeStep);
-        }
-    }
 
     ////////////////////////////////////////////////////////////////////////////
     //  Solve "horizintal" half-step in time

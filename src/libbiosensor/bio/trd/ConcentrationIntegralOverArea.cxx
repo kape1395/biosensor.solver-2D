@@ -16,7 +16,7 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
     BIO_XML_MODEL_NS::SubstanceName& substanceName,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer
 ) :
-    CONST_PI(std::atan2(0, -1))
+        CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
@@ -69,7 +69,7 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
     BIO_XML_MODEL_NS::SubstanceName& substanceName,
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer
 ) :
-    CONST_PI(std::atan2(0, -1))
+        CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
@@ -209,7 +209,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::getArea()
 double BIO_TRD_NS::ConcentrationIntegralOverArea::getVolume()
 {
     LOG_TRACE(LOGGER << "getVolume()...");
-    
+
     double volume = 0.0;
     for (unsigned i = 0; i < areas.size(); i++)
     {

@@ -1,8 +1,9 @@
 #include "AveragedConcentration.hxx"
+#include "../Logging.hxx"
 #include "../Exception.hxx"
 #include <iostream>
 #include <cmath>
-
+#define LOGGER "libbiosensor::AveragedConcentration: "
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -13,6 +14,8 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
     BIO_XML_MODEL_NS::MediumName* medium
 )
 {
+    LOG_DEBUG(LOGGER << "AveragedConcentration()...");
+
     this->name = name;
     this->solver = solver;
     this->context = context;
@@ -26,6 +29,12 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
         for (std::vector<int>::iterator subst = substs.begin(); subst < substs.end(); subst++)
         {
             BIO_XML_MODEL_NS::Substance* subsConfig = structAnalyzer->getSubstances()[*subst];
+
+            LOG_DEBUG(LOGGER << "Creating ConcentrationIntegralOverArea for"
+                      << " substance[" << *subst << "]=" << subsConfig->name()
+                      << " over medium=" << *medium
+                     );
+
             substances.push_back(subsConfig);
             integrals.push_back(new BIO_TRD_NS::ConcentrationIntegralOverArea(
                                     solver,
@@ -40,6 +49,10 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
         std::vector<BIO_XML_MODEL_NS::Substance*> substs = structAnalyzer->getSubstances();
         for (std::vector<BIO_XML_MODEL_NS::Substance*>::iterator subst = substs.begin(); subst < substs.end(); subst++)
         {
+            LOG_DEBUG(LOGGER << "Creating ConcentrationIntegralOverArea for"
+                      << " substance=" << (*subst)->name()
+                      << " over all model");
+
             substances.push_back(*subst);
             integrals.push_back(new BIO_TRD_NS::ConcentrationIntegralOverArea(
                                     solver,
@@ -48,6 +61,8 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
                                 ));
         }
     }
+
+    LOG_DEBUG(LOGGER << "AveragedConcentration()... Done");
 }
 
 

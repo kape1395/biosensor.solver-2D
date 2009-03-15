@@ -15,8 +15,8 @@
 
 
     <xs:attributeGroup name="StepInTime">
-        <xs:attribute name="stepCount"  type="xs:int"   use="optional"/>
-        <xs:attribute name="time"       type="xs:float" use="optional"/>
+        <xs:attribute name="stepCount"  type="xs:int"    use="optional"/>
+        <xs:attribute name="time"       type="xs:double" use="optional"/>
     </xs:attributeGroup>
     
     
@@ -26,6 +26,7 @@
                 <xs:sequence>
                     <xs:element name="axis"             type="Axis"             minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element name="stopCondition"    type="StopCondition"    minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="timeStepAdjuster" type="TimeStepAdjuster" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
                 <xs:attribute name="timeStep" type="xs:double" use="required"/>
             </xs:extension>
@@ -170,18 +171,37 @@
                 <xs:attribute name="medium" type="m:MediumName" use="required"/>
                 <xs:attribute name="sum"    type="m:SymbolName" use="required"/>
                 <xs:attribute name="error"  type="xs:double"    use="required"/>
-           </xs:extension>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="CurrentDensityGradient">
         <xs:complexContent>
             <xs:extension base="StopCondition">
-                <xs:attribute name="lessThan"   type="xs:float"     use="required"/>
+                <xs:attribute name="lessThan"   type="xs:double"    use="required"/>
                 <xs:attribute name="normalized" type="xs:boolean"   use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+
+
+    
+    <!-- ******************************************************************* -->
+    <!-- ******************************************************************* -->
+    <xs:complexType name="TimeStepAdjuster" abstract="true">
+    </xs:complexType>
+
+    <xs:complexType name="SimpleTimeStepAdjuster">
+        <xs:complexContent>
+            <xs:extension base="TimeStepAdjuster">
+                <xs:attribute name="factor"         type="xs:double"    use="required"/>
+                <xs:attribute name="everyStepCount" type="xs:integer"   use="required"/>
+                <xs:attribute name="maxStepSize"    type="xs:double"    use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
 
     <!-- ******************************************************************* -->
 </xs:schema>

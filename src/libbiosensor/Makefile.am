@@ -36,6 +36,7 @@ libbiosensor_la_SOURCES = \
     bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
+    bio/slv/AdjustTimeStepByFactor.cxx \
     bio/slv/IIterativeSolver.cxx \
     bio/slv/ISolver.cxx \
     bio/slv/ISolverListener.cxx \
@@ -85,6 +86,7 @@ nobase_pkginclude_HEADERS = \
     bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
+    bio/slv/AdjustTimeStepByFactor.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \

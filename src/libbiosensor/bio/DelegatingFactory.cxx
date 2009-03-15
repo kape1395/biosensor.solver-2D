@@ -61,6 +61,22 @@ BIO_SLV_NS::ISolverListener* BIO_NS::DelegatingFactory::createStopCondition(
 
 
 /* ************************************************************************** */
+BIO_SLV_NS::ISolverListener* BIO_NS::DelegatingFactory::createTimeStepAdjuster(
+    BIO_SLV_NS::ISolver* solver,
+    BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
+)
+{
+    for (std::vector<IFactory*>::iterator f = factories.begin(); f < factories.end(); f++)
+    {
+        BIO_SLV_NS::ISolverListener* sl = (*f)->createTimeStepAdjuster(solver, timeStepAdjuster);
+        if (sl)
+            return sl;
+    }
+    return 0;
+}
+
+
+/* ************************************************************************** */
 BIO_SLV_NS::ISolverListener* BIO_NS::DelegatingFactory::createOutput(
     BIO_SLV_NS::ISolver* solver,
     BIO_XML_MODEL_NS::SolverOutput* output
