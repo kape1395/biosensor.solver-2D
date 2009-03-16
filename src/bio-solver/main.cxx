@@ -36,6 +36,14 @@ int main(int argn, char **argv)
     }
     else
     {
+        std::stringstream commandLine;
+        for (int i = 0; i < argn; i++)
+        {
+            commandLine << argv[i];
+            if (i != argn - 1)
+                commandLine << ' ';
+        }
+
         LOG_DEBUG(LOGGER << "Starting...");
 
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
@@ -44,6 +52,7 @@ int main(int argn, char **argv)
             boost::filesystem::path configPath(argv[1]);
             boost::filesystem::path outputPath(argv[2]);
 
+            LOG_INFO(LOGGER << "Command line is          : " << commandLine.str());
             LOG_INFO(LOGGER << "Using configuration file : " << configPath.file_string());
             LOG_INFO(LOGGER << "Using output directory   : " << outputPath.directory_string());
 
