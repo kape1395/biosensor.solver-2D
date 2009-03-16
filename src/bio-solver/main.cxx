@@ -117,13 +117,13 @@ int main(int argn, char **argv)
         }
         catch (const xml_schema::exception& e)
         {
-            LOG_ERROR(LOGGER << "Exception: " << e.what());
+            LOG_ERROR(LOGGER << "xml_schema::exception: " << e.what() << ". Error description is:\n" << e);
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
         catch (Exception& ee)
         {
-            LOG_ERROR(LOGGER << "Exception: " << ee.what());
+            LOG_ERROR(LOGGER << "bio::Exception: " << ee.what());
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
