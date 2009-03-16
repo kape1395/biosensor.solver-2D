@@ -22,8 +22,8 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class CornerSubSolver : public BIO_DM_NS::IConcentrations
 {
 private:
-    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_DM_NS::ICursor1D** cursors;     //  Array of cursors [globalSubstanceIndex]
+    unsigned substCount;
 
 public:
 

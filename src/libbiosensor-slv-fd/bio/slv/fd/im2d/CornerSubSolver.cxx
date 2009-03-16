@@ -18,7 +18,7 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) : BIO_DM_NS::IConcentrations()
 {
-    unsigned substCount = structAnalyzer->getSubstances().size();
+    this->substCount = structAnalyzer->getSubstances().size();
     cursors = new BIO_DM_NS::ICursor1D*[substCount];
     for (unsigned s = 0; s < substCount; s++)
     {
@@ -54,12 +54,14 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::CornerSubSolver::~CornerSubSolver()
 {
-    for (unsigned s = 0; s < structAnalyzer->getSubstances().size(); s++)
+    LOG_DEBUG(LOGGER << "~CornerSubSolver()...");
+    for (unsigned s = 0; s < substCount; s++)
     {
         if (cursors[s])
             delete cursors[s];
     }
     delete [] cursors;
+    LOG_DEBUG(LOGGER << "~CornerSubSolver()... Done");
 }
 
 

@@ -82,6 +82,8 @@ BIO_IO_NS::AveragedConcentration::~AveragedConcentration()
     }
     integrals.clear();
 
+    delete structAnalyzer;
+
     substances.clear();
 }
 

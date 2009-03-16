@@ -47,6 +47,7 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
 /* ************************************************************************** */
 BIO_TRD_NS::AmperometricInjectedElectrode2D::~AmperometricInjectedElectrode2D()
 {
+    delete areaIntegrator;
     delete structAnalyzer;
     areas.clear();
 }
