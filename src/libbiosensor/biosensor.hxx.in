@@ -52,6 +52,19 @@
 #define BIO_CFG_NS_END BIO_NS_END }
 
 
+/**
+ * Minimal negative value, that is threated as zero.
+ * This is needed for error tolerance.
+ */
+#define ZERO_MIN -1E-100
+
+/**
+ * Maximal positove value, that is threated as zero.
+ * This is needed for error tolerance.
+ */
+#define ZERO_MAX 1E-100
+
+
 //#define bio BIO_NS
 //#include "bio/slv/ISolver.hxx"
 
