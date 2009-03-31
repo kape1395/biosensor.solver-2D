@@ -9,6 +9,8 @@ EXTRA_DIST = \
     doc/Requirements.odt \
     doc/UML.xmi
 
+dist_bin_SCRIPTS = bin/bio-output
+
 doxygen:
 	doxygen
 

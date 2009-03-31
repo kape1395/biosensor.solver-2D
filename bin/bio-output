@@ -1,0 +1,58 @@
+#! /usr/bin/env python
+# -*- coding: iso-8859-1 -*-
+
+import sys
+import re
+
+################################################################################
+def error(message):
+    sys.stderr.write('\nERROR: ' + message + '\n\n')
+    sys.exit(1)
+
+
+################################################################################
+def output_halftime(file):
+    sys.stdout.write('# Halftime calculated from: ' + file + '\n')
+    inFile = open(file, 'r')
+
+    #  Find last line.
+    C_ss = 0.0
+    lastLine = ''
+    for inLine in inFile:
+        if re.search('^#', inLine): continue
+        C_ss = float(inLine.split('\t')[2])
+        lastLine = inLine
+    
+    sys.stdout.write('# Assuming stedady state is: ' + re.compile('\t').sub(' ', lastLine))
+    C_05 = C_ss / 2;
+
+    #  Find halftime
+    inFile.seek(0)
+    for inLine in inFile:
+        if re.search('^#', inLine): continue
+        if C_05 <= float(inLine.split('\t')[2]):
+            sys.stdout.write('# Time\tStep\tCurrentDensity\n')
+            sys.stdout.write(inLine)
+            break
+
+################################################################################
+
+if len(sys.argv) < 2 :
+    error("Command is required")
+
+if sys.argv[1] == 'halftime':
+    if len(sys.argv) != 3: error('Please specify currentDensityVersusTime file')
+    output_halftime(sys.argv[2])
+
+elif sys.argv[1] == 'help':
+    print '#'
+    print '# usage: bio-output <subcommand> [arguments]'
+    print '# Available subcommands are:'
+    print '#     help'
+    print '#     halftime <currentDensityFile>'
+    print '#'
+
+else:
+    error('Unknown command, try "bio-output help"')
+
+sys.exit(0)
