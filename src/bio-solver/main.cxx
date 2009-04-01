@@ -108,7 +108,9 @@ int main(int argn, char **argv)
             delete solver;
             delete factory;
             delete context;
-            LOG_INFO(LOGGER << "Success");
+            LOG_INFO(LOGGER << "#");
+            LOG_INFO(LOGGER << "# SIMULATION SUCCESSFUL");
+            LOG_INFO(LOGGER << "#");
 
 
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
@@ -118,12 +120,18 @@ int main(int argn, char **argv)
         catch (const xml_schema::exception& e)
         {
             LOG_ERROR(LOGGER << "xml_schema::exception: " << e.what() << ". Error description is:\n" << e);
+            LOG_INFO(LOGGER << "#");
+            LOG_INFO(LOGGER << "# SIMULATION FAILED");
+            LOG_INFO(LOGGER << "#");
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
         catch (Exception& ee)
         {
             LOG_ERROR(LOGGER << "bio::Exception: " << ee.what());
+            LOG_INFO(LOGGER << "#");
+            LOG_INFO(LOGGER << "# SIMULATION FAILED");
+            LOG_INFO(LOGGER << "#");
             XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
             return 2;
         }
