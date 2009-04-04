@@ -39,11 +39,25 @@ public:
     virtual ~FilesystemContext();
 
     /**
+     *  Save original configuration in the context.
+     *
+     *  \param config Stream, having configuration.
+     */
+    virtual void setOriginalConfiguration(std::istream& config);
+
+    /**
+     *  Save actual configuration in the context.
+     *
+     *  \param config Stream, having configuration.
+     */
+    virtual void setActualConfiguration(std::istream& config);
+
+    /**
      *  Save configuration in the context.
      *
      *  \param config Stream, having configuration.
      */
-    virtual void setConfiguration(std::istream& config);
+    virtual void setConfiguration(std::istream& config, std::string& name);
 
     /**
      *  Create or get existing output stream by name.

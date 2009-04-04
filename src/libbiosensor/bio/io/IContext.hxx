@@ -23,11 +23,18 @@ public:
     }
 
     /**
-     *  Save configuration in the context.
+     *  Save original configuration in the context.
      *
      *  \param config Stream, having configuration.
      */
-    virtual void setConfiguration(std::istream& config) = 0;
+    virtual void setOriginalConfiguration(std::istream& config) = 0;
+
+    /**
+     *  Save actual configuration in the context.
+     *
+     *  \param config Stream, having configuration.
+     */
+    virtual void setActualConfiguration(std::istream& config) = 0;
 
     /**
      *  Create or get existing output stream by name.

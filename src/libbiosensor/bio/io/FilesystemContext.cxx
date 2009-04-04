@@ -39,9 +39,30 @@ BIO_IO_NS::FilesystemContext::~FilesystemContext()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::FilesystemContext::setConfiguration(std::istream& config)
+void BIO_IO_NS::FilesystemContext::setOriginalConfiguration(std::istream& config)
 {
-    std::ostream* out = getOutputStream("model-original.xml");
+    std::string name("original");
+    setConfiguration(config, name);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::FilesystemContext::setActualConfiguration(std::istream& config)
+{
+    std::string name("actual");
+    setConfiguration(config, name);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::FilesystemContext::setConfiguration(std::istream& config, std::string& name)
+{
+    std::stringstream file;
+    file << "model-" << name << ".xml";
+
+    std::ostream* out = getOutputStream(file.str());
     (*out) << config.rdbuf();
     close(out);
 }
