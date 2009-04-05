@@ -4,6 +4,7 @@ Author: Karolis Petrauskas
 
 Before commit, make shure to run `make astyle'.
 
+ChangeLog modifications should be done using `dch -c ChangeLog ...'
 
 ################################################################################
 ##    Pilnas perkurimas yra:
