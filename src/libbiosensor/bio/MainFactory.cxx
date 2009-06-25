@@ -317,8 +317,7 @@ BIO_SLV_NS::ITransducer* BIO_NS::MainFactory::createTransducer(
         return new BIO_TRD_NS::AmperometricInjectedElectrode2D(
                    solver,
                    transIE->medium(),
-                   transIE->substance(),
-                   transIE->reactionSpeed()
+                   transIE->reaction()
                );
     }
     return 0;

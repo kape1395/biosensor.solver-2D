@@ -1,31 +1,30 @@
-#include "ConcentrationIntegralOverArea.hxx"
+#include "IntegralOverArea.hxx"
 #include "../Logging.hxx"
 #include "../Exception.hxx"
 #include "../dm/IComposite2D.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
 #include "../slv/IIterativeSolver.hxx"
 #include <cmath>
-#define LOGGER "libbiosensor::ConcentrationIntegralOverArea: "
+#define LOGGER "libbiosensor::IntegralOverArea: "
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
-    BIO_SLV_NS::ISolver* solver,
-    BIO_XML_MODEL_NS::MediumName& mediumName,
-    BIO_XML_MODEL_NS::SubstanceName& substanceName,
-    BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
+    BIO_SLV_NS::ISolver*            solver,
+    BIO_XML_MODEL_NS::MediumName&   mediumName,
+    IIntegratedExpression*          expression,
+    BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
 ) :
         CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
     if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
-        throw Exception("ConcentrationIntegralOverArea: DataModel must implement IComposite2D.");
+        throw Exception("IntegralOverArea: DataModel must implement IComposite2D.");
 
     this->structAnalyzer = structAnalyzer;
-    this->substanceName = substanceName;
-    this->substanceIndex = structAnalyzer->getSubstanceIndex(substanceName);
+    this->expression = expression;
 
 
     for (int h = 0; h < dataModel->sizeH(); h++)
@@ -34,87 +33,66 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
         {
             if (structAnalyzer->getMediumName(h, v) && (structAnalyzer->getMediumName(h, v)->compare(mediumName) == 0))
             {
-                std::vector<int> localSubstIndexes = structAnalyzer->getSubstanceIndexesInArea(h, v);
-                bool substanceFound = false;
-                for (unsigned i = 0; i < localSubstIndexes.size(); i++)
-                {
-                    if (localSubstIndexes[i] == substanceIndex)
-                    {
-                        substanceFound = true;
-                        break;
-                    }
-                }
-                if (!substanceFound)
-                    throw Exception("ConcentrationIntegralOverArea: substance not exists in the specified medium.");
+                if (!expression->isDefined(h, v))
+                    throw Exception("IntegralOverArea: expression is not defined in the specified medium.");
 
                 if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsH()))
-                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+                    throw Exception("IntegralOverArea: only grid with constant steps is supported");
 
                 if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsV()))
-                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+                    throw Exception("IntegralOverArea: only grid with constant steps is supported");
 
                 areas.push_back(dataModel->getArea(h, v));
             } // if name
         }
     }
     if (areas.size() == 0)
-        throw Exception("ConcentrationIntegralOverArea: No areas were found with specified medium name.");
+        throw Exception("IntegralOverArea: No areas were found with specified medium name.");
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_TRD_NS::ConcentrationIntegralOverArea::ConcentrationIntegralOverArea(
-    BIO_SLV_NS::ISolver* solver,
-    BIO_XML_MODEL_NS::SubstanceName& substanceName,
-    BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
+    BIO_SLV_NS::ISolver*            solver,
+    IIntegratedExpression*          expression,
+    BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
 ) :
         CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
     if (!(dataModel = dynamic_cast<BIO_DM_NS::IComposite2D*>(solver->getData())))
-        throw Exception("ConcentrationIntegralOverArea: DataModel must implement IComposite2D.");
+        throw Exception("IntegralOverArea: DataModel must implement IComposite2D.");
 
     this->structAnalyzer = structAnalyzer;
-    this->substanceName = substanceName;
-    this->substanceIndex = structAnalyzer->getSubstanceIndex(substanceName);
+    this->expression = expression;
 
 
     for (int h = 0; h < dataModel->sizeH(); h++)
     {
         for (int v = 0; v < dataModel->sizeV(); v++)
         {
-            std::vector<int> localSubstIndexes = structAnalyzer->getSubstanceIndexesInArea(h, v);
-            bool substanceFound = false;
-            for (unsigned i = 0; i < localSubstIndexes.size(); i++)
-            {
-                if (localSubstIndexes[i] == substanceIndex)
-                {
-                    substanceFound = true;
-                    break;
-                }
-            }
-            if (substanceFound)
+            if (expression->isDefined(h, v))
             {
                 if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsH()))
-                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+                    throw Exception("IntegralOverArea: only grid with constant steps is supported");
 
                 if (!dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getArea(h, v)->getPointPositionsV()))
-                    throw Exception("ConcentrationIntegralOverArea: only grid with constant steps is supported");
+                    throw Exception("IntegralOverArea: only grid with constant steps is supported");
 
                 areas.push_back(dataModel->getArea(h, v));
             }
         }
     }
     if (areas.size() == 0)
-        throw Exception("ConcentrationIntegralOverArea: No areas were found with specified medium name.");
+        throw Exception("IntegralOverArea: No areas were found where provided expression is defined.");
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_TRD_NS::ConcentrationIntegralOverArea::~ConcentrationIntegralOverArea()
+BIO_TRD_NS::IntegralOverArea::~IntegralOverArea()
 {
     areas.clear();
 }
@@ -122,7 +100,7 @@ BIO_TRD_NS::ConcentrationIntegralOverArea::~ConcentrationIntegralOverArea()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_TRD_NS::ConcentrationIntegralOverArea::integrate()
+double BIO_TRD_NS::IntegralOverArea::integrate()
 {
     LOG_TRACE(LOGGER << "integrate()...");
 
@@ -139,7 +117,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrate()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateSubArea(BIO_DM_NS::IGrid2D* area)
+double BIO_TRD_NS::IntegralOverArea::integrateSubArea(BIO_DM_NS::IGrid2D* area)
 {
     LOG_TRACE(LOGGER << "integrateArea()...");
 
@@ -167,13 +145,13 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateSubArea(BIO_DM_NS::IG
                 coefficient *= area->getPointPositionsH()->getPointPosition(h);
 
             sum += coefficient
-                   * cursor->getConcentrations()->getConcentration(substanceIndex)
+                   * expression->getValue(cursor->getConcentrations())
                    * stepH * stepV;
 
             LOG_TRACE(LOGGER << "integrateArea:"
                       << "\th=" << h
                       << "\tv=" << v
-                      << "\tS=" << cursor->getConcentrations()->getConcentration(substanceIndex)
+                      << "\tV=" << expression->getValue(cursor->getConcentrations())
                       << "\tC=" << coefficient
                      );
         }
@@ -188,25 +166,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateSubArea(BIO_DM_NS::IG
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_TRD_NS::ConcentrationIntegralOverArea::getArea()
-{
-    //  FIXME: Coordinate system must be taken into account.
-    LOG_TRACE(LOGGER << "getArea()...");
-
-    double area = 0.0;
-    for (unsigned i = 0; i < areas.size(); i++)
-    {
-        area += areas[i]->getPointPositionsH()->getLength() * areas[i]->getPointPositionsV()->getLength();
-    }
-
-    LOG_TRACE(LOGGER << "getArea()... Done, result=" << area);
-    return area;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-double BIO_TRD_NS::ConcentrationIntegralOverArea::getVolume()
+double BIO_TRD_NS::IntegralOverArea::getVolume()
 {
     LOG_TRACE(LOGGER << "getVolume()...");
 
@@ -228,7 +188,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::getVolume()
         }
         else
         {
-            throw BIO_NS::Exception("ConcentrationIntegralOverArea::getVolume: Unsupported coordinate system");
+            throw BIO_NS::Exception("IntegralOverArea::getVolume: Unsupported coordinate system");
         }
     }
 
@@ -239,7 +199,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::getVolume()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateOverVolume()
+double BIO_TRD_NS::IntegralOverArea::integrateOverVolume()
 {
     if (structAnalyzer->isCoordinateSystemCylindrical())
     {
@@ -251,7 +211,7 @@ double BIO_TRD_NS::ConcentrationIntegralOverArea::integrateOverVolume()
     }
     else
     {
-        throw BIO_NS::Exception("ConcentrationIntegralOverArea::getVolume: Unsupported coordinate system");
+        throw BIO_NS::Exception("IntegralOverArea::getVolume: Unsupported coordinate system");
     }
 }
 

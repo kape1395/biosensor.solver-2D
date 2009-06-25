@@ -1,3 +1,6 @@
+
+#include "Model.hxx"
+
 #include "StructureAnalyzer.hxx"
 #include "../Exception.hxx"
 #include "../Logging.hxx"
@@ -8,7 +11,7 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
-    BIO_XML_NS::model::Model* config
+    BIO_XML_MODEL_NS::Model* config
 ) :
         axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
         diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
@@ -21,12 +24,12 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     initialConcentrations = 0;
     mediums = 0;
 
-    typedef BIO_XML_NS::model::Model::axis_iterator it_axis;
-    typedef BIO_XML_NS::model::Model::substance_iterator it_subst;
-    typedef BIO_XML_NS::model::Model::medium_iterator it_med;
-    typedef BIO_XML_NS::model::Medium::area_iterator it_area;
-    typedef BIO_XML_NS::model::Medium::substance_iterator it_diff;
-    typedef BIO_XML_NS::model::Medium::reaction_iterator it_reac;
+    typedef BIO_XML_MODEL_NS::Model::axis_iterator it_axis;
+    typedef BIO_XML_MODEL_NS::Model::substance_iterator it_subst;
+    typedef BIO_XML_MODEL_NS::Model::medium_iterator it_med;
+    typedef BIO_XML_MODEL_NS::Medium::area_iterator it_area;
+    typedef BIO_XML_MODEL_NS::Medium::substance_iterator it_diff;
+    typedef BIO_XML_MODEL_NS::Medium::reaction_iterator it_reac;
 
     LOG_INFO(LOGGER << "StructureAnalyzer()...");
 
@@ -40,7 +43,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //  NOTE AGAIN: Lets try to do all in such, way that axis directionsare
     //      used as in math, i.e. vertical axis goes from bottom to top.
     //
-    if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cartesian)
+    if (config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cartesian)
     {
         LOG_DEBUG(LOGGER << "Found coordinate system \"Cartesian\", axes will be x and y.");
         this->twoDimensional = true;
@@ -66,7 +69,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             throw Exception("Missing axis");
         }
     }
-    else if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cylindrical)
+    else if (config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cylindrical)
     {
         LOG_DEBUG(LOGGER << "Found coordinate system \"Cylindrical\", axes will be r and z.");
         this->twoDimensional = true;
@@ -92,7 +95,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             throw Exception("Missing axis");
         }
     }
-    else if (config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Linear)
+    else if (config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Linear)
     {
         LOG_DEBUG(LOGGER << "Found coordinate system \"Linear\", axis will be x.");
         this->twoDimensional = false;
@@ -137,10 +140,10 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     ////////////////////////////////////////////////////////////////////////////
     //  Fill mediums.
     //
-    mediums = new BIO_XML_NS::model::Medium* *[pointsH.size()];
+    mediums = new BIO_XML_MODEL_NS::Medium* *[pointsH.size()];
     for (unsigned h = 0; h < pointsH.size(); h++)
     {
-        mediums[h] = new BIO_XML_NS::model::Medium*[pointsV.size()];
+        mediums[h] = new BIO_XML_MODEL_NS::Medium*[pointsV.size()];
         for (unsigned v = 0; v < pointsV.size(); v++)
         {
             mediums[h][v] = 0;
@@ -200,18 +203,18 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     ////////////////////////////////////////////////////////////////////////////
     //  Fill diffusions and reactions.
     //
-    reactions = new std::vector< BIO_XML_NS::model::MediumReaction* >*[pointsH.size()];
-    diffusions = new BIO_XML_NS::model::Symbol* **[pointsH.size()];
-    initialConcentrations = new BIO_XML_NS::model::Symbol* **[pointsH.size()];
+    reactions = new std::vector< BIO_XML_MODEL_NS::Reaction* >*[pointsH.size()];
+    diffusions = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size()];
+    initialConcentrations = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size()];
     for (unsigned h = 0; h < pointsH.size(); h++)
     {
-        reactions[h] = new std::vector< BIO_XML_NS::model::MediumReaction* >[pointsV.size()];
-        diffusions[h] = new BIO_XML_NS::model::Symbol* *[pointsV.size()];
-        initialConcentrations[h] = new BIO_XML_NS::model::Symbol* *[pointsV.size()];
+        reactions[h] = new std::vector< BIO_XML_MODEL_NS::Reaction* >[pointsV.size()];
+        diffusions[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size()];
+        initialConcentrations[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size()];
         for (unsigned v = 0; v < pointsV.size(); v++)
         {
-            diffusions[h][v] = new BIO_XML_NS::model::Symbol*[substances.size()];
-            initialConcentrations[h][v] = new BIO_XML_NS::model::Symbol*[substances.size()];
+            diffusions[h][v] = new BIO_XML_MODEL_NS::Symbol*[substances.size()];
+            initialConcentrations[h][v] = new BIO_XML_MODEL_NS::Symbol*[substances.size()];
             for (unsigned s = 0; s < substances.size(); s++)
             {
                 diffusions[h][v][s] = 0;
@@ -229,7 +232,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
                 }
                 for (it_reac reaction = mediums[h][v]->reaction().begin(); reaction < mediums[h][v]->reaction().end(); reaction++)
                 {
-                    reactions[h][v].push_back(&*reaction);
+                    reactions[h][v].push_back(getReaction(reaction->name()));
                 }
             }
         }
@@ -304,7 +307,7 @@ BIO_XML_MODEL_NS::MediumName* BIO_CFG_NS::StructureAnalyzer::getMediumName(int h
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::model::SymbolName& name)
+BIO_XML_MODEL_NS::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_MODEL_NS::SymbolName& name)
 {
     for (unsigned i = 0; i < config->symbol().size(); i++)
     {
@@ -317,12 +320,12 @@ BIO_XML_NS::model::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_NS::
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_NS::model::Symbol* >& list,
-        BIO_XML_NS::model::Axis& axis,
+void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_MODEL_NS::Symbol* >& list,
+        BIO_XML_MODEL_NS::Axis& axis,
         bool invert
                                                           )
 {
-    typedef BIO_XML_NS::model::Axis::point_iterator it_point;
+    typedef BIO_XML_MODEL_NS::Axis::point_iterator it_point;
     for (it_point p = axis.point().begin(); p != axis.point().end(); p++)
     {
         if (invert)
@@ -341,12 +344,12 @@ void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_
 /* ************************************************************************** */
 bool BIO_CFG_NS::StructureAnalyzer::isPointInAxis(
     Axis axis,
-    BIO_XML_NS::model::SymbolName& pointSymbolName
+    BIO_XML_MODEL_NS::SymbolName& pointSymbolName
 )
 {
-    std::vector< BIO_XML_NS::model::Symbol* >& points = (axis == HORIZONTAL) ? pointsH : pointsV;
+    std::vector< BIO_XML_MODEL_NS::Symbol* >& points = (axis == HORIZONTAL) ? pointsH : pointsV;
 
-    for (std::vector<BIO_XML_NS::model::Symbol*>::iterator it = points.begin(); it < points.end(); it++)
+    for (std::vector<BIO_XML_MODEL_NS::Symbol*>::iterator it = points.begin(); it < points.end(); it++)
     {
         if ((*it)->name() == pointSymbolName)
             return true;
@@ -359,7 +362,7 @@ bool BIO_CFG_NS::StructureAnalyzer::isPointInAxis(
 /* ************************************************************************** */
 int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
     Axis axis,
-    BIO_XML_NS::model::SymbolName& pointSymbolName
+    BIO_XML_MODEL_NS::SymbolName& pointSymbolName
 )
 {
     return getPointIndexInAxis(
@@ -372,12 +375,12 @@ int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
 /* ************************************************************************** */
 /* ************************************************************************** */
 int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
-    std::vector< BIO_XML_NS::model::Symbol* >& axis,
+    std::vector< BIO_XML_MODEL_NS::Symbol* >& axis,
     std::string& pointSymbolName
 )
 {
     int i = 0;
-    for (std::vector<BIO_XML_NS::model::Symbol*>::iterator it = axis.begin(); it < axis.end(); it++, i++)
+    for (std::vector<BIO_XML_MODEL_NS::Symbol*>::iterator it = axis.begin(); it < axis.end(); it++, i++)
     {
         if ((*it)->name() == pointSymbolName)
             return i;
@@ -389,10 +392,10 @@ int BIO_CFG_NS::StructureAnalyzer::getPointIndexInAxis(
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(BIO_XML_NS::model::SubstanceName& substanceName)
+int BIO_CFG_NS::StructureAnalyzer::getSubstanceIndex(BIO_XML_MODEL_NS::SubstanceName& substanceName)
 {
     int i = 0;
-    for (std::vector< BIO_XML_NS::model::Substance* >::iterator it = substances.begin(); it < substances.end(); it++, i++)
+    for (std::vector< BIO_XML_MODEL_NS::Substance* >::iterator it = substances.begin(); it < substances.end(); it++, i++)
     {
         if ((*it)->name() == substanceName)
             return i;
@@ -409,7 +412,7 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h,
     std::vector<int> indexes;
     for (unsigned i = 0; i < getSubstances().size(); i++)
     {
-        BIO_XML_NS::model::Symbol *sym = getDiffusion(i, h, v);
+        BIO_XML_MODEL_NS::Symbol *sym = getDiffusion(i, h, v);
         if (sym != 0)
         {
             indexes.push_back(i);
@@ -423,8 +426,8 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h,
 /* ************************************************************************** */
 std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInMedium(BIO_XML_MODEL_NS::MediumName& name)
 {
-    typedef BIO_XML_NS::model::Model::medium_iterator it_m;
-    typedef BIO_XML_NS::model::Medium::substance_iterator it_ms;
+    typedef BIO_XML_MODEL_NS::Model::medium_iterator it_m;
+    typedef BIO_XML_MODEL_NS::Medium::substance_iterator it_ms;
     std::vector<int> indexes;
 
     for (it_m m = config->medium().begin(); m < config->medium().end(); m++)
@@ -441,6 +444,22 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInMedium(BIO_
     std::sort(indexes.begin(), indexes.end());
 
     return indexes;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_XML_MODEL_NS::Reaction* BIO_CFG_NS::StructureAnalyzer::getReaction(BIO_XML_MODEL_NS::ReactionName& name)
+{
+    typedef BIO_XML_MODEL_NS::Model::reaction_iterator it_reac;
+    for (it_reac r = config->reaction().begin(); r < config->reaction().end(); r++)
+    {
+        if (r->name().compare(name) == 0)
+        {
+            return &*r;
+        }
+    }
+    return 0;
 }
 
 

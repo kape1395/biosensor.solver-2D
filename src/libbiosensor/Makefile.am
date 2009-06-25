@@ -50,7 +50,10 @@ libbiosensor_la_SOURCES = \
     bio/slv/StopIfInvalidConcentrations.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx \
-    bio/trd/ConcentrationIntegralOverArea.cxx
+    bio/trd/IntegralOverArea.cxx \
+    bio/trd/IntegratedConcentration.cxx \
+    bio/trd/IntegratedReaction.cxx \
+    bio/trd/IntegratedReactionRedOx.cxx
 
 
 nobase_pkginclude_HEADERS = \
@@ -100,7 +103,11 @@ nobase_pkginclude_HEADERS = \
     bio/slv/StopIfSumOfConcentrationsNonConst.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \
     bio/trd/AmperometricInjectedElectrode2D.hxx \
-    bio/trd/ConcentrationIntegralOverArea.hxx
+    bio/trd/IntegralOverArea.hxx \
+    bio/trd/IIntegratedExpression.hxx \
+    bio/trd/IntegratedConcentration.hxx \
+    bio/trd/IntegratedReaction.hxx \
+    bio/trd/IntegratedReactionRedOx.hxx
 
 EXTRA_DIST = \
     bio/Logging.hxx \

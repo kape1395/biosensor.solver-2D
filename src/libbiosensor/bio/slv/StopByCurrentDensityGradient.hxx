@@ -57,7 +57,7 @@ private:
     /**
      *
      */
-class NextStepListener : public ISolverListener
+    class NextStepListener : public ISolverListener
     {
     private:
         long processAfterIteration;

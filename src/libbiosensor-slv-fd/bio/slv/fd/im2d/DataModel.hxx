@@ -87,7 +87,7 @@ private:
     /**
      *  Cursor...
      */
-class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         DataModel* dataModel;

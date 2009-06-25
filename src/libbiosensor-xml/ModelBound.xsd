@@ -34,6 +34,35 @@
             <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
+
+    <xs:complexType name="Conversion">
+        <xs:annotation>
+            <xs:documentation>
+                1. This condition should be applicable in two cases:
+                  1.1. On the merge bound.
+                  1.2. On the wall bound.
+                2. If not(product/@in), then default is to use value of @in.
+                3. Reaction (conversion) rate is threated as infinite. I.e. all
+                   the substrate is cononverted into product.
+                4. Maybe this structure should be as a nested element
+                   in all other conditions?
+                5. Are those "@in" really required?
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="m:BoundSubstance">
+                <xs:sequence>
+                    <xs:element name="product">
+                        <xs:complexType>
+                            <xs:attribute name="name" type="m:SubstanceName" use="required"/>
+                            <xs:attribute name="in"   type="m:MediumName"    use="optional"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="in" type="m:MediumName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     
     <xs:complexType name="Null">
         <xs:annotation>

@@ -23,7 +23,7 @@
  *      -d --data <dataDir>
  *      -Sname=value
  *      --catalog <catalog.xml>     -- xerces-c does not support xml catalogs :(
- *      --no-schema-validation      
+ *      --no-schema-validation
  *      ...
  *
  *
@@ -52,10 +52,10 @@ int main(int argn, char **argv)
     if (argn < 3)
     {
         std::cerr
-        << "usage: bio-solver <file-name> <output-dir>\n"
-        << "\tfile-name\tBiosensor configuration XML file\n"
-        << "\toutput-dir\tOutput directory. Must not exist on invocation.\n"
-        ;
+            << "usage: bio-solver <file-name> <output-dir>\n"
+            << "\tfile-name\tBiosensor configuration XML file\n"
+            << "\toutput-dir\tOutput directory. Must not exist on invocation.\n"
+            ;
         return 1;
     }
     else
@@ -94,9 +94,9 @@ int main(int argn, char **argv)
                 bool validateSchema = true;
                 if (!validateSchema)
                     flags |= xml_schema::flags::dont_validate;
-                
+
                 model = BIO_XML_NS::model::model(configIStream, flags);
-                
+
                 configFileBuf.close();
             }
             LOG_INFO(LOGGER << "Parsing config file... Done");
@@ -136,7 +136,7 @@ int main(int argn, char **argv)
                 schemaUri << schemaUriPrefix << "ModelBound.xsd";
                 map["b"].name   = "http://lt.5grupe.karolis/biosensor/model/bound";
                 map["b"].schema = schemaUri.str();
-                
+
                 schemaUri.clear();
                 schemaUri << schemaUriPrefix << "ModelReaction.xsd";
                 map["r"].name   = "http://lt.5grupe.karolis/biosensor/model/reaction";

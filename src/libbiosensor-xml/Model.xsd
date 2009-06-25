@@ -15,6 +15,7 @@
         <xs:sequence>
             <xs:element name="axis"         type="Axis"         minOccurs="1" maxOccurs="2"/>
             <xs:element name="substance"    type="Substance"    minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="reaction"     type="Reaction"     minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="medium"       type="Medium"       minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="bound"        type="Bound"        minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="transducer"   type="Transducer"   minOccurs="0" maxOccurs="1"/>
@@ -43,7 +44,13 @@
         <xs:attribute name="name" type="SubstanceName" use="required"/>
     </xs:complexType>
     
-    
+
+
+    <xs:complexType name="Reaction" abstract="true">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
+    </xs:complexType>
+
+
     
     <xs:complexType name="Medium">
         <xs:sequence>
@@ -60,7 +67,8 @@
         <xs:attribute name="initial"    type="SymbolName"    use="required"/>
     </xs:complexType>
     
-    <xs:complexType name="MediumReaction" abstract="true">
+    <xs:complexType name="MediumReaction">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="MediumArea">
@@ -131,6 +139,10 @@
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
     
+    <xs:simpleType name="ReactionName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
     <xs:simpleType name="AxisName">
         <xs:restriction base="xs:string"/>
     </xs:simpleType>

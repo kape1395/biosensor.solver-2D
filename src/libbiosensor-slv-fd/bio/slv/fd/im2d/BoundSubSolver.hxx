@@ -150,7 +150,7 @@ protected:
     /**
      *  Cursor.
      */
-class Cursor : public BIO_DM_NS::ICursor1D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::ICursor1D, public BIO_DM_NS::IConcentrations
     {
     private:
         unsigned position;

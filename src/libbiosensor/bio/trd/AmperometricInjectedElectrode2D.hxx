@@ -9,7 +9,7 @@
 #include "../dm/ICursor2D.hxx"
 #include "../dm/IComposite2D.hxx"
 #include "../dm/ISegmentSplit.hxx"
-#include "ConcentrationIntegralOverArea.hxx"
+#include "IntegralOverArea.hxx"
 #include <biosensor-xml.hxx>
 #include <string>
 #include <vector>
@@ -30,9 +30,9 @@ private:
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_DM_NS::IComposite2D* dataModel;
     BIO_XML_MODEL_NS::MediumName mediumName;
-    BIO_XML_MODEL_NS::SubstanceName substanceName;
+    BIO_XML_MODEL_NS::ReactionName reactionName;
 
-    int substanceIndex;
+    int substanceIndexes[];
     double reactionSpeed;
 
     std::vector<BIO_DM_NS::IGrid2D*> areas;
@@ -40,14 +40,13 @@ private:
     double calculatedOutput;
     long   calculatedOutputForStep;
 
-    ConcentrationIntegralOverArea* areaIntegrator;
+    IntegralOverArea* areaIntegrator;
 
 public:
     AmperometricInjectedElectrode2D(
         BIO_SLV_NS::ISolver* solver,
         BIO_XML_MODEL_NS::MediumName& mediumName,
-        BIO_XML_MODEL_NS::SubstanceName& substanceName,
-        BIO_XML_MODEL_NS::SymbolName& reactionSpeedSymbolName
+        BIO_XML_MODEL_NS::ReactionName& reactionName
     );
 
     virtual ~AmperometricInjectedElectrode2D();

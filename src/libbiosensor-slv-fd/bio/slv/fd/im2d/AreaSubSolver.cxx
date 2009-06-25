@@ -129,7 +129,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     ////////////////////////////////////////////////////////////////////////////
     // Collect information about reactions
     {
-        typedef std::vector< BIO_XML_NS::model::MediumReaction* > reactions_vector;
+        typedef std::vector< BIO_XML_NS::model::Reaction* > reactions_vector;
         typedef BIO_XML_NS::model::reaction::MichaelisMenten R_MM;
         typedef BIO_XML_NS::model::reaction::ReductionOxidation R_RO;
 

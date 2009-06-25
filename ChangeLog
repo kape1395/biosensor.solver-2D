@@ -1,4 +1,4 @@
-biosensor (0.3.9) unstable; urgency=low
+biosensor (0.4.0) unstable; urgency=low
 
   * Source distrubution now also includes cxx/hxx generated from the XSD files.
   * Added program bio-output, it can calculate steady state current density and
