@@ -165,25 +165,21 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
             }
             else if (rRO != 0)
             {
-                if (rRO->substrate().size() != 2 || rRO->product().size() != 2 ||
+                if (rRO->substrate().size() != 2 ||
                         rRO->substrate()[0].coefficient() != 1 ||
-                        rRO->substrate()[1].coefficient() != 1 ||
-                        rRO->product()[0].coefficient() != 1 ||
-                        rRO->product()[1].coefficient() != 1
+                        rRO->substrate()[1].coefficient() != 1
                    )
                 {
-                    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited: 2S + 2P without coefficients");
+                    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited to 2 substrates without coefficients");
                     throw Exception("Unsupported reaction.");
                 }
 
                 int substS1 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[0].name()));
                 int substS2 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[1].name()));
-                int substP1 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[0].name()));
-                int substP2 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[1].name()));
                 double rate = structAnalyzer->getSymbol(rRO->rate())->value();
                 if (substS1 == -1 || substS2 == -1)
                 {
-                    LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion decined in the medium.");
+                    LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion defined in the medium.");
                     throw Exception("Unsupported reaction.");
                 }
 
@@ -194,10 +190,22 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 roParts[substS1].push_back(part);
                 roParts[substS2].push_back(part);
                 part.rate = -rate;
-                if (substP1 != -1)
-                    roParts[substP1].push_back(part);
-                if (substP2 != -1)
-                    roParts[substP2].push_back(part);
+
+                for (unsigned p = 0; p < rRO->product().size(); p++)
+                {
+                    int si = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[p].name()));
+                    if (rRO->product()[p].coefficient() != 1)
+                    {
+                        LOG_ERROR(LOGGER << "Implementation of RO reaction is limited: products must be without coefficients");
+                        throw Exception("Unsupported reaction.");
+                    }
+                    if (si == -1)
+                    {
+                        LOG_ERROR(LOGGER << "Product of the reaction is not defined in the medium.");
+                        throw Exception("Invalid reaction.");
+                    }
+                    roParts[si].push_back(part);
+                }
             }
             else
             {
