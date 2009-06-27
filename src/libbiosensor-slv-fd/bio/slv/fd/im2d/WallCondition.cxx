@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
-    AreaSubSolver::EdgeData* edge,
+    IAreaEdgeData* edge,
     bool atStart
 )
 {

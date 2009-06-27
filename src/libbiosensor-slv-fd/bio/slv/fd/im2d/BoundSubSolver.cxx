@@ -6,6 +6,7 @@
 #include <bio/Exception.hxx>
 #include <cmath>
 #include <string>
+#include <vector>
 #define LOGGER "libbiosensor-slv-fd::im2d::BoundSubSolver: "
 
 
@@ -49,6 +50,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             {
                 createBoundCondition(
                     boundAnalyzer->getBoundForSubstance(s, positionH, positionV - 1, boundAnalyzer->BOTTOM),
+                    boundAnalyzer->getRelatedReactions(s, positionH, positionV - 1, boundAnalyzer->BOTTOM),
                     areaPrev, areaNext, s, false
                 );
             }
@@ -56,6 +58,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             {
                 createBoundCondition(
                     boundAnalyzer->getBoundForSubstance(s, positionH, positionV, boundAnalyzer->TOP),
+                    boundAnalyzer->getRelatedReactions(s, positionH, positionV, boundAnalyzer->TOP),
                     areaPrev, areaNext, s, true
                 );
             }
@@ -66,6 +69,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             {
                 createBoundCondition(
                     boundAnalyzer->getBoundForSubstance(s, positionH - 1, positionV, boundAnalyzer->RIGHT),
+                    boundAnalyzer->getRelatedReactions(s, positionH - 1, positionV, boundAnalyzer->RIGHT),
                     areaPrev, areaNext, s, false
                 );
             }
@@ -73,6 +77,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
             {
                 createBoundCondition(
                     boundAnalyzer->getBoundForSubstance(s, positionH, positionV, boundAnalyzer->LEFT),
+                    boundAnalyzer->getRelatedReactions(s, positionH, positionV, boundAnalyzer->LEFT),
                     areaPrev, areaNext, s, true
                 );
             }
@@ -169,7 +174,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
 /* ************************************************************************** */
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
-    BIO_XML_NS::model::BoundSubstance * boundSubstance,
+    BIO_XML_MODEL_NS::BoundSubstance * boundSubstance,
+    const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions,
     AreaSubSolver* areaPrev,
     AreaSubSolver* areaNext,
     int substance,
@@ -177,23 +183,23 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
 )
 {
     IBoundCondition *bc = 0;
-    if (dynamic_cast<BIO_XML_NS::model::bound::Constant*>(boundSubstance) != 0)
+    if (dynamic_cast<BIO_XML_MODEL_NS::bound::Constant*>(boundSubstance) != 0)
     {
-        BIO_XML_NS::model::bound::Constant* bsConst = dynamic_cast<BIO_XML_NS::model::bound::Constant*>(boundSubstance);
+        BIO_XML_MODEL_NS::bound::Constant* bsConst = dynamic_cast<BIO_XML_MODEL_NS::bound::Constant*>(boundSubstance);
         bc = new ConstantCondition(
             (atStart ? areaNext : areaPrev)->getEdgeData(substance, horizontal, atStart),
             structAnalyzer->getSymbol(bsConst->concentration())->value(),
             atStart
         );
     }
-    else if (dynamic_cast<BIO_XML_NS::model::bound::Wall*>(boundSubstance) != 0)
+    else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Wall*>(boundSubstance) != 0)
     {
         bc = new WallCondition(
             (atStart ? areaNext : areaPrev)->getEdgeData(substance, horizontal, atStart),
             atStart
         );
     }
-    else if (dynamic_cast<BIO_XML_NS::model::bound::Merge*>(boundSubstance) != 0)
+    else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Merge*>(boundSubstance) != 0)
     {
         if (atStart)    // This BC is for both sides so only one should be created.
         {
@@ -205,7 +211,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             );
         }
     }
-    else if (dynamic_cast<BIO_XML_NS::model::bound::Null*>(boundSubstance) != 0)
+    else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Null*>(boundSubstance) != 0)
     {
         // nothing
         bc = 0;
@@ -241,7 +247,7 @@ int BIO_SLV_FD_IM2D_NS::BoundSubSolver::getSubstanceCount()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_XML_NS::model::Substance* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getSubstanceConf(int index)
+BIO_XML_MODEL_NS::Substance* BIO_SLV_FD_IM2D_NS::BoundSubSolver::getSubstanceConf(int index)
 {
     return (substanceToBCMap[index])
            ? structAnalyzer->getSubstances()[index]
@@ -350,6 +356,31 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConce
 double BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConcentration(int substanceNr)
 {
     return subSolver->getConcentration(position, substanceNr);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::SummarizingEdgeData::SummarizingEdgeData(
+    IAreaEdgeData* base,
+    std::vector<IAreaEdgeData*>& additional
+) : BIO_SLV_FD_IM2D_NS::IAreaEdgeData()
+{
+    this->base = base;
+    this->additionalCount = additional.size();
+    this->additional = new IAreaEdgeData*[additionalCount];
+    for (int i = 0; i < additionalCount; i++)
+    {
+        this->additional[i] = additional[i];
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::SummarizingEdgeData::~SummarizingEdgeData()
+{
+    delete [] this->additional;
 }
 
 

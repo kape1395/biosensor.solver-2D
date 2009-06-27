@@ -6,7 +6,7 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
-    AreaSubSolver::EdgeData* edge,
+    IAreaEdgeData* edge,
     double concentration,
     bool atStart
 )

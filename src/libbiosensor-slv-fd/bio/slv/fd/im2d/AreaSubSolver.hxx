@@ -7,6 +7,7 @@ class AreaSubSolver;
 BIO_SLV_FD_IM2D_NS_END
 
 #include "Solver.hxx"
+#include "IAreaEgdeData.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/IGrid2D.hxx>
@@ -167,7 +168,7 @@ public:
      *  \param start        is that bound at top|left (true) or bottom|right (false).s
      *  \return Reference to the edge data.
      */
-    EdgeData* getEdgeData(
+    IAreaEdgeData* getEdgeData(
         int substance,
         bool horizontal,
         bool start
@@ -266,7 +267,7 @@ public:
      *  This class is used by bound subsolvers to access the concentrations
      *  and P-Q constants on the edge of this structure.
      */
-    class EdgeData
+    class EdgeData : public IAreaEdgeData
     {
         friend class AreaSubSolver;
 

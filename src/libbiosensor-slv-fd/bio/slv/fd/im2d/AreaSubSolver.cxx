@@ -546,7 +546,7 @@ int BIO_SLV_FD_IM2D_NS::AreaSubSolver::getLocalSubstanceIndex(int globalSubstanc
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
+BIO_SLV_FD_IM2D_NS::IAreaEdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
     int substance,
     bool horizontal,
     bool start
@@ -604,8 +604,10 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::~EdgeData()
 {
-    delete [] data0;
-    delete [] data1;
+    if (data0)
+        delete [] data0;
+    if (data1)
+        delete [] data1;
 }
 
 

@@ -6,8 +6,8 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
-    AreaSubSolver::EdgeData* edgePrev,
-    AreaSubSolver::EdgeData* edgeNext,
+    IAreaEdgeData* edgePrev,
+    IAreaEdgeData* edgeNext,
     double diffusionPrev,
     double diffusionNext
 )

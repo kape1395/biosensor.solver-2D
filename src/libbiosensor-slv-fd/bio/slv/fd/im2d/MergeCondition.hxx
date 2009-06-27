@@ -19,8 +19,8 @@ class MergeCondition : public IBoundCondition
 {
 private:
 
-    AreaSubSolver::EdgeData* edgePrev;
-    AreaSubSolver::EdgeData* edgeNext;
+    IAreaEdgeData* edgePrev;
+    IAreaEdgeData* edgeNext;
     double diffusionPrev;
     double diffusionNext;
     int size;
@@ -41,8 +41,8 @@ public:
      *  \param diffusionNext    Diffusion coefficient in the next area.
      */
     MergeCondition(
-        AreaSubSolver::EdgeData* edgePrev,
-        AreaSubSolver::EdgeData* edgeNext,
+        IAreaEdgeData* edgePrev,
+        IAreaEdgeData* edgeNext,
         double diffusionPrev,
         double diffusionNext
     );

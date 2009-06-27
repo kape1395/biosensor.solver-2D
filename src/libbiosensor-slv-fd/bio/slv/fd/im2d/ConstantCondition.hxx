@@ -14,7 +14,7 @@ class ConstantCondition : public IBoundCondition
 {
 private:
 
-    AreaSubSolver::EdgeData* edge;
+    IAreaEdgeData* edge;
     double concentration;
     bool atStart;
 
@@ -28,7 +28,7 @@ public:
      *  \param atStart          Is this condition at top|left (true) or bottom|right (false)?
      */
     ConstantCondition(
-        AreaSubSolver::EdgeData* edge,
+        IAreaEdgeData* edge,
         double concentration,
         bool atStart
     );
