@@ -66,7 +66,7 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
 
     double integralValue = areaIntegrator->integrate();
 
-    integralValue *= CONST_F * CONST_n_e * reactionSpeed;
+    integralValue *= CONST_F * CONST_n_e;
 
     //
     //  Divide by surface.

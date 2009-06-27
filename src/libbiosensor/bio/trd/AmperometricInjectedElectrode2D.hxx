@@ -33,7 +33,6 @@ private:
     BIO_XML_MODEL_NS::ReactionName reactionName;
 
     int substanceIndexes[];
-    double reactionSpeed;
 
     std::vector<BIO_DM_NS::IGrid2D*> areas;
 
