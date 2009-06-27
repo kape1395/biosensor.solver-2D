@@ -17,7 +17,7 @@ class Cursor2DWithoutBounds : public ICursor2D
 private:
     ICursor2D& cursor;
     bool valid;
-    
+
 public:
     Cursor2DWithoutBounds(ICursor2D& baseCursor);
     virtual ~Cursor2DWithoutBounds();
@@ -35,7 +35,7 @@ public:
 
 protected:
     void updateValidity();
-    
+
 };
 
 

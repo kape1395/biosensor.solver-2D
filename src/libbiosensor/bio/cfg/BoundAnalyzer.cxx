@@ -272,7 +272,7 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundConditions(
               << "Applying bound (name=" << (bound->name().present() ? bound->name().get() : std::string("n/a"))
               << ") to h=" << h << " v=" << v << " side=" << side
              );
-    
+
     if (bounds[h][v][side].getBoundDefinition())
         throw Exception("Overlapping bound definitions are not supported.");
 

@@ -79,9 +79,10 @@ bool BIO_DM_NS::Cursor2DWithoutBounds::isValid()
     return valid;
 }
 
-void BIO_DM_NS::Cursor2DWithoutBounds::updateValidity() {
+void BIO_DM_NS::Cursor2DWithoutBounds::updateValidity()
+{
     valid = cursor.isValid();
-    
+
     if (!valid) return;
 
     cursor.right();
