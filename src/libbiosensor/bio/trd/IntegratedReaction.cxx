@@ -52,7 +52,7 @@ BIO_TRD_NS::IntegratedReaction* BIO_TRD_NS::IntegratedReaction::newInstance(
     using BIO_XML_MODEL_NS::Reaction;
     using namespace BIO_XML_MODEL_NS::reaction;
     Reaction* reaction = structAnalyzer->getReaction(reactionName);
-    
+
     if (dynamic_cast<ReductionOxidation*>(reaction))
     {
         return new IntegratedReactionRedOx(structAnalyzer, reactionName);

@@ -85,6 +85,7 @@
     <xs:complexType name="Bound">
         <xs:sequence>
             <xs:element name="substance" type="BoundSubstance" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="reaction"  type="BoundReaction"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name"   type="BoundName"    use="optional"/>
         <xs:attribute name="from"   type="SymbolName"   use="optional"/>
@@ -94,6 +95,10 @@
     
     <xs:complexType name="BoundSubstance" abstract="true">
         <xs:attribute name="name" type="SubstanceName" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="BoundReaction">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
     </xs:complexType>
     
     

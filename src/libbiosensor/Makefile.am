@@ -12,9 +12,11 @@ libbiosensor_la_SOURCES = \
     bio/cfg/BoundAnalyzer.cxx \
     bio/cfg/IConfigTransformer.cxx \
     bio/cfg/IConfigValidator.cxx \
+    bio/cfg/ReactionAnalyzer.cxx \
     bio/cfg/StructureAnalyzer.cxx \
     bio/dm/CompositeSegmentSplit.cxx \
     bio/dm/ConstantSegmentSplit.cxx \
+    bio/dm/Cursor2DWithoutBounds.cxx \
     bio/dm/IComposite1D.cxx \
     bio/dm/IComposite2D.cxx \
     bio/dm/IConcentrations.cxx \
@@ -65,9 +67,11 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/BoundAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
+    bio/cfg/ReactionAnalyzer.hxx \
     bio/cfg/StructureAnalyzer.hxx \
     bio/dm/CompositeSegmentSplit.hxx \
     bio/dm/ConstantSegmentSplit.hxx \
+    bio/dm/Cursor2DWithoutBounds.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite2D.hxx \
     bio/dm/IConcentrations.hxx \

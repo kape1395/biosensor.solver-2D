@@ -51,7 +51,7 @@ public:
         BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
         BIO_XML_MODEL_NS::ReactionName& reactionName
     );
-    
+
 };
 
 

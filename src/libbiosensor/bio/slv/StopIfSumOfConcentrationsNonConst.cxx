@@ -1,6 +1,7 @@
 #include "StopIfSumOfConcentrationsNonConst.hxx"
 #include "../Exception.hxx"
 #include "../cfg/StructureAnalyzer.hxx"
+#include "../dm/Cursor2DWithoutBounds.hxx"
 #include <iostream>
 #include <cmath>
 #include <memory>
@@ -114,6 +115,8 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
         return;
     }
 
+    bool success = true;
+
     for (std::vector<BIO_DM_NS::IGrid2D*>::iterator area = areas.begin(); area < areas.end(); area++)
     {
         if (!checkSubArea(*area))
@@ -121,12 +124,17 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
             iterativeSolver->stop(false);
             LOG_ERROR(LOGGER
                       << "The solver is stopped because it is in an invalid state."
-                      << " Sum of the substance concentrations is not equal to the specified constant."
+                      << " Sum of the substance concentrations is not equal to the specified constant"
+                      << " in the medium " << mediumName
                      );
+            success = false;
             break;
         }
     }
-    LOG_INFO(LOGGER << "Validation for medium " << mediumName << " successful");
+    if (success)
+    {
+        LOG_INFO(LOGGER << "Validation for medium " << mediumName << " successful");
+    }
 
     nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 }
@@ -136,13 +144,18 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
 /* ************************************************************************** */
 bool BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::checkSubArea(BIO_DM_NS::IGrid2D* area)
 {
-    std::auto_ptr<BIO_DM_NS::ICursor2D> cursor(area->newGridCursor());
+    //
+    //  Validation is now performed not including boundary points of the area?
+    //
 
-    for (cursor->colStart(); cursor->rowStart(), cursor->isValid(); cursor->down())
+    std::auto_ptr<BIO_DM_NS::ICursor2D> baseCursor(area->newGridCursor());
+    BIO_DM_NS::Cursor2DWithoutBounds cursor(*baseCursor);
+
+    for (cursor.colStart(); cursor.rowStart(), cursor.isValid(); cursor.down())
     {
-        for ( ; cursor->isValid(); cursor->right())
+        for ( ; cursor.isValid(); cursor.right())
         {
-            BIO_DM_NS::IConcentrations* concentrations = cursor->getConcentrations();
+            BIO_DM_NS::IConcentrations* concentrations = cursor.getConcentrations();
             double sum = 0.0;
             for (unsigned i = 0; i < substanceIncexes.size(); i++)
             {
@@ -151,6 +164,7 @@ bool BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::checkSubArea(BIO_DM_NS::IGri
 
             if ((std::abs(constant - sum) / constant) > error)
             {
+                LOG_WARN(LOGGER << "Validation failed: constant=" << constant << " sum=" << sum << " permitedError=" << error);
                 return false;
             }
         }
