@@ -46,6 +46,8 @@ private:
 
     std::vector<IBoundCondition*> boundConditions;
 
+    std::vector<IAreaEdgeData*> allocatedEdges;
+
     typedef std::vector<IBoundCondition*>::iterator BCIterator;
 
 public:
@@ -150,6 +152,18 @@ protected:
         bool atStart
     );
 
+    /**
+     *  FIXME: ...
+     */
+    IAreaEdgeData* createEdgeDataByReactions(
+        IAreaEdgeData* baseEdgeData,
+        int baseSubstance,
+        AreaSubSolver* area,
+        bool horizontal,
+        bool atStart,
+        const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
+    );
+
     /* ********************************************************************** */
     /* ********************************************************************** */
     /**
@@ -185,6 +199,8 @@ protected:
     /* ********************************************************************** */
     /**
      *  EgdeData, that sumarizes C1 of the specified substances.
+     *
+     *  XXX: Application of this class is very limited...
      */
     class SummarizingEdgeData : public IAreaEdgeData
     {
@@ -193,7 +209,7 @@ protected:
         IAreaEdgeData** additional;
         int additionalCount;
 
-    protected:
+    public:
 
         /**
          *  Constructor.
@@ -202,8 +218,6 @@ protected:
             IAreaEdgeData* base,
             std::vector<IAreaEdgeData*>& additional
         );
-
-    public:
 
         ~SummarizingEdgeData();
 
