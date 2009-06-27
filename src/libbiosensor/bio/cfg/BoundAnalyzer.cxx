@@ -261,6 +261,15 @@ std::string* BIO_CFG_NS::BoundAnalyzer::getBoundName(int s, int h, int v, AreaSi
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+const std::vector<BIO_XML_MODEL_NS::Reaction*>&
+BIO_CFG_NS::BoundAnalyzer::getRelatedReactions(int s, int h, int v, AreaSide side) const
+{
+    return bounds[h][v][side][s].relatedReactions;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_CFG_NS::BoundAnalyzer::applyBoundConditions(
     int h,
     int v,

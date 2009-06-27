@@ -16,7 +16,8 @@ class BoundAnalyzer
 private:
 
     /**
-     *  Internal...
+     *  This structure holds all info about one boundary condition,
+     *  for one substance.
      */
     struct BoundSubstanceInfo
     {
@@ -27,6 +28,10 @@ private:
         BoundSubstanceInfo& operator = (BoundSubstanceInfo& source);
     };
 
+    /**
+     *  This structure hold info about all characreristics
+     *  of the bound at the specified position.
+     */
     class BoundInfo
     {
     private:
@@ -46,18 +51,11 @@ private:
      */
     StructureAnalyzer *structAnalyzer;
 
-    /*
-     *  Array of bound definitions, the structure is (xml::Bound*[h][v][side]).
-     *  Coordinates h and v are bound coordinates, not coordinates of an area.
+    /**
+     *  Array of bound definitions, structure is (BoundInfo[h][v][side]).
+     *  Coordinates h and v are area coordinates and side is a side of an area,
+     *  on which the bound condition if defined.
      */
-    //BIO_XML_MODEL_NS::Bound* *** boundDefs;
-
-    /*
-     *  Array of bound conditions, structure is (BoundSubstance*[h][v][side][s]).
-     *  Coordinates h and v are area coordinates, s is global substance index,
-     *  and side is a side of an area, on which the bound condition if defined.
-     */
-    //BoundSubstanceInfo* **** boundSubstances;
     BoundInfo *** bounds; // [h][v][side]
 
     int sizeH;  //!< #boundSubstances size in h (number of areas horizontally)
@@ -123,7 +121,7 @@ public:
      *  \param side Side of the area.
      *  \return List of reactions.
      */
-    std::vector<BIO_XML_MODEL_NS::Reaction*> getRelatedReactions(int s, int h, int v, AreaSide side);
+    const std::vector<BIO_XML_MODEL_NS::Reaction*>& getRelatedReactions(int s, int h, int v, AreaSide side) const;
 
 private:
 
@@ -151,11 +149,13 @@ private:
         BIO_XML_MODEL_NS::BoundSubstance* bsProvided
     );
 
-
     /**
-     *
+     *  Collects the reactions, that are involving the specified substance.
      */
-    void collectRelatedReactions(BoundInfo& bi, BoundSubstanceInfo& bsi);
+    void collectRelatedReactions(
+        BoundInfo& bi,
+        BoundSubstanceInfo& bsi
+    );
 
 };
 
