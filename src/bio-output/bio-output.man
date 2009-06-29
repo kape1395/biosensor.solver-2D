@@ -1,19 +1,26 @@
 .\" ============================================================================
-.TH bio-editor 1 2008-11-02 "" "Biosensor modelling"
+.TH bio-output 1 2008-11-02 "" "Biosensor modelling"
 .SH NAME
-bio-editor \- Biosensor model editor
+bio-output \- Biosensor simulator`s output analyzer
 .\" ============================================================================
 .SH SYNOPSIS
-.B bio-solver
+.B bio-output
+.I command
+.I <command parameters>
 .\" ============================================================================
 .SH DESCRIPTION
-.B bio-solver
-is a GUI tool that lets to prepare biosensor models in more user-fiendly way.
+.B bio-output
+is a helper script, used to analyze an output of 
+.IR bio-solver .
+To get a list of available commands, invoke this program with
+a command 
+.B help
+and follow the instructions.
 .\" ============================================================================
 .SH AUTHOR
 Karolis Petrauskas <k dot petrauskas at gmail dot com>
 .\" ============================================================================
 .SH "SEE ALSO"
 .BR bio-solver (1)
-.BR bio-output (1)
+.BR bio-editor (1)
 

@@ -1,5 +1,5 @@
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [bio_inj-el-0.4.0-b1])
+AC_INIT([biosensor], [bio_inj-el-0.4.0-b2])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
@@ -54,6 +54,7 @@ AC_CONFIG_FILES([
     src/Makefile
     src/bio-editor/Makefile
     src/bio-solver/Makefile
+    src/bio-output/Makefile
     src/libbiosensor/Makefile
     src/libbiosensor-slv-fd/Makefile
     src/libbiosensor-xml/Makefile
