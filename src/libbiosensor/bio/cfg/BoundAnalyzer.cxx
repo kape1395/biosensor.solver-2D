@@ -315,17 +315,17 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     int vPrev = (side == TOP    ) ? v - 1 : v;
     int vNext = (side == BOTTOM ) ? v + 1 : v;
 
-    BIO_XML_MODEL_NS::Symbol* diffPrev;
-    BIO_XML_MODEL_NS::Symbol* diffNext;
+    bool diffPrevIsNull;
+    bool diffNextIsNull;
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
-        diffPrev = (vPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (vNext == sizeV) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrevIsNull = (vPrev == -1    || !structAnalyzer->substanceExistsInArea(s, hPrev, vPrev));
+        diffNextIsNull = (vNext == sizeV || !structAnalyzer->substanceExistsInArea(s, hNext, vNext));
     }
     else // isVertical
     {
-        diffPrev = (hPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (hNext == sizeH) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrevIsNull = (hPrev == -1    || !structAnalyzer->substanceExistsInArea(s, hPrev, vPrev));
+        diffNextIsNull = (hNext == sizeH || !structAnalyzer->substanceExistsInArea(s, hNext, vNext));
     }
     //// FIXME: This solution (with *Null) is not correct.
     //          We must analze situations when there is no diffusion and when
@@ -337,8 +337,8 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     //  is an enzyme.
     //bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
     //bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
-    bool diffPrevIsNull = diffPrev == 0;
-    bool diffNextIsNull = diffNext == 0;
+    //bool diffPrevIsNull = diffPrev == 0;
+    //bool diffNextIsNull = diffNext == 0;
 
 
     BIO_XML_MODEL_NS::SubstanceName& substanceName = structAnalyzer->getSubstances()[s]->name();

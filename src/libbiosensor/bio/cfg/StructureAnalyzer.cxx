@@ -1,9 +1,8 @@
-
-#include "Model.hxx"
-
 #include "StructureAnalyzer.hxx"
+#include "Model.hxx"
 #include "../Exception.hxx"
 #include "../Logging.hxx"
+#include <vector>
 #include <algorithm>
 #define LOGGER "libbiosensor::StructureAnalyzer: "
 
@@ -412,13 +411,21 @@ std::vector<int> BIO_CFG_NS::StructureAnalyzer::getSubstanceIndexesInArea(int h,
     std::vector<int> indexes;
     for (unsigned i = 0; i < getSubstances().size(); i++)
     {
-        BIO_XML_MODEL_NS::Symbol *sym = getDiffusion(i, h, v);
-        if (sym != 0)
+        if (diffusions[h][v][i] != 0)
         {
             indexes.push_back(i);
         }
     }
     return indexes;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+bool BIO_CFG_NS::StructureAnalyzer::substanceExistsInArea(int s, int h, int v)
+{
+    std::vector<int> subst = getSubstanceIndexesInArea(h, v);
+    return std::find(subst.begin(), subst.end(), s) != subst.end();
 }
 
 
@@ -460,6 +467,19 @@ BIO_XML_MODEL_NS::Reaction* BIO_CFG_NS::StructureAnalyzer::getReaction(BIO_XML_M
         }
     }
     return 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+double BIO_CFG_NS::StructureAnalyzer::getDiffusionCoef(int s, int h, int v, bool horizontal)
+{
+    double ratio = 1.0;
+    if (!horizontal && getMedium(h, v) && getMedium(h, v)->diffusionRatio().present())
+    {
+        ratio = getSymbol(getMedium(h, v)->diffusionRatio().get())->value();
+    }
+    return diffusions[h][v][s] == 0 ? 0 : ratio * diffusions[h][v][s]->value();
 }
 
 

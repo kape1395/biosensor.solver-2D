@@ -70,10 +70,16 @@ private:
     int targetLayerIndex;
 
     /**
-     *  Diffusion coefficients for all needed substances, array size is #dataSizeS.
-     *  Here 0.0 means no diffusion.
+     *  Diffusion coefficients for all needed substances for the horizontal direction.
+     *  An array size is #dataSizeS. Here 0.0 means no diffusion.
      */
-    double *D;
+    double *D_h;
+
+    /**
+     *  Diffusion coefficients for all needed substances for the vertical direction.
+     *  \see D_h.
+     */
+    double *D_v;
 
     ////////////////////////////////////////
     // reaction related things

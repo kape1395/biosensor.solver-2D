@@ -117,10 +117,17 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 
     ////////////////////////////////////////////////////////////////////////////
     // Collect information about diffusions
-    D = new double[dataSizeS];
+    D_h = new double[dataSizeS];
+    D_v = new double[dataSizeS];
     for (int s = 0; s < dataSizeS; s++)
     {
-        D[s] = structAnalyzer->getDiffusion(substanceIndexes[s], positionH, positionV)->value();
+        D_h[s] = structAnalyzer->getDiffusionCoef(substanceIndexes[s], positionH, positionV, true);
+        D_v[s] = structAnalyzer->getDiffusionCoef(substanceIndexes[s], positionH, positionV, false);
+        LOG_DEBUG(LOGGER
+                  << "Diffusion coefficients for"
+                  << " substance=" << structAnalyzer->getSubstances()[substanceIndexes[s]]->name()
+                  << " are: D_h=" << D_h[s] << " D_v=" << D_v[s]
+                 );
     }
     // Collect information about diffusions
     ////////////////////////////////////////////////////////////////////////////
@@ -268,7 +275,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
     delete [] reactionsMMPartCounts;
     delete [] reactionsROPartCounts;
 
-    delete [] D;
+    delete [] D_h;
+    delete [] D_v;
 
     for (int h = 0; h < dataSizeH; h++)
     {
@@ -334,17 +342,17 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //
                 if (coordinateSystemIsCartesian)
                 {
-                    a = c = D[s] / (stepSizeH * stepSizeH);
+                    a = c = D_h[s] / (stepSizeH * stepSizeH);
                     b += - 2.0 * a;
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    a = D[s] * (r - stepSizeH / 2) / (r * stepSizeH * stepSizeH);
-                    b += -2.0 * D[s] / (stepSizeH * stepSizeH);
-                    c = D[s] * (r + stepSizeH / 2) / (r * stepSizeH * stepSizeH);
+                    a = D_h[s] * (r - stepSizeH / 2) / (r * stepSizeH * stepSizeH);
+                    b += -2.0 * D_h[s] / (stepSizeH * stepSizeH);
+                    c = D_h[s] * (r + stepSizeH / 2) / (r * stepSizeH * stepSizeH);
                 }
                 // f_D is the same for cartesian and cylindrical coordinate systems.
-                f += (- D[s] / (stepSizeV * stepSizeV)) * (
+                f += (- D_v[s] / (stepSizeV * stepSizeV)) * (
                          dataH[v+1][s][layerPrev]
                          - 2.0 * dataHVS[layerPrev]
                          + dataH[v-1][s][layerPrev]
@@ -459,11 +467,11 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 //
                 //  Diffusion part (a=a_D, b+=b_D, c=c_D, f+=f_D)
                 //
-                a = c = D[s] / (stepSizeV * stepSizeV);
+                a = c = D_v[s] / (stepSizeV * stepSizeV);
                 b += - 2.0 * a;
                 if (coordinateSystemIsCartesian)
                 {
-                    f += (- D[s] / (stepSizeH * stepSizeH)) * (
+                    f += (- D_h[s] / (stepSizeH * stepSizeH)) * (
                              data[h+1][v][s][LAYER_INTERM]
                              - 2.0 * dataHVS[LAYER_INTERM]
                              + data[h-1][v][s][LAYER_INTERM]
@@ -471,7 +479,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    f += (- D[s] / (r * stepSizeH * stepSizeH)) * (
+                    f += (- D_h[s] / (r * stepSizeH * stepSizeH)) * (
                              + (r + stepSizeH / 2) * data[h+1][v][s][LAYER_INTERM]
                              - 2.0 * r * dataHVS[LAYER_INTERM]
                              + (r - stepSizeH / 2) * data[h-1][v][s][LAYER_INTERM]

@@ -59,6 +59,13 @@
             <xs:element name="area"      type="MediumArea"      minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="MediumName" use="required"/>
+        <xs:attribute name="diffusionRatio" type="SymbolName" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    D_z = diffusionRatio * D_r
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     
     <xs:complexType name="MediumSubstance">
@@ -66,7 +73,7 @@
         <xs:attribute name="diffusion"  type="SymbolName"    use="optional"/>
         <xs:attribute name="initial"    type="SymbolName"    use="required"/>
     </xs:complexType>
-    
+
     <xs:complexType name="MediumReaction">
         <xs:attribute name="name" type="ReactionName" use="required"/>
     </xs:complexType>

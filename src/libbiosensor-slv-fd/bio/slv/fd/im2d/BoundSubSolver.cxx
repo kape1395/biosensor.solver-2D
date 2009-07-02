@@ -230,8 +230,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                 createEdgeDataByReactions(areaNext->getEdgeData(substance, horizontal, true ), substance, areaNext, horizontal, true,  boundReactions), // atStart
                 //areaPrev->getEdgeData(substance, horizontal, false),    // atEnd
                 //areaNext->getEdgeData(substance, horizontal, true),     // atStart
-                structAnalyzer->getDiffusion(substance, areaPrev->getPositionH(), areaPrev->getPositionV())->value(),
-                structAnalyzer->getDiffusion(substance, areaNext->getPositionH(), areaNext->getPositionV())->value()
+                structAnalyzer->getDiffusionCoef(substance, areaPrev->getPositionH(), areaPrev->getPositionV(), horizontal),
+                structAnalyzer->getDiffusionCoef(substance, areaNext->getPositionH(), areaNext->getPositionV(), horizontal)
             );
         }
     }

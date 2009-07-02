@@ -130,6 +130,16 @@ public:
     std::vector<int> getSubstanceIndexesInArea(int h, int v);
 
     /**
+     *  Checks if the substance is defined in the area with specified position.
+     *
+     *  \param s Substance index.
+     *  \param h Horizontal (x) coordinate of the area.
+     *  \param v Vertical (y) coordinate of the area.
+     *  \return true, if substance is defined in the area.
+     */
+    bool substanceExistsInArea(int s, int h, int v);
+
+    /**
      *  Returns indexes of the substances, that are defined in the specified medium.
      *
      *  \param name Medium name.
@@ -156,18 +166,20 @@ public:
 
     /**
      *  Get diffusion coefficient of the substance s
-     *  at the specified area.
+     *  at the specified area and direction.
      *
      *  \param h Horizontal (x) coordinate of the area.
      *  \param v Vertical (y) coordinate of the area.
      *  \param s Substance index.
-     *  \return Diffusion coefficient or 0, if there is no
+     *  \param horizontal
+     *      Direction for which the diffusion coefficient must be returned.
+     *      If true, direction is horizontal, and vertical if false.
+     *  \return Diffusion coefficient or 0.0, if there is no
      *      diffusion of specified substance in that area.
+     *      This diffusion coefficient is alredy multipied by
+     *      the diffusion ratio.
      */
-    BIO_XML_MODEL_NS::Symbol* getDiffusion(int s, int h, int v)
-    {
-        return diffusions[h][v][s];
-    }
+    double getDiffusionCoef(int s, int h, int v, bool horizontal);
 
     /**
      *  Get initial concentrations of the substance s
