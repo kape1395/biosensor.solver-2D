@@ -12,7 +12,7 @@ ChangeLog modifications should be done using `dch -c ChangeLog ...'
 make maintainer-clean  
 rm -rf local_install
 mkdir local_install
-./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O0 -ansi -Wall -DLOG_LEVEL_DEBUG" && make && make install
+./configure --prefix=`pwd`/local_install --enable-shared --disable-static --with-pic "CXXFLAGS=-g -O0 -ansi -Wall -DLOG_LEVEL_DEBUG" && make && make install
 
 
 ##

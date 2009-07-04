@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <ctime>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
 #include <bio/Exception.hxx>
@@ -44,6 +45,8 @@ public:
  */
 int main(int argn, char **argv)
 {
+    std::clock_t clock_start = std::clock();
+
     using namespace BIO_NS;
     using namespace BIO_IO_NS;
     using namespace BIO_SLV_NS;
@@ -71,6 +74,7 @@ int main(int argn, char **argv)
         LOG_DEBUG(LOGGER << "Starting...");
 
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+        int error = -1;
         try
         {
             boost::filesystem::path configPath(argv[1]);
@@ -181,42 +185,36 @@ int main(int argn, char **argv)
             delete solver;
             delete factory;
             delete context;
-            LOG_INFO(LOGGER << "#");
-            LOG_INFO(LOGGER << "# SIMULATION SUCCESSFUL");
-            LOG_INFO(LOGGER << "#");
 
-
-            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            return 0;
-
+            error = 0;
         }
         catch (const xml_schema::exception& e)
         {
             LOG_ERROR(LOGGER << "xml_schema::exception: " << e.what() << ". Error description is:\n" << e);
-            LOG_INFO(LOGGER << "#");
-            LOG_INFO(LOGGER << "# SIMULATION FAILED");
-            LOG_INFO(LOGGER << "#");
-            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            return 2;
+            error = 2;
         }
         catch (Exception& ee)
         {
             LOG_ERROR(LOGGER << "bio::Exception: " << ee.what());
-            LOG_INFO(LOGGER << "#");
-            LOG_INFO(LOGGER << "# SIMULATION FAILED");
-            LOG_INFO(LOGGER << "#");
-            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            return 2;
+            error = 2;
         }
         catch (...)
         {
             LOG_ERROR(LOGGER << "Unknown error");
-            LOG_INFO(LOGGER << "#");
-            LOG_INFO(LOGGER << "# SIMULATION FAILED");
-            LOG_INFO(LOGGER << "#");
-            XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-            return 2;
+            error = 2;
         }
+
+
+        std::clock_t clock_end = std::clock();
+        std::clock_t duration = ((clock_end - clock_start) / CLOCKS_PER_SEC);
+
+        LOG_INFO(LOGGER << "#");
+        LOG_INFO(LOGGER << "# Simulation " << (!error ? "SUCCESSFUL" : "FAILED"));
+        LOG_INFO(LOGGER << "#");
+        LOG_INFO(LOGGER << "# Execution took " << duration << " seconds (~" << (duration / 60) << " minutes)");
+        LOG_INFO(LOGGER << "# Exiting with errCode=" << error);
+        XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
+        return error;
     }
 }
 
