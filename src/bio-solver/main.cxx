@@ -182,11 +182,13 @@ int main(int argn, char **argv)
             LOG_INFO(LOGGER << "Solving... Done");
 
 
+            // Was simulation sucessfull?
+            error = solver->isSteadyStateReached() ? 0 : 1;
+
+
             delete solver;
             delete factory;
             delete context;
-
-            error = 0;
         }
         catch (const xml_schema::exception& e)
         {

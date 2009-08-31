@@ -18,6 +18,7 @@ private:
     double timeSolved;
     long   iterationsSolved;
     bool   stopped;
+    bool   steadyStateReached;
     std::vector<ISolverListener*> listeners;
     std::vector<ISolverListener*> listenersToDelete;
 
@@ -28,6 +29,7 @@ public:
     virtual void solve();
     virtual void stop(bool steadyStateReached = false);
     virtual bool isStopped();
+    virtual bool isSteadyStateReached();
     virtual double getTimeStep();
     virtual void setTimeStep(double timeStep);
     virtual long getSolvedIterationCount();

@@ -40,6 +40,11 @@ public:
      */
     virtual ITransducer* getTransducer() = 0;
 
+    /**
+     *  Tels, if steady state is alredy reached by the solver.
+     */
+    virtual bool isSteadyStateReached() = 0;
+
 };
 
 
