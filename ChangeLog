@@ -12,8 +12,9 @@ biosensor (0.4.0) unstable; urgency=low
   * Implemented support for reactions on the bounds.
   * Improved support for RedOx reactions. It can now support more
     schemes, not only a+b->c+d.
+  * Small fixes regarding error handling...
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sat, 04 Jul 2009 12:02:16 +0300
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Tue, 01 Sep 2009 00:39:30 +0300
 
 biosensor (0.3.8) unstable; urgency=low
 
