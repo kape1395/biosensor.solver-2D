@@ -33,5 +33,14 @@
     </xs:complexType>
 
 
+    <xs:complexType name="CompositeElectrode">
+        <xs:complexContent>
+            <xs:extension base="bio:Transducer">
+                <xs:sequence>
+                    <xs:element name="transducer" type="bio:Transducer" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     
 </xs:schema>

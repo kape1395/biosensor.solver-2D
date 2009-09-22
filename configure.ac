@@ -1,9 +1,9 @@
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [bio_inj-el-0.4.0-b3])
+AC_INIT([biosensor], [bio_inj-el-0.4.0-b4])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
-#AC_CONFIG_MACRO_DIR([acinclude])
+AC_CONFIG_MACRO_DIR([acinclude])
 AM_INIT_AUTOMAKE([subdir-objects -Wall])
 
 ASTYLE_OPTS="--style=ansi --options=none"
