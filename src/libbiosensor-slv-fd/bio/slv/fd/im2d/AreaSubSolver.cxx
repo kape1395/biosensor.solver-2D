@@ -172,19 +172,22 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
             }
             else if (rRO != 0)
             {
-                if (rRO->substrate().size() != 2 ||
-                        rRO->substrate()[0].coefficient() != 1 ||
-                        rRO->substrate()[1].coefficient() != 1
-                   )
-                {
-                    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited to 2 substrates without coefficients");
-                    throw Exception("Unsupported reaction.");
-                }
+                //  TODO: Implement normal checking here...
+                //
+                //if (rRO->substrate().size() != 2 ||
+                //        rRO->substrate()[0].coefficient() != 1 ||
+                //        rRO->substrate()[1].coefficient() != 1
+                //   )
+                //{
+                //    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited to 2 substrates without coefficients");
+                //    throw Exception("Unsupported reaction.");
+                //}
+                bool haveTwo = rRO->substrate().size() == 2;
 
-                int substS1 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[0].name()));
-                int substS2 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[1].name()));
+                int substS1 =           getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[0].name()))     ;
+                int substS2 = haveTwo ? getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[1].name())) : -1;
                 double rate = structAnalyzer->getSymbol(rRO->rate())->value();
-                if (substS1 == -1 || substS2 == -1)
+                if (substS1 == -1 || (haveTwo && substS2 == -1))
                 {
                     LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion defined in the medium.");
                     throw Exception("Unsupported reaction.");
@@ -194,8 +197,11 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 part.substrate1Index = substS1;
                 part.substrate2Index = substS2;
                 part.rate = rate;
+                
                 roParts[substS1].push_back(part);
-                roParts[substS2].push_back(part);
+                if (haveTwo)
+                    roParts[substS2].push_back(part);
+                
                 part.rate = -rate;
 
                 for (unsigned p = 0; p < rRO->product().size(); p++)
@@ -374,7 +380,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                     ReactionROPart ro = reactionsRO[s][r];
                     f_R += ro.rate
                            * dataHV[ro.substrate1Index][layerPrev]
-                           * dataHV[ro.substrate2Index][layerPrev];
+                           * (ro.substrate2Index != -1 ? dataHV[ro.substrate2Index][layerPrev] : 1.0);
                 }
                 f += dataHVS[LAYER_f_R] = f_R;
 
