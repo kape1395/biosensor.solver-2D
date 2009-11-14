@@ -170,4 +170,17 @@ void AbstractIterativeSolver::invokeListeners()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+/**
+ *  Set the current state. Used to implement resume functionality.
+ */
+void AbstractIterativeSolver::setState(long solvedIterationCount, double solvedTime, double timeStep)
+{
+    this->iterationsSolved = solvedIterationCount;
+    this->timeSolved = solvedTime;
+    this->setTimeStep(timeStep);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 BIO_SLV_NS_END

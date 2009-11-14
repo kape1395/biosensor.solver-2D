@@ -197,11 +197,11 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 part.substrate1Index = substS1;
                 part.substrate2Index = substS2;
                 part.rate = rate;
-                
+
                 roParts[substS1].push_back(part);
                 if (haveTwo)
                     roParts[substS2].push_back(part);
-                
+
                 part.rate = -rate;
 
                 for (unsigned p = 0; p < rRO->product().size(); p++)

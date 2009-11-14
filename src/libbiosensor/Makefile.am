@@ -30,6 +30,7 @@ libbiosensor_la_SOURCES = \
     bio/dm/NullDM.cxx \
     bio/io/AveragedConcentration.cxx \
     bio/io/ConcentrationProfile.cxx \
+    bio/io/ConcentrationProfileReader.cxx \
     bio/io/CurrentDensity.cxx \
     bio/io/FilesystemContext.cxx \
     bio/io/IOutput.cxx \
@@ -86,6 +87,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/io/AveragedConcentration.hxx \
     bio/io/ConcentrationProfile.hxx \
+    bio/io/ConcentrationProfileReader.hxx \
     bio/io/CurrentDensity.hxx \
     bio/io/FilesystemContext.hxx \
     bio/io/IOutput.hxx \

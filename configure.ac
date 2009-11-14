@@ -1,5 +1,5 @@
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [bio_inj-el-0.4.0-b5])
+AC_INIT([biosensor], [bio_inj-el-0.4.0-b6])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
@@ -23,9 +23,10 @@ KP_LIB_XERCESC
 
 #### Checks for header files.
 # ...
-AX_BOOST_BASE([1.33.1])
+AX_BOOST_BASE([1.34.1])
+AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
-LIBS="$LIBS $BOOST_FILESYSTEM_LIB"
+LIBS="$LIBS $BOOST_SYSTEM_LIB $BOOST_FILESYSTEM_LIB"
 
 #### Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

@@ -11,6 +11,7 @@
 #include <bio/io/IContext.hxx>
 #include <bio/io/FilesystemContext.hxx>
 #include <bio/slv/ISolver.hxx>
+#include <bio/slv/IIterativeSolver.hxx>
 #include <biosensor-slv-fd.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <Model.hxx>
@@ -41,6 +42,12 @@ public:
 };
 
 /**
+ *  Prints help message for the program.
+ */
+void print_usage(const std::string& errMsg);
+
+
+/**
  *  Entry point for program bio-solver.
  */
 int main(int argn, char **argv)
@@ -52,174 +59,253 @@ int main(int argn, char **argv)
     using namespace BIO_SLV_NS;
     using namespace BIO_XML_NS::model;
 
-    if (argn < 3)
+    char* paramModelFile = 0;
+    char* paramOutputDir = 0;
+    bool resumeMode = false;
+    char* concentrationFile = 0;
+
+    if (argn < 2)
     {
-        std::cerr
-            << "usage: bio-solver <file-name> <output-dir>\n"
-            << "\tfile-name\tBiosensor configuration XML file\n"
-            << "\toutput-dir\tOutput directory. Must not exist on invocation.\n"
-            ;
+        print_usage("Missing parameters.");
         return 1;
+    }
+    else if (argn >= 2 && !std::strcmp(argv[1], "--resume"))
+    {
+        //      0          1         2               3                4
+        //  bio-solver --resume <file-name> <concetrtation-file> <output-dir>
+        LOG_INFO(LOGGER << "Starting simulation in RESUME mode.");
+        if (argn < 5)
+        {
+            print_usage("Missing parameters for RESUME mode.");
+            return 1;
+        }
+        paramModelFile = argv[2];
+        concentrationFile = argv[3];
+        paramOutputDir = argv[4];
+        resumeMode = true;
+    }
+    else if (argn >= 2 && !std::strcmp(argv[1], "--simulate"))
+    {
+        //      0            1            2          3
+        //  bio-solver --simulate <file-name> <output-dir>
+        LOG_INFO(LOGGER << "Starting simulation in SIMULATE mode.");
+        if (argn < 4)
+        {
+            print_usage("Missing parameters for SIMULATE mode.");
+            return 1;
+        }
+        paramModelFile = argv[2];
+        paramOutputDir = argv[3];
+        concentrationFile = 0;
+        resumeMode = false;
     }
     else
     {
-        std::stringstream commandLine;
-        for (int i = 0; i < argn; i++)
+        //      0           1           2
+        //  bio-solver <file-name> <output-dir>
+        LOG_INFO(LOGGER << "Starting simulation in SIMULATE mode.");
+        if (argn < 3)
         {
-            commandLine << argv[i];
-            if (i != argn - 1)
-                commandLine << ' ';
+            print_usage("Missing parameters (non resume mode).");
+            return 1;
         }
-
-        LOG_DEBUG(LOGGER << "Starting...");
-
-        XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
-        int error = -1;
-        try
-        {
-            boost::filesystem::path configPath(argv[1]);
-            boost::filesystem::path outputPath(argv[2]);
-
-            LOG_INFO(LOGGER << "Command line is          : " << commandLine.str());
-            LOG_INFO(LOGGER << "Using configuration file : " << configPath.file_string());
-            LOG_INFO(LOGGER << "Using output directory   : " << outputPath.directory_string());
-
-            ModelSymbols modelSymbols(argn, argv);
-
-            // Parse file
-            LOG_INFO(LOGGER << "Parsing config file...");
-            std::auto_ptr<Model> model;
-            {
-                std::filebuf configFileBuf;
-                configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
-                std::istream configIStream(&configFileBuf);
-
-                long flags = 0;
-                bool validateSchema = true;
-                if (!validateSchema)
-                    flags |= xml_schema::flags::dont_validate;
-
-                model = BIO_XML_NS::model::model(configIStream, flags);
-
-                configFileBuf.close();
-            }
-            LOG_INFO(LOGGER << "Parsing config file... Done");
-
-
-            // Apply all modifications to the model.
-            modelSymbols.override(*model);
-
-
-            // Construct factories.
-            IContext* context = new FilesystemContext(outputPath.directory_string());
-
-            {   // save original model.
-                std::filebuf configFileBuf;
-                configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
-                std::istream configIStream(&configFileBuf);
-
-                context->setOriginalConfiguration(configIStream);
-
-                configFileBuf.close();
-            }
-            {   // save actual model.
-                std::stringstream buf;
-                std::stringstream schemaUri;
-                std::string schemaUriPrefix;
-                schemaUri << "http://karolis.5grupe.lt/biosensor/" << BIO_VERSION << "/schemas/";
-                schemaUriPrefix = schemaUri.str();
-
-                xml_schema::namespace_infomap map;
-
-                schemaUri.clear();
-                schemaUri << schemaUriPrefix << "Model.xsd";
-                map[""].name    = "http://lt.5grupe.karolis/biosensor/model";
-                map[""].schema  = schemaUri.str();
-
-                schemaUri.clear();
-                schemaUri << schemaUriPrefix << "ModelBound.xsd";
-                map["b"].name   = "http://lt.5grupe.karolis/biosensor/model/bound";
-                map["b"].schema = schemaUri.str();
-
-                schemaUri.clear();
-                schemaUri << schemaUriPrefix << "ModelReaction.xsd";
-                map["r"].name   = "http://lt.5grupe.karolis/biosensor/model/reaction";
-                map["r"].schema = schemaUri.str();
-
-                schemaUri.clear();
-                schemaUri << schemaUriPrefix << "ModelSolver.xsd";
-                map["s"].name   = "http://lt.5grupe.karolis/biosensor/model/solver";
-                map["s"].schema = schemaUri.str();
-
-                schemaUri.clear();
-                schemaUri << schemaUriPrefix << "ModelTransducer.xsd";
-                map["t"].name   = "http://lt.5grupe.karolis/biosensor/model/transducer";
-                map["t"].schema = schemaUri.str();
-
-                BIO_XML_MODEL_NS::model(buf, *model, map);
-                context->setActualConfiguration(buf);
-            }
-
-            DelegatingFactory* factory = new DelegatingFactory();
-            factory->addFactory(new BIO_NS::MainFactory(factory, context), true);
-            factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
-
-
-            // Create solver
-            LOG_INFO(LOGGER << "Creating solver...");
-            ISolver* solver;
-            if ((solver = factory->createSolver(&*model)) == 0)
-            {
-                LOG_ERROR(LOGGER << "I dont know how to create requested solver.");
-                return 2;
-            }
-            LOG_INFO(LOGGER << "Creating solver... Done");
-
-
-            // Simulate operation of the biosensor
-            LOG_INFO(LOGGER << "Solving...");
-            solver->solve();
-            LOG_INFO(LOGGER << "Solving... Done");
-
-
-            // Was simulation sucessfull?
-            error = solver->isSteadyStateReached() ? 0 : 1;
-
-
-            delete solver;
-            delete factory;
-            delete context;
-        }
-        catch (const xml_schema::exception& e)
-        {
-            LOG_ERROR(LOGGER << "xml_schema::exception: " << e.what() << ". Error description is:\n" << e);
-            error = 2;
-        }
-        catch (Exception& ee)
-        {
-            LOG_ERROR(LOGGER << "bio::Exception: " << ee.what());
-            error = 2;
-        }
-        catch (...)
-        {
-            LOG_ERROR(LOGGER << "Unknown error");
-            error = 2;
-        }
-
-
-        std::clock_t clock_end = std::clock();
-        std::clock_t duration = ((clock_end - clock_start) / CLOCKS_PER_SEC);
-
-        LOG_INFO(LOGGER << "#");
-        LOG_INFO(LOGGER << "# Simulation " << (!error ? "SUCCESSFUL" : "FAILED"));
-        LOG_INFO(LOGGER << "#");
-        LOG_INFO(LOGGER << "# Execution took " << duration << " seconds (~" << (duration / 60) << " minutes)");
-        LOG_INFO(LOGGER << "# Exiting with errCode=" << error);
-        XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-        return error;
+        paramModelFile = argv[1];
+        paramOutputDir = argv[2];
+        concentrationFile = 0;
+        resumeMode = false;
     }
+
+    //
+    //////////////////////////////////////////
+    //
+
+    std::stringstream commandLine;
+    for (int i = 0; i < argn; i++)
+    {
+        commandLine << argv[i];
+        if (i != argn - 1)
+            commandLine << ' ';
+    }
+
+    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+    int error = -1;
+    try
+    {
+        boost::filesystem::path configPath(paramModelFile);
+        boost::filesystem::path outputPath(paramOutputDir);
+
+        LOG_INFO(LOGGER << "Command line is          : " << commandLine.str());
+        LOG_INFO(LOGGER << "Using configuration file : " << configPath.file_string());
+        LOG_INFO(LOGGER << "Using output directory   : " << outputPath.directory_string());
+
+        // Parse file
+        LOG_INFO(LOGGER << "Parsing config file...");
+        std::auto_ptr<Model> model;
+        {
+            std::filebuf configFileBuf;
+            configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+            std::istream configIStream(&configFileBuf);
+
+            long flags = 0;
+            bool validateSchema = true;
+            if (!validateSchema)
+                flags |= xml_schema::flags::dont_validate;
+
+            model = BIO_XML_NS::model::model(configIStream, flags);
+
+            configFileBuf.close();
+        }
+        LOG_INFO(LOGGER << "Parsing config file... Done");
+
+
+        // Apply all modifications to the model.
+        if (!resumeMode)
+        {
+            ModelSymbols modelSymbols(argn, argv);
+            modelSymbols.override(*model);
+        } else {
+            LOG_WARN(LOGGER << "Symbol overriding is skipped in the case of resume mode.");
+        }
+
+
+        // Construct factories.
+        IContext* context = new FilesystemContext(outputPath.directory_string());
+
+        {   // save original model.
+            std::filebuf configFileBuf;
+            configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+            std::istream configIStream(&configFileBuf);
+
+            context->setOriginalConfiguration(configIStream);
+
+            configFileBuf.close();
+        }
+        {   // save actual model.
+            std::stringstream buf;
+            std::stringstream schemaUri;
+            std::string schemaUriPrefix;
+            schemaUri << "http://karolis.5grupe.lt/biosensor/" << BIO_VERSION << "/schemas/";
+            schemaUriPrefix = schemaUri.str();
+
+            xml_schema::namespace_infomap map;
+
+            schemaUri.clear();
+            schemaUri << schemaUriPrefix << "Model.xsd";
+            map[""].name    = "http://lt.5grupe.karolis/biosensor/model";
+            map[""].schema  = schemaUri.str();
+
+            schemaUri.clear();
+            schemaUri << schemaUriPrefix << "ModelBound.xsd";
+            map["b"].name   = "http://lt.5grupe.karolis/biosensor/model/bound";
+            map["b"].schema = schemaUri.str();
+
+            schemaUri.clear();
+            schemaUri << schemaUriPrefix << "ModelReaction.xsd";
+            map["r"].name   = "http://lt.5grupe.karolis/biosensor/model/reaction";
+            map["r"].schema = schemaUri.str();
+
+            schemaUri.clear();
+            schemaUri << schemaUriPrefix << "ModelSolver.xsd";
+            map["s"].name   = "http://lt.5grupe.karolis/biosensor/model/solver";
+            map["s"].schema = schemaUri.str();
+
+            schemaUri.clear();
+            schemaUri << schemaUriPrefix << "ModelTransducer.xsd";
+            map["t"].name   = "http://lt.5grupe.karolis/biosensor/model/transducer";
+            map["t"].schema = schemaUri.str();
+
+            BIO_XML_MODEL_NS::model(buf, *model, map);
+            context->setActualConfiguration(buf);
+        }
+
+        DelegatingFactory* factory = new DelegatingFactory();
+        factory->addFactory(new BIO_NS::MainFactory(factory, context), true);
+        factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
+
+
+        // Create solver
+        LOG_INFO(LOGGER << "Creating solver...");
+        ISolver* solver;
+        if ((solver = factory->createSolver(&*model)) == 0)
+        {
+            LOG_ERROR(LOGGER << "I dont know how to create requested solver.");
+            return 2;
+        }
+        LOG_INFO(LOGGER << "Creating solver... Done");
+
+        if (resumeMode)
+        {
+            BIO_SLV_NS::IIterativeSolver* is = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
+            if (!is)
+            {
+                throw BIO_NS::Exception("Resume is supported only for iterative solvers.");
+            }
+            is->setState(0, 0, is->getTimeStep());
+
+
+            //TODO: solver->setInitialState();
+        }
+
+        // Simulate operation of the biosensor
+        LOG_INFO(LOGGER << "Solving...");
+        solver->solve();
+        LOG_INFO(LOGGER << "Solving... Done");
+
+
+        // Was simulation successful?
+        error = solver->isSteadyStateReached() ? 0 : 1;
+
+
+        delete solver;
+        delete factory;
+        delete context;
+    }
+    catch (const xml_schema::exception& e)
+    {
+        LOG_ERROR(LOGGER << "xml_schema::exception: " << e.what() << ". Error description is:\n" << e);
+        error = 2;
+    }
+    catch (Exception& ee)
+    {
+        LOG_ERROR(LOGGER << "bio::Exception: " << ee.what());
+        error = 2;
+    }
+    catch (...)
+    {
+        LOG_ERROR(LOGGER << "Unknown error");
+        error = 2;
+    }
+
+
+    std::clock_t clock_end = std::clock();
+    std::clock_t duration = ((clock_end - clock_start) / CLOCKS_PER_SEC);
+
+    LOG_INFO(LOGGER << "#");
+    LOG_INFO(LOGGER << "# Simulation " << (!error ? "SUCCESSFUL" : "FAILED"));
+    LOG_INFO(LOGGER << "#");
+    LOG_INFO(LOGGER << "# Execution took " << duration << " seconds (~" << (duration / 60) << " minutes)");
+    LOG_INFO(LOGGER << "# Exiting with errCode=" << error);
+    LOG_INFO(LOGGER << "#");
+    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
+    return error;
 }
 
+/* ************************************************************************** */
+void print_usage(const std::string& errMsg)
+{
+    if (errMsg.length() > 0)
+    {
+        std::cerr << "#\n# " << errMsg << "\n";
+    }
+    std::cerr
+        << "#\n"
+        << "# usage: bio-solver [[--simulate] <file-name> <output-dir>] | [--resume <file-name> <concetrtation-file> <output-dir>]\n"
+        << "# \tfile-name\tBiosensor configuration XML file\n"
+        << "# \tconcentration-file\tConcentrarions used to resume from (including header with solved time and iteration number)\n"
+        << "# \toutput-dir\tOutput directory. Must not exist on invocation.\n"
+        << "#\n"
+        ;
+}
 
 /* ************************************************************************** */
 ModelSymbols::ModelSymbols(int argn, char **argv)

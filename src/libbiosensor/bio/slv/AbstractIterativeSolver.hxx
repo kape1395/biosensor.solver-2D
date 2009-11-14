@@ -35,6 +35,10 @@ public:
     virtual long getSolvedIterationCount();
     virtual double getSolvedTime();
     virtual void addListener(ISolverListener* listener, bool deleteOnDestruction);
+    /**
+     *  Used to do resume for the simulation.
+     */
+    virtual void setState(long solvedIterationCount, double solvedTime, double timeStep);
 
 protected:
     virtual void invokeListeners();
