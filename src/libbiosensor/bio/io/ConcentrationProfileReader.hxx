@@ -6,6 +6,7 @@
 #include "../dm/ISegmentSplit.hxx"
 #include "../dm/IConcentrations.hxx"
 #include "../dm/AbstractCursor2D.hxx"
+#include "../cfg/StructureAnalyzer.hxx"
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
 #include <string>
@@ -15,6 +16,8 @@ BIO_IO_NS_BEGIN
 /**
  *  Reads concentrations from saved file. This can be used to restore
  *  solver state when resuming a simulation.
+ *
+ *  Implementation is not very clean...
  */
 class ConcentrationProfileReader : public BIO_DM_NS::IGrid2D
 {
@@ -22,13 +25,51 @@ protected:
     class Cursor2DImpl;
     class SegmentSplitImpl;
 
+    static const std::streamsize LINE_SIZE;
+    static const std::string HDR_SOLVED_ITER;
+    static const std::string HDR_SOLVED_TIME;
+    static const std::string HDR_POS_H;
+    static const std::string HDR_POS_V;
+    static const std::string HDR_IDX_H;
+    static const std::string HDR_IDX_V;
+
+    /**
+     *  Represents one line from the file.
+     */
+    struct DataPoint
+    {
+        double posH;
+        double posV;
+        int idxH;
+        int idxV;
+        double* substance;
+    };
+    std::vector<DataPoint> rawData;
+
 private:
     boost::filesystem::path parsedFile;
+    BIO_CFG_NS::StructureAnalyzer *structAnalyzer;
+
     long iterationNumber;
     double solvedTime;
     SegmentSplitImpl *pointsH;
     SegmentSplitImpl *pointsV;
 
+    int colPosH;
+    int colPosV;
+    int colIdxH;
+    int colIdxV;
+    int columnCount;
+    int *colSubstance;  ///< Mapping: colSubstance[globalSubstanceIndex] = columnInFile
+    int *substIdxByCol; ///< Mapping: colSubstance[columnInFile] = globalSubstanceIndex
+
+    int substanceCount;
+    int sizeH;          ///< size of the matrix
+    int sizeV;          ///< size of the matrix
+    DataPoint** matrix; ///< rawData layed out in the matrix form.
+
+    SegmentSplitImpl* pointPositionsH;
+    SegmentSplitImpl* pointPositionsV;
 public:
     /**
      *  Constructor.
@@ -90,12 +131,26 @@ protected:
      *  Parses specified file and fills all internal structures.
      */
     void parse(boost::filesystem::path& concentrationsFile);
+    /**
+     *  Parses one header line.
+     *  @return false, if this was not a header line (and was not parsed).
+     */
+    bool parseHeaderLine(std::string line);
+    /**
+     *  Parses one line of data (not a header).
+     *  \return true, if line was processed or false if skipped (empty or comment).
+     */
+    bool parseDataLine(std::string line);
+    /**
+     *  Constructs matrix out of the rawData.
+     */
+    void constructMatrix();
 
     /* ********************************************************************** */
     /**
      *  Cursor impl.
      */
-    class Cursor2DImpl : public BIO_DM_NS::AbstractCursor2D
+    class Cursor2DImpl : public BIO_DM_NS::AbstractCursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         ConcentrationProfileReader* reader;
@@ -104,6 +159,7 @@ protected:
         Cursor2DImpl(ConcentrationProfileReader* reader);
         virtual ~Cursor2DImpl();
         virtual BIO_DM_NS::IConcentrations *getConcentrations();
+        virtual double getConcentration(int substanceNr);
     };
 
     /* ********************************************************************** */
@@ -112,6 +168,9 @@ protected:
      */
     class SegmentSplitImpl : public BIO_DM_NS::ISegmentSplit
     {
+    private:
+        std::vector<double> points;
+
     public:
         SegmentSplitImpl();
         virtual ~SegmentSplitImpl();
@@ -122,6 +181,9 @@ protected:
         virtual double getStartPosition();
         virtual int getStepCount();
         virtual double getStepSize(int i);
+
+        void append(double point);
+        void reset();
     };
     /* ********************************************************************** */
 };
