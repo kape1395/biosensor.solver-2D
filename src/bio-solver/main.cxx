@@ -243,28 +243,15 @@ int main(int argn, char **argv)
         }
         LOG_INFO(LOGGER << "Creating solver... Done");
 
+
         if (resumeMode)
         {
-            BIO_SLV_NS::IIterativeSolver* is = dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver);
-            if (!is)
-            {
-                throw BIO_NS::Exception("Resume is supported only for iterative solvers.");
-            }
-
             boost::filesystem::path concentrationPath(concentrationFile);
             ConcentrationProfileReader concentrationReader(
                 &*model,
                 concentrationPath
             );
-
-            is->setState(
-                concentrationReader.getIterationNumber(),
-                concentrationReader.getSolvedTime(),
-                is->getTimeStep()
-            );
-
-
-            //TODO: solver->setInitialState();
+            solver->setState(&concentrationReader);
         }
 
         // Simulate operation of the biosensor

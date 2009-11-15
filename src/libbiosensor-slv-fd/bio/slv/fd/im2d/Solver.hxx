@@ -70,6 +70,11 @@ public:
     virtual ITransducer* getTransducer();
 
     /**
+     *  Set state for the solver.
+     */
+    virtual void setState(BIO_SLV_NS::ISolverState* state);
+
+    /**
      *  Returns subSolvers.
      */
     SplittedSolver* getSubSolvers();

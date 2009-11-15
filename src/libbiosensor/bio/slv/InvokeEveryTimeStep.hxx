@@ -45,6 +45,11 @@ public:
     virtual void solveEventOccured();
 
     /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset();
+    
+    /**
      *  Add nested listener.
      */
     virtual void addListener(ISolverListener* listener, bool deleteOnDestruction);

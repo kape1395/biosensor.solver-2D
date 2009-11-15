@@ -2,6 +2,7 @@
 #define BIO_SLV_ISolver_HXX
 #include "../../biosensor.hxx"
 #include "../dm/IDataModel.hxx"
+#include "ISolverState.hxx"
 #include "ITransducer.hxx"
 #include <biosensor-xml.hxx>
 BIO_SLV_NS_BEGIN
@@ -45,6 +46,10 @@ public:
      */
     virtual bool isSteadyStateReached() = 0;
 
+    /**
+     *  Set state for the solver.
+     */
+    virtual void setState(ISolverState* state) = 0;
 };
 
 

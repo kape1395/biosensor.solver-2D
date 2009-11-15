@@ -42,6 +42,7 @@ public:
 
 protected:
     virtual void invokeListeners();
+    virtual void resetListeners();
     virtual void solveIteration() = 0;
 
 };

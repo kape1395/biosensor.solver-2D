@@ -62,8 +62,16 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
             iterativeSolver->setTimeStep(newTimeStep);
         }
 
-        nextStepForAdjustment = iterativeSolver->getSolvedIterationCount() + adjustEveryNumberOfSteps;
+        reset();
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_NS::AdjustTimeStepByFactor::reset()
+{
+    nextStepForAdjustment = iterativeSolver->getSolvedIterationCount() + adjustEveryNumberOfSteps;
 }
 
 

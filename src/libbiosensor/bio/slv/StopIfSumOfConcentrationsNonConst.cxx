@@ -94,7 +94,7 @@ BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::StopIfSumOfConcentrationsNonConst
         throw Exception("StopIfSumOfConcentrationsNonConst: No areas were found with specified medium name.");
     }
 
-    this->nextStepForCheck = checkEveryNumberOfSteps;
+    reset();
 }
 
 
@@ -136,6 +136,14 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
         LOG_INFO(LOGGER << "Validation for medium " << mediumName << " successful");
     }
 
+    reset();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::reset()
+{
     nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 }
 

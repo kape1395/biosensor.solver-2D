@@ -40,6 +40,11 @@ public:
      */
     virtual void solveEventOccured();
 
+    /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset();
+
 private:
 
     /**

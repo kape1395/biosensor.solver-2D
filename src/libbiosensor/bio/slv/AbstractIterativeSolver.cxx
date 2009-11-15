@@ -171,6 +171,20 @@ void AbstractIterativeSolver::invokeListeners()
 /* ************************************************************************** */
 /* ************************************************************************** */
 /**
+ *  Resets all listeners.
+ */
+void AbstractIterativeSolver::resetListeners()
+{
+    for (unsigned i = 0; i < listeners.size(); i++)
+    {
+        listeners[i]->reset();
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
  *  Set the current state. Used to implement resume functionality.
  */
 void AbstractIterativeSolver::setState(long solvedIterationCount, double solvedTime, double timeStep)

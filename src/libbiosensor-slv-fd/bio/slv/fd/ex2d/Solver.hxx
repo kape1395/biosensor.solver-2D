@@ -35,6 +35,11 @@ public:
         return 0;   // FIXME: Implement
     }
 
+    virtual void setState(BIO_SLV_NS::ISolverState* state)
+    {
+        //  FIXME: Implement.
+    }
+    
 protected:
     virtual void solveIteration() {}
 };

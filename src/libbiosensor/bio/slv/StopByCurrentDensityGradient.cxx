@@ -70,6 +70,17 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::solveEventOccured()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_NS::StopByCurrentDensityGradient::reset()
+{
+    prevCurrentDensity = 0.0;
+    prevTime = 0.0;
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
+    nextStepListener->reset();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
 {
     double thisCurrentDensity = transducer->getOutput();

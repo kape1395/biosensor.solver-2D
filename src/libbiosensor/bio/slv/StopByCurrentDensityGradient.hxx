@@ -47,6 +47,11 @@ public:
      */
     virtual void solveEventOccured();
 
+    /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset();
+    
 private:
 
     /**
@@ -84,6 +89,11 @@ private:
                 stopCondition->processNextStep();
                 actionRequested = false;
             }
+        }
+
+        virtual void reset()
+        {
+            actionRequested = false;
         }
 
         void listenForNextStep(long thisIteration)

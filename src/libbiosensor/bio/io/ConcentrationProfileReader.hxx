@@ -1,12 +1,15 @@
 #ifndef BIO_IO_ConcentrationProfileReader_HXX
 #define BIO_IO_ConcentrationProfileReader_HXX
 #include "../../biosensor.hxx"
+#include "../dm/IDataModel.hxx"
 #include "../dm/IGrid2D.hxx"
 #include "../dm/ICursor2D.hxx"
 #include "../dm/ISegmentSplit.hxx"
 #include "../dm/IConcentrations.hxx"
 #include "../dm/AbstractCursor2D.hxx"
 #include "../cfg/StructureAnalyzer.hxx"
+#include "../slv/ISolverState.hxx"
+#include "../Exception.hxx"
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
 #include <string>
@@ -19,7 +22,10 @@ BIO_IO_NS_BEGIN
  *
  *  Implementation is not very clean...
  */
-class ConcentrationProfileReader : public BIO_DM_NS::IGrid2D
+class ConcentrationProfileReader :
+    public BIO_DM_NS::IGrid2D,
+            public BIO_DM_NS::IDataModel,
+            public BIO_SLV_NS::ISolverState
 {
 protected:
     class Cursor2DImpl;
@@ -84,22 +90,52 @@ public:
      */
     virtual ~ConcentrationProfileReader();
 
-    /**
+    /*
      *  Returns iteration number, if it was found from the file.
      *  @return iteration number or -1, if it was not found.
-     */
+     *
     virtual long getIterationNumber()
     {
         return iterationNumber;
     }
+     */
 
-    /**
+    /*
      *  Returns solved time, if it was found from the file.
      *  @return solved time or -1, if it was not found.
-     */
+     *
     virtual double getSolvedTime()
     {
         return solvedTime;
+    }
+     */
+
+    /**
+     *  Returns solvedTime. This is implementation of ISolverState.
+     */
+    virtual double getTime()
+    {
+        if (solvedTime == -1.0)
+            throw BIO_NS::Exception("Time is not defined...");
+        return solvedTime;
+    }
+
+    /**
+     *  Returns iteration number. This is implementation of ISolverState.
+     */
+    virtual long getIteration()
+    {
+        if (iterationNumber == -1)
+            throw BIO_NS::Exception("Iteration is not defined...");
+        return iterationNumber;
+    }
+
+    /**
+     *  This is implementation of ISolverState.
+     */
+    virtual BIO_DM_NS::IDataModel* getData()
+    {
+        return this;
     }
 
     /**

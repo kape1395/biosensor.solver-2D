@@ -101,6 +101,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
+    bio/slv/ISolverState.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEveryTimeStep.hxx \
     bio/slv/InvokeNotBefore.hxx \

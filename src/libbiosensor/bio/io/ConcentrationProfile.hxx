@@ -48,6 +48,14 @@ public:
     virtual void solveEventOccured();
 
     /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset()
+    {
+        currentIndex = 0;
+    }
+
+    /**
      *  ...
      */
     virtual void setRepeatable(bool repeatable)
