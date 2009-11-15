@@ -12,6 +12,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IConcentrations.hxx>
 #include <bio/dm/IComposite2D.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
+#include <bio/dm/AbstractCursor2D.hxx>
 #include "Solver.hxx"
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -87,14 +88,10 @@ private:
     /**
      *  Cursor...
      */
-    class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::AbstractCursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         DataModel* dataModel;
-        unsigned sizeH;         // Total size H
-        unsigned sizeV;         // Total size V
-        unsigned currentH;      // point index in H
-        unsigned currentV;      // point index in V;
         unsigned currentAreaH;
         unsigned currentAreaV;
         bool currentOnBoundH;
@@ -111,18 +108,6 @@ private:
          *  Destructor.
          */
         virtual ~Cursor();
-
-        virtual void left();
-        virtual void right();
-        virtual void top();
-        virtual void down();
-
-        virtual void rowStart();
-        virtual void rowEnd();
-        virtual void colStart();
-        virtual void colEnd();
-
-        virtual bool isValid();
 
         virtual BIO_DM_NS::IConcentrations* getConcentrations();
 

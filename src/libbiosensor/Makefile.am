@@ -71,6 +71,7 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/IConfigValidator.hxx \
     bio/cfg/ReactionAnalyzer.hxx \
     bio/cfg/StructureAnalyzer.hxx \
+    bio/dm/AbstractCursor2D.hxx \
     bio/dm/CompositeSegmentSplit.hxx \
     bio/dm/ConstantSegmentSplit.hxx \
     bio/dm/Cursor2DWithoutBounds.hxx \

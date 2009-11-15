@@ -131,13 +131,13 @@ BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::DataModel::newGridCursor()
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
     DataModel* dataModel
-)
+) :
+        BIO_DM_NS::AbstractCursor2D(
+            dataModel->getPointPositionsH()->getPointCount(),
+            dataModel->getPointPositionsV()->getPointCount()
+        )
 {
     this->dataModel = dataModel;
-    sizeH = dataModel->getPointPositionsH()->getPointCount();
-    sizeV = dataModel->getPointPositionsV()->getPointCount();
-    currentH = 0;
-    currentV = 0;
     currentAreaH = 0;
     currentAreaV = 0;
 }
@@ -148,78 +148,6 @@ BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
 BIO_SLV_FD_IM2D_NS::DataModel::Cursor::~Cursor()
 {
     // Nothing to do here.
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::left()
-{
-    --currentH;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::right()
-{
-    currentH++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::top()
-{
-    currentV--;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::down()
-{
-    currentV++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowStart()
-{
-    currentH = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::rowEnd()
-{
-    currentH = sizeH - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colStart()
-{
-    currentV = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::colEnd()
-{
-    currentV = sizeV - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-bool BIO_SLV_FD_IM2D_NS::DataModel::Cursor::isValid()
-{
-    return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
 }
 
 

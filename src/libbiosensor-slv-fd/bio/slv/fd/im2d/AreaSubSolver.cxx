@@ -716,13 +716,13 @@ BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::AreaSubSolver::newGridCursor()
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
     AreaSubSolver* subSolver
-)
+) :
+        BIO_DM_NS::AbstractCursor2D(
+            subSolver->getPointPositionsH()->getPointCount(),
+            subSolver->getPointPositionsV()->getPointCount()
+        )
 {
     this->subSolver = subSolver;
-    this->sizeH = subSolver->getPointPositionsH()->getPointCount();
-    this->sizeV = subSolver->getPointPositionsV()->getPointCount();
-    this->currentH = 0;
-    this->currentV = 0;
 }
 
 
@@ -731,78 +731,6 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::~Cursor()
 {
     // Nothing to do here.
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::left()
-{
-    --currentH;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::right()
-{
-    currentH++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::top()
-{
-    currentV--;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::down()
-{
-    currentV++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowStart()
-{
-    currentH = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowEnd()
-{
-    currentH = sizeH - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colStart()
-{
-    currentV = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colEnd()
-{
-    currentV = sizeV - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-bool BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::isValid()
-{
-    return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
 }
 
 

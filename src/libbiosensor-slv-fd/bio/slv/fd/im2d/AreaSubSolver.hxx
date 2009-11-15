@@ -13,6 +13,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IGrid2D.hxx>
 #include <bio/dm/ICursor2D.hxx>
 #include <bio/dm/IConcentrations.hxx>
+#include <bio/dm/AbstractCursor2D.hxx>
 #include <string>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -361,14 +362,10 @@ private:
     /**
      *  Cursor...
      */
-    class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::AbstractCursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         AreaSubSolver* subSolver;
-        int sizeH;      // Total size H
-        int sizeV;      // Total size V
-        int currentH;   // point index in H
-        int currentV;   // point index in V;
 
     public:
 
@@ -382,18 +379,9 @@ private:
          */
         virtual ~Cursor();
 
-        virtual void left();
-        virtual void right();
-        virtual void top();
-        virtual void down();
-
-        virtual void rowStart();
-        virtual void rowEnd();
-        virtual void colStart();
-        virtual void colEnd();
-
-        virtual bool isValid();
-
+        /**
+         *  Returns concentrations of the substances at the current position.
+         */
         virtual BIO_DM_NS::IConcentrations* getConcentrations();
 
         /**

@@ -10,6 +10,7 @@
 #include <bio/DelegatingFactory.hxx>
 #include <bio/io/IContext.hxx>
 #include <bio/io/FilesystemContext.hxx>
+#include <bio/io/ConcentrationProfileReader.hxx>
 #include <bio/slv/ISolver.hxx>
 #include <bio/slv/IIterativeSolver.hxx>
 #include <biosensor-slv-fd.hxx>
@@ -163,7 +164,9 @@ int main(int argn, char **argv)
         {
             ModelSymbols modelSymbols(argn, argv);
             modelSymbols.override(*model);
-        } else {
+        }
+        else
+        {
             LOG_WARN(LOGGER << "Symbol overriding is skipped in the case of resume mode.");
         }
 
@@ -184,33 +187,40 @@ int main(int argn, char **argv)
             std::stringstream buf;
             std::stringstream schemaUri;
             std::string schemaUriPrefix;
+
+            //  TODO: Specify schema locations using parameters, or by default in FS (as is installed).
             schemaUri << "http://karolis.5grupe.lt/biosensor/" << BIO_VERSION << "/schemas/";
             schemaUriPrefix = schemaUri.str();
 
             xml_schema::namespace_infomap map;
 
-            schemaUri.clear();
-            schemaUri << schemaUriPrefix << "Model.xsd";
+            schemaUri.str(schemaUriPrefix);
+            schemaUri.seekp(0, std::ios_base::end);
+            schemaUri << "Model.xsd";
             map[""].name    = "http://lt.5grupe.karolis/biosensor/model";
             map[""].schema  = schemaUri.str();
 
-            schemaUri.clear();
-            schemaUri << schemaUriPrefix << "ModelBound.xsd";
+            schemaUri.str(schemaUriPrefix);
+            schemaUri.seekp(0, std::ios_base::end);
+            schemaUri << "ModelBound.xsd";
             map["b"].name   = "http://lt.5grupe.karolis/biosensor/model/bound";
             map["b"].schema = schemaUri.str();
 
-            schemaUri.clear();
-            schemaUri << schemaUriPrefix << "ModelReaction.xsd";
+            schemaUri.str(schemaUriPrefix);
+            schemaUri.seekp(0, std::ios_base::end);
+            schemaUri << "ModelReaction.xsd";
             map["r"].name   = "http://lt.5grupe.karolis/biosensor/model/reaction";
             map["r"].schema = schemaUri.str();
 
-            schemaUri.clear();
-            schemaUri << schemaUriPrefix << "ModelSolver.xsd";
+            schemaUri.str(schemaUriPrefix);
+            schemaUri.seekp(0, std::ios_base::end);
+            schemaUri << "ModelSolver.xsd";
             map["s"].name   = "http://lt.5grupe.karolis/biosensor/model/solver";
             map["s"].schema = schemaUri.str();
 
-            schemaUri.clear();
-            schemaUri << schemaUriPrefix << "ModelTransducer.xsd";
+            schemaUri.str(schemaUriPrefix);
+            schemaUri.seekp(0, std::ios_base::end);
+            schemaUri << "ModelTransducer.xsd";
             map["t"].name   = "http://lt.5grupe.karolis/biosensor/model/transducer";
             map["t"].schema = schemaUri.str();
 
@@ -240,7 +250,18 @@ int main(int argn, char **argv)
             {
                 throw BIO_NS::Exception("Resume is supported only for iterative solvers.");
             }
-            is->setState(0, 0, is->getTimeStep());
+
+            boost::filesystem::path concentrationPath(concentrationFile);
+            ConcentrationProfileReader concentrationReader(
+                &*model,
+                concentrationPath
+            );
+
+            is->setState(
+                concentrationReader.getIterationNumber(),
+                concentrationReader.getSolvedTime(),
+                is->getTimeStep()
+            );
 
 
             //TODO: solver->setInitialState();

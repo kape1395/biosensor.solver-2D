@@ -14,8 +14,13 @@ biosensor (0.4.0) unstable; urgency=low
     schemes, not only a+b->c+d.
   * Small fixes regarding error handling...
   * Updated libbost M4 macros (failed to compile after linux upgrade)
+  * Duplicate ICursor2D implementations were moved to
+    bio::dm::AbstractCursor2D
+  * Implemented resuming of the simulation.
+  * Fixed bug in generation of xsi:schemaLocation for the model-
+    actual.xml
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sat, 14 Nov 2009 14:47:10 +0200
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 15 Nov 2009 16:14:30 +0200
 
 biosensor (0.3.8) unstable; urgency=low
 
