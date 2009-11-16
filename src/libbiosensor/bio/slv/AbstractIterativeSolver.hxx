@@ -38,7 +38,7 @@ public:
     /**
      *  Used to do resume for the simulation.
      */
-    virtual void setState(long solvedIterationCount, double solvedTime, double timeStep);
+    virtual void setIterationState(long solvedIterationCount, double solvedTime, double timeStep);
 
 protected:
     virtual void invokeListeners();

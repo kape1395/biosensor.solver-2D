@@ -187,7 +187,7 @@ void AbstractIterativeSolver::resetListeners()
 /**
  *  Set the current state. Used to implement resume functionality.
  */
-void AbstractIterativeSolver::setState(long solvedIterationCount, double solvedTime, double timeStep)
+void AbstractIterativeSolver::setIterationState(long solvedIterationCount, double solvedTime, double timeStep)
 {
     this->iterationsSolved = solvedIterationCount;
     this->timeSolved = solvedTime;

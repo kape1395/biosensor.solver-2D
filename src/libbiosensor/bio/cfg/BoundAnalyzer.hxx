@@ -19,8 +19,9 @@ private:
      *  This structure holds all info about one boundary condition,
      *  for one substance.
      */
-    struct BoundSubstanceInfo
+    class BoundSubstanceInfo
     {
+    public:
         BIO_XML_MODEL_NS::BoundSubstance*        boundSubstance;
         BIO_XML_MODEL_NS::Bound*                 derivedFromBound;
         std::vector<BIO_XML_MODEL_NS::Reaction*> relatedReactions;

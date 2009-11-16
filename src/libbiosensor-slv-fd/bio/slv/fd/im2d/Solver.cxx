@@ -197,7 +197,7 @@ void BIO_SLV_FD_IM2D_NS::Solver::setState(BIO_SLV_NS::ISolverState* state)
         throw BIO_NS::Exception("ISolverState should support IGrid2D for this solver...");
 
 
-    setState(state->getIteration(), state->getTime(), this->getTimeStep());
+    setIterationState(state->getIteration(), state->getTime(), this->getTimeStep());
 
 
     // TODO: Implement.
