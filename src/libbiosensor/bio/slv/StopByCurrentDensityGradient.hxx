@@ -51,7 +51,7 @@ public:
      *  Reset listener's internal state.
      */
     virtual void reset();
-    
+
 private:
 
     /**

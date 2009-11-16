@@ -7,41 +7,42 @@ BIO_SLV_FD_EX2D_NS_BEGIN
 
 
 /**
- *
+ *  Solver implementing 2D explicit schema for the method of finite differences.
  */
 class Solver : public BIO_SLV_NS::AbstractIterativeSolver
 {
 public:
-    Solver(BIO_XML_NS::model::Model* config) : AbstractIterativeSolver(config) {}
+    /**
+     *  Consructor
+     *
+     *  @param config Model to be solved.
+     */
+    Solver(BIO_XML_NS::model::Model* config);
 
-    virtual ~Solver()
-    {
-        //  Empty virtual destructor.
-    }
+    /**
+     *  Destructor..
+     */
+    virtual ~Solver();
 
     /**
      *  Returns data-model.
      */
-    virtual BIO_DM_NS::IDataModel* getData()
-    {
-        return 0;   // FIXME: Implement
-    }
+    virtual BIO_DM_NS::IDataModel* getData();
 
     /**
      *  Returns transducer.
      */
-    virtual ITransducer* getTransducer()
-    {
-        return 0;   // FIXME: Implement
-    }
+    virtual ITransducer* getTransducer();
 
-    virtual void setState(BIO_SLV_NS::ISolverState* state)
-    {
-        //  FIXME: Implement.
-    }
-    
+    /**
+     *  Set state for the solver.
+     */
+    virtual void setState(BIO_SLV_NS::ISolverState* state);
+
+
 protected:
-    virtual void solveIteration() {}
+    virtual void solveIteration();
+
 };
 
 

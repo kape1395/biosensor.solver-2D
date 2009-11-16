@@ -55,6 +55,11 @@ public:
     virtual ~DataModel();
 
     /**
+     *  Copies the state from source to this data model.
+     */
+    virtual void setState(BIO_DM_NS::IDataModel *source);
+
+    /**
      *
      */
     virtual int getSubstanceCount();

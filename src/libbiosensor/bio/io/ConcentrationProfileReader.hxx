@@ -23,7 +23,7 @@ BIO_IO_NS_BEGIN
  *  Implementation is not very clean...
  */
 class ConcentrationProfileReader :
-    public BIO_DM_NS::IGrid2D,
+            public BIO_DM_NS::IGrid2D,
             public BIO_DM_NS::IDataModel,
             public BIO_SLV_NS::ISolverState
 {
@@ -90,25 +90,13 @@ public:
      */
     virtual ~ConcentrationProfileReader();
 
-    /*
-     *  Returns iteration number, if it was found from the file.
-     *  @return iteration number or -1, if it was not found.
-     *
-    virtual long getIterationNumber()
-    {
-        return iterationNumber;
-    }
+    /**
+     *  Copies the state from source to this data model.
      */
-
-    /*
-     *  Returns solved time, if it was found from the file.
-     *  @return solved time or -1, if it was not found.
-     *
-    virtual double getSolvedTime()
+    virtual void setState(BIO_DM_NS::IDataModel *source)
     {
-        return solvedTime;
+        throw Exception("setState is not supported in the ConcentrationProfileReader");
     }
-     */
 
     /**
      *  Returns solvedTime. This is implementation of ISolverState.

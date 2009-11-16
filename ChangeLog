@@ -19,8 +19,9 @@ biosensor (0.4.0) unstable; urgency=low
   * Implemented resuming of the simulation.
   * Fixed bug in generation of xsi:schemaLocation for the model-
     actual.xml
+  * Removed empty cxx files.
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 15 Nov 2009 16:14:30 +0200
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Mon, 16 Nov 2009 23:07:42 +0200
 
 biosensor (0.3.8) unstable; urgency=low
 

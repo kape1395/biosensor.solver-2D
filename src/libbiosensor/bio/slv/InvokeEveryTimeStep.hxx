@@ -48,7 +48,7 @@ public:
      *  Reset listener's internal state.
      */
     virtual void reset();
-    
+
     /**
      *  Add nested listener.
      */

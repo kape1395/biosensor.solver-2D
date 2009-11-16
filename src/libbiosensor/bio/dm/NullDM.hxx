@@ -14,6 +14,11 @@ class NullDM : public IDataModel
 public:
     NullDM();
     virtual ~NullDM();
+
+    /**
+     *  Copies the state from source to this data model.
+     */
+    virtual void setState(IDataModel *source);
 };
 
 

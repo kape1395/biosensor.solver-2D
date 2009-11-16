@@ -191,18 +191,9 @@ BIO_SLV_NS::ITransducer* BIO_SLV_FD_IM2D_NS::Solver::getTransducer()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::Solver::setState(BIO_SLV_NS::ISolverState* state)
 {
-    BIO_DM_NS::IGrid2D* grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(state->getData());
-            
-    if (grid == 0)
-        throw BIO_NS::Exception("ISolverState should support IGrid2D for this solver...");
-
-
     setIterationState(state->getIteration(), state->getTime(), this->getTimeStep());
+    getData()->setState(state->getData());
 
-
-    // TODO: Implement.
-
-    
     resetListeners();
 }
 

@@ -1,17 +1,16 @@
 #include "NullDM.hxx"
-BIO_DM_NS_BEGIN
 
-
-NullDM::NullDM()
+BIO_DM_NS::NullDM::NullDM()
 {
     return;
 }
 
-NullDM::~NullDM()
+BIO_DM_NS::NullDM::~NullDM()
 {
     return;
 }
 
-
-
-BIO_DM_NS_END
+void BIO_DM_NS::NullDM::setState(BIO_DM_NS::IDataModel *source)
+{
+    return;
+}

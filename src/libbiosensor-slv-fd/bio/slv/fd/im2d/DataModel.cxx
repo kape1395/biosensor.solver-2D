@@ -1,5 +1,8 @@
 #include "DataModel.hxx"
 #include <bio/dm/CompositeSegmentSplit.hxx>
+#include <bio/Logging.hxx>
+#include <bio/Exception.hxx>
+#define LOGGER "libbiosensor-slv-fd::im2d::DataModel: "
 
 
 /* ************************************************************************** */
@@ -84,6 +87,24 @@ BIO_SLV_FD_IM2D_NS::DataModel::~DataModel()
     delete [] areaRangesV;
     delete segmentSplitH;
     delete segmentSplitV;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::DataModel::setState(BIO_DM_NS::IDataModel *source)
+{
+    LOG_DEBUG(LOGGER << "setState...");
+    BIO_DM_NS::IGrid2D* grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(source);
+
+    if (grid == 0)
+        throw BIO_NS::Exception("This data model supports IGrid2D only...");
+
+
+
+
+
+    LOG_DEBUG(LOGGER << "setState... Done");
 }
 
 

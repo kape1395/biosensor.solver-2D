@@ -6,12 +6,20 @@ BIO_DM_NS_BEGIN
 
 
 /**
- *  Just empty base interface for all data models.
+ *  Just base interface for all data models.
  */
 class IDataModel
 {
 public:
 
+    /**
+     *  Copies the state from source to this data model.
+     */
+    virtual void setState(IDataModel *source) = 0;
+
+    /**
+     *  Destructor.
+     */
     virtual ~IDataModel()
     {
         //  Empty virtual destructor.

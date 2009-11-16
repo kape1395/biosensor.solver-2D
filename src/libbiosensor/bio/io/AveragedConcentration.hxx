@@ -63,7 +63,7 @@ public:
     {
         //  Nothing to reset.
     }
-    
+
 };
 
 

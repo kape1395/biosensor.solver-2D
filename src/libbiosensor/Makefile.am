@@ -7,43 +7,22 @@ libbiosensor_la_LIBADD  = \
 libbiosensor_la_SOURCES = \
     bio/DelegatingFactory.cxx \
     bio/Exception.cxx \
-    bio/IFactory.cxx \
     bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
-    bio/cfg/IConfigTransformer.cxx \
-    bio/cfg/IConfigValidator.cxx \
     bio/cfg/ReactionAnalyzer.cxx \
     bio/cfg/StructureAnalyzer.cxx \
     bio/dm/CompositeSegmentSplit.cxx \
     bio/dm/ConstantSegmentSplit.cxx \
     bio/dm/Cursor2DWithoutBounds.cxx \
-    bio/dm/IComposite1D.cxx \
-    bio/dm/IComposite2D.cxx \
-    bio/dm/IConcentrations.cxx \
-    bio/dm/ICursor1D.cxx \
-    bio/dm/ICursor2D.cxx \
-    bio/dm/IDataModel.cxx \
-    bio/dm/IGrid.cxx \
-    bio/dm/IGrid1D.cxx \
-    bio/dm/IGrid2D.cxx \
-    bio/dm/ISegmentSplit.cxx \
     bio/dm/NullDM.cxx \
     bio/io/AveragedConcentration.cxx \
     bio/io/ConcentrationProfile.cxx \
     bio/io/ConcentrationProfileReader.cxx \
     bio/io/CurrentDensity.cxx \
     bio/io/FilesystemContext.cxx \
-    bio/io/IOutput.cxx \
-    bio/io/IContext.cxx \
-    bio/io/IRepeatable.cxx \
-    bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
     bio/slv/AdjustTimeStepByFactor.cxx \
-    bio/slv/IIterativeSolver.cxx \
-    bio/slv/ISolver.cxx \
-    bio/slv/ISolverListener.cxx \
-    bio/slv/ITransducer.cxx \
     bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
@@ -94,7 +73,6 @@ nobase_pkginclude_HEADERS = \
     bio/io/IOutput.hxx \
     bio/io/IContext.hxx \
     bio/io/IRepeatable.hxx \
-    bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
     bio/slv/AdjustTimeStepByFactor.hxx \
