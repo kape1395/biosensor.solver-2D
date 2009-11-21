@@ -197,31 +197,31 @@ int main(int argn, char **argv)
             schemaUri.str(schemaUriPrefix);
             schemaUri.seekp(0, std::ios_base::end);
             schemaUri << "Model.xsd";
-            map[""].name    = "http://lt.5grupe.karolis/biosensor/model";
+            map[""].name    = "http://karolis.5grupe.lt/biosensor/model";
             map[""].schema  = schemaUri.str();
 
             schemaUri.str(schemaUriPrefix);
             schemaUri.seekp(0, std::ios_base::end);
             schemaUri << "ModelBound.xsd";
-            map["b"].name   = "http://lt.5grupe.karolis/biosensor/model/bound";
+            map["b"].name   = "http://karolis.5grupe.lt/biosensor/model/bound";
             map["b"].schema = schemaUri.str();
 
             schemaUri.str(schemaUriPrefix);
             schemaUri.seekp(0, std::ios_base::end);
             schemaUri << "ModelReaction.xsd";
-            map["r"].name   = "http://lt.5grupe.karolis/biosensor/model/reaction";
+            map["r"].name   = "http://karolis.5grupe.lt/biosensor/model/reaction";
             map["r"].schema = schemaUri.str();
 
             schemaUri.str(schemaUriPrefix);
             schemaUri.seekp(0, std::ios_base::end);
             schemaUri << "ModelSolver.xsd";
-            map["s"].name   = "http://lt.5grupe.karolis/biosensor/model/solver";
+            map["s"].name   = "http://karolis.5grupe.lt/biosensor/model/solver";
             map["s"].schema = schemaUri.str();
 
             schemaUri.str(schemaUriPrefix);
             schemaUri.seekp(0, std::ios_base::end);
             schemaUri << "ModelTransducer.xsd";
-            map["t"].name   = "http://lt.5grupe.karolis/biosensor/model/transducer";
+            map["t"].name   = "http://karolis.5grupe.lt/biosensor/model/transducer";
             map["t"].schema = schemaUri.str();
 
             BIO_XML_MODEL_NS::model(buf, *model, map);

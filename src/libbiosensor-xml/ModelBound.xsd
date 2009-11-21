@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/bound"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/bound"
-    xmlns:m         ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://karolis.5grupe.lt/biosensor/model/bound"
+    xmlns           ="http://karolis.5grupe.lt/biosensor/model/bound"
+    xmlns:m         ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
     
     
     <xs:import
-        namespace="http://lt.5grupe.karolis/biosensor/model"
+        namespace="http://karolis.5grupe.lt/biosensor/model"
         schemaLocation="Model.xsd">
     </xs:import>
     

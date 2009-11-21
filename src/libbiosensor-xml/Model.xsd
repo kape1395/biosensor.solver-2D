@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://karolis.5grupe.lt/biosensor/model"
+    xmlns           ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
