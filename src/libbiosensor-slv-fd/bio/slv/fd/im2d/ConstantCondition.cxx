@@ -110,7 +110,8 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::setConcentration(int x, double c)
 {
     if (std::abs(concentration - c) > ZERO_MAX)
     {
-        throw BIO_NS::Exception("Thrying to set concentration for a bound with constant condition...");
+        LOG_WARN(LOGGER << "Trying to set invalid concentration for a bound with constant condition: new=" << c << " const=" << concentration);
+        throw BIO_NS::Exception("Trying to set concentration for a bound with constant condition...");
     }
     edge->setC0(x, concentration);
 }
