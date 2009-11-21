@@ -64,7 +64,7 @@ public:
      *  \param c    New concentration.
      */
     virtual void setConcentration(int x, double c) = 0;
-    
+
 };
 
 

@@ -642,7 +642,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::setConcentration(int h, int v, int s, do
     if (sl != -1)
     {
         data[h][v][sl][this->getCurrentLayerIndex()] = c;
-        
+
         //  I hope this is not needed.
         //  If needed, this must be fixed in the bound conditions also.
         //data[h][v][sl][this->getPreviousLayerIndex()] = c;
