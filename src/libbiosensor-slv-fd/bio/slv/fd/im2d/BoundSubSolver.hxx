@@ -105,6 +105,13 @@ public:
      */
     double getConcentration(int x, int s);
 
+    /**
+     *  Set new concentration.
+     *  \param x    Point index (local).
+     *  \param s    Substance index (global).
+     *  \param c    New concentration.
+     */
+    void setConcentration(int x, int s, double c);
 
     /* ********************************************************************** */
     /* *********   IGrid1D implementation follows   ************************* */
@@ -192,6 +199,12 @@ protected:
          */
         virtual double getConcentration(int substanceNr);
 
+        /**
+         *  Sets new concentration for the substance with specified index.
+         *  @param substanceNr      Substance index.
+         *  @param concentration    New concentration for the substance.
+         */
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
 

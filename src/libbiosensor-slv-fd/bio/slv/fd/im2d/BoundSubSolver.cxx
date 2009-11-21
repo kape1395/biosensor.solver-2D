@@ -367,6 +367,17 @@ double BIO_SLV_FD_IM2D_NS::BoundSubSolver::getConcentration(int x, int s)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::setConcentration(int x, int s, double c)
+{
+    if (substanceToBCMap[s] != 0)
+    {
+        substanceToBCMap[s]->setConcentration(x, c);
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::Cursor(BoundSubSolver* subSolver)
 {
     this->subSolver = subSolver;
@@ -440,6 +451,14 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConce
 double BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::getConcentration(int substanceNr)
 {
     return subSolver->getConcentration(position, substanceNr);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::BoundSubSolver::Cursor::setConcentration(int substanceNr, double concentration)
+{
+    subSolver->setConcentration(position, substanceNr, concentration);
 }
 
 

@@ -184,6 +184,7 @@ protected:
         virtual ~Cursor2DImpl();
         virtual BIO_DM_NS::IConcentrations *getConcentrations();
         virtual double getConcentration(int substanceNr);
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
     /* ********************************************************************** */

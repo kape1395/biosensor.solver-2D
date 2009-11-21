@@ -451,6 +451,12 @@ double BIO_IO_NS::ConcentrationProfileReader::Cursor2DImpl::getConcentration(int
     return reader->matrix[currentH][currentV].substance[substanceNr];
 }
 
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfileReader::Cursor2DImpl::setConcentration(int substanceNr, double concentration)
+{
+    throw BIO_NS::Exception("setConcentration is not supported by ConcentrationProfileReader::Cursor2DImpl");
+}
+
 
 /* ************************************************************************** */
 /* ************************************************************************** */

@@ -4,7 +4,7 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_EX2D_NS::Solver::Solver(
-BIO_XML_NS::model::Model* config
+    BIO_XML_NS::model::Model* config
 ) : AbstractIterativeSolver(config)
 {
     //  FIXME: Implement.

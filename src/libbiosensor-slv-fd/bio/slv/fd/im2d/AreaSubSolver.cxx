@@ -636,6 +636,22 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::setConcentration(int h, int v, int s, double c)
+{
+    int sl = getLocalSubstanceIndex(s);
+    if (sl != -1)
+    {
+        data[h][v][sl][this->getCurrentLayerIndex()] = c;
+        
+        //  I hope this is not needed.
+        //  If needed, this must be fixed in the bound conditions also.
+        //data[h][v][sl][this->getPreviousLayerIndex()] = c;
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool verticalIsInner, std::string message)
 {
     return;
@@ -751,6 +767,19 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::getConcentration(int substance
                currentV,
                substanceNr
            );
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::setConcentration(int substanceNr, double concentration)
+{
+    subSolver->setConcentration(
+        currentH,
+        currentV,
+        substanceNr,
+        concentration
+    );
 }
 
 

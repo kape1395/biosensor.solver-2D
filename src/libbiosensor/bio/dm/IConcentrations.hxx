@@ -18,8 +18,17 @@ public:
 
     /**
      *  Returns concentration of the substance with index <code>substanceNr</code>.
+     *  @param substanceNr  Substance index.
+     *  @return Concentration for the substance.
      */
     virtual double getConcentration(int substanceNr) = 0;
+
+    /**
+     *  Sets new concentration for the substance with specified index.
+     *  @param substanceNr      Substance index.
+     *  @param concentration    New concentration for the substance.
+     */
+    virtual void setConcentration(int substanceNr, double concentration) = 0;
 
 };
 

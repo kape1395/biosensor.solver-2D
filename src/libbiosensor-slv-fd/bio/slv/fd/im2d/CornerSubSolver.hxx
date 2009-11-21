@@ -11,6 +11,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/ICursor1D.hxx>
 #include <bio/dm/IConcentrations.hxx>
+#include <vector>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
 
@@ -22,7 +23,8 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class CornerSubSolver : public BIO_DM_NS::IConcentrations
 {
 private:
-    BIO_DM_NS::ICursor1D** cursors;     //  Array of cursors [globalSubstanceIndex]
+    std::vector< std::vector<BIO_DM_NS::ICursor1D*> > cursors;  //  cursors [globalSubstanceIndex][number]
+    std::vector< BIO_DM_NS::ICursor1D* > cursorsPlain;          // just the same as cursors, but just a plain list.
     unsigned substCount;
 
 public:
@@ -63,6 +65,11 @@ public:
      *  \param s    Global subsatnce index.
      */
     double getConcentration(int s);
+
+    /**
+     *  Set concentration...
+     */
+    void setConcentration(int s, double c);
 
 };
 

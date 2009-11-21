@@ -1,5 +1,6 @@
 #include "DataModel.hxx"
 #include <bio/dm/CompositeSegmentSplit.hxx>
+#include <bio/dm/IConcentrations.hxx>
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #define LOGGER "libbiosensor-slv-fd::im2d::DataModel: "
@@ -95,14 +96,36 @@ BIO_SLV_FD_IM2D_NS::DataModel::~DataModel()
 void BIO_SLV_FD_IM2D_NS::DataModel::setState(BIO_DM_NS::IDataModel *source)
 {
     LOG_DEBUG(LOGGER << "setState...");
-    BIO_DM_NS::IGrid2D* grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(source);
+    BIO_DM_NS::IGrid2D* srcGrid = dynamic_cast<BIO_DM_NS::IGrid2D*>(source);
 
-    if (grid == 0)
+    if (srcGrid == 0)
         throw BIO_NS::Exception("This data model supports IGrid2D only...");
 
 
+    if (srcGrid->getSubstanceCount() != getSubstanceCount() ||
+            srcGrid->getPointPositionsH()->getPointCount() != getPointPositionsH()->getPointCount() ||
+            srcGrid->getPointPositionsV()->getPointCount() != getPointPositionsV()->getPointCount())
+        throw BIO_NS::Exception("Size and substances should match when setting the state for the IM2D data model.");
 
+    BIO_DM_NS::ICursor2D *srcCursor = srcGrid->newGridCursor();
+    Cursor *dstCursor = dynamic_cast<BIO_SLV_FD_IM2D_NS::DataModel::Cursor*>(this->newGridCursor());
 
+    srcCursor->colStart();
+    srcCursor->rowStart();
+    dstCursor->colStart();
+    dstCursor->rowStart();
+    for (; srcCursor->isValid(); srcCursor->down(), dstCursor->down())
+    {
+        for (; srcCursor->isValid(); srcCursor->right(), dstCursor->right())
+        {
+            dstCursor->setConcentrations(srcCursor->getConcentrations());
+        }
+        srcCursor->rowStart();
+        dstCursor->rowStart();
+    }
+
+    delete srcCursor;
+    delete dstCursor;
 
     LOG_DEBUG(LOGGER << "setState... Done");
 }
@@ -201,6 +224,62 @@ BIO_DM_NS::IConcentrations* BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentrat
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::setConcentrations(BIO_DM_NS::IConcentrations* source)
+{
+    this->getConcentrations();  // only calculates current position correctly and returns THIS.
+    for (int s = 0; s < dataModel->getSubstanceCount(); s++)
+    {
+        setConcentration(s, source->getConcentration(s));
+    }
+    /**
+    Solver::SplittedSolver* ss = dataModel->solver->getSubSolvers();
+
+    if (!currentOnBoundH && !currentOnBoundV)
+    {
+        int localH = currentH - dataModel->areaRangesH[currentAreaH];
+        int localV = currentV - dataModel->areaRangesV[currentAreaV];
+        AreaSubSolver* area = ss->getArea(currentAreaH, currentAreaV);
+
+        for (int s = 0; s < dataModel->getSubstanceCount(); s++)
+        {
+            area->setConcentration(localH, localV, s, source->getConcentration(s));
+        }
+    }
+    else if (currentOnBoundH && currentOnBoundV)
+    {
+        CornerSubSolver* corner = ss->getCorner(currentAreaH, currentAreaV);
+
+        for (int s = 0; s < dataModel->getSubstanceCount(); s++)
+        {
+            corner->setConcentration(s, source->getConcentration(s));
+        }
+    }
+    else if (currentOnBoundH)
+    {
+        int local = currentV - dataModel->areaRangesV[currentAreaV];
+        BoundSubSolver* bound = ss->getBoundV(currentAreaH, currentAreaV);
+
+        for (int s = 0; s < dataModel->getSubstanceCount(); s++)
+        {
+            bound->setConcentration(local, s, source->getConcentration(s));
+        }
+    }
+    else if (currentOnBoundV)
+    {
+        int local = currentH - dataModel->areaRangesH[currentAreaH];
+        BoundSubSolver* bound = ss->getBoundH(currentAreaH, currentAreaV);
+
+        for (int s = 0; s < dataModel->getSubstanceCount(); s++)
+        {
+            bound->setConcentration(local, s, source->getConcentration(s));
+        }
+    }
+     */
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentration(int substanceNr)
 {
     if (!currentOnBoundH && !currentOnBoundV)
@@ -244,6 +323,53 @@ double BIO_SLV_FD_IM2D_NS::DataModel::Cursor::getConcentration(int substanceNr)
                );
     }
     return 0;   //  Control will never reach this statement.
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::DataModel::Cursor::setConcentration(int substanceNr, double concentration)
+{
+    if (!currentOnBoundH && !currentOnBoundV)
+    {
+        return  dataModel->solver->getSubSolvers()->getArea(
+                    currentAreaH,
+                    currentAreaV
+                )->setConcentration(
+                    currentH - dataModel->areaRangesH[currentAreaH],
+                    currentV - dataModel->areaRangesV[currentAreaV],
+                    substanceNr, concentration
+                );
+    }
+    else if (currentOnBoundH && currentOnBoundV)
+    {
+        return dataModel->solver->getSubSolvers()->getCorner(
+                   currentAreaH,
+                   currentAreaV
+               )->setConcentration(
+                   substanceNr, concentration
+               );
+    }
+    else if (currentOnBoundH)
+    {
+        return dataModel->solver->getSubSolvers()->getBoundV(
+                   currentAreaH,
+                   currentAreaV
+               ) ->setConcentration(
+                   currentV - dataModel->areaRangesV[currentAreaV],
+                   substanceNr, concentration
+               );
+    }
+    else if (currentOnBoundV)
+    {
+        return dataModel->solver->getSubSolvers()->getBoundH(
+                   currentAreaH,
+                   currentAreaV
+               ) ->setConcentration(
+                   currentH - dataModel->areaRangesH[currentAreaH],
+                   substanceNr, concentration
+               );
+    }
 }
 
 

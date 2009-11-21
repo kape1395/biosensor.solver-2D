@@ -114,7 +114,16 @@ private:
          */
         virtual ~Cursor();
 
+        /**
+         *  Returns substance concentrations at the current position.
+         *  This is implementation of IGrid2D.
+         */
         virtual BIO_DM_NS::IConcentrations* getConcentrations();
+
+        /**
+         *  Updates concentrations at the current point.
+         */
+        virtual void setConcentrations(BIO_DM_NS::IConcentrations* source);
 
         /**
          *  Returns concentration of the substance in a current point.
@@ -122,6 +131,11 @@ private:
          */
         virtual double getConcentration(int substanceNr);
 
+        /**
+         *  Sets the new value for substance concentration.
+         *  This is implementation of an interface IConcentrations.
+         */
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
 };

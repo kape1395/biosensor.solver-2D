@@ -195,6 +195,21 @@ public:
         int s
     );
 
+    /**
+     *  Set new concentration of the substance s at point (h, v).
+     *
+     *  \param s    Substance index (global).
+     *  \param h    Horizontal point index (local).
+     *  \param v    Vertical point index (local).
+     *  \param c    New concentration.
+     */
+    void setConcentration(
+        int h,
+        int v,
+        int s,
+        double c
+    );
+
     /* ********************************************************************** */
     /* *********    IGrid2D implementation - start                            */
     /**
@@ -390,6 +405,12 @@ private:
          */
         virtual double getConcentration(int substanceNr);
 
+        /**
+         *  Sets new concentration for the substance with specified index.
+         *  @param substanceNr      Substance index.
+         *  @param concentration    New concentration for the substance.
+         */
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
 
