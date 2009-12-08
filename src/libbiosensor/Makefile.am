@@ -7,40 +7,22 @@ libbiosensor_la_LIBADD  = \
 libbiosensor_la_SOURCES = \
     bio/DelegatingFactory.cxx \
     bio/Exception.cxx \
-    bio/IFactory.cxx \
     bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
-    bio/cfg/IConfigTransformer.cxx \
-    bio/cfg/IConfigValidator.cxx \
+    bio/cfg/ReactionAnalyzer.cxx \
     bio/cfg/StructureAnalyzer.cxx \
     bio/dm/CompositeSegmentSplit.cxx \
     bio/dm/ConstantSegmentSplit.cxx \
-    bio/dm/IComposite1D.cxx \
-    bio/dm/IComposite2D.cxx \
-    bio/dm/IConcentrations.cxx \
-    bio/dm/ICursor1D.cxx \
-    bio/dm/ICursor2D.cxx \
-    bio/dm/IDataModel.cxx \
-    bio/dm/IGrid.cxx \
-    bio/dm/IGrid1D.cxx \
-    bio/dm/IGrid2D.cxx \
-    bio/dm/ISegmentSplit.cxx \
+    bio/dm/Cursor2DWithoutBounds.cxx \
     bio/dm/NullDM.cxx \
     bio/io/AveragedConcentration.cxx \
     bio/io/ConcentrationProfile.cxx \
+    bio/io/ConcentrationProfileReader.cxx \
     bio/io/CurrentDensity.cxx \
     bio/io/FilesystemContext.cxx \
-    bio/io/IOutput.cxx \
-    bio/io/IContext.cxx \
-    bio/io/IRepeatable.cxx \
-    bio/io/SteadyStateHalfTime.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
     bio/slv/AdjustTimeStepByFactor.cxx \
-    bio/slv/IIterativeSolver.cxx \
-    bio/slv/ISolver.cxx \
-    bio/slv/ISolverListener.cxx \
-    bio/slv/ITransducer.cxx \
     bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
@@ -50,7 +32,11 @@ libbiosensor_la_SOURCES = \
     bio/slv/StopIfInvalidConcentrations.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx \
-    bio/trd/ConcentrationIntegralOverArea.cxx
+    bio/trd/CompositeElectrode.cxx \
+    bio/trd/IntegralOverArea.cxx \
+    bio/trd/IntegratedConcentration.cxx \
+    bio/trd/IntegratedReaction.cxx \
+    bio/trd/IntegratedReactionRedOx.cxx
 
 
 nobase_pkginclude_HEADERS = \
@@ -62,9 +48,12 @@ nobase_pkginclude_HEADERS = \
     bio/cfg/BoundAnalyzer.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
+    bio/cfg/ReactionAnalyzer.hxx \
     bio/cfg/StructureAnalyzer.hxx \
+    bio/dm/AbstractCursor2D.hxx \
     bio/dm/CompositeSegmentSplit.hxx \
     bio/dm/ConstantSegmentSplit.hxx \
+    bio/dm/Cursor2DWithoutBounds.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite2D.hxx \
     bio/dm/IConcentrations.hxx \
@@ -78,18 +67,19 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/io/AveragedConcentration.hxx \
     bio/io/ConcentrationProfile.hxx \
+    bio/io/ConcentrationProfileReader.hxx \
     bio/io/CurrentDensity.hxx \
     bio/io/FilesystemContext.hxx \
     bio/io/IOutput.hxx \
     bio/io/IContext.hxx \
     bio/io/IRepeatable.hxx \
-    bio/io/SteadyStateHalfTime.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
     bio/slv/AdjustTimeStepByFactor.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
+    bio/slv/ISolverState.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEveryTimeStep.hxx \
     bio/slv/InvokeNotBefore.hxx \
@@ -100,7 +90,12 @@ nobase_pkginclude_HEADERS = \
     bio/slv/StopIfSumOfConcentrationsNonConst.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \
     bio/trd/AmperometricInjectedElectrode2D.hxx \
-    bio/trd/ConcentrationIntegralOverArea.hxx
+    bio/trd/CompositeElectrode.hxx \
+    bio/trd/IntegralOverArea.hxx \
+    bio/trd/IIntegratedExpression.hxx \
+    bio/trd/IntegratedConcentration.hxx \
+    bio/trd/IntegratedReaction.hxx \
+    bio/trd/IntegratedReactionRedOx.hxx
 
 EXTRA_DIST = \
     bio/Logging.hxx \

@@ -16,6 +16,7 @@ AbstractIterativeSolver::AbstractIterativeSolver(
     timeSolved = 0;
     iterationsSolved = 0;
     stopped = true;
+    steadyStateReached = false;
     listeners.clear();
     listenersToDelete.clear();
 }
@@ -65,7 +66,8 @@ void AbstractIterativeSolver::solve()
  */
 void AbstractIterativeSolver::stop(bool steadyStateReached)
 {
-    stopped = true;
+    this->stopped = true;
+    this->steadyStateReached = steadyStateReached;
     //invokeListeners();    FIXME: I think this is not needed or must be reported as different type of efent.
 }
 
@@ -78,6 +80,17 @@ void AbstractIterativeSolver::stop(bool steadyStateReached)
 bool AbstractIterativeSolver::isStopped()
 {
     return this->stopped;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Is steady state reached?
+ */
+bool AbstractIterativeSolver::isSteadyStateReached()
+{
+    return this->steadyStateReached;
 }
 
 
@@ -152,6 +165,33 @@ void AbstractIterativeSolver::invokeListeners()
     {
         listeners[i]->solveEventOccured();
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Resets all listeners.
+ */
+void AbstractIterativeSolver::resetListeners()
+{
+    for (unsigned i = 0; i < listeners.size(); i++)
+    {
+        listeners[i]->reset();
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+/**
+ *  Set the current state. Used to implement resume functionality.
+ */
+void AbstractIterativeSolver::setIterationState(long solvedIterationCount, double solvedTime, double timeStep)
+{
+    this->iterationsSolved = solvedIterationCount;
+    this->timeSolved = solvedTime;
+    this->setTimeStep(timeStep);
 }
 
 

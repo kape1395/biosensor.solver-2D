@@ -20,34 +20,22 @@ public:
     /**
      *  Constructor.
      */
-    NullSolver(BIO_XML_NS::model::Model* config) : AbstractSolver(config)
-    {
-        data = new BIO_DM_NS::NullDM();
-    }
+    NullSolver(BIO_XML_NS::model::Model* config);
 
     /**
      *  Destructor.
      */
-    virtual ~NullSolver()
-    {
-        delete data;
-    }
+    virtual ~NullSolver();
 
     /**
      *  Returns data-model.
      */
-    virtual BIO_DM_NS::IDataModel* getData()
-    {
-        return data;
-    }
+    virtual BIO_DM_NS::IDataModel* getData();
 
     /**
      *  Solves nothing.
      */
-    virtual void solve()
-    {
-        // Nothing to do here.
-    }
+    virtual void solve();
 
 };
 

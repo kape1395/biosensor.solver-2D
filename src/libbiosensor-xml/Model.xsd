@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://karolis.5grupe.lt/biosensor/model"
+    xmlns           ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
     
@@ -15,6 +15,7 @@
         <xs:sequence>
             <xs:element name="axis"         type="Axis"         minOccurs="1" maxOccurs="2"/>
             <xs:element name="substance"    type="Substance"    minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="reaction"     type="Reaction"     minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="medium"       type="Medium"       minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="bound"        type="Bound"        minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="transducer"   type="Transducer"   minOccurs="0" maxOccurs="1"/>
@@ -43,7 +44,13 @@
         <xs:attribute name="name" type="SubstanceName" use="required"/>
     </xs:complexType>
     
-    
+
+
+    <xs:complexType name="Reaction" abstract="true">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
+    </xs:complexType>
+
+
     
     <xs:complexType name="Medium">
         <xs:sequence>
@@ -52,6 +59,13 @@
             <xs:element name="area"      type="MediumArea"      minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name" type="MediumName" use="required"/>
+        <xs:attribute name="diffusionRatio" type="SymbolName" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    D_z = diffusionRatio * D_r
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
     
     <xs:complexType name="MediumSubstance">
@@ -59,8 +73,9 @@
         <xs:attribute name="diffusion"  type="SymbolName"    use="optional"/>
         <xs:attribute name="initial"    type="SymbolName"    use="required"/>
     </xs:complexType>
-    
-    <xs:complexType name="MediumReaction" abstract="true">
+
+    <xs:complexType name="MediumReaction">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
     </xs:complexType>
     
     <xs:complexType name="MediumArea">
@@ -77,6 +92,7 @@
     <xs:complexType name="Bound">
         <xs:sequence>
             <xs:element name="substance" type="BoundSubstance" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="reaction"  type="BoundReaction"  minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="name"   type="BoundName"    use="optional"/>
         <xs:attribute name="from"   type="SymbolName"   use="optional"/>
@@ -86,6 +102,10 @@
     
     <xs:complexType name="BoundSubstance" abstract="true">
         <xs:attribute name="name" type="SubstanceName" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="BoundReaction">
+        <xs:attribute name="name" type="ReactionName" use="required"/>
     </xs:complexType>
     
     
@@ -131,6 +151,10 @@
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
     
+    <xs:simpleType name="ReactionName">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
     <xs:simpleType name="AxisName">
         <xs:restriction base="xs:string"/>
     </xs:simpleType>

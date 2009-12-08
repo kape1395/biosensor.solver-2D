@@ -4,7 +4,12 @@ Author: Karolis Petrauskas
 
 Before commit, make shure to run `make astyle'.
 
+################################################################################
+## ChangeLog
+
 ChangeLog modifications should be done using `dch -c ChangeLog ...'
+For example, to add a line to current version:
+  dch -c ChangeLog -a "This is my message."
 
 ################################################################################
 ##    Pilnas perkurimas yra:
@@ -12,7 +17,7 @@ ChangeLog modifications should be done using `dch -c ChangeLog ...'
 make maintainer-clean  
 rm -rf local_install
 mkdir local_install
-./configure --prefix=`pwd`/local_install "CXXFLAGS=-g -O0 -ansi -Wall -DLOG_LEVEL_DEBUG" && make && make install
+./configure --prefix=`pwd`/local_install --enable-shared --disable-static --with-pic "CXXFLAGS=-g -O0 -ansi -Wall -DLOG_LEVEL_DEBUG" --with-boost-filesystem=boost_filesystem-mt && make && make install
 
 
 ##
@@ -29,6 +34,10 @@ valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiose
 ## Galutiniam kompiliavimui (release):
   ./configure CXXFLAGS=-O2 --enable-static --disable-shared --prefix `pwd`/test-install
   ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" --prefix=/usr/local/biosensor-0.3.8
+
+##
+## Testuku paleidimui:
+./local_install/bin/bio-solver --resume /home/karolis/BZRWORK/kape1395.str_b2d_injected_electrode/data/test_20091114/test-k3_1E-1_M0b_S0b/model-original.xml /home/karolis/BZRWORK/kape1395.str_b2d_injected_electrode/data/test_20091114/test-k3_1E-1_M0b_S0b/concentrations-0000000030 tmp/t0
 
 
 ################################################################################

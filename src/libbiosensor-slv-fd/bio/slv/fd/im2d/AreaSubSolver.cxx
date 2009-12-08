@@ -117,10 +117,17 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 
     ////////////////////////////////////////////////////////////////////////////
     // Collect information about diffusions
-    D = new double[dataSizeS];
+    D_h = new double[dataSizeS];
+    D_v = new double[dataSizeS];
     for (int s = 0; s < dataSizeS; s++)
     {
-        D[s] = structAnalyzer->getDiffusion(substanceIndexes[s], positionH, positionV)->value();
+        D_h[s] = structAnalyzer->getDiffusionCoef(substanceIndexes[s], positionH, positionV, true);
+        D_v[s] = structAnalyzer->getDiffusionCoef(substanceIndexes[s], positionH, positionV, false);
+        LOG_DEBUG(LOGGER
+                  << "Diffusion coefficients for"
+                  << " substance=" << structAnalyzer->getSubstances()[substanceIndexes[s]]->name()
+                  << " are: D_h=" << D_h[s] << " D_v=" << D_v[s]
+                 );
     }
     // Collect information about diffusions
     ////////////////////////////////////////////////////////////////////////////
@@ -129,7 +136,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     ////////////////////////////////////////////////////////////////////////////
     // Collect information about reactions
     {
-        typedef std::vector< BIO_XML_NS::model::MediumReaction* > reactions_vector;
+        typedef std::vector< BIO_XML_NS::model::Reaction* > reactions_vector;
         typedef BIO_XML_NS::model::reaction::MichaelisMenten R_MM;
         typedef BIO_XML_NS::model::reaction::ReductionOxidation R_RO;
 
@@ -165,25 +172,24 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
             }
             else if (rRO != 0)
             {
-                if (rRO->substrate().size() != 2 || rRO->product().size() != 2 ||
-                        rRO->substrate()[0].coefficient() != 1 ||
-                        rRO->substrate()[1].coefficient() != 1 ||
-                        rRO->product()[0].coefficient() != 1 ||
-                        rRO->product()[1].coefficient() != 1
-                   )
-                {
-                    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited: 2S + 2P without coefficients");
-                    throw Exception("Unsupported reaction.");
-                }
+                //  TODO: Implement normal checking here...
+                //
+                //if (rRO->substrate().size() != 2 ||
+                //        rRO->substrate()[0].coefficient() != 1 ||
+                //        rRO->substrate()[1].coefficient() != 1
+                //   )
+                //{
+                //    LOG_ERROR(LOGGER << "Implementation of RO reaction is limited to 2 substrates without coefficients");
+                //    throw Exception("Unsupported reaction.");
+                //}
+                bool haveTwo = rRO->substrate().size() == 2;
 
-                int substS1 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[0].name()));
-                int substS2 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[1].name()));
-                int substP1 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[0].name()));
-                int substP2 = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[1].name()));
+                int substS1 =           getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[0].name()))     ;
+                int substS2 = haveTwo ? getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->substrate()[1].name())) : -1;
                 double rate = structAnalyzer->getSymbol(rRO->rate())->value();
-                if (substS1 == -1 || substS2 == -1)
+                if (substS1 == -1 || (haveTwo && substS2 == -1))
                 {
-                    LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion decined in the medium.");
+                    LOG_ERROR(LOGGER << "For RO reaction both S1 and S2 must have diffusion defined in the medium.");
                     throw Exception("Unsupported reaction.");
                 }
 
@@ -191,13 +197,28 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 part.substrate1Index = substS1;
                 part.substrate2Index = substS2;
                 part.rate = rate;
+
                 roParts[substS1].push_back(part);
-                roParts[substS2].push_back(part);
+                if (haveTwo)
+                    roParts[substS2].push_back(part);
+
                 part.rate = -rate;
-                if (substP1 != -1)
-                    roParts[substP1].push_back(part);
-                if (substP2 != -1)
-                    roParts[substP2].push_back(part);
+
+                for (unsigned p = 0; p < rRO->product().size(); p++)
+                {
+                    int si = getLocalSubstanceIndex(structAnalyzer->getSubstanceIndex(rRO->product()[p].name()));
+                    if (rRO->product()[p].coefficient() != 1)
+                    {
+                        LOG_ERROR(LOGGER << "Implementation of RO reaction is limited: products must be without coefficients");
+                        throw Exception("Unsupported reaction.");
+                    }
+                    if (si == -1)
+                    {
+                        LOG_ERROR(LOGGER << "Product of the reaction is not defined in the medium.");
+                        throw Exception("Invalid reaction.");
+                    }
+                    roParts[si].push_back(part);
+                }
             }
             else
             {
@@ -260,7 +281,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
     delete [] reactionsMMPartCounts;
     delete [] reactionsROPartCounts;
 
-    delete [] D;
+    delete [] D_h;
+    delete [] D_v;
 
     for (int h = 0; h < dataSizeH; h++)
     {
@@ -326,17 +348,17 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //
                 if (coordinateSystemIsCartesian)
                 {
-                    a = c = D[s] / (stepSizeH * stepSizeH);
+                    a = c = D_h[s] / (stepSizeH * stepSizeH);
                     b += - 2.0 * a;
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    a = D[s] * (r - stepSizeH / 2) / (r * stepSizeH * stepSizeH);
-                    b += -2.0 * D[s] / (stepSizeH * stepSizeH);
-                    c = D[s] * (r + stepSizeH / 2) / (r * stepSizeH * stepSizeH);
+                    a = D_h[s] * (r - stepSizeH / 2) / (r * stepSizeH * stepSizeH);
+                    b += -2.0 * D_h[s] / (stepSizeH * stepSizeH);
+                    c = D_h[s] * (r + stepSizeH / 2) / (r * stepSizeH * stepSizeH);
                 }
                 // f_D is the same for cartesian and cylindrical coordinate systems.
-                f += (- D[s] / (stepSizeV * stepSizeV)) * (
+                f += (- D_v[s] / (stepSizeV * stepSizeV)) * (
                          dataH[v+1][s][layerPrev]
                          - 2.0 * dataHVS[layerPrev]
                          + dataH[v-1][s][layerPrev]
@@ -358,7 +380,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                     ReactionROPart ro = reactionsRO[s][r];
                     f_R += ro.rate
                            * dataHV[ro.substrate1Index][layerPrev]
-                           * dataHV[ro.substrate2Index][layerPrev];
+                           * (ro.substrate2Index != -1 ? dataHV[ro.substrate2Index][layerPrev] : 1.0);
                 }
                 f += dataHVS[LAYER_f_R] = f_R;
 
@@ -451,11 +473,11 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 //
                 //  Diffusion part (a=a_D, b+=b_D, c=c_D, f+=f_D)
                 //
-                a = c = D[s] / (stepSizeV * stepSizeV);
+                a = c = D_v[s] / (stepSizeV * stepSizeV);
                 b += - 2.0 * a;
                 if (coordinateSystemIsCartesian)
                 {
-                    f += (- D[s] / (stepSizeH * stepSizeH)) * (
+                    f += (- D_h[s] / (stepSizeH * stepSizeH)) * (
                              data[h+1][v][s][LAYER_INTERM]
                              - 2.0 * dataHVS[LAYER_INTERM]
                              + data[h-1][v][s][LAYER_INTERM]
@@ -463,7 +485,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    f += (- D[s] / (r * stepSizeH * stepSizeH)) * (
+                    f += (- D_h[s] / (r * stepSizeH * stepSizeH)) * (
                              + (r + stepSizeH / 2) * data[h+1][v][s][LAYER_INTERM]
                              - 2.0 * r * dataHVS[LAYER_INTERM]
                              + (r - stepSizeH / 2) * data[h-1][v][s][LAYER_INTERM]
@@ -538,7 +560,7 @@ int BIO_SLV_FD_IM2D_NS::AreaSubSolver::getLocalSubstanceIndex(int globalSubstanc
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
+BIO_SLV_FD_IM2D_NS::IAreaEdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
     int substance,
     bool horizontal,
     bool start
@@ -596,8 +618,10 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::~EdgeData()
 {
-    delete [] data0;
-    delete [] data1;
+    if (data0)
+        delete [] data0;
+    if (data1)
+        delete [] data1;
 }
 
 
@@ -607,6 +631,22 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
 {
     int sl = getLocalSubstanceIndex(s);
     return (sl == -1) ? NAN : data[h][v][sl][this->getCurrentLayerIndex()];
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::setConcentration(int h, int v, int s, double c)
+{
+    int sl = getLocalSubstanceIndex(s);
+    if (sl != -1)
+    {
+        data[h][v][sl][this->getCurrentLayerIndex()] = c;
+
+        //  I hope this is not needed.
+        //  If needed, this must be fixed in the bound conditions also.
+        //data[h][v][sl][this->getPreviousLayerIndex()] = c;
+    }
 }
 
 
@@ -692,13 +732,13 @@ BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::AreaSubSolver::newGridCursor()
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
     AreaSubSolver* subSolver
-)
+) :
+        BIO_DM_NS::AbstractCursor2D(
+            subSolver->getPointPositionsH()->getPointCount(),
+            subSolver->getPointPositionsV()->getPointCount()
+        )
 {
     this->subSolver = subSolver;
-    this->sizeH = subSolver->getPointPositionsH()->getPointCount();
-    this->sizeV = subSolver->getPointPositionsV()->getPointCount();
-    this->currentH = 0;
-    this->currentV = 0;
 }
 
 
@@ -707,78 +747,6 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::~Cursor()
 {
     // Nothing to do here.
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::left()
-{
-    --currentH;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::right()
-{
-    currentH++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::top()
-{
-    currentV--;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::down()
-{
-    currentV++;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowStart()
-{
-    currentH = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::rowEnd()
-{
-    currentH = sizeH - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colStart()
-{
-    currentV = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::colEnd()
-{
-    currentV = sizeV - 1;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-bool BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::isValid()
-{
-    return currentH >= 0 && currentH < sizeH && currentV >= 0 && currentV < sizeV;
 }
 
 
@@ -799,6 +767,19 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::getConcentration(int substance
                currentV,
                substanceNr
            );
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::setConcentration(int substanceNr, double concentration)
+{
+    subSolver->setConcentration(
+        currentH,
+        currentV,
+        substanceNr,
+        concentration
+    );
 }
 
 

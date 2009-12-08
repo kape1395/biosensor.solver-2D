@@ -6,8 +6,8 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
-    AreaSubSolver::EdgeData* edgePrev,
-    AreaSubSolver::EdgeData* edgeNext,
+    IAreaEdgeData* edgePrev,
+    IAreaEdgeData* edgeNext,
     double diffusionPrev,
     double diffusionNext
 )
@@ -117,6 +117,15 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::applyInitialValues()
 double BIO_SLV_FD_IM2D_NS::MergeCondition::getConcentration(int x)
 {
     return edgePrev->getC0(x);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::MergeCondition::setConcentration(int x, double c)
+{
+    edgePrev->setC0(x, c);
+    edgeNext->setC0(x, c);
 }
 
 

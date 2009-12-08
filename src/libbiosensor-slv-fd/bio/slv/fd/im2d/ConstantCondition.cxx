@@ -1,12 +1,14 @@
 #include "ConstantCondition.hxx"
 #include <bio/Logging.hxx>
+#include <bio/Exception.hxx>
+#include <cmath>
 #define LOGGER "libbiosensor-slv-fd::im2d::ConstantCondition: "
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::ConstantCondition::ConstantCondition(
-    AreaSubSolver::EdgeData* edge,
+    IAreaEdgeData* edge,
     double concentration,
     bool atStart
 )
@@ -99,6 +101,19 @@ void BIO_SLV_FD_IM2D_NS::ConstantCondition::applyInitialValues()
 double BIO_SLV_FD_IM2D_NS::ConstantCondition::getConcentration(int x)
 {
     return edge->getC0(x);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::ConstantCondition::setConcentration(int x, double c)
+{
+    if (std::abs(concentration - c) > ZERO_MAX)
+    {
+        LOG_WARN(LOGGER << "Trying to set invalid concentration for a bound with constant condition: new=" << c << " const=" << concentration);
+        throw BIO_NS::Exception("Trying to set concentration for a bound with constant condition...");
+    }
+    edge->setC0(x, concentration);
 }
 
 

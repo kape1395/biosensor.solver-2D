@@ -1,6 +1,7 @@
 #include "AveragedConcentration.hxx"
 #include "../Logging.hxx"
 #include "../Exception.hxx"
+#include "../trd/IntegratedConcentration.hxx"
 #include <iostream>
 #include <cmath>
 #define LOGGER "libbiosensor::AveragedConcentration: "
@@ -30,16 +31,16 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
         {
             BIO_XML_MODEL_NS::Substance* subsConfig = structAnalyzer->getSubstances()[*subst];
 
-            LOG_DEBUG(LOGGER << "Creating ConcentrationIntegralOverArea for"
+            LOG_DEBUG(LOGGER << "Creating IntegralOverArea for"
                       << " substance[" << *subst << "]=" << subsConfig->name()
                       << " over medium=" << *medium
                      );
 
             substances.push_back(subsConfig);
-            integrals.push_back(new BIO_TRD_NS::ConcentrationIntegralOverArea(
+            integrals.push_back(new BIO_TRD_NS::IntegralOverArea(
                                     solver,
                                     *medium,
-                                    subsConfig->name(),
+                                    new BIO_TRD_NS::IntegratedConcentration(structAnalyzer, subsConfig->name()),
                                     structAnalyzer
                                 ));
         }
@@ -49,14 +50,14 @@ BIO_IO_NS::AveragedConcentration::AveragedConcentration(
         std::vector<BIO_XML_MODEL_NS::Substance*> substs = structAnalyzer->getSubstances();
         for (std::vector<BIO_XML_MODEL_NS::Substance*>::iterator subst = substs.begin(); subst < substs.end(); subst++)
         {
-            LOG_DEBUG(LOGGER << "Creating ConcentrationIntegralOverArea for"
+            LOG_DEBUG(LOGGER << "Creating IntegralOverArea for"
                       << " substance=" << (*subst)->name()
                       << " over all model");
 
             substances.push_back(*subst);
-            integrals.push_back(new BIO_TRD_NS::ConcentrationIntegralOverArea(
+            integrals.push_back(new BIO_TRD_NS::IntegralOverArea(
                                     solver,
-                                    (*subst)->name(),
+                                    new BIO_TRD_NS::IntegratedConcentration(structAnalyzer, (*subst)->name()),
                                     structAnalyzer
                                 ));
         }
@@ -78,6 +79,7 @@ BIO_IO_NS::AveragedConcentration::~AveragedConcentration()
 
     for (Integrals::iterator integral = integrals.begin(); integral < integrals.end(); integral++)
     {
+        delete (*integral)->getExpression();
         delete *integral;
     }
     integrals.clear();

@@ -3,6 +3,7 @@
 #include "../Exception.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
 #include "../slv/IIterativeSolver.hxx"
+#include "IntegratedReaction.hxx"
 #define LOGGER "libbiosensor::AmperometricInjectedElectrode2D: "
 
 
@@ -11,8 +12,7 @@
 BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
     BIO_SLV_NS::ISolver* solver,
     BIO_XML_MODEL_NS::MediumName& mediumName,
-    BIO_XML_MODEL_NS::SubstanceName& substanceName,
-    BIO_XML_MODEL_NS::SymbolName& reactionSpeedSymbolName
+    BIO_XML_MODEL_NS::ReactionName& reactionName
 )
 {
     if (!dynamic_cast<BIO_SLV_NS::IIterativeSolver*>(solver))
@@ -25,14 +25,12 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
     this->solver = solver;
     this->structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(solver->getConfig());
     this->mediumName = mediumName;
-    this->substanceName = substanceName;
-    this->substanceIndex = structAnalyzer->getSubstanceIndex(substanceName);
-    this->reactionSpeed = structAnalyzer->getSymbol(reactionSpeedSymbolName)->value();
+    this->reactionName = reactionName;
 
-    this->areaIntegrator = new ConcentrationIntegralOverArea(
+    this->areaIntegrator = new IntegralOverArea(
         solver,
         mediumName,
-        substanceName,
+        IntegratedReaction::newInstance(structAnalyzer, reactionName),
         structAnalyzer
     );
 
@@ -47,6 +45,7 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
 /* ************************************************************************** */
 BIO_TRD_NS::AmperometricInjectedElectrode2D::~AmperometricInjectedElectrode2D()
 {
+    delete areaIntegrator->getExpression();
     delete areaIntegrator;
     delete structAnalyzer;
     areas.clear();
@@ -67,7 +66,7 @@ double BIO_TRD_NS::AmperometricInjectedElectrode2D::getOutput()
 
     double integralValue = areaIntegrator->integrate();
 
-    integralValue *= CONST_F * CONST_n_e * reactionSpeed;
+    integralValue *= CONST_F * CONST_n_e;
 
     //
     //  Divide by surface.

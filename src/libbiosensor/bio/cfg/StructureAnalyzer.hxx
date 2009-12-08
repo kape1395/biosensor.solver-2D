@@ -15,15 +15,15 @@ class StructureAnalyzer
 {
 private:
 
-    BIO_XML_NS::model::Model* config;
+    BIO_XML_MODEL_NS::Model* config;
     bool twoDimensional;
-    std::vector< BIO_XML_NS::model::Symbol* > pointsH;
-    std::vector< BIO_XML_NS::model::Symbol* > pointsV;
-    std::vector< BIO_XML_NS::model::Substance* > substances;
-    std::vector< BIO_XML_NS::model::MediumReaction* >** reactions;
-    BIO_XML_NS::model::Symbol* *** diffusions;                      // Symbol* [h][v][s]
-    BIO_XML_NS::model::Symbol* *** initialConcentrations;           // Symbol* [h][v][s]
-    BIO_XML_NS::model::Medium* ** mediums;                          // Medium* [h][v]
+    std::vector< BIO_XML_MODEL_NS::Symbol* > pointsH;
+    std::vector< BIO_XML_MODEL_NS::Symbol* > pointsV;
+    std::vector< BIO_XML_MODEL_NS::Substance* > substances;
+    std::vector< BIO_XML_MODEL_NS::Reaction* >** reactions;
+    BIO_XML_MODEL_NS::Symbol* *** diffusions;                      // Symbol* [h][v][s]
+    BIO_XML_MODEL_NS::Symbol* *** initialConcentrations;           // Symbol* [h][v][s]
+    BIO_XML_MODEL_NS::Medium* ** mediums;                          // Medium* [h][v]
 
     /// Position for the case, when these was Linear (one-dimensional) coordinate system.
     BIO_XML_MODEL_NS::Symbol axisPoint0;
@@ -44,7 +44,7 @@ public:
      *  Constructor.
      *  \param config  Configuration to be analyzed.
      */
-    StructureAnalyzer(BIO_XML_NS::model::Model* config);
+    StructureAnalyzer(BIO_XML_MODEL_NS::Model* config);
 
     /**
      *  Destructor.
@@ -55,7 +55,7 @@ public:
      *  Returns configuration used by this analyzer.
      *  \return Model of the biosensor.
      */
-    BIO_XML_NS::model::Model* getConfig()
+    BIO_XML_MODEL_NS::Model* getConfig()
     {
         return config;
     }
@@ -71,12 +71,12 @@ public:
 
     bool isCoordinateSystemCartesian()
     {
-        return config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cartesian;
+        return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cartesian;
     }
 
     bool isCoordinateSystemCylindrical()
     {
-        return config->coordinateSystem() == BIO_XML_NS::model::CoordinateSystem::Cylindrical;
+        return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cylindrical;
     }
 
     /**
@@ -84,7 +84,7 @@ public:
      *
      *  \return List of point definitions.
      */
-    std::vector< BIO_XML_NS::model::Symbol* >& getPointsH()
+    std::vector< BIO_XML_MODEL_NS::Symbol* >& getPointsH()
     {
         return pointsH;
     }
@@ -94,7 +94,7 @@ public:
      *
      *  \return List of point definitions.
      */
-    std::vector< BIO_XML_NS::model::Symbol* >& getPointsV()
+    std::vector< BIO_XML_MODEL_NS::Symbol* >& getPointsV()
     {
         return pointsV;
     }
@@ -106,7 +106,7 @@ public:
      *
      *  \return List of substance descriptions.
      */
-    std::vector< BIO_XML_NS::model::Substance* >& getSubstances()
+    std::vector< BIO_XML_MODEL_NS::Substance* >& getSubstances()
     {
         return substances;
     }
@@ -118,7 +118,7 @@ public:
      *  \return substance index.
      *  \throws Exception, when substance not found.
      */
-    int getSubstanceIndex(BIO_XML_NS::model::SubstanceName& name);
+    int getSubstanceIndex(BIO_XML_MODEL_NS::SubstanceName& name);
 
     /**
      *  Returns indexes of the substances, that are used in the specified area.
@@ -130,6 +130,16 @@ public:
     std::vector<int> getSubstanceIndexesInArea(int h, int v);
 
     /**
+     *  Checks if the substance is defined in the area with specified position.
+     *
+     *  \param s Substance index.
+     *  \param h Horizontal (x) coordinate of the area.
+     *  \param v Vertical (y) coordinate of the area.
+     *  \return true, if substance is defined in the area.
+     */
+    bool substanceExistsInArea(int s, int h, int v);
+
+    /**
      *  Returns indexes of the substances, that are defined in the specified medium.
      *
      *  \param name Medium name.
@@ -138,31 +148,38 @@ public:
     std::vector<int> getSubstanceIndexesInMedium(BIO_XML_MODEL_NS::MediumName& name);
 
     /**
+     *  Returns a reaction definition by the name.
+     */
+    BIO_XML_MODEL_NS::Reaction* getReaction(BIO_XML_MODEL_NS::ReactionName& name);
+
+    /**
      *  Get the reactions in the specified area.
      *
      *  \param h Horizontal (x) coordinate of the area.
      *  \param v Vertical (y) coordinate of the area.
      *  \return List of reactions. This list can also be empty (size = 0).
      */
-    std::vector< BIO_XML_NS::model::MediumReaction* >& getReactions(int h, int v)
+    std::vector< BIO_XML_MODEL_NS::Reaction* >& getReactions(int h, int v)
     {
         return reactions[h][v];
     }
 
     /**
      *  Get diffusion coefficient of the substance s
-     *  at the specified area.
+     *  at the specified area and direction.
      *
      *  \param h Horizontal (x) coordinate of the area.
      *  \param v Vertical (y) coordinate of the area.
      *  \param s Substance index.
-     *  \return Diffusion coefficient or 0, if there is no
+     *  \param horizontal
+     *      Direction for which the diffusion coefficient must be returned.
+     *      If true, direction is horizontal, and vertical if false.
+     *  \return Diffusion coefficient or 0.0, if there is no
      *      diffusion of specified substance in that area.
+     *      This diffusion coefficient is alredy multipied by
+     *      the diffusion ratio.
      */
-    BIO_XML_NS::model::Symbol* getDiffusion(int s, int h, int v)
-    {
-        return diffusions[h][v][s];
-    }
+    double getDiffusionCoef(int s, int h, int v, bool horizontal);
 
     /**
      *  Get initial concentrations of the substance s
@@ -174,7 +191,7 @@ public:
      *  \return Initial concentration or 0, if there is no
      *      diffusion of specified substance in that area.
      */
-    BIO_XML_NS::model::Symbol* getInitialConcentration(int s, int h, int v)
+    BIO_XML_MODEL_NS::Symbol* getInitialConcentration(int s, int h, int v)
     {
         return initialConcentrations[h][v][s];
     }
@@ -188,7 +205,7 @@ public:
      *  \return Medium definition or 0, if no Medium
      *      is defined in that area.
      */
-    BIO_XML_NS::model::Medium* getMedium(int h, int v)
+    BIO_XML_MODEL_NS::Medium* getMedium(int h, int v)
     {
         return mediums[h][v];
     }
@@ -208,7 +225,7 @@ public:
      *  \param name Symbol name.
      *  \return Symbol definition or 0 if symbol not found.
      */
-    BIO_XML_NS::model::Symbol* getSymbol(BIO_XML_NS::model::SymbolName& name);
+    BIO_XML_MODEL_NS::Symbol* getSymbol(BIO_XML_MODEL_NS::SymbolName& name);
 
     /**
      *  Check if specified symbol is a point in the specified axis.
@@ -219,7 +236,7 @@ public:
      */
     bool isPointInAxis(
         Axis axis,
-        BIO_XML_NS::model::SymbolName& pointSymbolName
+        BIO_XML_MODEL_NS::SymbolName& pointSymbolName
     );
 
 
@@ -233,7 +250,7 @@ public:
      */
     int getPointIndexInAxis(
         Axis axis,
-        BIO_XML_NS::model::SymbolName& pointSymbolName
+        BIO_XML_MODEL_NS::SymbolName& pointSymbolName
     );
 
 private:
@@ -242,8 +259,8 @@ private:
      *  Fills given list with symbols, mentioned in the axis definition.
      */
     void fillListWithAxisPoints(
-        std::vector< BIO_XML_NS::model::Symbol* >& list,
-        BIO_XML_NS::model::Axis& axis,
+        std::vector< BIO_XML_MODEL_NS::Symbol* >& list,
+        BIO_XML_MODEL_NS::Axis& axis,
         bool inverted = false
     );
 
@@ -256,7 +273,7 @@ private:
      *  \throws Exception If point not found in axis.
      */
     int getPointIndexInAxis(
-        std::vector< BIO_XML_NS::model::Symbol* >& axis,
+        std::vector< BIO_XML_MODEL_NS::Symbol* >& axis,
         std::string& pointSymbolName
     );
 

@@ -1,0 +1,26 @@
+.\" ============================================================================
+.TH bio-output 1 2008-11-02 "" "Biosensor modelling"
+.SH NAME
+bio-output \- Biosensor simulator`s output analyzer
+.\" ============================================================================
+.SH SYNOPSIS
+.B bio-output
+.I command
+.I <command parameters>
+.\" ============================================================================
+.SH DESCRIPTION
+.B bio-output
+is a helper script, used to analyze an output of 
+.IR bio-solver .
+To get a list of available commands, invoke this program with
+a command 
+.B help
+and follow the instructions.
+.\" ============================================================================
+.SH AUTHOR
+Karolis Petrauskas <k dot petrauskas at gmail dot com>
+.\" ============================================================================
+.SH "SEE ALSO"
+.BR bio-solver (1)
+.BR bio-editor (1)
+

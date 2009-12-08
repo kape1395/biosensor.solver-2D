@@ -47,6 +47,11 @@ public:
      */
     virtual void solveEventOccured();
 
+    /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset();
+
 private:
 
     /**
@@ -57,7 +62,7 @@ private:
     /**
      *
      */
-class NextStepListener : public ISolverListener
+    class NextStepListener : public ISolverListener
     {
     private:
         long processAfterIteration;
@@ -84,6 +89,11 @@ class NextStepListener : public ISolverListener
                 stopCondition->processNextStep();
                 actionRequested = false;
             }
+        }
+
+        virtual void reset()
+        {
+            actionRequested = false;
         }
 
         void listenForNextStep(long thisIteration)

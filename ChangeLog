@@ -1,11 +1,30 @@
-biosensor (0.3.9) unstable; urgency=low
+biosensor (0.4.0) unstable; urgency=low
 
   * Source distrubution now also includes cxx/hxx generated from the XSD files.
   * Added program bio-output, it can calculate steady state current density and
     halftime from a current density file.
   * Added support for the overriding symbol values in the model using command line parameters.
+  * Added support for different diffusion coefficients for different
+    axes.
+  * Simulation time is now written at the end of simulation.
+  * Implemented additional functionality in the bio-output: ability to
+    extract 1d data from 2d grid.
+  * Implemented support for reactions on the bounds.
+  * Improved support for RedOx reactions. It can now support more
+    schemes, not only a+b->c+d.
+  * Small fixes regarding error handling...
+  * Updated libbost M4 macros (failed to compile after linux upgrade)
+  * Duplicate ICursor2D implementations were moved to
+    bio::dm::AbstractCursor2D
+  * Implemented resuming of the simulation.
+  * Fixed bug in generation of xsi:schemaLocation for the model-
+    actual.xml
+  * Removed empty cxx files.
+  * Renamed all namespaces to use prefix http://karolis.5grupe.lt/
+    instead of http://lt.5grupe.karolis/. I think there was a big
+    mistype.
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 05 Apr 2009 10:35:24 +0300
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 22 Nov 2009 01:17:13 +0200
 
 biosensor (0.3.8) unstable; urgency=low
 

@@ -11,8 +11,7 @@ BIO_SLV_NS::InvokeEveryTimeStep::InvokeEveryTimeStep(
     this->solver = dynamic_cast<IIterativeSolver*>(solver);
     this->stepByStep = 0l;
     this->stepByTime = 0.0;
-    this->nextStopByStep = 0;
-    this->nextStopByTime = 0.0;
+    reset();
 
     if (this->solver == 0)
         throw Exception("InvokeEveryTimeStep: Solver must implement IIterativeSolver");
@@ -44,9 +43,19 @@ void BIO_SLV_NS::InvokeEveryTimeStep::solveEventOccured()
         {
             listeners[i]->solveEventOccured();
         }
-        nextStopByStep += stepByStep;
-        nextStopByTime += stepByTime;
+        nextStopByStep = solver->getSolvedIterationCount() + stepByStep;
+        nextStopByTime = solver->getSolvedTime() + stepByTime;
     }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_NS::InvokeEveryTimeStep::reset()
+{
+    // stop at the next step.
+    nextStopByStep = solver->getSolvedIterationCount();
+    nextStopByTime = solver->getSolvedTime();
 }
 
 

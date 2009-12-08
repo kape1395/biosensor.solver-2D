@@ -7,11 +7,13 @@ class AreaSubSolver;
 BIO_SLV_FD_IM2D_NS_END
 
 #include "Solver.hxx"
+#include "IAreaEgdeData.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/IGrid2D.hxx>
 #include <bio/dm/ICursor2D.hxx>
 #include <bio/dm/IConcentrations.hxx>
+#include <bio/dm/AbstractCursor2D.hxx>
 #include <string>
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -69,10 +71,16 @@ private:
     int targetLayerIndex;
 
     /**
-     *  Diffusion coefficients for all needed substances, array size is #dataSizeS.
-     *  Here 0.0 means no diffusion.
+     *  Diffusion coefficients for all needed substances for the horizontal direction.
+     *  An array size is #dataSizeS. Here 0.0 means no diffusion.
      */
-    double *D;
+    double *D_h;
+
+    /**
+     *  Diffusion coefficients for all needed substances for the vertical direction.
+     *  \see D_h.
+     */
+    double *D_v;
 
     ////////////////////////////////////////
     // reaction related things
@@ -167,7 +175,7 @@ public:
      *  \param start        is that bound at top|left (true) or bottom|right (false).s
      *  \return Reference to the edge data.
      */
-    EdgeData* getEdgeData(
+    IAreaEdgeData* getEdgeData(
         int substance,
         bool horizontal,
         bool start
@@ -185,6 +193,21 @@ public:
         int h,
         int v,
         int s
+    );
+
+    /**
+     *  Set new concentration of the substance s at point (h, v).
+     *
+     *  \param s    Substance index (global).
+     *  \param h    Horizontal point index (local).
+     *  \param v    Vertical point index (local).
+     *  \param c    New concentration.
+     */
+    void setConcentration(
+        int h,
+        int v,
+        int s,
+        double c
     );
 
     /* ********************************************************************** */
@@ -266,7 +289,7 @@ public:
      *  This class is used by bound subsolvers to access the concentrations
      *  and P-Q constants on the edge of this structure.
      */
-    class EdgeData
+    class EdgeData : public IAreaEdgeData
     {
         friend class AreaSubSolver;
 
@@ -354,14 +377,10 @@ private:
     /**
      *  Cursor...
      */
-class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::AbstractCursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         AreaSubSolver* subSolver;
-        int sizeH;      // Total size H
-        int sizeV;      // Total size V
-        int currentH;   // point index in H
-        int currentV;   // point index in V;
 
     public:
 
@@ -375,18 +394,9 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
          */
         virtual ~Cursor();
 
-        virtual void left();
-        virtual void right();
-        virtual void top();
-        virtual void down();
-
-        virtual void rowStart();
-        virtual void rowEnd();
-        virtual void colStart();
-        virtual void colEnd();
-
-        virtual bool isValid();
-
+        /**
+         *  Returns concentrations of the substances at the current position.
+         */
         virtual BIO_DM_NS::IConcentrations* getConcentrations();
 
         /**
@@ -395,6 +405,12 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
          */
         virtual double getConcentration(int substanceNr);
 
+        /**
+         *  Sets new concentration for the substance with specified index.
+         *  @param substanceNr      Substance index.
+         *  @param concentration    New concentration for the substance.
+         */
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
 

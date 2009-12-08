@@ -14,7 +14,7 @@ class WallCondition : public IBoundCondition
 {
 private:
 
-    AreaSubSolver::EdgeData* edge;
+    IAreaEdgeData* edge;
     bool atStart;
 
 public:
@@ -26,7 +26,7 @@ public:
      *  \param atStart  Is this condition at top|left (true) or bottom|right (false)?
      */
     WallCondition(
-        AreaSubSolver::EdgeData* edge,
+        IAreaEdgeData* edge,
         bool atStart
     );
 
@@ -64,6 +64,14 @@ public:
      *
      */
     virtual double getConcentration(int x);
+
+    /**
+     *  Set concentration for the substance at specified point.
+     *
+     *  \param x    Point index;
+     *  \param c    New concentration.
+     */
+    virtual void setConcentration(int x, double c);
 
 };
 

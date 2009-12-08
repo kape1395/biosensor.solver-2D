@@ -15,4 +15,5 @@ Karolis Petrauskas <k dot petrauskas at gmail dot com>
 .\" ============================================================================
 .SH "SEE ALSO"
 .BR bio-solver (1)
+.BR bio-output (1)
 

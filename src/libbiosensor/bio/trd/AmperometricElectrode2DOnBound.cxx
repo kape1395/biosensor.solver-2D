@@ -60,19 +60,20 @@ bool BIO_TRD_NS::AmperometricElectrode2DOnBound::addBoundCondition(
     if (!currentBoundName || boundName.compare(*currentBoundName) != 0)
         return false;
 
-    bool nonConstAndHoriz =
-        ((side == BIO_CFG_NS::BoundAnalyzer::TOP || side == BIO_CFG_NS::BoundAnalyzer::BOTTOM)) &&
-        !dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getBoundH(h, 0)->getPointPositions());
-    bool nonConstAndVert =
-        ((side == BIO_CFG_NS::BoundAnalyzer::RIGHT || side == BIO_CFG_NS::BoundAnalyzer::LEFT)) &&
-        !dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getBoundV(0, v)->getPointPositions());
+    bool horizontal = (side == BIO_CFG_NS::BoundAnalyzer::TOP || side == BIO_CFG_NS::BoundAnalyzer::BOTTOM);
+
+    bool nonConstAndHoriz = horizontal &&
+                            !dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getBoundH(h, 0)->getPointPositions());
+    bool nonConstAndVert = !horizontal &&
+                           !dynamic_cast<BIO_DM_NS::ConstantSegmentSplit*>(dataModel->getBoundV(0, v)->getPointPositions());
     if (nonConstAndHoriz || nonConstAndVert)
         throw Exception("AmperometricElectrode: Only constant segment step sizes are supported.");
+
 
     bounds.push_back(new BoundIntegrator(
                          dataModel->getArea(h, v),
                          side,
-                         structAnalyzer->getDiffusion(substanceIndex, h, v)->value(),
+                         structAnalyzer->getDiffusionCoef(substanceIndex, h, v, horizontal),
                          structAnalyzer->isCoordinateSystemCylindrical()
                      ));
     return true;

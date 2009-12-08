@@ -31,45 +31,18 @@ public:
         double start,
         double length,
         int stepCount
-    ) : ISegmentSplit()
-    {
-        this->start = start;
-        this->length = length;
-        this->stepCount = stepCount;
-    }
+    );
 
     /**
      *  Destructor.
      */
-    virtual ~ConstantSegmentSplit()
-    {
-        //  Empty virtual destructor.
-    }
+    virtual ~ConstantSegmentSplit();
 
-    virtual int getPointCount()
-    {
-        return stepCount + 1;
-    }
-
-    virtual double getStartPosition()
-    {
-        return start;
-    }
-
-    virtual double getLength()
-    {
-        return length;
-    }
-
-    virtual double getLocalPointPosition(int i)
-    {
-        return (length / stepCount) * i;
-    }
-
-    virtual double getStepSize(int i)
-    {
-        return length / stepCount;
-    }
+    virtual int getPointCount();
+    virtual double getStartPosition();
+    virtual double getLength();
+    virtual double getLocalPointPosition(int i);
+    virtual double getStepSize(int i);
 
 };
 

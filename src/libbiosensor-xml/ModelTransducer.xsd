@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-    targetNamespace ="http://lt.5grupe.karolis/biosensor/model/transducer"
-    xmlns           ="http://lt.5grupe.karolis/biosensor/model/transducer"
-    xmlns:bio       ="http://lt.5grupe.karolis/biosensor/model"
+    targetNamespace ="http://karolis.5grupe.lt/biosensor/model/transducer"
+    xmlns           ="http://karolis.5grupe.lt/biosensor/model/transducer"
+    xmlns:bio       ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
 
 
     <xs:import
-        namespace="http://lt.5grupe.karolis/biosensor/model"
+        namespace="http://karolis.5grupe.lt/biosensor/model"
         schemaLocation="Model.xsd"
     />
 
@@ -26,13 +26,21 @@
     <xs:complexType name="InjectedElectrode">
         <xs:complexContent>
             <xs:extension base="bio:Transducer">
-                <xs:attribute name="medium"        type="bio:MediumName"    use="required"/>
-                <xs:attribute name="substance"     type="bio:SubstanceName" use="required"/>
-                <xs:attribute name="reactionSpeed" type="bio:SymbolName"    use="required"/>
+                <xs:attribute name="medium"     type="bio:MediumName"   use="required"/>
+                <xs:attribute name="reaction"   type="bio:ReactionName" use="required"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
 
+    <xs:complexType name="CompositeElectrode">
+        <xs:complexContent>
+            <xs:extension base="bio:Transducer">
+                <xs:sequence>
+                    <xs:element name="transducer" type="bio:Transducer" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     
 </xs:schema>

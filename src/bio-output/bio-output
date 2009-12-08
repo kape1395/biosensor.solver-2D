@@ -55,6 +55,34 @@ def output_steady_state_current(file):
 
 
 ################################################################################
+def output_concentration1d_by_index(file, direction, index):
+    position = 0
+    if 'horizontal'.startswith(direction.lower()) :
+        direction = 'horizontal'
+        position = 3
+    elif 'vertical'.startswith(direction.lower()) :
+        direction = 'vertical'
+        position = 2
+    else :
+        error('Direction must be one of: h[orizontal], v[ertical]...')
+    
+    sys.stdout.write('# Concentrations by direction=' + direction + ' index=' + index + ' from: ' + file + '\n')
+    inFile = open(file, 'r')
+
+    fileHeader = True
+    hp = re.compile('^#|^[\s]*$')
+    for inLine in inFile:
+            if hp.search(inLine) :
+                if fileHeader :
+                    sys.stdout.write(inLine)
+            else :
+                fileHeader = False
+                if int(inLine.split('\t')[position]) == int(index) :
+                    sys.stdout.write(inLine)
+    inFile.close()
+
+
+################################################################################
 
 
 if len(sys.argv) < 2 :
@@ -68,6 +96,10 @@ elif sys.argv[1] == 'steadystate' or sys.argv[1].startswith("st") :
     if len(sys.argv) != 3: error('Please specify currentDensityVersusTime file')
     output_steady_state_current(sys.argv[2])
 
+elif sys.argv[1] == 'concentration1d' :
+    if len(sys.argv) != 5: error('Please specify direction, index and concentrations file')
+    output_concentration1d_by_index(sys.argv[4], sys.argv[2], sys.argv[3])
+
 elif sys.argv[1] == 'help' or sys.argv[1].startswith("he") :
     print '#'
     print '# usage: bio-output <subcommand> [arguments]'
@@ -75,6 +107,7 @@ elif sys.argv[1] == 'help' or sys.argv[1].startswith("he") :
     print '#     help'
     print '#     halftime <currentDensityFile>'
     print '#     steadystate <currentDensityFile>'
+    print '#     concentration1d (h[orizontal]|v[ertical]) <idnex> <concentrationsFile>'
     print '#'
 
 else:

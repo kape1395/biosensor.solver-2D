@@ -20,26 +20,17 @@ public:
     /**
      *  Constructor.
      */
-    AbstractSolver(BIO_XML_NS::model::Model* config) : ISolver()
-    {
-        this->config = config;
-    }
+    AbstractSolver(BIO_XML_NS::model::Model* config);
 
     /**
      *  Destructor.
      */
-    virtual ~AbstractSolver()
-    {
-        // Nothing to do here.
-    }
+    virtual ~AbstractSolver();
 
     /**
      *  Returns configuration, supplied for this solver.
      */
-    virtual BIO_XML_NS::model::Model* getConfig()
-    {
-        return this->config;
-    }
+    virtual BIO_XML_NS::model::Model* getConfig();
 
 };
 

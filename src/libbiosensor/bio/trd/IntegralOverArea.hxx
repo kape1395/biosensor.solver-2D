@@ -1,9 +1,10 @@
-#ifndef BIO_TRD_ConcentrationIntegralOverArea_HXX
-#define BIO_TRD_ConcentrationIntegralOverArea_HXX
+#ifndef BIO_TRD_IntegralOverArea_HXX
+#define BIO_TRD_IntegralOverArea_HXX
 #include "../../biosensor.hxx"
 #include "../cfg/StructureAnalyzer.hxx"
 #include "../slv/ISolver.hxx"
 #include "../dm/IGrid2D.hxx"
+#include "IIntegratedExpression.hxx"
 #include <biosensor-xml.hxx>
 #include <string>
 #include <vector>
@@ -11,17 +12,16 @@ BIO_TRD_NS_BEGIN
 
 
 /**
- *  Transducer: InjectedElectrode.
+ *  Calculates an integral for specifled IntegratedExpression.
  */
-class ConcentrationIntegralOverArea
+class IntegralOverArea
 {
 private:
     const double CONST_PI;
 
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
 
-    BIO_XML_MODEL_NS::SubstanceName substanceName;
-    int substanceIndex;
+    IIntegratedExpression* expression;
 
     /**
      *  Arreas to be integrated.
@@ -33,26 +33,26 @@ public:
     /**
      *  Construct integrator by medium and substance name.
      */
-    ConcentrationIntegralOverArea(
-        BIO_SLV_NS::ISolver* solver,
-        BIO_XML_MODEL_NS::MediumName& mediumName,
-        BIO_XML_MODEL_NS::SubstanceName& substanceName,
-        BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+    IntegralOverArea(
+        BIO_SLV_NS::ISolver*            solver,
+        BIO_XML_MODEL_NS::MediumName&   mediumName,
+        IIntegratedExpression*          expression,
+        BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
     );
 
     /**
      *  Construct integrator for substance concentration over all biosensor.
      */
-    ConcentrationIntegralOverArea(
-        BIO_SLV_NS::ISolver* solver,
-        BIO_XML_MODEL_NS::SubstanceName& substanceName,
-        BIO_CFG_NS::StructureAnalyzer* structAnalyzer
+    IntegralOverArea(
+        BIO_SLV_NS::ISolver*            solver,
+        IIntegratedExpression*          expression,
+        BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
     );
 
     /**
      *  Destructor.
      */
-    virtual ~ConcentrationIntegralOverArea();
+    virtual ~IntegralOverArea();
 
     /**
      *  Calculate integral of concentration over area.
@@ -68,13 +68,6 @@ public:
 
     /**
      *  Returns area of the region, over which integration is performed.
-     *
-     *  \return area.
-     */
-    virtual double getArea();
-
-    /**
-     *
      */
     virtual double getVolume();
 
@@ -84,6 +77,14 @@ public:
     virtual const std::vector<BIO_DM_NS::IGrid2D*>& getIntegratedAreas()
     {
         return areas;
+    }
+
+    /**
+     *  Returns integrated expression.
+     */
+    virtual IIntegratedExpression* getExpression()
+    {
+        return expression;
     }
 
 private:

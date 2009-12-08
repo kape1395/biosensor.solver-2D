@@ -12,6 +12,7 @@ BIO_SLV_FD_IM2D_NS_END
 #include <bio/dm/IConcentrations.hxx>
 #include <bio/dm/IComposite2D.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
+#include <bio/dm/AbstractCursor2D.hxx>
 #include "Solver.hxx"
 
 BIO_SLV_FD_IM2D_NS_BEGIN
@@ -54,6 +55,11 @@ public:
     virtual ~DataModel();
 
     /**
+     *  Copies the state from source to this data model.
+     */
+    virtual void setState(BIO_DM_NS::IDataModel *source);
+
+    /**
      *
      */
     virtual int getSubstanceCount();
@@ -87,14 +93,10 @@ private:
     /**
      *  Cursor...
      */
-class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
+    class Cursor : public BIO_DM_NS::AbstractCursor2D, public BIO_DM_NS::IConcentrations
     {
     private:
         DataModel* dataModel;
-        unsigned sizeH;         // Total size H
-        unsigned sizeV;         // Total size V
-        unsigned currentH;      // point index in H
-        unsigned currentV;      // point index in V;
         unsigned currentAreaH;
         unsigned currentAreaV;
         bool currentOnBoundH;
@@ -112,19 +114,16 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
          */
         virtual ~Cursor();
 
-        virtual void left();
-        virtual void right();
-        virtual void top();
-        virtual void down();
-
-        virtual void rowStart();
-        virtual void rowEnd();
-        virtual void colStart();
-        virtual void colEnd();
-
-        virtual bool isValid();
-
+        /**
+         *  Returns substance concentrations at the current position.
+         *  This is implementation of IGrid2D.
+         */
         virtual BIO_DM_NS::IConcentrations* getConcentrations();
+
+        /**
+         *  Updates concentrations at the current point.
+         */
+        virtual void setConcentrations(BIO_DM_NS::IConcentrations* source);
 
         /**
          *  Returns concentration of the substance in a current point.
@@ -132,6 +131,11 @@ class Cursor : public BIO_DM_NS::ICursor2D, public BIO_DM_NS::IConcentrations
          */
         virtual double getConcentration(int substanceNr);
 
+        /**
+         *  Sets the new value for substance concentration.
+         *  This is implementation of an interface IConcentrations.
+         */
+        virtual void setConcentration(int substanceNr, double concentration);
     };
 
 };

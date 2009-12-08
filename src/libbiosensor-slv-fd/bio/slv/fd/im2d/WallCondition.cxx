@@ -5,7 +5,7 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::WallCondition::WallCondition(
-    AreaSubSolver::EdgeData* edge,
+    IAreaEdgeData* edge,
     bool atStart
 )
 {
@@ -95,6 +95,16 @@ void BIO_SLV_FD_IM2D_NS::WallCondition::applyInitialValues()
 double BIO_SLV_FD_IM2D_NS::WallCondition::getConcentration(int x)
 {
     return edge->getC0(x);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::WallCondition::setConcentration(int x, double c)
+{
+    //  NOTE: Is it ok to set only one layer?
+    //        Now I think it's ok.
+    edge->setC0(x, c);
 }
 
 

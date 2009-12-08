@@ -1,8 +1,69 @@
 #include "BoundAnalyzer.hxx"
 #include "../Exception.hxx"
 #include "../Logging.hxx"
+#include "ReactionAnalyzer.hxx"
+#include <vector>
 #define LOGGER "libbiosensor::BoundAnalyzer: "
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_CFG_NS::BoundAnalyzer::BoundSubstanceInfo::BoundSubstanceInfo()
+{
+    boundSubstance = 0;
+    derivedFromBound = 0;
+    relatedReactions.clear();
+}
+
+
+BIO_CFG_NS::BoundAnalyzer::BoundSubstanceInfo&
+BIO_CFG_NS::BoundAnalyzer::BoundSubstanceInfo::operator = (BoundSubstanceInfo& source)
+{
+    boundSubstance = source.boundSubstance;
+    derivedFromBound = source.derivedFromBound;
+    relatedReactions = source.relatedReactions;
+    return *this;
+}
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::BoundInfo()
+{
+    boundDefinition = 0;
+    boundSubstances.clear();
+}
+
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::~BoundInfo()
+{
+    boundDefinition = 0;
+    boundSubstances.clear();
+}
+
+BIO_XML_MODEL_NS::Bound*
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::getBoundDefinition()
+{
+    return boundDefinition;
+}
+
+void
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::setBoundDefinition(BIO_XML_MODEL_NS::Bound* boundDef)
+{
+    this->boundDefinition = boundDef;
+}
+
+void
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::setSubstanceCount(int substCount)
+{
+    boundSubstances.clear();
+    for (int i = 0; i < substCount; i++)
+        boundSubstances.push_back(BoundSubstanceInfo());
+}
+
+BIO_CFG_NS::BoundAnalyzer::BoundSubstanceInfo&
+BIO_CFG_NS::BoundAnalyzer::BoundInfo::operator[] (int substIndex)
+{
+    return boundSubstances[substIndex];
+}
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -10,28 +71,24 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     StructureAnalyzer *structAnalyzer
 )
 {
-    typedef BIO_XML_NS::model::Model::bound_iterator bIt;
-    typedef BIO_XML_NS::model::Bound::substance_iterator bsIt;
+    typedef BIO_XML_MODEL_NS::Model::bound_iterator bIt;
+    typedef BIO_XML_MODEL_NS::Bound::substance_iterator bsIt;
 
     this->structAnalyzer = structAnalyzer;
     this->sizeH = structAnalyzer->getPointsH().size() - 1;
     this->sizeV = structAnalyzer->getPointsV().size() - 1;
     this->sizeS = structAnalyzer->getSubstances().size();
 
-    boundSubstances = new BoundSubstanceInfo* ***[sizeH];
+    bounds = new BoundInfo **[sizeH];
     for (int h = 0; h < sizeH; h++)
     {
-        boundSubstances[h] = new BoundSubstanceInfo* **[sizeV];
+        bounds[h] = new BoundInfo *[sizeV];
         for (int v = 0; v < sizeV; v++)
         {
-            boundSubstances[h][v] = new BoundSubstanceInfo* *[sizeS];
-            for (int s = 0; s < sizeS; s++)
+            bounds[h][v] = new BoundInfo [4];    // 4 sides
+            for (int i = 0; i < 4; i++)
             {
-                boundSubstances[h][v][s] = new BoundSubstanceInfo* [4];    // 4 sides
-                for (int i = 0; i < 4; i++)
-                {
-                    boundSubstances[h][v][s][i] = new BoundSubstanceInfo();
-                }
+                bounds[h][v][i].setSubstanceCount(sizeS);
             }
         }
     }
@@ -41,7 +98,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
     //  Get all bound specs from the model.
     //
     LOG_INFO(LOGGER << "Applying all provided bound conditions...");
-    BIO_XML_NS::model::Model *model = structAnalyzer->getConfig();
+    BIO_XML_MODEL_NS::Model *model = structAnalyzer->getConfig();
     for (bIt b = model->bound().begin(); b < model->bound().end(); b++)
     {
         ////////////////////////////////
@@ -84,37 +141,33 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         //  Check if bound conditions are applicable in that place
         //  and save them in our internal structure.
         //
-        for (bsIt bs = b->substance().begin(); bs < b->substance().end(); bs++)
-        {
-            bool isHorizontal = parallelAxis == StructureAnalyzer::HORIZONTAL;
-            int s = structAnalyzer->getSubstanceIndex(bs->name());
+        bool isHorizontal = parallelAxis == StructureAnalyzer::HORIZONTAL;
 
-            //  Here positions are positions of the points in the axes (not the area positions).
-            int hFrom   = isHorizontal ? boundFrom   : boundAt;
-            int hTo     = isHorizontal ? boundTo     : boundAt + 1;
-            int vFrom   = isHorizontal ? boundAt     : boundFrom;
-            int vTo     = isHorizontal ? boundAt + 1 : boundTo;
-            for (int h = hFrom; h < hTo; h++)
+        //  Here positions are positions of the points in the axes (not the area positions).
+        int hFrom   = isHorizontal ? boundFrom   : boundAt;
+        int hTo     = isHorizontal ? boundTo     : boundAt + 1;
+        int vFrom   = isHorizontal ? boundAt     : boundFrom;
+        int vTo     = isHorizontal ? boundAt + 1 : boundTo;
+        for (int h = hFrom; h < hTo; h++)
+        {
+            for (int v = vFrom; v < vTo; v++)
             {
-                for (int v = vFrom; v < vTo; v++)
+                if (isHorizontal)
                 {
-                    if (isHorizontal)
-                    {
-                        if (v != sizeV)
-                            applyBoundCondition(h, v, s, TOP, &*b, &*bs);
-                        else
-                            applyBoundCondition(h, v - 1, s, BOTTOM, &*b, &*bs);
-                    }
-                    else
-                    {
-                        if (h != sizeH)
-                            applyBoundCondition(h, v, s, LEFT, &*b, &*bs);
-                        else
-                            applyBoundCondition(h - 1, v, s, RIGHT, &*b, &*bs);
-                    }
-                }   //  for (int v = vFrom; v < vTo; v++)
-            }       //  for (int h = hFrom; h < hTo; h++)
-        }           //  for (bsIt bs = b->substance().begin(); bs < b->substance().end(); bs++)
+                    if (v != sizeV)
+                        applyBoundConditions(h, v, TOP, &*b);
+                    if (v != 0)
+                        applyBoundConditions(h, v - 1, BOTTOM, &*b);
+                }
+                else
+                {
+                    if (h != sizeH)
+                        applyBoundConditions(h, v, LEFT, &*b);
+                    if (h != 0)
+                        applyBoundConditions(h - 1, v, RIGHT, &*b);
+                }
+            }   //  for (int v = vFrom; v < vTo; v++)
+        }       //  for (int h = hFrom; h < hTo; h++)
         //
         //  Check if bound conditions are applicable in that place...
         ////////////////////////////////
@@ -135,17 +188,24 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         {
             for (int s = 0; s < sizeS; s++)
             {
-                if (boundSubstances[h][v][s][TOP]->boundSubstance == 0)
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions for area h=" << h << " v=" << v << " and substabceIndex=" << s << "...");
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions side=" << TOP << " of this area.");
+                if (bounds[h][v][TOP][s].boundSubstance == 0)
                     applyBoundCondition(h, v, s, TOP, 0, 0);
 
-                if (boundSubstances[h][v][s][RIGHT]->boundSubstance == 0)
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions side=" << RIGHT << " of this area.");
+                if (bounds[h][v][RIGHT][s].boundSubstance == 0)
                     applyBoundCondition(h, v, s, RIGHT, 0, 0);
 
-                if (boundSubstances[h][v][s][BOTTOM]->boundSubstance == 0)
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions side=" << BOTTOM << " of this area.");
+                if (bounds[h][v][BOTTOM][s].boundSubstance == 0)
                     applyBoundCondition(h, v, s, BOTTOM, 0, 0);
 
-                if (boundSubstances[h][v][s][LEFT]->boundSubstance == 0)
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions side=" << LEFT << " of this area.");
+                if (bounds[h][v][LEFT][s].boundSubstance == 0)
                     applyBoundCondition(h, v, s, LEFT, 0, 0);
+
+                LOG_DEBUG(LOGGER << "Adding derived bound conditions for area h=" << h << " v=" << v << " and substabceIndex=" << s << "... done");
             }
         }
     }
@@ -161,7 +221,7 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
 BIO_CFG_NS::BoundAnalyzer::~BoundAnalyzer()
 {
     // Delete allocated bound specifications.
-    for (std::vector< BIO_XML_NS::model::BoundSubstance* >::iterator bound = allocatedBoundConditions.begin();
+    for (std::vector< BIO_XML_MODEL_NS::BoundSubstance* >::iterator bound = allocatedBoundConditions.begin();
             bound < allocatedBoundConditions.end(); bound++)
     {
         delete (*bound);
@@ -172,27 +232,19 @@ BIO_CFG_NS::BoundAnalyzer::~BoundAnalyzer()
     {
         for (int v = 0; v < sizeV; v++)
         {
-            for (int s = 0; s < sizeS; s++)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    delete boundSubstances[h][v][s][i];
-                }
-                delete [] boundSubstances[h][v][s];
-            }
-            delete [] boundSubstances[h][v];
+            delete [] bounds[h][v];
         }
-        delete [] boundSubstances[h];
+        delete [] bounds[h];
     }
-    delete [] boundSubstances;
+    delete [] bounds;
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::getBoundForSubstance(int s, int h, int v, AreaSide side)
+BIO_XML_MODEL_NS::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::getBoundForSubstance(int s, int h, int v, AreaSide side)
 {
-    return boundSubstances[h][v][s][side]->boundSubstance;
+    return bounds[h][v][side][s].boundSubstance;
 }
 
 
@@ -200,10 +252,47 @@ BIO_XML_NS::model::BoundSubstance* BIO_CFG_NS::BoundAnalyzer::getBoundForSubstan
 /* ************************************************************************** */
 std::string* BIO_CFG_NS::BoundAnalyzer::getBoundName(int s, int h, int v, AreaSide side)
 {
-    return (boundSubstances[h][v][s][side]->bound == 0 ||
-            !boundSubstances[h][v][s][side]->bound->name().present())
+    return (bounds[h][v][side][s].derivedFromBound == 0 ||
+            !bounds[h][v][side][s].derivedFromBound->name().present())
            ? 0
-           : &boundSubstances[h][v][s][side]->bound->name().get();
+           : &bounds[h][v][side][s].derivedFromBound->name().get();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+const std::vector<BIO_XML_MODEL_NS::Reaction*>&
+BIO_CFG_NS::BoundAnalyzer::getRelatedReactions(int s, int h, int v, AreaSide side) const
+{
+    return bounds[h][v][side][s].relatedReactions;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_CFG_NS::BoundAnalyzer::applyBoundConditions(
+    int h,
+    int v,
+    AreaSide side,
+    BIO_XML_MODEL_NS::Bound* bound
+)
+{
+    LOG_DEBUG(LOGGER
+              << "Applying bound (name=" << (bound->name().present() ? bound->name().get() : std::string("n/a"))
+              << ") to h=" << h << " v=" << v << " side=" << side
+             );
+
+    if (bounds[h][v][side].getBoundDefinition())
+        throw Exception("Overlapping bound definitions are not supported.");
+
+    bounds[h][v][side].setBoundDefinition(bound);
+
+    typedef BIO_XML_MODEL_NS::Bound::substance_iterator bsIt;
+    for (bsIt bs = bound->substance().begin(); bs < bound->substance().end(); bs++)
+    {
+        int s = structAnalyzer->getSubstanceIndex(bs->name());
+        applyBoundCondition(h, v, s, side, bound, &*bs);
+    }
 }
 
 
@@ -214,8 +303,8 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     int v,
     int s,
     AreaSide side,
-    BIO_XML_NS::model::Bound* bProvided,
-    BIO_XML_NS::model::BoundSubstance* bsProvided
+    BIO_XML_MODEL_NS::Bound* bProvided,
+    BIO_XML_MODEL_NS::BoundSubstance* bsProvided
 )
 {
     //
@@ -226,17 +315,17 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     int vPrev = (side == TOP    ) ? v - 1 : v;
     int vNext = (side == BOTTOM ) ? v + 1 : v;
 
-    BIO_XML_NS::model::Symbol* diffPrev;
-    BIO_XML_NS::model::Symbol* diffNext;
+    bool diffPrevIsNull;
+    bool diffNextIsNull;
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
-        diffPrev = (vPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (vNext == sizeV) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrevIsNull = (vPrev == -1    || !structAnalyzer->substanceExistsInArea(s, hPrev, vPrev));
+        diffNextIsNull = (vNext == sizeV || !structAnalyzer->substanceExistsInArea(s, hNext, vNext));
     }
     else // isVertical
     {
-        diffPrev = (hPrev == -1   ) ? 0 : structAnalyzer->getDiffusion(s, hPrev, vPrev);
-        diffNext = (hNext == sizeH) ? 0 : structAnalyzer->getDiffusion(s, hNext, vNext);
+        diffPrevIsNull = (hPrev == -1    || !structAnalyzer->substanceExistsInArea(s, hPrev, vPrev));
+        diffNextIsNull = (hNext == sizeH || !structAnalyzer->substanceExistsInArea(s, hNext, vNext));
     }
     //// FIXME: This solution (with *Null) is not correct.
     //          We must analze situations when there is no diffusion and when
@@ -248,11 +337,11 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     //  is an enzyme.
     //bool diffPrevIsZero = diffPrev == 0 || diffPrev->value() == 0.0;
     //bool diffNextIsZero = diffNext == 0 || diffNext->value() == 0.0;
-    bool diffPrevIsNull = diffPrev == 0;
-    bool diffNextIsNull = diffNext == 0;
+    //bool diffPrevIsNull = diffPrev == 0;
+    //bool diffNextIsNull = diffNext == 0;
 
 
-    BIO_XML_NS::model::SubstanceName& substanceName = structAnalyzer->getSubstances()[s]->name();
+    BIO_XML_MODEL_NS::SubstanceName& substanceName = structAnalyzer->getSubstances()[s]->name();
 
     BoundSubstanceInfo bsPrev;
     BoundSubstanceInfo bsNext;
@@ -261,18 +350,18 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
         //
         //  Check the applicability of the condition
         //
-        if (dynamic_cast<BIO_XML_NS::model::bound::Merge*>(bsProvided))
+        if (dynamic_cast<BIO_XML_MODEL_NS::bound::Merge*>(bsProvided))
         {
             if (diffPrevIsNull || diffNextIsNull)
                 throw Exception("In one of the sides of Merge bound is no substance or diffusion is 0.");
 
-            bsPrev.bound            = bProvided;
+            bsPrev.derivedFromBound = bProvided;
             bsPrev.boundSubstance   = bsProvided;
-            bsNext.bound            = bProvided;
+            bsNext.derivedFromBound = bProvided;
             bsNext.boundSubstance   = bsProvided;
         }
-        else if (dynamic_cast<BIO_XML_NS::model::bound::Constant*>(bsProvided) ||
-                 dynamic_cast<BIO_XML_NS::model::bound::Wall*>(bsProvided))
+        else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Constant*>(bsProvided) ||
+                 dynamic_cast<BIO_XML_MODEL_NS::bound::Wall*>(bsProvided))
         {
             if (diffPrevIsNull && diffNextIsNull)
                 throw Exception("Both sides of 'Wall' or 'Constant' bound have no substrate of diffusions are 0.");
@@ -282,31 +371,31 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
 
             if (diffPrevIsNull)
             {
-                bsPrev.bound = 0;
+                bsPrev.derivedFromBound = 0;
                 allocatedBoundConditions.push_back(
-                    bsPrev.boundSubstance = new BIO_XML_NS::model::bound::Null(substanceName)
+                    bsPrev.boundSubstance = new BIO_XML_MODEL_NS::bound::Null(substanceName)
                 );
-                bsNext.bound = bProvided;
+                bsNext.derivedFromBound = bProvided;
                 bsNext.boundSubstance = bsProvided;
             }
             else // diffNextIsNull
             {
-                bsPrev.bound = bProvided;
+                bsPrev.derivedFromBound = bProvided;
                 bsPrev.boundSubstance = bsProvided;
-                bsNext.bound = 0;
+                bsNext.derivedFromBound = 0;
                 allocatedBoundConditions.push_back(
-                    bsNext.boundSubstance = new BIO_XML_NS::model::bound::Null(substanceName)
+                    bsNext.boundSubstance = new BIO_XML_MODEL_NS::bound::Null(substanceName)
                 );
             }
         }
-        else if (dynamic_cast<BIO_XML_NS::model::bound::Null*>(bsProvided))
+        else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Null*>(bsProvided))
         {
             if (!diffPrevIsNull || !diffNextIsNull)
                 throw Exception("One of the sides of 'Null' bound have non 0 diffusions so I think the model is inconsistent");
 
-            bsPrev.bound            = bProvided;
+            bsPrev.derivedFromBound = bProvided;
             bsPrev.boundSubstance   = bsProvided;
-            bsNext.bound            = bProvided;
+            bsNext.derivedFromBound = bProvided;
             bsNext.boundSubstance   = bsProvided;
         }
         else
@@ -320,16 +409,16 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
 
         if (!diffPrevIsNull && !diffNextIsNull)
         {
-            bsPrev.bound = bsNext.bound = 0;
+            bsPrev.derivedFromBound = bsNext.derivedFromBound = 0;
             allocatedBoundConditions.push_back(
-                bsPrev.boundSubstance = bsNext.boundSubstance = new BIO_XML_NS::model::bound::Merge(substanceName)
+                bsPrev.boundSubstance = bsNext.boundSubstance = new BIO_XML_MODEL_NS::bound::Merge(substanceName)
             );
         }
         else if (diffPrevIsNull && diffNextIsNull)
         {
-            bsPrev.bound = bsNext.bound = 0;
+            bsPrev.derivedFromBound = bsNext.derivedFromBound = 0;
             allocatedBoundConditions.push_back(
-                bsPrev.boundSubstance = bsNext.boundSubstance = new BIO_XML_NS::model::bound::Null(substanceName)
+                bsPrev.boundSubstance = bsNext.boundSubstance = new BIO_XML_MODEL_NS::bound::Null(substanceName)
             );
         }
         else
@@ -338,26 +427,30 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
             //  Maybe restrict this to internal bounds only?
             if (diffPrevIsNull)
             {
-                bsPrev.bound = bsNext.bound = 0;
+                bsPrev.derivedFromBound = bsNext.derivedFromBound = 0;
                 allocatedBoundConditions.push_back(
-                    bsPrev.boundSubstance = new BIO_XML_NS::model::bound::Null(substanceName)
+                    bsPrev.boundSubstance = new BIO_XML_MODEL_NS::bound::Null(substanceName)
                 );
                 allocatedBoundConditions.push_back(
-                    bsNext.boundSubstance = new BIO_XML_NS::model::bound::Wall(substanceName)
+                    bsNext.boundSubstance = new BIO_XML_MODEL_NS::bound::Wall(substanceName)
                 );
             }
             else // diffNextIsNull
             {
-                bsPrev.bound = bsNext.bound = 0;
+                bsPrev.derivedFromBound = bsNext.derivedFromBound = 0;
                 allocatedBoundConditions.push_back(
-                    bsPrev.boundSubstance = new BIO_XML_NS::model::bound::Wall(substanceName)
+                    bsPrev.boundSubstance = new BIO_XML_MODEL_NS::bound::Wall(substanceName)
                 );
                 allocatedBoundConditions.push_back(
-                    bsNext.boundSubstance = new BIO_XML_NS::model::bound::Null(substanceName)
+                    bsNext.boundSubstance = new BIO_XML_MODEL_NS::bound::Null(substanceName)
                 );
             }
         }
     }
+
+
+    collectRelatedReactions(bounds[h][v][side], bsPrev);
+    collectRelatedReactions(bounds[h][v][side], bsNext);
 
 
     //
@@ -366,18 +459,43 @@ void BIO_CFG_NS::BoundAnalyzer::applyBoundCondition(
     if (side == TOP || side == BOTTOM) // isHorizontal
     {
         if (vPrev >= 0)
-            *boundSubstances[hPrev][vPrev][s][BOTTOM] = bsPrev;
+            bounds[hPrev][vPrev][BOTTOM][s] = bsPrev;
 
         if (vNext < sizeV)
-            *boundSubstances[hNext][vNext][s][TOP] = bsNext;
+            bounds[hNext][vNext][TOP][s] = bsNext;
     }
     else // isVertical
     {
         if (hPrev >= 0)
-            *boundSubstances[hPrev][vPrev][s][RIGHT] = bsPrev;
+            bounds[hPrev][vPrev][RIGHT][s] = bsPrev;
 
         if (hNext < sizeH)
-            *boundSubstances[hNext][vNext][s][LEFT] = bsNext;
+            bounds[hNext][vNext][LEFT][s] = bsNext;
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_CFG_NS::BoundAnalyzer::collectRelatedReactions(BoundInfo& bi, BoundSubstanceInfo& bsi)
+{
+    if (!bi.getBoundDefinition())
+        return;
+
+    BIO_XML_MODEL_NS::Bound::reaction_iterator rit;
+    BIO_XML_MODEL_NS::Bound::reaction_sequence rs = bi.getBoundDefinition()->reaction();
+    for (rit = rs.begin(); rit != rs.end(); rit++)
+    {
+        BIO_XML_MODEL_NS::Reaction* r = this->structAnalyzer->getReaction(rit->name());
+
+        ReactionAnalyzer* ra = ReactionAnalyzer::newAnalyzer(r);
+        if (ra->isSubstrate(bsi.boundSubstance->name()) ||
+                ra->isProduct(bsi.boundSubstance->name()))
+        {
+            bsi.relatedReactions.push_back(r);
+            LOG_DEBUG(LOGGER << "Reaction " << r->name() << " is related to the substance " << bsi.boundSubstance->name());
+        }
+        delete ra;
     }
 }
 

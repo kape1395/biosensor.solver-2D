@@ -3,7 +3,7 @@
 #include "../../biosensor.hxx"
 #include "../cfg/StructureAnalyzer.hxx"
 #include "../slv/ISolver.hxx"
-#include "../trd/ConcentrationIntegralOverArea.hxx"
+#include "../trd/IntegralOverArea.hxx"
 #include "IOutput.hxx"
 #include "IContext.hxx"
 #include <biosensor-xml.hxx>
@@ -22,7 +22,7 @@ BIO_IO_NS_BEGIN
 class AveragedConcentration : public BIO_IO_NS::IOutput
 {
 private:
-    typedef std::vector<BIO_TRD_NS::ConcentrationIntegralOverArea*> Integrals;
+    typedef std::vector<BIO_TRD_NS::IntegralOverArea*> Integrals;
     typedef std::vector<BIO_XML_MODEL_NS::Substance*> Substances;
     std::string name;
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
@@ -55,6 +55,14 @@ public:
      *  EventListener.
      */
     virtual void solveEventOccured();
+
+    /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset()
+    {
+        //  Nothing to reset.
+    }
 
 };
 

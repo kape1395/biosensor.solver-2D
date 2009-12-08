@@ -189,6 +189,17 @@ BIO_SLV_NS::ITransducer* BIO_SLV_FD_IM2D_NS::Solver::getTransducer()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::Solver::setState(BIO_SLV_NS::ISolverState* state)
+{
+    setIterationState(state->getIteration(), state->getTime(), this->getTimeStep());
+    getData()->setState(state->getData());
+
+    resetListeners();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::Solver::solveIteration()
 {
     LOG_DEBUG(LOGGER << "solveIteration(" << getSolvedIterationCount() << ")...");

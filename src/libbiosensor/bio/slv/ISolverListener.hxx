@@ -17,6 +17,7 @@ public:
     }
 
     virtual void solveEventOccured() = 0;
+    virtual void reset() = 0;
 };
 
 

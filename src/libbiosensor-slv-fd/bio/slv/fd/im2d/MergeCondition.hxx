@@ -19,8 +19,8 @@ class MergeCondition : public IBoundCondition
 {
 private:
 
-    AreaSubSolver::EdgeData* edgePrev;
-    AreaSubSolver::EdgeData* edgeNext;
+    IAreaEdgeData* edgePrev;
+    IAreaEdgeData* edgeNext;
     double diffusionPrev;
     double diffusionNext;
     int size;
@@ -41,8 +41,8 @@ public:
      *  \param diffusionNext    Diffusion coefficient in the next area.
      */
     MergeCondition(
-        AreaSubSolver::EdgeData* edgePrev,
-        AreaSubSolver::EdgeData* edgeNext,
+        IAreaEdgeData* edgePrev,
+        IAreaEdgeData* edgeNext,
         double diffusionPrev,
         double diffusionNext
     );
@@ -81,6 +81,14 @@ public:
      *
      */
     virtual double getConcentration(int x);
+
+    /**
+     *  Set concentration for the substance at specified point.
+     *
+     *  \param x    Point index;
+     *  \param c    New concentration.
+     */
+    virtual void setConcentration(int x, double c);
 
 };
 

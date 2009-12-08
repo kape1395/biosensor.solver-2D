@@ -11,7 +11,10 @@
 #include "slv/InvokeEveryTimeStep.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
 #include "trd/AmperometricInjectedElectrode2D.hxx"
+#include "trd/CompositeElectrode.hxx"
 #include "Exception.hxx"
+#include "Logging.hxx"
+#define LOGGER "libbiosensor::MainFactory: "
 
 
 /* ************************************************************************** */
@@ -317,9 +320,30 @@ BIO_SLV_NS::ITransducer* BIO_NS::MainFactory::createTransducer(
         return new BIO_TRD_NS::AmperometricInjectedElectrode2D(
                    solver,
                    transIE->medium(),
-                   transIE->substance(),
-                   transIE->reactionSpeed()
+                   transIE->reaction()
                );
+    }
+    else if (dynamic_cast<CompositeElectrode*>(transducer))
+    {
+        CompositeElectrode* transCE = dynamic_cast<CompositeElectrode*>(transducer);
+        BIO_TRD_NS::CompositeElectrode* electrode = new BIO_TRD_NS::CompositeElectrode();
+
+        for (CompositeElectrode::transducer_iterator it = transCE->transducer().begin(); it < transCE->transducer().end(); it++)
+        {
+            BIO_SLV_NS::ITransducer* subTrd = rootFactory->createTransducer(solver, &*it);
+            if (subTrd)
+            {
+                electrode->addTransducer(subTrd, true);
+            }
+            else
+            {
+                LOG_ERROR(LOGGER << "I dond know how to create sub-transducer for CompositeElectrode.");
+                delete electrode;
+                return 0;
+            }
+        }
+
+        return electrode;
     }
     return 0;
 }

@@ -19,5 +19,6 @@ which describes biosensor in XML format. An output is written to a directory
 Karolis Petrauskas <k dot petrauskas at gmail dot com>
 .\" ============================================================================
 .SH "SEE ALSO"
+.BR bio-output (1)
 .BR bio-editor (1)
 
