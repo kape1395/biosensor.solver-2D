@@ -1,3 +1,9 @@
+biosensor (0.4.1) unstable; urgency=low
+
+  * Fixes for reactions on a bound. Previous impmenentation had nothing in common with the mathematical part.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 16 Dec 2009 21:29:37 +0200
+
 biosensor (0.4.0) unstable; urgency=low
 
   * Source distrubution now also includes cxx/hxx generated from the XSD files.

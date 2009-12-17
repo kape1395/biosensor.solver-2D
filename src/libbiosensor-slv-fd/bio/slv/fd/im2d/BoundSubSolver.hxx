@@ -8,7 +8,8 @@ BIO_SLV_FD_IM2D_NS_END
 
 #include "Solver.hxx"
 #include "AreaSubSolver.hxx"
-#include "IAreaEgdeData.hxx"
+#include "IAreaEdgeData.hxx"
+#include "IAreaEdgeFunction.hxx"
 #include "IBoundCondition.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
@@ -47,6 +48,7 @@ private:
     std::vector<IBoundCondition*> boundConditions;
 
     std::vector<IAreaEdgeData*> allocatedEdges;
+    std::vector<IAreaEdgeFunction*> allocatedFunctions;
 
     typedef std::vector<IBoundCondition*>::iterator BCIterator;
 
@@ -159,9 +161,9 @@ protected:
         bool atStart
     );
 
-    /**
-     *  FIXME: ...
-     */
+    /*
+     *  FIXME: delete this.
+     *
     IAreaEdgeData* createEdgeDataByReactions(
         IAreaEdgeData* baseEdgeData,
         int baseSubstance,
@@ -170,6 +172,7 @@ protected:
         bool atStart,
         const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
     );
+     */
 
     /* ********************************************************************** */
     /* ********************************************************************** */
@@ -210,94 +213,6 @@ protected:
 
     /* ********************************************************************** */
     /* ********************************************************************** */
-    /**
-     *  EgdeData, that sumarizes C1 of the specified substances.
-     *
-     *  XXX: Application of this class is very limited...
-     */
-    class SummarizingEdgeData : public IAreaEdgeData
-    {
-    private:
-        IAreaEdgeData* base;
-        IAreaEdgeData** additional;
-        int additionalCount;
-
-    public:
-
-        /**
-         *  Constructor.
-         */
-        SummarizingEdgeData(
-            IAreaEdgeData* base,
-            std::vector<IAreaEdgeData*>& additional
-        );
-
-        ~SummarizingEdgeData();
-
-        int getSize()
-        {
-            return base->getSize();
-        }
-
-        double getStepSize()
-        {
-            return base->getStepSize();
-        }
-
-        void setP0(int index, double value)
-        {
-            base->setP0(index, value);
-        }
-
-        double getP0(int index)
-        {
-            return base->getP0(index);
-        }
-
-        double getP1(int index)
-        {
-            return base->getP1(index);
-        }
-
-        void setQ0(int index, double value)
-        {
-            base->setQ0(index, value);
-        }
-
-        double getQ0(int index)
-        {
-            return base->getQ0(index);
-        }
-
-        double getQ1(int index)
-        {
-            return base->getQ1(index);
-        }
-
-        void setC0(int index, double value)
-        {
-            base->setC0(index, value);
-        }
-
-        double getC0(int index)
-        {
-            double result = base->getC0(index);
-            //  FIXME: Reikia perziureti sia vieta...
-            //for (int i = 0; i < additionalCount; i++)
-            //    result += additional[i]->getC0(index);
-            return result;
-        }
-
-        double getC1(int index)
-        {
-            double result = base->getC1(index);
-            for (int i = 0; i < additionalCount; i++)
-                result += additional[i]->getC1(index);
-            return result;
-        }
-
-    };
-
 };
 
 

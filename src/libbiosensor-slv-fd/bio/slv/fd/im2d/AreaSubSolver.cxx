@@ -98,7 +98,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
                 data[h][v][s] = new double[6];
 
                 // Apply initial conditions.
-                data[h][v][s][getCurrentLayerIndex()] =
+                data[h][v][s][0] = data[h][v][s][1] = data[h][v][s][2] =
                     structAnalyzer->getInitialConcentration(
                         substanceIndexes[s], positionH, positionV
                     )->value();
@@ -563,15 +563,29 @@ int BIO_SLV_FD_IM2D_NS::AreaSubSolver::getLocalSubstanceIndex(int globalSubstanc
 BIO_SLV_FD_IM2D_NS::IAreaEdgeData* BIO_SLV_FD_IM2D_NS::AreaSubSolver::getEdgeData(
     int substance,
     bool horizontal,
-    bool start
+    bool start,
+    bool targetLayer
 )
 {
-    EdgeData* edge = new EdgeData(
-        this,
-        getLocalSubstanceIndex(substance),
-        horizontal,
-        start
-    );
+    EdgeData* edge;
+    if (targetLayer)
+    {
+        edge = new EdgeData(
+            this,
+            getLocalSubstanceIndex(substance),
+            horizontal,
+            start
+        );
+    }
+    else
+    {
+        edge = new EdgeDataPrevLayer(
+            this,
+            getLocalSubstanceIndex(substance),
+            horizontal,
+            start
+        );
+    }
     edges.push_back(edge);
     return edge;
 }
@@ -587,6 +601,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
 )
 {
     this->solver = solver;
+    this->forward = start;
     if (horizontal)
     {
         size = solver->dataSizeH;
@@ -613,15 +628,135 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
     }
 }
 
-
-/* ************************************************************************** */
-/* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::~EdgeData()
 {
     if (data0)
         delete [] data0;
     if (data1)
         delete [] data1;
+}
+
+int BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getSize()
+{
+    return size;
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getStepSize()
+{
+    return stepSize;
+}
+
+bool BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::isForward()
+{
+    return forward;
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::setP0(int index, double value)
+{
+    data0[index][LAYER_P] = value;
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getP0(int index)
+{
+    return data0[index][LAYER_P];
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getP1(int index)
+{
+    return data1[index][LAYER_P];
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::setQ0(int index, double value)
+{
+    data0[index][LAYER_Q] = value;
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getQ0(int index)
+{
+    return data0[index][LAYER_Q];
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getQ1(int index)
+{
+    return data1[index][LAYER_Q];
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::setC0(int index, double value)
+{
+    data0[index][solver->getTargetLayerIndex()] = value;
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getC0(int index)
+{
+    return data0[index][solver->getTargetLayerIndex()];
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::getC1(int index)
+{
+    return data1[index][solver->getTargetLayerIndex()];
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::EdgeDataPrevLayer(
+    AreaSubSolver* solver,
+    int substance,
+    bool horizontal,
+    bool start
+) : EdgeData(solver, substance, horizontal, start)
+{
+    //  Nothing more.
+}
+
+BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::~EdgeDataPrevLayer()
+{
+    //  Nothing.
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::setP0(int index, double value)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer is readonly");
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getP0(int index)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer only supports reading of concentrations");
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getP1(int index)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer only supports reading of concentrations");
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::setQ0(int index, double value)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer is readonly");
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getQ0(int index)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer only supports reading of concentrations");
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getQ1(int index)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer only supports reading of concentrations");
+}
+
+void BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::setC0(int index, double value)
+{
+    throw BIO_NS::Exception("AreaSubSolver::EdgeDataPrevLayer is readonly");
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getC0(int index)
+{
+    return data0[index][solver->getPreviousLayerIndex()];
+}
+
+double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getC1(int index)
+{
+    return data1[index][solver->getPreviousLayerIndex()];
 }
 
 

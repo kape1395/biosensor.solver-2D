@@ -15,6 +15,12 @@ public:
 
     virtual int getSize() = 0;
     virtual double getStepSize() = 0;
+
+    /**
+     *  returns thrue, pos(0) &lt; pos[1] (usually its on left and top edge).
+     */
+    virtual bool isForward() = 0;
+
     virtual void setP0(int index, double value) = 0;
     virtual double getP0(int index) = 0;
     virtual double getP1(int index) = 0;
