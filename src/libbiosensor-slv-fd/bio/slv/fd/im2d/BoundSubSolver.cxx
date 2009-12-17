@@ -267,14 +267,14 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                     {
                         function = new SubstanceGradOnEdge(
                             areaPrev->getEdgeData(roS, horizontal, false, false),   // at end, previous layer
-                            structAnalyzer->getDiffusionCoef(roS, areaPrev->getPositionH(), areaPrev->getPositionV(), horizontal)
+                            structAnalyzer->getDiffusionCoef(roS, areaPrev->getPositionH(), areaPrev->getPositionV(), !horizontal)
                         );
                     }
                     else
                     {
                         function = new SubstanceGradOnEdge(
                             areaNext->getEdgeData(roS, horizontal, true, false),    // at start, previous layer
-                            structAnalyzer->getDiffusionCoef(roS, areaNext->getPositionH(), areaNext->getPositionV(), horizontal)
+                            structAnalyzer->getDiffusionCoef(roS, areaNext->getPositionH(), areaNext->getPositionV(), !horizontal)
                         );
                     }
                 }
@@ -291,8 +291,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                 //createEdgeDataByReactions(areaNext->getEdgeData(substance, horizontal, true ), substance, areaNext, horizontal, true,  boundReactions), // atStart
                 areaPrev->getEdgeData(substance, horizontal, false),    // atEnd
                 areaNext->getEdgeData(substance, horizontal, true),     // atStart
-                structAnalyzer->getDiffusionCoef(substance, areaPrev->getPositionH(), areaPrev->getPositionV(), horizontal),
-                structAnalyzer->getDiffusionCoef(substance, areaNext->getPositionH(), areaNext->getPositionV(), horizontal),
+                structAnalyzer->getDiffusionCoef(substance, areaPrev->getPositionH(), areaPrev->getPositionV(), !horizontal),
+                structAnalyzer->getDiffusionCoef(substance, areaNext->getPositionH(), areaNext->getPositionV(), !horizontal),
                 function
             );
         }
