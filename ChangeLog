@@ -2,8 +2,9 @@ biosensor (0.4.1) unstable; urgency=low
 
   * Fixes for reactions on a bound. Previous impmenentation had nothing in common with the mathematical part.
   * Fixed bugs regarding diffusion directions on the bounds.
+  * Improved logging.
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 18 Dec 2009 00:34:47 +0200
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 18 Dec 2009 18:41:03 +0200
 
 biosensor (0.4.0) unstable; urgency=low
 

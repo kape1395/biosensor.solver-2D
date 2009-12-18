@@ -99,9 +99,9 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 
                 // Apply initial conditions.
                 data[h][v][s][0] = data[h][v][s][1] = data[h][v][s][2] =
-                    structAnalyzer->getInitialConcentration(
-                        substanceIndexes[s], positionH, positionV
-                    )->value();
+                                                          structAnalyzer->getInitialConcentration(
+                                                              substanceIndexes[s], positionH, positionV
+                                                          )->value();
                 data[h][v][s][this->getPreviousLayerIndex()] =
                     data[h][v][s][LAYER_INTERM] =
                         data[h][v][s][LAYER_P] =
@@ -261,7 +261,7 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
 {
-    LOG_DEBUG(LOGGER << "~AreaSubSolver()");
+    LOG_TRACE(LOGGER << "~AreaSubSolver()");
 
 
     for (std::vector<EdgeData*>::iterator e = edges.begin(); e < edges.end(); e++)

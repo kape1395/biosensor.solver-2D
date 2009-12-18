@@ -1,4 +1,6 @@
 #include "ConstantOnEdge.hxx"
+#include <bio/Logging.hxx>
+#define LOGGER "libbiosensor-slv-fd::im2d::ConstantOnEdge: "
 
 
 /* ************************************************************************** */
@@ -7,6 +9,8 @@ BIO_SLV_FD_IM2D_NS::ConstantOnEdge::ConstantOnEdge(int size, double value)
 {
     this->size = size;
     this->value = value;
+    
+    LOG_DEBUG(LOGGER << "Created: constantValue=" << value);
 }
 
 

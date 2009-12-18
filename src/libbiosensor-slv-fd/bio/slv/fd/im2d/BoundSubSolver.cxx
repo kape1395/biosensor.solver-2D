@@ -92,7 +92,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
         }
     }
 
-    LOG_DEBUG(LOGGER << "BoundSubSolver()... Done");
+    LOG_DEBUG(LOGGER << "BoundSubSolver(posH=" << positionH << ", posV=" << positionV << ", horiz=" << horizontal << ")... Done");
 }
 
 
@@ -100,7 +100,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::BoundSubSolver(
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 {
-    LOG_DEBUG(LOGGER << "~BoundSubSolver()...");
+    LOG_TRACE(LOGGER << "~BoundSubSolver()...");
 
     for (BCIterator bc = boundConditions.begin(); bc < boundConditions.end(); bc++)
     {
@@ -122,7 +122,7 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::~BoundSubSolver()
 
     delete [] substanceToBCMap;
 
-    LOG_DEBUG(LOGGER << "~BoundSubSolver()... Done");
+    LOG_TRACE(LOGGER << "~BoundSubSolver()... Done");
 }
 
 
@@ -202,9 +202,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     bool atStart
 )
 {
+    LOG_DEBUG(LOGGER << "createBoundCondition(substance=" << substance << " atStart=" << atStart << ")...");
+
     IBoundCondition *bc = 0;
     if (dynamic_cast<BIO_XML_MODEL_NS::bound::Constant*>(boundSubstance) != 0)
     {
+        LOG_DEBUG(LOGGER << "createBoundCondition: type=Constant");
         if (boundReactions.size() > 0)
         {
             LOG_WARN(LOGGER << "Ignoring reactions, that are related to CONST bound condition");
@@ -219,6 +222,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     }
     else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Wall*>(boundSubstance) != 0)
     {
+        LOG_DEBUG(LOGGER << "createBoundCondition: type=Wall");
         if (boundReactions.size() > 0)
         {
             LOG_WARN(LOGGER << "Ignoring reactions, that are related to WALL bound condition");
@@ -233,9 +237,12 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     {
         if (atStart)    // This BC is for both sides so only one should be created.
         {
+            LOG_DEBUG(LOGGER << "createBoundCondition: type=Merge");
             IAreaEdgeFunction *function = 0;
             if  (boundReactions.size() != 0)
             {
+                LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing...");
+                
                 if (boundReactions.size() != 1)
                     throw Exception("Only single bound reaction (related to one substance) is supported for now...");
                 BIO_XML_MODEL_NS::Reaction* reaction = boundReactions[0];
@@ -256,6 +263,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                 //  Function must be applied only when base substance is a product.
                 if (roa->isProduct(structAnalyzer->getSubstances()[substance]->name()))
                 {
+                    LOG_DEBUG(LOGGER << "createBoundCondition: substance is in products of the reaction, function will be constructed...");
+
                     //  dabar mums reikia nuspresti, is kokios srities imti ta edge,
                     //
                     int roS = structAnalyzer->getSubstanceIndex(ro->substrate()[0].name());
@@ -265,6 +274,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
 
                     if (areaPrev->getSubstanceConf(roS) != 0)
                     {
+                        LOG_DEBUG(LOGGER << "createBoundCondition: Creating SubstanceGradOnEdge for end@areaPrev, substrate=" << roS);
                         function = new SubstanceGradOnEdge(
                             areaPrev->getEdgeData(roS, horizontal, false, false),   // at end, previous layer
                             structAnalyzer->getDiffusionCoef(roS, areaPrev->getPositionH(), areaPrev->getPositionV(), !horizontal)
@@ -272,12 +282,15 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                     }
                     else
                     {
+                        LOG_DEBUG(LOGGER << "createBoundCondition: Creating SubstanceGradOnEdge for start@areaNext, substrate=" << roS);
                         function = new SubstanceGradOnEdge(
                             areaNext->getEdgeData(roS, horizontal, true, false),    // at start, previous layer
                             structAnalyzer->getDiffusionCoef(roS, areaNext->getPositionH(), areaNext->getPositionV(), !horizontal)
                         );
                     }
+                    LOG_DEBUG(LOGGER << "createBoundCondition: substance is in products of the reaction, function will be constructed... Done");
                 }
+                LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing... Done");
             }
             if (!function)
             {
@@ -287,8 +300,6 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
 
 
             bc = new MergeCondition(
-                //createEdgeDataByReactions(areaPrev->getEdgeData(substance, horizontal, false), substance, areaPrev, horizontal, false, boundReactions), // atEnd
-                //createEdgeDataByReactions(areaNext->getEdgeData(substance, horizontal, true ), substance, areaNext, horizontal, true,  boundReactions), // atStart
                 areaPrev->getEdgeData(substance, horizontal, false),    // atEnd
                 areaNext->getEdgeData(substance, horizontal, true),     // atStart
                 structAnalyzer->getDiffusionCoef(substance, areaPrev->getPositionH(), areaPrev->getPositionV(), !horizontal),
@@ -296,9 +307,14 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                 function
             );
         }
+        else
+        {
+            LOG_DEBUG(LOGGER << "createBoundCondition: type=Merge (ignoring, because it is not at start of the area)");
+        }
     }
     else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Null*>(boundSubstance) != 0)
     {
+        LOG_DEBUG(LOGGER << "createBoundCondition: type=Null");
         // nothing
         bc = 0;
     }
@@ -320,69 +336,8 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             throw Exception("Two bound conditions on one edge for one substance is not supported.");
         }
     }
+    LOG_DEBUG(LOGGER << "createBoundCondition(substance=" << substance << " atStart=" << atStart << ")... Done");
 }
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/*
-BIO_SLV_FD_IM2D_NS::IAreaEdgeData*
-BIO_SLV_FD_IM2D_NS::BoundSubSolver::createEdgeDataByReactions(
-    IAreaEdgeData* baseEdgeData,
-    int baseSubstance,
-    AreaSubSolver* area,
-    bool horizontal,
-    bool atStart,
-    const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
-)
-{
-    if (boundReactions.size() == 0)
-        return baseEdgeData;
-
-    if (boundReactions.size() != 1)
-        throw Exception("Only single bound reaction (related to one substance) is supported for now...");
-    BIO_XML_MODEL_NS::Reaction* reaction = boundReactions[0];
-
-    BIO_XML_MODEL_NS::reaction::ReductionOxidation* ro;
-    ro = dynamic_cast<BIO_XML_MODEL_NS::reaction::ReductionOxidation*>(reaction);
-    if (!ro)
-        throw Exception("Only ReductionOxidation reaction is supported on bound.");
-
-    if (!std::isinf(structAnalyzer->getSymbol(ro->rate())->value()))
-        throw Exception("Only reaction with infinite rate is supported for now.");
-
-
-    std::auto_ptr<BIO_CFG_NS::ReactionAnalyzer> roa(BIO_CFG_NS::ReactionAnalyzer::newAnalyzer(ro));
-
-    //  Summarizing must be applied only when base substance is a product.
-    if (!roa->isProduct(area->getSubstanceConf(baseSubstance)->name()))
-        return baseEdgeData;
-
-
-    //  Now we must find all additional substances, that are in this area and
-    //  participates in the reaction as a substrate.
-    LOG_DEBUG(LOGGER << "Lets find all additional substances for " << reaction->name() << "...");
-    std::vector<IAreaEdgeData*> addEdges;
-    for (int s = 0; s < area->getSubstanceCount(); s++)
-    {
-        if (area->getSubstanceConf(s) != 0 && roa->isSubstrate(area->getSubstanceConf(s)->name()))
-        {
-            addEdges.push_back(area->getEdgeData(s, horizontal, atStart));
-            LOG_DEBUG(LOGGER << "Found additional substance  " << area->getSubstanceConf(s)->name());
-        }
-    }
-    LOG_DEBUG(LOGGER << "Lets find all additional substances for " << reaction->name() << "... done");
-
-    if (addEdges.size() > 0)
-    {
-        IAreaEdgeData* result = new SummarizingEdgeData(baseEdgeData, addEdges);
-        allocatedEdges.push_back(result);
-        return result;
-    }
-
-    return baseEdgeData;
-}
- */
 
 
 /* ************************************************************************** */

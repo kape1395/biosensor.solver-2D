@@ -13,8 +13,6 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     IAreaEdgeFunction* function
 )
 {
-    LOG_DEBUG(LOGGER << "MergeCondition(dp=" << diffusionPrev << " dn=" << diffusionNext << ")");
-
     this->edgePrev = edgePrev;
     this->edgeNext = edgeNext;
     this->diffusionPrev = diffusionPrev;
@@ -24,7 +22,7 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
 
     if (diffusionPrev == 0 && diffusionNext == 0)   //  FIXME: Solve this issue somehow... maybe using bound condition implemented by area solver.
     {
-        LOG_WARN(LOGGER << "I dont know now whet to do on bounds with both sides have diffusion 0, so...");
+        LOG_WARN(LOGGER << "I dont know now what to do on bounds with both sides have diffusion 0, so...");
         this->diffusionPrev = 1.0;
         this->diffusionNext = 1.0;
     }
@@ -34,6 +32,8 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     b = -(a + c);
     //f = 0.0;      --  function will be used instead of this.
     applyInitialValues();
+
+    LOG_DEBUG(LOGGER << "Created: diffusionPrev=" << diffusionPrev << " diffusionNext=" << diffusionNext << ")");
 }
 
 
