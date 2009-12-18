@@ -34,6 +34,7 @@ valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiose
 ## Galutiniam kompiliavimui (release):
   ./configure CXXFLAGS=-O2 --enable-static --disable-shared --prefix `pwd`/test-install
   ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" --prefix=/usr/local/biosensor-0.3.8
+  ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" --prefix=/usr/local/biosensor-0.4.1 --with-boost-filesystem=boost_filesystem-mt
 
 ##
 ## Testuku paleidimui:

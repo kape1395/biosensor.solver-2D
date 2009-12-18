@@ -9,20 +9,20 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     IAreaEdgeData* edgePrev,
     IAreaEdgeData* edgeNext,
     double diffusionPrev,
-    double diffusionNext
+    double diffusionNext,
+    IAreaEdgeFunction* function
 )
 {
-    LOG_DEBUG(LOGGER << "MergeCondition(dp=" << diffusionPrev << " dn=" << diffusionNext << ")");
-
     this->edgePrev = edgePrev;
     this->edgeNext = edgeNext;
     this->diffusionPrev = diffusionPrev;
     this->diffusionNext = diffusionNext;
+    this->function = function;
     this->size = edgePrev->getSize(); // it is same as in #edgePrev
 
     if (diffusionPrev == 0 && diffusionNext == 0)   //  FIXME: Solve this issue somehow... maybe using bound condition implemented by area solver.
     {
-        LOG_WARN(LOGGER << "I dont know now whet to do on bounds with both sides have diffusion 0, so...");
+        LOG_WARN(LOGGER << "I dont know now what to do on bounds with both sides have diffusion 0, so...");
         this->diffusionPrev = 1.0;
         this->diffusionNext = 1.0;
     }
@@ -30,8 +30,10 @@ BIO_SLV_FD_IM2D_NS::MergeCondition::MergeCondition(
     a = this->diffusionPrev / edgePrev->getStepSize();
     c = this->diffusionNext / edgeNext->getStepSize();
     b = -(a + c);
-    f = 0.0;
+    //f = 0.0;      --  function will be used instead of this.
     applyInitialValues();
+
+    LOG_DEBUG(LOGGER << "Created: diffusionPrev=" << diffusionPrev << " diffusionNext=" << diffusionNext << ")");
 }
 
 
@@ -52,7 +54,7 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::solveThroughForward()
         //  NOTE: It is enough to write P and Q to "next" area only.
         double denominator = a * edgePrev->getP1(i) + b;
         double p0 = - c / denominator;
-        double q0 = (f - a * edgePrev->getQ1(i)) / denominator;
+        double q0 = (function->getValue(i) - a * edgePrev->getQ1(i)) / denominator;
         edgePrev->setP0(i, p0);
         edgeNext->setP0(i, p0);
         edgePrev->setQ0(i, q0);
@@ -97,7 +99,7 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::solveAlongBackward()
     for (int i = 0; i < size; i++)
     {
         //  NOTE: It is enough to write C to "prev" area only.
-        double c0 = - (a * edgePrev->getC1(i) + c * edgeNext->getC1(i)) / b;
+        double c0 = function->getValue(i) - (a * edgePrev->getC1(i) + c * edgeNext->getC1(i)) / b;
         edgePrev->setC0(i, c0);
         edgeNext->setC0(i, c0);
     }
@@ -108,7 +110,16 @@ void BIO_SLV_FD_IM2D_NS::MergeCondition::solveAlongBackward()
 /* ************************************************************************** */
 void BIO_SLV_FD_IM2D_NS::MergeCondition::applyInitialValues()
 {
-    solveAlongBackward();
+    // solveAlongBackward();
+    //
+    //  FIXME: We cant call function here, so using 0.0 instead.
+    //
+    for (int i = 0; i < size; i++)
+    {
+        double c0 = 0.0 - (a * edgePrev->getC1(i) + c * edgeNext->getC1(i)) / b;
+        edgePrev->setC0(i, c0);
+        edgeNext->setC0(i, c0);
+    }
 }
 
 

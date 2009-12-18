@@ -70,10 +70,13 @@ bool BIO_TRD_NS::AmperometricElectrode2DOnBound::addBoundCondition(
         throw Exception("AmperometricElectrode: Only constant segment step sizes are supported.");
 
 
+    //
+    //  NOTE: Diffusion should be used perpendicular to the bound direction.
+    //
     bounds.push_back(new BoundIntegrator(
                          dataModel->getArea(h, v),
                          side,
-                         structAnalyzer->getDiffusionCoef(substanceIndex, h, v, horizontal),
+                         structAnalyzer->getDiffusionCoef(substanceIndex, h, v, !horizontal),
                          structAnalyzer->isCoordinateSystemCylindrical()
                      ));
     return true;

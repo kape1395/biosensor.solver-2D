@@ -7,7 +7,7 @@ class AreaSubSolver;
 BIO_SLV_FD_IM2D_NS_END
 
 #include "Solver.hxx"
-#include "IAreaEgdeData.hxx"
+#include "IAreaEdgeData.hxx"
 #include "../FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/cfg/StructureAnalyzer.hxx>
 #include <bio/dm/IGrid2D.hxx>
@@ -26,6 +26,7 @@ class AreaSubSolver : public BIO_DM_NS::IGrid2D
 {
 public:
     class EdgeData;
+    class EdgeDataPrevLayer;
 
 private:
 
@@ -178,7 +179,8 @@ public:
     IAreaEdgeData* getEdgeData(
         int substance,
         bool horizontal,
-        bool start
+        bool start,
+        bool targetLayer = true
     );
 
     /**
@@ -293,18 +295,15 @@ public:
     {
         friend class AreaSubSolver;
 
-    private:
+    protected:
         AreaSubSolver* solver;
         int size;
         double stepSize;    //!< distande from #data0 to #data1
         double **data0;     //!< data0[x][layer]
         double **data1;     //!< data1[x][layer]
+        bool forward;       //!< bound is forward (at the start of area, top or left).
 
     protected:
-
-        /**
-         *
-         */
         EdgeData(
             AreaSubSolver* solver,
             int substance,
@@ -314,64 +313,54 @@ public:
 
     public:
 
-        ~EdgeData();
+        virtual ~EdgeData();
 
-        int getSize()
-        {
-            return size;
-        }
+        virtual int getSize();
+        virtual double getStepSize();
+        virtual bool isForward();
 
-        double getStepSize()
-        {
-            return stepSize;
-        }
-
-        void setP0(int index, double value)
-        {
-            data0[index][LAYER_P] = value;
-        }
-
-        double getP0(int index)
-        {
-            return data0[index][LAYER_P];
-        }
-
-        double getP1(int index)
-        {
-            return data1[index][LAYER_P];
-        }
-
-        void setQ0(int index, double value)
-        {
-            data0[index][LAYER_Q] = value;
-        }
-
-        double getQ0(int index)
-        {
-            return data0[index][LAYER_Q];
-        }
-
-        double getQ1(int index)
-        {
-            return data1[index][LAYER_Q];
-        }
-
-        void setC0(int index, double value)
-        {
-            data0[index][solver->getTargetLayerIndex()] = value;
-        }
-
-        double getC0(int index)
-        {
-            return data0[index][solver->getTargetLayerIndex()];
-        }
-
-        double getC1(int index)
-        {
-            return data1[index][solver->getTargetLayerIndex()];
-        }
-
+        virtual void setP0(int index, double value);
+        virtual double getP0(int index);
+        virtual double getP1(int index);
+        virtual void setQ0(int index, double value);
+        virtual double getQ0(int index);
+        virtual double getQ1(int index);
+        virtual void setC0(int index, double value);
+        virtual double getC0(int index);
+        virtual double getC1(int index);
     };
+
+    /**
+     *  This is the same as EdgeData, but for a previous layer.
+     *  This implementation is readonly and supports only C0 and C1.
+     */
+    class EdgeDataPrevLayer : public EdgeData
+    {
+        friend class AreaSubSolver;
+
+    protected:
+        EdgeDataPrevLayer(
+            AreaSubSolver* solver,
+            int substance,
+            bool horizontal,
+            bool start
+        );
+
+    public:
+
+        virtual ~EdgeDataPrevLayer();
+
+        virtual void setP0(int index, double value);
+        virtual double getP0(int index);
+        virtual double getP1(int index);
+        virtual void setQ0(int index, double value);
+        virtual double getQ0(int index);
+        virtual double getQ1(int index);
+        virtual void setC0(int index, double value);
+        virtual double getC0(int index);
+        virtual double getC1(int index);
+    };
+
 
 private:
     /**

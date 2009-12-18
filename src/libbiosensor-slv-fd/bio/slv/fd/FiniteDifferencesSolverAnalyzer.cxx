@@ -30,7 +30,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     typedef std::vector<Symbol*>::iterator Symbol_it;
     typedef FiniteDifferences::axis_iterator Axis_it;
 
-    LOG_INFO(LOGGER << "FiniteDifferencesSolverAnalyzer()...");
+    LOG_DEBUG(LOGGER << "FiniteDifferencesSolverAnalyzer()...");
 
     this->config = config;
 
@@ -141,7 +141,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
     this->timeStep = fdSolver->timeStep();
 
-    LOG_INFO(LOGGER << "FiniteDifferencesSolverAnalyzer()... Done");
+    LOG_DEBUG(LOGGER << "FiniteDifferencesSolverAnalyzer()... Done");
 }
 
 
@@ -149,7 +149,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 /* ************************************************************************** */
 BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer()
 {
-    LOG_INFO(LOGGER << "~FiniteDifferencesSolverAnalyzer()...");
+    LOG_TRACE(LOGGER << "~FiniteDifferencesSolverAnalyzer()...");
 
     ////////////////////////////////////////////////////////////////////////////
     //  Release all old data.
@@ -186,7 +186,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer
     //  Release all old data.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG_INFO(LOGGER << "~FiniteDifferencesSolverAnalyzer()... Done");
+    LOG_TRACE(LOGGER << "~FiniteDifferencesSolverAnalyzer()... Done");
 }
 
 

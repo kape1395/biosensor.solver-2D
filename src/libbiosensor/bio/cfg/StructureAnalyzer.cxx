@@ -30,7 +30,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     typedef BIO_XML_MODEL_NS::Medium::substance_iterator it_diff;
     typedef BIO_XML_MODEL_NS::Medium::reaction_iterator it_reac;
 
-    LOG_INFO(LOGGER << "StructureAnalyzer()...");
+    LOG_DEBUG(LOGGER << "StructureAnalyzer()...");
 
     this->config = config;
 
@@ -240,7 +240,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //  Fill diffusions and reactions.
     ////////////////////////////////////////////////////////////////////////////
 
-    LOG_INFO(LOGGER << "StructureAnalyzer()... Done");
+    LOG_DEBUG(LOGGER << "StructureAnalyzer()... Done");
 }
 
 
@@ -248,7 +248,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
 /* ************************************************************************** */
 BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 {
-    LOG_INFO(LOGGER << "~StructureAnalyzer()...");
+    LOG_TRACE(LOGGER << "~StructureAnalyzer()...");
 
     twoDimensional = false;
     for (unsigned h = 0; h < pointsH.size(); h++)
@@ -289,7 +289,7 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
 
     config = 0;
 
-    LOG_INFO(LOGGER << "~StructureAnalyzer()... Done");
+    LOG_TRACE(LOGGER << "~StructureAnalyzer()... Done");
 }
 
 

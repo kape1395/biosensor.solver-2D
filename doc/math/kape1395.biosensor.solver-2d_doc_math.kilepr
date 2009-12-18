@@ -1,4 +1,26 @@
 [General]
+def_graphic_ext=
+img_extIsRegExp=false
+img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif
 kileprversion=2
-kileversion=2.0
+kileversion=2.1 beta2
+lastDocument=math.tex
+masterDocument=
 name=kape1395.biosensor.solver-2D_doc_math
+pkg_extIsRegExp=false
+pkg_extensions=.cls .sty .bbx .cbx .lbx
+src_extIsRegExp=false
+src_extensions=.tex .ltx .latex .dtx .ins
+
+[Tools]
+MakeIndex=
+QuickBuild=
+
+[item:math.tex]
+archive=true
+column=13
+encoding=UTF-8
+highlight=LaTeX
+line=88
+open=true
+order=0
