@@ -73,9 +73,9 @@ AC_DEFUN([KP_LIB_LOG4CPP],[
 # ------------------------------------------------------------------------------
 AC_DEFUN([KP_PROG_XSD], [
     AC_ARG_VAR([XSD], [XML Data Binding for C++ (www.codesynthesis.com)])
-    AC_CHECK_PROG([XSD], [xsd], [xsd])
-    if test "$XSD" != "xsd"; then
-        AC_MSG_ERROR([unable to find xsd (http://www.codesynthesis.com/)])
+    AC_CHECK_PROG([XSD], [xsdcxx], [xsdcxx])
+    if test "$XSD" != "xsdcxx"; then
+        AC_MSG_ERROR([unable to find xsdcxx (http://www.codesynthesis.com/)])
     fi
 ])
 
