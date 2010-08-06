@@ -1,3 +1,9 @@
+biosensor (0.4.3) lucid; urgency=low
+
+  * Solver performance optimizations.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 06 Aug 2010 05:14:50 +0300
+
 biosensor (0.4.2) karmic; urgency=low
 
   * Small fixes in the build part. It was needed because of porting this
