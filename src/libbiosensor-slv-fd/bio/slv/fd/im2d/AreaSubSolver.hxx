@@ -44,7 +44,8 @@ private:
     static const int LAYER_P = 3;
     static const int LAYER_Q = 4;
     static const int LAYER_f_R = 5;
-    double ****data;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
+    double ****dataByH;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
+    double ****dataByV;    //  [v][h][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
     int dataSizeH;      //  number of points in H (including boundary)
     int dataSizeV;      //  number of points in V (including boundary)
     int dataSizeS;      //  number of modelled substances

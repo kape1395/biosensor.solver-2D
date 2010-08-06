@@ -63,7 +63,7 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::solveEventOccured()
             }
         }
     }
-    LOG_INFO(LOGGER << "Validation successful");
+    LOG_DEBUG(LOGGER << "Validation successful");
 
     reset();
 }

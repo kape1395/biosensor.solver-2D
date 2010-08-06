@@ -17,7 +17,7 @@ BIO_SLV_FD_IM2D_NS::SubstanceGradOnEdge::SubstanceGradOnEdge(
     {
         coef = -coef;
     }
-    
+
     LOG_DEBUG(LOGGER
               << "Created: diffusionCoef=" << diffusionCoef
               << " isForward=" << edgeData->isForward()

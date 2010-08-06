@@ -133,7 +133,7 @@ void BIO_SLV_NS::StopIfSumOfConcentrationsNonConst::solveEventOccured()
     }
     if (success)
     {
-        LOG_INFO(LOGGER << "Validation for medium " << mediumName << " successful");
+        LOG_DEBUG(LOGGER << "Validation for medium " << mediumName << " successful");
     }
 
     reset();

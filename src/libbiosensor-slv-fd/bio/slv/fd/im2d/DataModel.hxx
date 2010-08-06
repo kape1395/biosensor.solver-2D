@@ -22,9 +22,9 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  *  DataModel facade for users of Solver class.
  */
 class DataModel :
-            public BIO_DM_NS::IDataModel,
-            public BIO_DM_NS::IGrid2D,
-            public BIO_DM_NS::IComposite2D
+        public BIO_DM_NS::IDataModel,
+        public BIO_DM_NS::IGrid2D,
+        public BIO_DM_NS::IComposite2D
 {
 private:
     Solver* solver;

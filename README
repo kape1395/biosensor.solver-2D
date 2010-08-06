@@ -35,10 +35,15 @@ valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiose
   ./configure CXXFLAGS=-O2 --enable-static --disable-shared --prefix `pwd`/test-install
   ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" --prefix=/usr/local/biosensor-0.3.8
   ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" --prefix=/usr/local/biosensor-0.4.1 --with-boost-filesystem=boost_filesystem-mt
+  ./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_INFO"  --prefix=/usr/local/biosensor-0.4.3 --with-boost-filesystem=boost_filesystem-mt
 
 ##
 ## Testuku paleidimui:
 ./local_install/bin/bio-solver --resume /home/karolis/BZRWORK/kape1395.str_b2d_injected_electrode/data/test_20091114/test-k3_1E-1_M0b_S0b/model-original.xml /home/karolis/BZRWORK/kape1395.str_b2d_injected_electrode/data/test_20091114/test-k3_1E-1_M0b_S0b/concentrations-0000000030 tmp/t0
+
+##
+## Google profiler'io panaudojimo pvz:
+./configure "CXXFLAGS=-g -O2 -ansi -Wall -DLOG_LEVEL_DEBUG" "LDFLAGS=-lprofiler" --prefix=`pwd`/tmp-profiler-g7 --with-boost-filesystem=boost_filesystem-mt
 
 
 ################################################################################

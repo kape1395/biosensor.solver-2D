@@ -242,7 +242,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             if  (boundReactions.size() != 0)
             {
                 LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing...");
-                
+
                 if (boundReactions.size() != 1)
                     throw Exception("Only single bound reaction (related to one substance) is supported for now...");
                 BIO_XML_MODEL_NS::Reaction* reaction = boundReactions[0];

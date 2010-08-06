@@ -86,28 +86,38 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
     ////////////////////////////////////////////////////////////////////////////
     //  Create data structures
     //
-    data = new double***[dataSizeH];
+    dataByH = new double***[dataSizeH];
     for (int h = 0; h < dataSizeH; h++)
     {
-        data[h] = new double**[dataSizeV];
+        dataByH[h] = new double**[dataSizeV];
         for (int v = 0; v < dataSizeV; v++)
         {
-            data[h][v] = new double*[dataSizeS];
+            dataByH[h][v] = new double*[dataSizeS];
             for (int s = 0; s < dataSizeS; s++)
             {
-                data[h][v][s] = new double[6];
+                dataByH[h][v][s] = new double[6];
 
                 // Apply initial conditions.
-                data[h][v][s][0] = data[h][v][s][1] = data[h][v][s][2] =
-                                                          structAnalyzer->getInitialConcentration(
-                                                              substanceIndexes[s], positionH, positionV
-                                                          )->value();
-                data[h][v][s][this->getPreviousLayerIndex()] =
-                    data[h][v][s][LAYER_INTERM] =
-                        data[h][v][s][LAYER_P] =
-                            data[h][v][s][LAYER_Q] =
-                                data[h][v][s][LAYER_f_R] = NAN;
+                dataByH[h][v][s][0] = dataByH[h][v][s][1] = dataByH[h][v][s][2] =
+                                          structAnalyzer->getInitialConcentration(
+                                              substanceIndexes[s], positionH, positionV
+                                          )->value();
+                dataByH[h][v][s][this->getPreviousLayerIndex()] =
+                    dataByH[h][v][s][LAYER_INTERM] =
+                        dataByH[h][v][s][LAYER_P] =
+                            dataByH[h][v][s][LAYER_Q] =
+                                dataByH[h][v][s][LAYER_f_R] = NAN;
             }
+        }
+    }
+    // create also the perpendicular view of the same data.
+    dataByV = new double***[dataSizeV];
+    for (int v = 0; v < dataSizeV; v++)
+    {
+        dataByV[v] = new double**[dataSizeH];
+        for (int h = 0; h < dataSizeH; h++)
+        {
+            dataByV[v][h] = dataByH[h][v];
         }
     }
     //
@@ -290,13 +300,19 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::~AreaSubSolver()
         {
             for (int s = 0; s < dataSizeS; s++)
             {
-                delete[] data[h][v][s];
+                delete[] dataByH[h][v][s];
             }
-            delete[] data[h][v];
+            delete[] dataByH[h][v];
         }
-        delete[] data[h];
+        delete[] dataByH[h];
     }
-    delete[] data;
+    delete[] dataByH;
+
+    for (int v = 0; v < dataSizeV; v++)
+    {
+        delete[] dataByV[v];
+    }
+    delete[] dataByV;
 }
 
 
@@ -314,33 +330,68 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
         return;
     }
 
+    // Make bject properties as local variables, for performance...
+    static const int LAYER_INTERM = this->LAYER_INTERM;
+    static const int LAYER_P = this->LAYER_P;
+    static const int LAYER_Q = this->LAYER_Q;
+    static const int LAYER_f_R = this->LAYER_f_R;
+    double ****dataByH = this->dataByH;
+    int dataSizeH = this->dataSizeH;
+    int dataSizeV = this->dataSizeV;
+    int dataSizeS = this->dataSizeS;
+    double stepSizeH = this->stepSizeH;
+    double stepSizeV = this->stepSizeV;
+    double startPositionH = this->startPositionH;
+    bool coordinateSystemIsCartesian = this->coordinateSystemIsCartesian;
+    double *D_h = this->D_h;
+    double *D_v = this->D_v;
+    ReactionMMPart **reactionsMM = this->reactionsMM;
+    int *reactionsMMPartCounts = this->reactionsMMPartCounts;
+    ReactionROPart **reactionsRO = this->reactionsRO;
+    int *reactionsROPartCounts = this->reactionsROPartCounts;
+
+
+
     // This "solve method" is executed firstly, so we must invert layers.
     dataLayersInverted = !dataLayersInverted;
     targetLayerIndex = LAYER_INTERM;
 
     dumpData(std::cout, false, "solveHorizontalForward, before calculations");
 
-    double timeStep = this->solver->getTimeStep();
+    double exprTimeStep = -2.0 / this->solver->getTimeStep();
     int layerPrev = this->getPreviousLayerIndex();
 
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {
         double r = startPositionH + stepSizeH * h;
-        double ***dataH = data[h];
+        double cylAx = (r - stepSizeH * 0.5) / (r * stepSizeH * stepSizeH);
+        double cylCx = (r + stepSizeH * 0.5) / (r * stepSizeH * stepSizeH);
+        double cylBDiffx = -2.0 / (stepSizeH * stepSizeH);
+        double exprFx = -1.0 / (stepSizeV * stepSizeV);
+        double ***dataH = dataByH[h];
         for (int v = 1; v < dataSizeV - 1; v++) // dont calculate boundaries
         {
             double **dataHV = dataH[v];
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];
+                double *dataHVS_L = dataByH[h-1][v][s];
+                double *dataHVS_T = dataH[v-1][s];
+                double *dataHVS_B = dataH[v+1][s];
+                double D_hs = D_h[s];
+                double D_vs = D_v[s];
+                double cylA = cylAx * D_hs;
+                double cylC = cylCx * D_hs;
+                double cylBDiff = cylBDiffx * D_hs;
+                double exprF = exprFx * D_vs;
 
                 //
                 //  Time part of the coefficients (b+=b_T, f+=f_T)
                 //
                 double a = 0.0;
-                double b = -2.0 / timeStep;                         // b_T
+                double b = exprTimeStep;                         // b_T
                 double c = 0.0;
-                double f = -2.0 * dataHVS[layerPrev] / timeStep;    // f_T
+                double f = exprTimeStep * dataHVS[layerPrev];    // f_T
 
 
                 //
@@ -353,15 +404,15 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    a = D_h[s] * (r - stepSizeH / 2) / (r * stepSizeH * stepSizeH);
-                    b += -2.0 * D_h[s] / (stepSizeH * stepSizeH);
-                    c = D_h[s] * (r + stepSizeH / 2) / (r * stepSizeH * stepSizeH);
+                    a = cylA;
+                    b += cylBDiff;
+                    c = cylC;
                 }
                 // f_D is the same for cartesian and cylindrical coordinate systems.
-                f += (- D_v[s] / (stepSizeV * stepSizeV)) * (
-                         dataH[v+1][s][layerPrev]
+                f += exprF * (
+                         dataHVS_B[layerPrev]
                          - 2.0 * dataHVS[layerPrev]
-                         + dataH[v-1][s][layerPrev]
+                         + dataHVS_T[layerPrev]
                      );
 
                 //
@@ -369,13 +420,13 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //  f_R is saved for reuse in the solveVerticalForward.
                 //
                 double f_R = 0.0;
-                for (int r = 0; r < reactionsMMPartCounts[s]; r++)
+                for (int r = reactionsMMPartCounts[s]; r--; )
                 {
                     ReactionMMPart mm = reactionsMM[s][r];
                     f_R += (mm.V_max * dataHV[mm.substrateIndex][layerPrev])
                            / (mm.K_M + dataHV[mm.substrateIndex][layerPrev]);
                 }
-                for (int r = 0; r < reactionsROPartCounts[s]; r++)
+                for (int r = reactionsROPartCounts[s]; r--; )
                 {
                     ReactionROPart ro = reactionsRO[s][r];
                     f_R += ro.rate
@@ -387,9 +438,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //
                 // And now we are able to calculate layers:
                 //
-                double denominator = a * data[h - 1][v][s][LAYER_P] + b;
-                dataHVS[LAYER_P] = - c / denominator;
-                dataHVS[LAYER_Q] = (f - a * data[h - 1][v][s][LAYER_Q]) / denominator;
+                double denominator = 1.0 / (a * dataHVS_L[LAYER_P] + b);
+                dataHVS[LAYER_P] = - c * denominator;
+                dataHVS[LAYER_Q] = (f - a * dataHVS_L[LAYER_Q]) * denominator;
             }
         }
     }
@@ -411,9 +462,17 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
         return;
     }
 
+    static const int LAYER_P = this->LAYER_P;
+    static const int LAYER_Q = this->LAYER_Q;
+    static const int LAYER_INTERM = this->LAYER_INTERM;
+    double ****dataByH = this->dataByH;
+    int dataSizeH = this->dataSizeH;
+    int dataSizeV = this->dataSizeV;
+    int dataSizeS = this->dataSizeS;
+
     for (int h = dataSizeH - 2; h > 0; h--) // dont calculate boundaries
     {
-        double ***dataH = data[h];
+        double ***dataH = dataByH[h];
         for (int v = 1; v < dataSizeV - 1; v++) // dont calculate boundaries
         {
             double **dataHV = dataH[v];
@@ -423,7 +482,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalBackward()
 
                 dataHVS[LAYER_INTERM] =
                     dataHVS[LAYER_P] *
-                    data[h + 1][v][s][LAYER_INTERM] +
+                    dataByH[h + 1][v][s][LAYER_INTERM] +
                     dataHVS[LAYER_Q];
             }
         }
@@ -444,51 +503,75 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
         return;
     }
 
+    // Make bject properties as local variables, for performance...
+    static const int LAYER_INTERM = this->LAYER_INTERM;
+    static const int LAYER_P = this->LAYER_P;
+    static const int LAYER_Q = this->LAYER_Q;
+    static const int LAYER_f_R = this->LAYER_f_R;
+    double ****dataByH = this->dataByH;
+    int dataSizeH = this->dataSizeH;
+    int dataSizeV = this->dataSizeV;
+    int dataSizeS = this->dataSizeS;
+    double stepSizeH = this->stepSizeH;
+    double stepSizeV = this->stepSizeV;
+    double startPositionH = this->startPositionH;
+    bool coordinateSystemIsCartesian = this->coordinateSystemIsCartesian;
+    double *D_h = this->D_h;
+    double *D_v = this->D_v;
+
     targetLayerIndex = getCurrentLayerIndex();
 
-    double timeStep = this->solver->getTimeStep();
+    //double timeStep = this->solver->getTimeStep();
+    double exprTimeStep = -2.0 / this->solver->getTimeStep();
+    double exprStepSizeV = 1.0 / (stepSizeV * stepSizeV);
+    double exprStepSizeH = 1.0 / (stepSizeH * stepSizeH);
 
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {
         double r = startPositionH + stepSizeH * h;
-        double ***dataH = data[h];
+        double exprStepSizeHr = exprStepSizeH / r;
+        double exprRHalfNext = r + stepSizeH * 0.5;
+        double exprRHalfPrev = r - stepSizeH * 0.5;
+        double ***dataH = dataByH[h];
         for (int v = 1; v < dataSizeV - 1; v++) // dont calculate boundaries
         {
             double **dataHV = dataH[v];
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];
+                double D_hs = D_h[s];
+                double D_vs = D_v[s];
 
                 //
                 //  Time part of the coefficients (b+=b_T, f+=f_T+f_R)
                 //  Saved reaction part is also added here.
                 //
                 double a = 0.0;
-                double b = -2.0 / timeStep;                             // b_T
+                double b = exprTimeStep;                                // b_T
                 double c = 0.0;
-                double f = (-2.0 * dataHVS[LAYER_INTERM] / timeStep)    // f_T
+                double f = exprTimeStep * dataHVS[LAYER_INTERM]         // f_T
                            + dataHVS[LAYER_f_R];                        // f_R
 
 
                 //
                 //  Diffusion part (a=a_D, b+=b_D, c=c_D, f+=f_D)
                 //
-                a = c = D_v[s] / (stepSizeV * stepSizeV);
+                a = c = D_vs * exprStepSizeV;
                 b += - 2.0 * a;
                 if (coordinateSystemIsCartesian)
                 {
-                    f += (- D_h[s] / (stepSizeH * stepSizeH)) * (
-                             data[h+1][v][s][LAYER_INTERM]
+                    f += - D_hs * exprStepSizeH * (
+                             dataByH[h+1][v][s][LAYER_INTERM]
                              - 2.0 * dataHVS[LAYER_INTERM]
-                             + data[h-1][v][s][LAYER_INTERM]
+                             + dataByH[h-1][v][s][LAYER_INTERM]
                          );
                 }
                 else    // coordinateSystemIsCylindrical
                 {
-                    f += (- D_h[s] / (r * stepSizeH * stepSizeH)) * (
-                             + (r + stepSizeH / 2) * data[h+1][v][s][LAYER_INTERM]
+                    f += - D_hs * exprStepSizeHr * (
+                             + exprRHalfNext * dataByH[h+1][v][s][LAYER_INTERM]
                              - 2.0 * r * dataHVS[LAYER_INTERM]
-                             + (r - stepSizeH / 2) * data[h-1][v][s][LAYER_INTERM]
+                             + exprRHalfPrev * dataByH[h-1][v][s][LAYER_INTERM]
                          );
                 }
 
@@ -499,9 +582,9 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 //
                 // And now we are able to calculate layers:
                 //
-                double denominator = a * data[h][v - 1][s][LAYER_P] + b;
-                dataHVS[LAYER_P] = - c / denominator;
-                dataHVS[LAYER_Q] = (f - a * data[h][v - 1][s][LAYER_Q]) / denominator;
+                double denominator = 1.0 / (a * dataByH[h][v - 1][s][LAYER_P] + b);
+                dataHVS[LAYER_P] = - c * denominator;
+                dataHVS[LAYER_Q] = (f - a * dataByH[h][v - 1][s][LAYER_Q]) * denominator;
             }
         }
     }
@@ -520,10 +603,17 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
         return;
     }
 
+    static const int LAYER_P = this->LAYER_P;
+    static const int LAYER_Q = this->LAYER_Q;
+    double ****dataByH = this->dataByH;
+    int dataSizeH = this->dataSizeH;
+    int dataSizeV = this->dataSizeV;
+    int dataSizeS = this->dataSizeS;
+
     int layerCurrent = getCurrentLayerIndex();
     for (int h = 1; h < dataSizeH - 1; h++) // dont calculate boundaries
     {
-        double ***dataH = data[h];
+        double ***dataH = dataByH[h];
         for (int v = dataSizeV - 2; v > 0; v--) // dont calculate boundaries
         {
             double **dataHV = dataH[v];
@@ -533,7 +623,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalBackward()
 
                 dataHVS[layerCurrent] =
                     dataHVS[LAYER_P] *
-                    data[h][v + 1][s][layerCurrent] +
+                    dataByH[h][v + 1][s][layerCurrent] +
                     dataHVS[LAYER_Q];
             }
         }
@@ -610,8 +700,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
         data1 = new double*[size];
         for (int i = 0; i < size; i++)
         {
-            data0[i] = solver->data[i][start ? 0 : solver->dataSizeV - 1][substance];
-            data1[i] = solver->data[i][start ? 1 : solver->dataSizeV - 2][substance];
+            data0[i] = solver->dataByH[i][start ? 0 : solver->dataSizeV - 1][substance];
+            data1[i] = solver->dataByH[i][start ? 1 : solver->dataSizeV - 2][substance];
         }
     }
     else // vertical
@@ -622,8 +712,8 @@ BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeData::EdgeData(
         data1 = new double*[size];
         for (int i = 0; i < size; i++)
         {
-            data0[i] = solver->data[start ? 0 : solver->dataSizeH - 1][i][substance];
-            data1[i] = solver->data[start ? 1 : solver->dataSizeH - 2][i][substance];
+            data0[i] = solver->dataByH[start ? 0 : solver->dataSizeH - 1][i][substance];
+            data1[i] = solver->dataByH[start ? 1 : solver->dataSizeH - 2][i][substance];
         }
     }
 }
@@ -765,7 +855,7 @@ double BIO_SLV_FD_IM2D_NS::AreaSubSolver::EdgeDataPrevLayer::getC1(int index)
 double BIO_SLV_FD_IM2D_NS::AreaSubSolver::getConcentration(int h, int v, int s)
 {
     int sl = getLocalSubstanceIndex(s);
-    return (sl == -1) ? NAN : data[h][v][sl][this->getCurrentLayerIndex()];
+    return (sl == -1) ? NAN : dataByH[h][v][sl][this->getCurrentLayerIndex()];
 }
 
 
@@ -776,11 +866,11 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::setConcentration(int h, int v, int s, do
     int sl = getLocalSubstanceIndex(s);
     if (sl != -1)
     {
-        data[h][v][sl][this->getCurrentLayerIndex()] = c;
+        dataByH[h][v][sl][this->getCurrentLayerIndex()] = c;
 
         //  I hope this is not needed.
         //  If needed, this must be fixed in the bound conditions also.
-        //data[h][v][sl][this->getPreviousLayerIndex()] = c;
+        //dataByH[h][v][sl][this->getPreviousLayerIndex()] = c;
     }
 }
 
@@ -803,7 +893,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool vertica
     {
         for (int j = 0; j < (verticalIsInner ? dataSizeV : dataSizeH); j++)
         {
-            double **dataHV = verticalIsInner ? data[i][j] : data[j][i];
+            double **dataHV = verticalIsInner ? dataByH[i][j] : dataByH[j][i];
             for (int s = 0; s < dataSizeS; s++)
             {
                 double *dataHVS = dataHV[s];

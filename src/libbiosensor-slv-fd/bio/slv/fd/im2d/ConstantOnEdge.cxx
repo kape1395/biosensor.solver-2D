@@ -9,7 +9,7 @@ BIO_SLV_FD_IM2D_NS::ConstantOnEdge::ConstantOnEdge(int size, double value)
 {
     this->size = size;
     this->value = value;
-    
+
     LOG_DEBUG(LOGGER << "Created: constantValue=" << value);
 }
 

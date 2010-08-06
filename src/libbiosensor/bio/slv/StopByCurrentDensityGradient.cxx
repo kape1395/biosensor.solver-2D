@@ -89,12 +89,13 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
     double grad = (thisCurrentDensity - prevCurrentDensity) / (thisTime - prevTime);
     double gradNormalized = grad * thisTime / thisCurrentDensity;
 
-    LOG_DEBUG(LOGGER << "processNextStep:"
-              << " thisCurrentDensity="   << thisCurrentDensity
-              << "\tthisTime="            << thisTime
-              << "\tgrad="                << grad
-              << "\tgradNormalized="      << gradNormalized
-             );
+    LOG_INFO(LOGGER << "processNextStep:"
+             << " thisCurrentDensity="   << thisCurrentDensity
+             << "\tthisTime="            << thisTime
+             << "\tthisIteration="       << iterativeSolver->getSolvedIterationCount()
+             << "\tgrad="                << grad
+             << "\tgradNormalized="      << gradNormalized
+            );
 
     if (std::abs(normalized ? gradNormalized : grad) < gradient)
     {
