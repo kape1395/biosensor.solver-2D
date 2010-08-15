@@ -2,6 +2,7 @@
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include "ex2d/Solver.hxx"
+#include "im1d/Solver.hxx"
 #include "im2d/Solver.hxx"
 #define LOGGER "libbiosensor-slv-fd: "
 
@@ -35,8 +36,13 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
     }
     else if (dynamic_cast<BIO_XML_NS::model::solver::Implicit1D*>(&model->solver()) != 0)
     {
-        LOG_INFO(LOGGER << "Selected solver: bio::xml::model::solver::Implicit1D -> ???");
-        throw BIO_NS::Exception("Not implemented: bio::xml::model::solver::Implicit1D");
+        LOG_INFO(LOGGER << "Selected solver: bio::xml::model::solver::Implicit1D -> BIO_SLV_FD_NS::im1d::Solver");
+        BIO_SLV_FD_NS::im1d::Solver* solver = new BIO_SLV_FD_NS::im1d::Solver(
+            model,
+            rootFactory
+        );
+
+        return solver;
     }
     else if (dynamic_cast<BIO_XML_NS::model::solver::Explicit2D*>(&model->solver()) != 0)
     {

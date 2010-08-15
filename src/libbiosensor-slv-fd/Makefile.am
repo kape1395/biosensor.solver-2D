@@ -1,5 +1,5 @@
 pkglib_LTLIBRARIES = libbiosensor-slv-fd.la
-libbiosensor_slv_fd_la_CPPFLAGS = -I../libbiosensor-xml -I../libbiosensor
+libbiosensor_slv_fd_la_CPPFLAGS = @CPPFLAGS@ -I../libbiosensor-xml -I../libbiosensor
 libbiosensor_slv_fd_la_LDFLAGS = @LDFLAGS@ -version-info 0:0:0
 libbiosensor_slv_fd_la_LIBADD  = \
     ../libbiosensor/libbiosensor.la \
@@ -9,6 +9,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/Factory.cxx \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/slv/fd/ex2d/Solver.cxx \
+    bio/slv/fd/im1d/Solver.cxx \
     bio/slv/fd/im2d/Solver.cxx \
     bio/slv/fd/im2d/DataModel.cxx \
     bio/slv/fd/im2d/AreaSubSolver.cxx \
@@ -29,6 +30,7 @@ EXTRA_DIST = \
     bio/slv/fd/Factory.hxx \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
     bio/slv/fd/ex2d/Solver.hxx \
+    bio/slv/fd/im1d/Solver.hxx \
     bio/slv/fd/im2d/Solver.hxx \
     bio/slv/fd/im2d/DataModel.hxx \
     bio/slv/fd/im2d/AreaSubSolver.hxx \

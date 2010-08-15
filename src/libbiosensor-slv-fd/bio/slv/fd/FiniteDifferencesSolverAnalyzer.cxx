@@ -41,6 +41,13 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
         throw Exception("Invalid solver spec.");
     }
 
+    //  Create pseudo axis for 1d case
+    pseudoAxisH = new BIO_XML_MODEL_NS::solver::ConstantAxisPart(
+        structureAnalyzer.getPointsH()[0]->name(),
+        structureAnalyzer.getPointsH()[1]->name(),
+        2   // step count
+    );
+
 
     ////////////////////////////////////////////////////////////////////////////
     //  Collect axis-parts and assign them to the concrete "cells"
@@ -68,7 +75,37 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
 
     ////////////    Analyze HORIZONTAL axis
-    symbols = &structureAnalyzer.getPointsH();
+    if (structureAnalyzer.isOneDimensional())
+    {
+        axisPartsH[0] = pseudoAxisH;
+        axisPartSegmentSplitH[0] = this->createSegmentSplit(pseudoAxisH);
+    }
+    else
+    {
+        symbols = &structureAnalyzer.getPointsH();
+        int pointPosition = 0;
+        for (Symbol_it point = symbols->begin(); point < symbols->end() - 1; point++, pointPosition++)
+        {
+            for (Axis_it axis = fdSolver->axis().begin(); axis < fdSolver->axis().end(); axis++)
+            {
+                if (axis->from() != (*point)->name())
+                    continue;   //  If this is not a needed axis - skip it.
+
+                if (axis->to() != (*(point+1))->name())
+                {
+                    LOG_ERROR(LOGGER << "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
+                    throw Exception("Invalid solver spec.");
+                }
+
+                axisPartsH[pointPosition] = &*axis;
+                axisPartSegmentSplitH[pointPosition] = this->createSegmentSplit(&*axis);
+            }
+        }
+    }
+
+
+    ////////////    Analyze VERTICAL axis
+    symbols = &structureAnalyzer.getPointsV();
     int pointPosition = 0;
     for (Symbol_it point = symbols->begin(); point < symbols->end() - 1; point++, pointPosition++)
     {
@@ -83,37 +120,8 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
                 throw Exception("Invalid solver spec.");
             }
 
-            axisPartsH[pointPosition] = &*axis;
-            axisPartSegmentSplitH[pointPosition] = this->createSegmentSplit(&*axis);
-        }
-    }
-
-
-    ////////////    Analyze VERTICAL axis
-    if (!structureAnalyzer.isTwoDimensional())
-    {
-        axisPartsV[0] = 0;  //  No steps is in this case (only one point)
-    }
-    else
-    {
-        symbols = &structureAnalyzer.getPointsV();
-        pointPosition = 0;
-        for (Symbol_it point = symbols->begin(); point < symbols->end() - 1; point++, pointPosition++)
-        {
-            for (Axis_it axis = fdSolver->axis().begin(); axis < fdSolver->axis().end(); axis++)
-            {
-                if (axis->from() != (*point)->name())
-                    continue;   //  If this is not a needed axis - skip it.
-
-                if (axis->to() != (*(point+1))->name())
-                {
-                    LOG_ERROR(LOGGER << "In solver/axis \"from\" and \"to\" must be subsequent points in the corresponding axis.");
-                    throw Exception("Invalid solver spec.");
-                }
-
-                axisPartsV[pointPosition] = &*axis;
-                axisPartSegmentSplitV[pointPosition] = this->createSegmentSplit(&*axis);
-            }
+            axisPartsV[pointPosition] = &*axis;
+            axisPartSegmentSplitV[pointPosition] = this->createSegmentSplit(&*axis);
         }
     }
 
@@ -181,6 +189,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::~FiniteDifferencesSolverAnalyzer
     delete [] axisPartSegmentSplitV;
     axisPartSegmentSplitV = 0;
 
+    delete pseudoAxisH;
 
     //
     //  Release all old data.

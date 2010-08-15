@@ -17,6 +17,7 @@ private:
 
     BIO_XML_MODEL_NS::Model* config;
     bool twoDimensional;
+    std::vector< BIO_XML_MODEL_NS::Symbol* > symbols;
     std::vector< BIO_XML_MODEL_NS::Symbol* > pointsH;
     std::vector< BIO_XML_MODEL_NS::Symbol* > pointsV;
     std::vector< BIO_XML_MODEL_NS::Substance* > substances;
@@ -27,6 +28,7 @@ private:
 
     /// Position for the case, when these was Linear (one-dimensional) coordinate system.
     BIO_XML_MODEL_NS::Symbol axisPoint0;
+    BIO_XML_MODEL_NS::Symbol axisPoint1;
     BIO_XML_MODEL_NS::Symbol diffusion0;
 
 public:
@@ -63,17 +65,45 @@ public:
     /**
      *  Returns true if analyzed model is two-dimensional and
      *  false in another case (1D model).
+     *  One-dimensional model can be threated as a two-dimensional one, with
+     *  its width = 1. Thats why this method always returns true.
      */
     bool isTwoDimensional()
     {
-        return twoDimensional;
+        return true;
     }
 
+    /**
+     *  Returns true, if model can be simulated using one-dimensional solver.
+     *  In one-dimensional model, the x axis is "vertical".
+     */
+    bool isOneDimensional()
+    {
+        return pointsH.size() == 2;
+    }
+
+    /**
+     *  Returns true, if model is formulated in the onedimensional coordinate system.
+     */
+    bool isCoordinateSystemLinear()
+    {
+        return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Linear;
+    }
+
+    /**
+     *  Returns true, if model is formulated in the one or two-dimensional
+     *  coordinate system.
+     */
     bool isCoordinateSystemCartesian()
     {
-        return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cartesian;
+        return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cartesian ||
+               config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Linear ;
     }
 
+    /**
+     *  Returns true, if model is formulated in the r-z plane of the cylindrical
+     *  coordinate system.
+     */
     bool isCoordinateSystemCylindrical()
     {
         return config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Cylindrical;

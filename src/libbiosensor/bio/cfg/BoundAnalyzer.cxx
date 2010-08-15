@@ -120,16 +120,27 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
         else
             throw Exception("Symbols, used to define bounds are not points in the axes");
 
-        if (!b->from().present() || !b->to().present())
-            throw Exception("For 2D model all 'at', 'from' and 'to' must be specified");
+        int boundAt = structAnalyzer->getPointIndexInAxis(perpendicularAxis, b->at());
+        int boundFrom;
+        int boundTo;
+        if (!structAnalyzer->isOneDimensional())
+        {
+            if (!b->from().present() || !b->to().present())
+                throw Exception("For 2D model all 'at', 'from' and 'to' must be specified");
 
-        if (!structAnalyzer->isPointInAxis(parallelAxis, b->from().get()) ||
-                !structAnalyzer->isPointInAxis(parallelAxis, b->to().get()))
-            throw Exception("Bound`s 'from' and 'to' must be on axis, that perpendicular to axis on which is 'at'.");
+            if (!structAnalyzer->isPointInAxis(parallelAxis, b->from().get()) ||
+                    !structAnalyzer->isPointInAxis(parallelAxis, b->to().get()))
+                throw Exception("Bound`s 'from' and 'to' must be on axis, that perpendicular to axis on which is 'at'.");
 
-        int boundAt     = structAnalyzer->getPointIndexInAxis(perpendicularAxis, b->at());
-        int boundFrom   = structAnalyzer->getPointIndexInAxis(parallelAxis, b->from().get());
-        int boundTo     = structAnalyzer->getPointIndexInAxis(parallelAxis, b->to().get());
+            boundFrom = structAnalyzer->getPointIndexInAxis(parallelAxis, b->from().get());
+            boundTo   = structAnalyzer->getPointIndexInAxis(parallelAxis, b->to().get());
+        }
+        else
+        {
+            boundFrom = 0;
+            boundTo   = 1;
+        }
+
         if (boundFrom > boundTo)
         {
             LOG_WARN(LOGGER << "Swapping bound attributes 'from' and 'to'");

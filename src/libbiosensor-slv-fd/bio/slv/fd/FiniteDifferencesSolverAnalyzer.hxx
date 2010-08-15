@@ -29,6 +29,7 @@ private:
     BIO_DM_NS::ISegmentSplit** axisPartSegmentSplitH;
     BIO_DM_NS::ISegmentSplit** axisPartSegmentSplitV;
 
+    BIO_XML_NS::model::solver::Axis* pseudoAxisH;
 
     double timeStep;
 
@@ -120,6 +121,7 @@ public:
 
 protected:
     BIO_DM_NS::ISegmentSplit* createSegmentSplit(BIO_XML_NS::model::solver::Axis* axis);
+
 
 };
 

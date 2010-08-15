@@ -13,9 +13,11 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     BIO_XML_MODEL_NS::Model* config
 ) :
         axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
+        axisPoint1(BIO_XML_MODEL_NS::SymbolName("axisPoint1"), 1.0),
         diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
 {
     axisPoint0.dimension("m");
+    axisPoint1.dimension("m");
     diffusion0.dimension("m^2/s");
     twoDimensional = false; // it is not very correct, but...
     reactions = 0;
@@ -33,6 +35,17 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     LOG_DEBUG(LOGGER << "StructureAnalyzer()...");
 
     this->config = config;
+
+    ////////////////////////////////////////////////////////////////////////////
+    //  Fill symbols.
+    for (unsigned i = 0; i < config->symbol().size(); i++)
+    {
+        symbols.push_back(&config->symbol()[i]);
+    }
+    symbols.push_back(&axisPoint0);
+    symbols.push_back(&axisPoint1);
+    symbols.push_back(&diffusion0);
+
 
     ////////////////////////////////////////////////////////////////////////////
     //  Fill pointsH and pointsV
@@ -97,13 +110,13 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     else if (config->coordinateSystem() == BIO_XML_MODEL_NS::CoordinateSystem::Linear)
     {
         LOG_DEBUG(LOGGER << "Found coordinate system \"Linear\", axis will be x.");
-        this->twoDimensional = false;
+        this->twoDimensional = false;   // FIXME: Pseudo 2D will be supported.
         bool found = false;
         for (it_axis axis = config->axis().begin(); axis < config->axis().end(); axis++)
         {
             if (axis->name() == "x")
             {
-                fillListWithAxisPoints(pointsH, *axis);
+                fillListWithAxisPoints(pointsV, *axis);
                 found = true;
             }
         }
@@ -112,7 +125,8 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             LOG_ERROR(LOGGER << "Axis  \"x\" is needed but not found.");
             throw Exception("Missing axis");
         }
-        pointsV.push_back(&axisPoint0);
+        pointsH.push_back(&axisPoint0);
+        pointsH.push_back(&axisPoint1);
     }
     else
     {
@@ -139,10 +153,10 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     ////////////////////////////////////////////////////////////////////////////
     //  Fill mediums.
     //
-    mediums = new BIO_XML_MODEL_NS::Medium* *[pointsH.size()];
+    mediums = new BIO_XML_MODEL_NS::Medium* *[pointsH.size() - 1];
     for (unsigned h = 0; h < pointsH.size(); h++)
     {
-        mediums[h] = new BIO_XML_MODEL_NS::Medium*[pointsV.size()];
+        mediums[h] = new BIO_XML_MODEL_NS::Medium*[pointsV.size() - 1];
         for (unsigned v = 0; v < pointsV.size(); v++)
         {
             mediums[h][v] = 0;
@@ -156,7 +170,7 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             int h2 = -1;
             int v1 = -1;
             int v2 = -1;
-            if (twoDimensional)
+            if (twoDimensional) // NOTE: Always true.
             {
                 h1 = area->left  ().present() ? getPointIndexInAxis(pointsH, *area->left  ()) : h1;
                 h2 = area->right().present() ? getPointIndexInAxis(pointsH, *area->right()) : h2;
@@ -165,10 +179,10 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
             }
             else
             {
-                h1 = area->from().present() ? getPointIndexInAxis(pointsH, *area->from()) : h1;
-                h2 = area->to()  .present() ? getPointIndexInAxis(pointsH, *area->to  ()) : h2;
-                v1 = 0;
-                v2 = 1;
+                h1 = 0;
+                h2 = 1;
+                v1 = area->from().present() ? getPointIndexInAxis(pointsV, *area->from()) : v1;
+                v2 = area->to()  .present() ? getPointIndexInAxis(pointsV, *area->to  ()) : v2;
             }
             if (h1 == -1 || h2 == -1 || v1 == -1 || v2 == -1)
             {
@@ -286,6 +300,7 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
     pointsH.clear();
     pointsV.clear();
     substances.clear();
+    symbols.clear();
 
     config = 0;
 
@@ -308,10 +323,10 @@ BIO_XML_MODEL_NS::MediumName* BIO_CFG_NS::StructureAnalyzer::getMediumName(int h
 /* ************************************************************************** */
 BIO_XML_MODEL_NS::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_MODEL_NS::SymbolName& name)
 {
-    for (unsigned i = 0; i < config->symbol().size(); i++)
+    for (unsigned i = 0; i < symbols.size(); i++)
     {
-        if (config->symbol()[i].name() == name)
-            return &config->symbol()[i];
+        if (symbols[i]->name() == name)
+            return symbols[i];
     }
     return 0;
 }
