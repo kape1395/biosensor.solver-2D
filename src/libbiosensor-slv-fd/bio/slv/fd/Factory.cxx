@@ -3,7 +3,9 @@
 #include <bio/Exception.hxx>
 #include "ex2d/Solver.hxx"
 #include "im1d/Solver.hxx"
+#include "im1d/SubSolverFactory.hxx"
 #include "im2d/Solver.hxx"
+#include "im2d/SubSolverFactory.hxx"
 #define LOGGER "libbiosensor-slv-fd: "
 
 /* ************************************************************************** */
@@ -37,9 +39,11 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
     else if (dynamic_cast<BIO_XML_NS::model::solver::Implicit1D*>(&model->solver()) != 0)
     {
         LOG_INFO(LOGGER << "Selected solver: bio::xml::model::solver::Implicit1D -> BIO_SLV_FD_NS::im1d::Solver");
+        BIO_SLV_FD_IM1D_NS::SubSolverFactory subSolverFactory;
         BIO_SLV_FD_NS::im1d::Solver* solver = new BIO_SLV_FD_NS::im1d::Solver(
             model,
-            rootFactory
+            rootFactory,
+            &subSolverFactory
         );
 
         return solver;
@@ -54,9 +58,11 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
     else if (dynamic_cast<BIO_XML_NS::model::solver::Implicit2D*>(&model->solver()) != 0)
     {
         LOG_INFO(LOGGER << "Selected solver: bio::xml::model::solver::Implicit2D -> BIO_SLV_FD_NS::im2d::Solver");
-        BIO_SLV_FD_NS::im2d::Solver* solver = new BIO_SLV_FD_NS::im2d::Solver(
+        BIO_SLV_FD_IM2D_NS::SubSolverFactory subSolverFactory;
+        BIO_SLV_FD_IM2D_NS::Solver* solver = new BIO_SLV_FD_NS::im2d::Solver(
             model,
-            rootFactory
+            rootFactory,
+            &subSolverFactory
         );
 
         return solver;

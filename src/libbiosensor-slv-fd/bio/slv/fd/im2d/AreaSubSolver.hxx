@@ -28,7 +28,7 @@ public:
     class EdgeData;
     class EdgeDataPrevLayer;
 
-private:
+protected:
 
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer;
@@ -44,8 +44,7 @@ private:
     static const int LAYER_P = 3;
     static const int LAYER_Q = 4;
     static const int LAYER_f_R = 5;
-    double ****dataByH;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
-    double ****dataByV;    //  [v][h][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
+    double ****data;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
     int dataSizeH;      //  number of points in H (including boundary)
     int dataSizeV;      //  number of points in V (including boundary)
     int dataSizeS;      //  number of modelled substances
@@ -124,29 +123,41 @@ public:
     );
 
     /**
+     *  I separated a part of constructor's code to the separate function,
+     *  because constructors can't call virtual functions.
+     */
+    virtual void initialize();
+
+    /**
      *  Destructor.
      */
     virtual ~AreaSubSolver();
 
     /**
-     *  First half-step -- horizontal.
+     *  I separated a part of destructor's code to the separate function,
+     *  because destructors can't call virtual functions.
      */
-    void solveHorizontalForward();
+    virtual void destroy();
 
     /**
      *  First half-step -- horizontal.
      */
-    void solveHorizontalBackward();
+    virtual void solveHorizontalForward();
+
+    /**
+     *  First half-step -- horizontal.
+     */
+    virtual void solveHorizontalBackward();
 
     /**
      *  Second half-step -- vertical.
      */
-    void solveVerticalForward();
+    virtual void solveVerticalForward();
 
     /**
      *  Second half-step -- vertical.
      */
-    void solveVerticalBackward();
+    virtual void solveVerticalBackward();
 
     int getPositionH()
     {
@@ -285,6 +296,12 @@ protected:
      *  This method is used for debugging only.
      */
     void dumpData(std::ostream& out, bool verticalIsInner, std::string message);
+
+    virtual double**** createData();
+    virtual void deleteData(double**** data);
+
+    virtual double** createDataPoint();
+    virtual void deleteDataPoint(double** point);
 
 public:
 

@@ -154,10 +154,10 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     //  Fill mediums.
     //
     mediums = new BIO_XML_MODEL_NS::Medium* *[pointsH.size() - 1];
-    for (unsigned h = 0; h < pointsH.size(); h++)
+    for (unsigned h = 0; h < pointsH.size() - 1; h++)
     {
         mediums[h] = new BIO_XML_MODEL_NS::Medium*[pointsV.size() - 1];
-        for (unsigned v = 0; v < pointsV.size(); v++)
+        for (unsigned v = 0; v < pointsV.size() - 1; v++)
         {
             mediums[h][v] = 0;
         }
@@ -216,15 +216,15 @@ BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     ////////////////////////////////////////////////////////////////////////////
     //  Fill diffusions and reactions.
     //
-    reactions = new std::vector< BIO_XML_MODEL_NS::Reaction* >*[pointsH.size()];
-    diffusions = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size()];
-    initialConcentrations = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size()];
-    for (unsigned h = 0; h < pointsH.size(); h++)
+    reactions = new std::vector< BIO_XML_MODEL_NS::Reaction* >*[pointsH.size() - 1];
+    diffusions = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size() - 1];
+    initialConcentrations = new BIO_XML_MODEL_NS::Symbol* **[pointsH.size() - 1];
+    for (unsigned h = 0; h < pointsH.size() - 1; h++)
     {
-        reactions[h] = new std::vector< BIO_XML_MODEL_NS::Reaction* >[pointsV.size()];
-        diffusions[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size()];
-        initialConcentrations[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size()];
-        for (unsigned v = 0; v < pointsV.size(); v++)
+        reactions[h] = new std::vector< BIO_XML_MODEL_NS::Reaction* >[pointsV.size() - 1];
+        diffusions[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size() - 1];
+        initialConcentrations[h] = new BIO_XML_MODEL_NS::Symbol* *[pointsV.size() - 1];
+        for (unsigned v = 0; v < pointsV.size() - 1; v++)
         {
             diffusions[h][v] = new BIO_XML_MODEL_NS::Symbol*[substances.size()];
             initialConcentrations[h][v] = new BIO_XML_MODEL_NS::Symbol*[substances.size()];
@@ -265,9 +265,9 @@ BIO_CFG_NS::StructureAnalyzer::~StructureAnalyzer()
     LOG_TRACE(LOGGER << "~StructureAnalyzer()...");
 
     twoDimensional = false;
-    for (unsigned h = 0; h < pointsH.size(); h++)
+    for (unsigned h = 0; h < pointsH.size() - 1; h++)
     {
-        for (unsigned v = 0; v < pointsV.size(); v++)
+        for (unsigned v = 0; v < pointsV.size() - 1; v++)
         {
             delete [] diffusions[h][v];
             delete [] initialConcentrations[h][v];

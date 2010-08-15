@@ -10,6 +10,8 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.cxx \
     bio/slv/fd/ex2d/Solver.cxx \
     bio/slv/fd/im1d/Solver.cxx \
+    bio/slv/fd/im1d/AreaSubSolver.cxx \
+    bio/slv/fd/im1d/SubSolverFactory.cxx \
     bio/slv/fd/im2d/Solver.cxx \
     bio/slv/fd/im2d/DataModel.cxx \
     bio/slv/fd/im2d/AreaSubSolver.cxx \
@@ -18,6 +20,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/im2d/ConstantCondition.cxx \
     bio/slv/fd/im2d/ConstantOnEdge.cxx \
     bio/slv/fd/im2d/SubstanceGradOnEdge.cxx \
+    bio/slv/fd/im2d/SubSolverFactory.cxx \
     bio/slv/fd/im2d/MergeCondition.cxx \
     bio/slv/fd/im2d/WallCondition.cxx
 
@@ -31,6 +34,8 @@ EXTRA_DIST = \
     bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx \
     bio/slv/fd/ex2d/Solver.hxx \
     bio/slv/fd/im1d/Solver.hxx \
+    bio/slv/fd/im1d/AreaSubSolver.hxx \
+    bio/slv/fd/im1d/SubSolverFactory.hxx \
     bio/slv/fd/im2d/Solver.hxx \
     bio/slv/fd/im2d/DataModel.hxx \
     bio/slv/fd/im2d/AreaSubSolver.hxx \
@@ -39,9 +44,11 @@ EXTRA_DIST = \
     bio/slv/fd/im2d/IAreaEdgeData.hxx \
     bio/slv/fd/im2d/IAreaEdgeFunction.hxx \
     bio/slv/fd/im2d/IBoundCondition.hxx \
+    bio/slv/fd/im2d/ISubSolverFactory.hxx \
     bio/slv/fd/im2d/ConstantCondition.hxx \
     bio/slv/fd/im2d/ConstantOnEdge.hxx \
     bio/slv/fd/im2d/SubstanceGradOnEdge.hxx \
+    bio/slv/fd/im2d/SubSolverFactory.hxx \
     bio/slv/fd/im2d/MergeCondition.hxx \
     bio/slv/fd/im2d/WallCondition.hxx
 

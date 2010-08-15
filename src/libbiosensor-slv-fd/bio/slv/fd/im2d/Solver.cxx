@@ -11,14 +11,15 @@
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::Solver(
     BIO_XML_NS::model::Model* config,
-    BIO_NS::IFactory* factory
+    BIO_NS::IFactory* factory,
+    BIO_SLV_FD_IM2D_NS::ISubSolverFactory* subSolverFactory
 ) : AbstractIterativeSolver(config)
 {
+    LOG_DEBUG(LOGGER << "Solver()...");
+
     structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
     boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
     fdAnalyzer = new BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer(config);
-
-    LOG_DEBUG(LOGGER << "Solver()...");
 
     if (!structAnalyzer->isTwoDimensional())
     {
@@ -46,10 +47,7 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
             bool lastV = v == subSolvers->sizeV();
 
             if (!(lastH || lastV))
-                subSolvers->getAreas()[h][v] = new AreaSubSolver(
-                    this, h, v,
-                    structAnalyzer, fdAnalyzer
-                );
+                subSolvers->getAreas()[h][v] = subSolverFactory->createAreaSubSolver(this, h, v);
 
             if (!lastH)
                 subSolvers->getBoundsH()[h][v] = new BoundSubSolver( // Horizontal Bound
@@ -149,7 +147,11 @@ BIO_SLV_FD_IM2D_NS::Solver::~Solver()
             bool lastH = h == subSolvers->sizeH();
             bool lastV = v == subSolvers->sizeV();
 
-            if (!(lastH || lastV)) delete subSolvers->getAreas()[h][v];
+            if (!(lastH || lastV))
+            {
+                subSolvers->getAreas()[h][v]->destroy();
+                delete subSolvers->getAreas()[h][v];
+            }
             if (!lastH) delete subSolvers->getBoundsH()[h][v];
             if (!lastV) delete subSolvers->getBoundsV()[h][v];
             delete subSolvers->getCorners()[h][v];

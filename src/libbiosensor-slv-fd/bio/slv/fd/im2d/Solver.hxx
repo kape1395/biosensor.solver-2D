@@ -6,6 +6,7 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 class Solver;
 BIO_SLV_FD_IM2D_NS_END
 
+#include "ISubSolverFactory.hxx"
 #include "AreaSubSolver.hxx"
 #include "BoundSubSolver.hxx"
 #include "CornerSubSolver.hxx"
@@ -51,7 +52,8 @@ public:
      */
     Solver(
         BIO_XML_NS::model::Model* config,
-        BIO_NS::IFactory* factory
+        BIO_NS::IFactory* factory,
+        BIO_SLV_FD_IM2D_NS::ISubSolverFactory* subSolverFactory
     );
 
     /**
@@ -78,6 +80,21 @@ public:
      *  Returns subSolvers.
      */
     SplittedSolver* getSubSolvers();
+
+    virtual BIO_CFG_NS::BoundAnalyzer* getBoundAnalyzer()
+    {
+        return boundAnalyzer;
+    }
+
+    virtual BIO_CFG_NS::StructureAnalyzer* getStructAnalyzer()
+    {
+        return structAnalyzer;
+    }
+
+    virtual BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* getFDAnalyzer()
+    {
+        return fdAnalyzer;
+    }
 
 protected:
 
