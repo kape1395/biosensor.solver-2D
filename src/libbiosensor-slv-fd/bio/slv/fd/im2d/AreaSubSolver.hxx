@@ -40,11 +40,11 @@ protected:
     BIO_DM_NS::ISegmentSplit* pointPositionsH;
     BIO_DM_NS::ISegmentSplit* pointPositionsV;
 
+    static const int LAYER_COUNT = 5;   ///< Number of layers describing each point in data.
     static const int LAYER_INTERM = 1;
     static const int LAYER_P = 3;
     static const int LAYER_Q = 4;
-    static const int LAYER_f_R = 5;
-    double ****data;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q, f_R]
+    double ****data;    //  [h][v][s][(curr|prev)Layer, intermLayer, (curr|this)Layer, p, q]
     int dataSizeH;      //  number of points in H (including boundary)
     int dataSizeV;      //  number of points in V (including boundary)
     int dataSizeS;      //  number of modelled substances

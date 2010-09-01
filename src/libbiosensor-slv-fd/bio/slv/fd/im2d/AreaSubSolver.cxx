@@ -297,7 +297,6 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
     static const int LAYER_INTERM = this->LAYER_INTERM;
     static const int LAYER_P = this->LAYER_P;
     static const int LAYER_Q = this->LAYER_Q;
-    static const int LAYER_f_R = this->LAYER_f_R;
     double ****data = this->data;
     int dataSizeH = this->dataSizeH;
     int dataSizeV = this->dataSizeV;
@@ -388,7 +387,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                     reactionsMM[s], reactionsMMPartCounts[s],
                     reactionsRO[s], reactionsROPartCounts[s]
                 )
-                f += dataHVS[LAYER_f_R] = f_R;
+                f += f_R;
 
                 //
                 // And now we are able to calculate layers:
@@ -462,7 +461,6 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
     static const int LAYER_INTERM = this->LAYER_INTERM;
     static const int LAYER_P = this->LAYER_P;
     static const int LAYER_Q = this->LAYER_Q;
-    static const int LAYER_f_R = this->LAYER_f_R;
     double ****data = this->data;
     int dataSizeH = this->dataSizeH;
     int dataSizeV = this->dataSizeV;
@@ -504,8 +502,7 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 double a = 0.0;
                 double b = exprTimeStep;                                // b_T
                 double c = 0.0;
-                double f = exprTimeStep * dataHVS[LAYER_INTERM]         // f_T
-                           + dataHVS[LAYER_f_R];                        // f_R
+                double f = exprTimeStep * dataHVS[LAYER_INTERM];        // f_T
 
 
                 //
@@ -531,8 +528,15 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveVerticalForward()
                 }
 
                 //
-                //  Reaction part (f+=f_R) is alredy added together with f_T)
+                //  Reaction part (f+=f_R)
                 //
+                double f_R = 0.0;
+                AREA_SUBSOLVER_REACTION_MACRO(
+                    f_R, LAYER_INTERM, dataHV,
+                    reactionsMM[s], reactionsMMPartCounts[s],
+                    reactionsRO[s], reactionsROPartCounts[s]
+                )
+                f += f_R;          // f_R
 
                 //
                 // And now we are able to calculate layers:
@@ -903,7 +907,7 @@ double** BIO_SLV_FD_IM2D_NS::AreaSubSolver::createDataPoint()
     double** point = new double*[dataSizeS];
     for (int s = 0; s < dataSizeS; s++)
     {
-        point[s] = new double[6];
+        point[s] = new double[LAYER_COUNT];
 
         // Apply initial conditions.
         point[s][0] = point[s][1] = point[s][2] =
@@ -914,8 +918,7 @@ double** BIO_SLV_FD_IM2D_NS::AreaSubSolver::createDataPoint()
         point[s][this->getPreviousLayerIndex()] =
             point[s][LAYER_INTERM] =
                 point[s][LAYER_P] =
-                    point[s][LAYER_Q] =
-                        point[s][LAYER_f_R] = NAN;
+                    point[s][LAYER_Q] = NAN;
     }
     return point;
 }
