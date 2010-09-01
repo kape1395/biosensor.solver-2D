@@ -4,8 +4,8 @@ biosensor (0.5.2) lucid; urgency=low
     now calculated in each half-step in the 2D solver. This makes schema
     more stable (bigger steps in time can be used). Accuracy was tested
     using test/test-2100-nano2d-hiR-dt?.xml, comparing 0.5.2 with 0.5.1.
-    Current censity was almost identical comparing  0.5.2 at dt=1E-4
-    with 0.5.1 at dt=1E-6 (fails at 88s).
+    Current censity was almost identical comparing 0.5.2 at dt=1E-4
+    with 0.4.3 at dt=1E-6 (fails at 88s).
   * Eliminated duplication of the code, implementing the reaction.
 
  -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 01 Sep 2010 15:11:13 +0300
