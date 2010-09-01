@@ -1,6 +1,7 @@
 #include "AreaSubSolver.hxx"
 #include "Model.hxx"
 #include "ModelReaction.hxx"
+#include "ReactionMacro.hxx"
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include <bio/dm/ConstantSegmentSplit.hxx>
@@ -382,19 +383,11 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::solveHorizontalForward()
                 //  f_R is saved for reuse in the solveVerticalForward.
                 //
                 double f_R = 0.0;
-                for (int r = reactionsMMPartCounts[s]; r--; )
-                {
-                    ReactionMMPart mm = reactionsMM[s][r];
-                    f_R += (mm.V_max * dataHV[mm.substrateIndex][layerPrev])
-                           / (mm.K_M + dataHV[mm.substrateIndex][layerPrev]);
-                }
-                for (int r = reactionsROPartCounts[s]; r--; )
-                {
-                    ReactionROPart ro = reactionsRO[s][r];
-                    f_R += ro.rate
-                           * dataHV[ro.substrate1Index][layerPrev]
-                           * (ro.substrate2Index != -1 ? dataHV[ro.substrate2Index][layerPrev] : 1.0);
-                }
+                AREA_SUBSOLVER_REACTION_MACRO(
+                    f_R, layerPrev, dataHV,
+                    reactionsMM[s], reactionsMMPartCounts[s],
+                    reactionsRO[s], reactionsROPartCounts[s]
+                )
                 f += dataHVS[LAYER_f_R] = f_R;
 
                 //

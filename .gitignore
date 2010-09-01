@@ -5,6 +5,7 @@
 .libs
 .deps
 .dirstamp*
+*~
 stamp-h*
 Makefile
 Makefile.in
