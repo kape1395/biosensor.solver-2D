@@ -222,8 +222,32 @@
             </xs:documentation>
         </xs:annotation>
         <xs:complexContent>
-            <xs:extension base="SimpleTimeStepAdjuster">
+            <xs:extension base="TimeStepAdjuster">
                 <xs:sequence>
+                    <xs:element name="increase" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Specifies rules for increasing timestep.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="factor"         type="xs:double"    use="required"/>
+                            <xs:attribute name="everyStepCount" type="xs:integer"   use="required"/>
+                            <xs:attribute name="maxStepSize"    type="xs:double"    use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="fallback" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Specifies rules for doing fallback in time.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="factor"                 type="xs:double"    use="required"/>
+                            <xs:attribute name="checkEveryStepCount"    type="xs:integer"   use="required"/>
+                            <xs:attribute name="minStepSize"            type="xs:double"    use="required"/>
+                        </xs:complexType>
+                    </xs:element>
                     <xs:element name="stateStore" type="ConcentrationProfile" minOccurs="1" maxOccurs="1">
                         <xs:annotation>
                             <xs:documentation>

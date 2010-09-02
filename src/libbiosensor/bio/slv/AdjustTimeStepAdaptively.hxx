@@ -12,12 +12,27 @@ BIO_SLV_NS_BEGIN
 /**
  *  Adaptive time step adjuster.
  */
-class AdjustTimeStepAdaptively : public AdjustTimeStepByFactor
+class AdjustTimeStepAdaptively : public ISolverListener
 {
 private:
-    std::vector<ISolverListener*> stopConditions;
+    BIO_SLV_NS::ISolver* solver;
+    BIO_SLV_NS::IIterativeSolver* iterativeSolver;  ///< The same solver.
+
+    double increaseFactor;
+    long increaseEveryStepCount;
+    double increaseMaxTimeStep;
+
+    double fallbackFactor;
+    long fallbackCheckEveryStepCount;
+    double fallbackMinTimeStep;
+
     BIO_IO_NS::ConcentrationProfile* concentrationWriter;
-    long increateAfterStep;
+    std::vector<BIO_SLV_NS::ISolverListener*> stopConditions;
+
+    long nextIterationForFallbackCheck;
+    long nextIterationForIncrease;
+    bool stateSaved;
+    double failTime;
 
 public:
 
@@ -26,11 +41,14 @@ public:
      */
     AdjustTimeStepAdaptively(
         ISolver* solver,
-        double factor,
-        long adjustEveryNumberOfSteps,
-        double maxTimeStep,
+        double  increaseFactor,
+        long    increaseEveryStepCount,
+        double  increaseMaxTimeStep,
+        double  fallbackFactor,
+        long    fallbackCheckEveryStepCount,
+        double  fallbackMinTimeStep,
         BIO_IO_NS::ConcentrationProfile* concentrationWriter,
-        std::vector<ISolverListener*>& stopConditions
+        std::vector<BIO_SLV_NS::ISolverListener*>& stopConditions
     );
 
     /**
@@ -38,14 +56,62 @@ public:
      */
     virtual ~AdjustTimeStepAdaptively();
 
+    /**
+     *  EventListener.
+     */
+    virtual void solveEventOccured();
+
+    /**
+     *  Reset listener's internal state.
+     */
+    virtual void reset();
+
 protected:
     /**
-     *  Calculates new time step.
+     *  Just to be able to call from the constructor.
      */
-    virtual double getNewTimeStep();
+    void resetInternal();
+
+    /**
+     *  Check if fallback is needed.
+     */
+    bool isFallbackNeeded();
+
+    /**
+     *  Do fallback in time.
+     */
+    void performFallback();
+
+    /**
+     *  Save current state.
+     */
+    void saveCurrentState();
+
+    /**
+     *  Was state saved?
+     */
+    bool isStateSaved();
+
+    /**
+     *  Increase time step;
+     */
+    void increaseTimeStep();
+
+    /**
+     *
+     */
+    void scheduleNextIncreaseAfter(long stepCount);
+
+    /**
+     *
+     */
+    void scheduleNextFallbackCheckAfter(long stepCount);
+
+    bool isTimeForFallbackCheck();
+
+    bool isTimeForIncrease();
 
 };
-
 
 
 BIO_SLV_NS_END

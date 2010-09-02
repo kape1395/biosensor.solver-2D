@@ -194,9 +194,12 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
 
         BIO_SLV_NS::AdjustTimeStepAdaptively* tsa = new BIO_SLV_NS::AdjustTimeStepAdaptively(
             solver,
-            adaptiveTSA->factor(),
-            adaptiveTSA->everyStepCount(),
-            adaptiveTSA->maxStepSize().present() ? adaptiveTSA->maxStepSize().get() : 0.0,
+            adaptiveTSA->increase().factor(),
+            adaptiveTSA->increase().everyStepCount(),
+            adaptiveTSA->increase().maxStepSize(),
+            adaptiveTSA->fallback().factor(),
+            adaptiveTSA->fallback().checkEveryStepCount(),
+            adaptiveTSA->fallback().minStepSize(),
             cw,
             stopConditions
         );
