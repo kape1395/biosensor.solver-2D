@@ -23,6 +23,7 @@ private:
     //std::vector<std::ostream*> openOStreams;
     //std::vector<std::istream*> openIStreams;
     std::map<std::string, std::ofstream*> openOStreams;
+    std::vector<std::ifstream*> openIStreams;
 
 public:
 
@@ -93,6 +94,11 @@ public:
      *  Close specified stream.
      */
     virtual void close(std::ostream* stream);
+
+    /**
+     *  Close specified stream.
+     */
+    virtual void close(std::istream* stream);
 
     /**
      *  Close all opened streams.

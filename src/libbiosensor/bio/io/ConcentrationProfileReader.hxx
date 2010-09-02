@@ -53,7 +53,6 @@ protected:
     std::vector<DataPoint> rawData;
 
 private:
-    boost::filesystem::path parsedFile;
     BIO_CFG_NS::StructureAnalyzer *structAnalyzer;
 
     long iterationNumber;
@@ -82,7 +81,7 @@ public:
      */
     ConcentrationProfileReader(
         BIO_XML_MODEL_NS::Model* model,
-        boost::filesystem::path& concentrationsFile
+        std::istream& input
     );
 
     /**
@@ -154,7 +153,7 @@ protected:
     /**
      *  Parses specified file and fills all internal structures.
      */
-    void parse(boost::filesystem::path& concentrationsFile);
+    void parse(std::istream& input);
     /**
      *  Parses one header line.
      *  @return false, if this was not a header line (and was not parsed).

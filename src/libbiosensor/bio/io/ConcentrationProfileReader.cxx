@@ -24,13 +24,13 @@ const std::string BIO_IO_NS::ConcentrationProfileReader::HDR_IDX_V = "idx_v";
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfileReader::ConcentrationProfileReader(
     BIO_XML_MODEL_NS::Model* model,
-    boost::filesystem::path& concentrationsFile
+    std::istream& input
 )
 {
     structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(model);
     substanceCount = structAnalyzer->getSubstances().size();
     colSubstance = new int[substanceCount];
-    parse(concentrationsFile);
+    parse(input);
 }
 
 
@@ -61,9 +61,8 @@ BIO_IO_NS::ConcentrationProfileReader::~ConcentrationProfileReader()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::ConcentrationProfileReader::parse(boost::filesystem::path& concentrationsFile)
+void BIO_IO_NS::ConcentrationProfileReader::parse(std::istream& input)
 {
-    this->parsedFile = concentrationsFile;
     this->iterationNumber = -1;
     this->solvedTime = -1.0;
     this->colPosH = -1;
@@ -75,16 +74,12 @@ void BIO_IO_NS::ConcentrationProfileReader::parse(boost::filesystem::path& conce
         colSubstance[i] = -1;
     }
 
-    std::ifstream input;
-    input.exceptions(std::ifstream::badbit);
-
 
     char lineBuf[LINE_SIZE];
 
     bool header = true; // true, if we are reading a header.
     try
     {
-        input.open(concentrationsFile.file_string().c_str(), std::ios::in);
         LOG_DEBUG(LOGGER << "Parsing a header...");
         while (!input.eof())
         {
@@ -135,11 +130,9 @@ void BIO_IO_NS::ConcentrationProfileReader::parse(boost::filesystem::path& conce
                 parseDataLine(line);
             }
         }
-        input.close();
     }
     catch (std::ifstream::failure e)
     {
-        input.close();
         LOG_ERROR(LOGGER << "Failed to parse concentrations file: " << e.what());
         throw BIO_NS::Exception("Failed to parse concentrations file");
     }

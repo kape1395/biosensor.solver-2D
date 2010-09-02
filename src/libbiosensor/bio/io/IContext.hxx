@@ -72,6 +72,11 @@ public:
     virtual void close(std::ostream* stream) = 0;
 
     /**
+     *  Close specified stream.
+     */
+    virtual void close(std::istream* stream) = 0;
+
+    /**
      *  Close all opened streams.
      */
     virtual void close() = 0;

@@ -22,6 +22,7 @@ libbiosensor_la_SOURCES = \
     bio/io/FilesystemContext.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
+    bio/slv/AdjustTimeStepAdaptively.cxx \
     bio/slv/AdjustTimeStepByFactor.cxx \
     bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
@@ -75,6 +76,7 @@ nobase_pkginclude_HEADERS = \
     bio/io/IRepeatable.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
+    bio/slv/AdjustTimeStepAdaptively.hxx \
     bio/slv/AdjustTimeStepByFactor.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
