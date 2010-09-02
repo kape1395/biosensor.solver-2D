@@ -247,11 +247,17 @@ int main(int argn, char **argv)
         if (resumeMode)
         {
             boost::filesystem::path concentrationPath(concentrationFile);
+            std::ifstream input;
+            input.exceptions(std::ifstream::badbit);
+            input.open(concentrationPath.file_string().c_str(), std::ios::in);
+
             ConcentrationProfileReader concentrationReader(
                 &*model,
-                concentrationPath
+                input
             );
             solver->setState(&concentrationReader);
+
+            input.close(); // TODO: Close on exception...
         }
 
         // Simulate operation of the biosensor

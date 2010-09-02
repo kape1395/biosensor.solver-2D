@@ -162,6 +162,18 @@
         </xs:complexContent>
     </xs:complexType>
     
+    <xs:complexType name="FailOnConcentrationOscillation">
+        <xs:annotation>
+            <xs:documentation>
+                Should fail, is oscilations are found in the concentrations.
+                I.e. second partial derivatives for adjacent points have different sign.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="StopCondition"/>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="FailISumOfConcentrationsNonConst">
         <xs:complexContent>
             <xs:extension base="StopCondition">
@@ -201,6 +213,61 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="AdaptiveTimeStepAdjuster">
+        <xs:annotation>
+            <xs:documentation>
+                Extends simple tine step adjuster by decreasing time step
+                if failure occurs. It also should go back in time in such
+                situation.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="TimeStepAdjuster">
+                <xs:sequence>
+                    <xs:element name="increase" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Specifies rules for increasing timestep.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="factor"         type="xs:double"    use="required"/>
+                            <xs:attribute name="everyStepCount" type="xs:integer"   use="required"/>
+                            <xs:attribute name="maxStepSize"    type="xs:double"    use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="fallback" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Specifies rules for doing fallback in time.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:complexType>
+                            <xs:attribute name="factor"                 type="xs:double"    use="required"/>
+                            <xs:attribute name="checkEveryStepCount"    type="xs:integer"   use="required"/>
+                            <xs:attribute name="minStepSize"            type="xs:double"    use="required"/>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="stateStore" type="ConcentrationProfile" minOccurs="1" maxOccurs="1">
+                        <xs:annotation>
+                            <xs:documentation>
+                                This element configures storage of intermediate states,
+                                used for going back in time.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="stopCondition" type="StopCondition" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>
+                                Stop conditions used to determine "bad" state.
+                                These can also report good states also.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
 
     <!-- ******************************************************************* -->

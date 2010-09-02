@@ -1,23 +1,28 @@
 #include "ConcentrationProfile.hxx"
+#include "IContext.hxx"
 #include "../Exception.hxx"
 #include "../dm/ISegmentSplit.hxx"
+#include "../Logging.hxx"
 #include <iostream>
 #include <sstream>
 #include <cmath>
+#define LOGGER "libbiosensor::ConcentrationProfile: "
 
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     std::string& name,
     BIO_SLV_NS::ISolver* solver,
-    BIO_IO_NS::IContext* Context
+    BIO_IO_NS::IContext* context
 )
 {
     this->name = name;
     this->indexed = false;
-    this->currentIndex = 0;
+    this->haveLastOutput = false;
+    this->overwrite = false;
+    this->currentIndex = -1;
     this->solver = solver;
-    this->Context = Context;
+    this->context = context;
 
     if ((this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData())) == 0)
     {
@@ -42,9 +47,11 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
     using BIO_SLV_NS::IIterativeSolver;
     int substCount = grid->getSubstanceCount();
 
+    currentIndex++;
+
     std::ostream* out = indexed
-                        ? Context->getOutputStream(name, currentIndex)
-                        : Context->getOutputStream(name);
+                        ? context->getOutputStream(name, currentIndex, overwrite)
+                        : context->getOutputStream(name, overwrite);
 
 
     IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
@@ -92,10 +99,64 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
         cursor->rowStart();
     }
 
-    Context->close(out);
-    currentIndex++;
+    haveLastOutput = true;
+    context->close(out);
 }
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::reset()
+{
+    currentIndex = -1;
+    haveLastOutput = false;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
+{
+    indexed = repeatable;
+    reset();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setOverwrite(bool overwrite)
+{
+    this->overwrite = overwrite;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_IO_NS::ConcentrationProfileReader* BIO_IO_NS::ConcentrationProfile::createReaderForLastOutput()
+{
+    using BIO_IO_NS::ConcentrationProfileReader;
+
+    if (!haveLastOutput)
+    {
+        LOG_WARN(LOGGER
+                 << "createReaderForLastOutput: "
+                 << "Reader is requested but no output was done before. Returning null."
+                );
+        return 0;
+    }
+
+    std::istream* input = indexed
+                          ? context->getInputStream(name, indexed)
+                          : context->getInputStream(name);
+
+    ConcentrationProfileReader* reader = new ConcentrationProfileReader(
+        solver->getConfig(),
+        *input
+    );
+
+    context->close(input);
+    return reader;
+}
 
 /* ************************************************************************** */
 /* ************************************************************************** */

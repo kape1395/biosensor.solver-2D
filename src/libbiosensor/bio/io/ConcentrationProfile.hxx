@@ -6,6 +6,7 @@
 #include "IOutput.hxx"
 #include "IContext.hxx"
 #include "IRepeatable.hxx"
+#include "ConcentrationProfileReader.hxx"
 #include <string>
 BIO_IO_NS_BEGIN
 
@@ -19,12 +20,14 @@ private:
 
     std::string name;
     BIO_SLV_NS::ISolver* solver;
-    BIO_IO_NS::IContext* Context;
+    BIO_IO_NS::IContext* context;
 
     BIO_DM_NS::IGrid2D* grid;
     BIO_DM_NS::ICursor2D* cursor;
 
     bool indexed;
+    bool haveLastOutput;
+    bool overwrite;
     long currentIndex;
 
 public:
@@ -34,7 +37,7 @@ public:
     ConcentrationProfile(
         std::string& name,
         BIO_SLV_NS::ISolver* solver,
-        BIO_IO_NS::IContext* Context
+        BIO_IO_NS::IContext* context
     );
 
     /**
@@ -50,18 +53,24 @@ public:
     /**
      *  Reset listener's internal state.
      */
-    virtual void reset()
-    {
-        currentIndex = 0;
-    }
+    virtual void reset();
 
     /**
-     *  ...
+     *  Set true, if this output writer will be called multiple times.
      */
-    virtual void setRepeatable(bool repeatable)
-    {
-        this->indexed = repeatable;
-    }
+    virtual void setRepeatable(bool repeatable);
+
+    /**
+     *  Set if output overwriting is allowed.
+     */
+    virtual void setOverwrite(bool overwrite);
+
+    /**
+     *  Returns reader, that is configured to read last concentration file,
+     *  produced by this writer.
+     *  Returned object should be deleted by the caller.
+     */
+    virtual BIO_IO_NS::ConcentrationProfileReader* createReaderForLastOutput();
 
 };
 

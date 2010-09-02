@@ -1,10 +1,13 @@
 #include "MainFactory.hxx"
+#include "IFactory.hxx"
 #include "io/ConcentrationProfile.hxx"
 #include "io/CurrentDensity.hxx"
 #include "io/AveragedConcentration.hxx"
 #include "slv/AdjustTimeStepByFactor.hxx"
+#include "slv/AdjustTimeStepAdaptively.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
+#include "slv/StopIfConcentrationsOscillateBySpace.hxx"
 #include "slv/StopIfInvalidConcentrations.hxx"
 #include "slv/StopIfSumOfConcentrationsNonConst.hxx"
 #include "slv/InvokeNotBefore.hxx"
@@ -80,6 +83,16 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
         /* ****************************************************************** */
 
         return new BIO_SLV_NS::StopIfInvalidConcentrations(solver);
+
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::FailOnConcentrationOscillation*>(stopCondition))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+
+        return new BIO_SLV_NS::StopIfConcentrationsOscillateBySpace(solver);
 
         /* ****************************************************************** */
         /* ****************************************************************** */
@@ -162,7 +175,38 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
     BIO_XML_MODEL_NS::solver::TimeStepAdjuster* timeStepAdjuster
 )
 {
-    if (dynamic_cast<BIO_XML_MODEL_NS::solver::SimpleTimeStepAdjuster*>(timeStepAdjuster))
+    if (dynamic_cast<BIO_XML_MODEL_NS::solver::AdaptiveTimeStepAdjuster*>(timeStepAdjuster))
+    {
+        using BIO_XML_MODEL_NS::solver::AdaptiveTimeStepAdjuster;
+        AdaptiveTimeStepAdjuster* adaptiveTSA = dynamic_cast<AdaptiveTimeStepAdjuster*>(timeStepAdjuster);
+
+        std::vector<BIO_SLV_NS::ISolverListener*> stopConditions;
+        for (AdaptiveTimeStepAdjuster::stopCondition_iterator it = adaptiveTSA->stopCondition().begin();
+                it < adaptiveTSA->stopCondition().end(); it++)
+        {
+            stopConditions.push_back(rootFactory->createStopCondition(solver, &*it));
+        }
+
+        BIO_SLV_NS::ISolverListener* cwListener = rootFactory->createOutput(solver, &adaptiveTSA->stateStore());
+        BIO_IO_NS::ConcentrationProfile* cw = dynamic_cast<BIO_IO_NS::ConcentrationProfile*>(cwListener);
+        if (!cw)
+            throw new BIO_NS::Exception("Concentration profile writer must be specified for the AdaptiveTimeStepAdjuster");
+
+        BIO_SLV_NS::AdjustTimeStepAdaptively* tsa = new BIO_SLV_NS::AdjustTimeStepAdaptively(
+            solver,
+            adaptiveTSA->increase().factor(),
+            adaptiveTSA->increase().everyStepCount(),
+            adaptiveTSA->increase().maxStepSize(),
+            adaptiveTSA->fallback().factor(),
+            adaptiveTSA->fallback().checkEveryStepCount(),
+            adaptiveTSA->fallback().minStepSize(),
+            cw,
+            stopConditions
+        );
+
+        return tsa;
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::SimpleTimeStepAdjuster*>(timeStepAdjuster))
     {
         using BIO_XML_MODEL_NS::solver::SimpleTimeStepAdjuster;
         SimpleTimeStepAdjuster* simpleTSA = dynamic_cast<SimpleTimeStepAdjuster*>(timeStepAdjuster);

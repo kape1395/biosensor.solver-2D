@@ -41,7 +41,7 @@ public:
      *
      *  \param name Name for a destination.
      */
-    virtual std::ostream* getOutputStream(const std::string& name) = 0;
+    virtual std::ostream* getOutputStream(const std::string& name, bool overwrite = false) = 0;
 
     /**
      *  Create or get existing indexed output stream by name.
@@ -49,7 +49,7 @@ public:
      *  \param name     Name for a destination.
      *  \param index    Index number for a destination.
      */
-    virtual std::ostream* getOutputStream(const std::string& name, long index) = 0;
+    virtual std::ostream* getOutputStream(const std::string& name, long index, bool overwrite = false) = 0;
 
     /**
      *  Create or get existing output stream by name.
@@ -70,6 +70,11 @@ public:
      *  Close specified stream.
      */
     virtual void close(std::ostream* stream) = 0;
+
+    /**
+     *  Close specified stream.
+     */
+    virtual void close(std::istream* stream) = 0;
 
     /**
      *  Close all opened streams.

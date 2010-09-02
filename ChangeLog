@@ -1,3 +1,15 @@
+biosensor (1.6.0) lucid; urgency=low
+
+  * Implementation of adaptive time step adjuster.
+  * Implementation of concentration oscillation stop condition.
+  * Removed raising of exception, if setting invalid concentration on
+    constant bound.
+  * Implemented currentdensity subcommand in the bio-output. It removes
+    trash, produced by the fallbacks when doing adaptive time step
+    adjustments.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Thu, 02 Sep 2010 23:25:46 +0300
+
 biosensor (0.5.2) lucid; urgency=low
 
   * Reimplemented calculation of reaction in the area subsolver. It is

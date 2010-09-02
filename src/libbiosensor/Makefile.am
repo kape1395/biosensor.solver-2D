@@ -22,14 +22,16 @@ libbiosensor_la_SOURCES = \
     bio/io/FilesystemContext.cxx \
     bio/slv/AbstractIterativeSolver.cxx \
     bio/slv/AbstractSolver.cxx \
+    bio/slv/AdjustTimeStepAdaptively.cxx \
     bio/slv/AdjustTimeStepByFactor.cxx \
     bio/slv/InvokeEveryTimeStep.cxx \
     bio/slv/InvokeNotBefore.cxx \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
     bio/slv/StopByCurrentDensityGradient.cxx \
-    bio/slv/StopIfSumOfConcentrationsNonConst.cxx \
+    bio/slv/StopIfConcentrationsOscillateBySpace.cxx \
     bio/slv/StopIfInvalidConcentrations.cxx \
+    bio/slv/StopIfSumOfConcentrationsNonConst.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx \
     bio/trd/CompositeElectrode.cxx \
@@ -75,6 +77,7 @@ nobase_pkginclude_HEADERS = \
     bio/io/IRepeatable.hxx \
     bio/slv/AbstractIterativeSolver.hxx \
     bio/slv/AbstractSolver.hxx \
+    bio/slv/AdjustTimeStepAdaptively.hxx \
     bio/slv/AdjustTimeStepByFactor.hxx \
     bio/slv/IIterativeSolver.hxx \
     bio/slv/ISolver.hxx \
@@ -86,6 +89,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \
     bio/slv/StopByCurrentDensityGradient.hxx \
+    bio/slv/StopIfConcentrationsOscillateBySpace.hxx \
     bio/slv/StopIfInvalidConcentrations.hxx \
     bio/slv/StopIfSumOfConcentrationsNonConst.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \

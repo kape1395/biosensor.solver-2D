@@ -28,6 +28,7 @@ public:
 
     virtual void solve();
     virtual void stop(bool steadyStateReached = false);
+    virtual void resume();
     virtual bool isStopped();
     virtual bool isSteadyStateReached();
     virtual double getTimeStep();
