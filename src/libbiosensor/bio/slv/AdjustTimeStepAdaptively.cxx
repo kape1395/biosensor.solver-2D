@@ -21,6 +21,7 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
 ) : AdjustTimeStepByFactor(solver, factor, adjustEveryNumberOfSteps, maxTimeStep)
 {
     this->concentrationWriter = concentrationWriter;
+    this->concentrationWriter->setOverwrite(true);
     this->stopConditions = stopConditions;
     this->increateAfterStep = 0;
 }

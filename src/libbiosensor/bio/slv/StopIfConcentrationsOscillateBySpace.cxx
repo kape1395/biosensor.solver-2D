@@ -82,7 +82,7 @@ bool BIO_SLV_NS::StopIfConcentrationsOscillateBySpace::checkSubArea(
                     //  Calculate second derivate. Assuming fixed step.
                     //  Only sign is interesting.
                     derivates[s][derivatesIdx0] = points[s][pointsIdx2] + points[s][pointsIdx0]
-                                               - (2.0 * points[s][pointsIdx1]);
+                                                  - (2.0 * points[s][pointsIdx1]);
                 }
 
                 if (h >= 5)
@@ -131,7 +131,7 @@ bool BIO_SLV_NS::StopIfConcentrationsOscillateBySpace::checkSubArea(
                     //  Calculate second derivate. Assuming fixed step.
                     //  Only sign is interesting.
                     derivates[s][derivatesIdx0] = points[s][pointsIdx2] + points[s][pointsIdx0]
-                                               - (2.0 * points[s][pointsIdx1]);
+                                                  - (2.0 * points[s][pointsIdx1]);
                 }
 
                 if (v >= 5)

@@ -1,5 +1,8 @@
 #include "AbstractIterativeSolver.hxx"
 #include "ISolverListener.hxx"
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::AbstractIterativeSolver: "
+
 BIO_SLV_NS_BEGIN
 
 
@@ -170,10 +173,14 @@ void AbstractIterativeSolver::addListener(
  */
 void AbstractIterativeSolver::invokeListeners()
 {
+    LOG_TRACE(LOGGER << "invokeListeners()...");
     for (unsigned i = 0; i < listeners.size(); i++)
     {
+        LOG_TRACE(LOGGER << "invokeListeners() listener[" << i << "]...");
         listeners[i]->solveEventOccured();
+        LOG_TRACE(LOGGER << "invokeListeners() listener[" << i << "]... Done");
     }
+    LOG_TRACE(LOGGER << "invokeListeners()... Done");
 }
 
 

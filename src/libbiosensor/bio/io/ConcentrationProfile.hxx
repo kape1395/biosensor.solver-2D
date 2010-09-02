@@ -27,6 +27,7 @@ private:
 
     bool indexed;
     bool haveLastOutput;
+    bool overwrite;
     long currentIndex;
 
 public:
@@ -58,6 +59,11 @@ public:
      *  Set true, if this output writer will be called multiple times.
      */
     virtual void setRepeatable(bool repeatable);
+
+    /**
+     *  Set if output overwriting is allowed.
+     */
+    virtual void setOverwrite(bool overwrite);
 
     /**
      *  Returns reader, that is configured to read last concentration file,

@@ -27,7 +27,7 @@ BIO_SLV_NS::AdjustTimeStepByFactor::AdjustTimeStepByFactor(
     if (iterativeSolver == 0)
         throw Exception("AdjustTimeStepByFactor: Solver must implement IIterativeSolver");
 
-    this->nextStepForAdjustment = iterativeSolver->getSolvedIterationCount() + adjustEveryNumberOfSteps;
+    this->nextStepForAdjustment = iterativeSolver->getSolvedIterationCount();
 }
 
 

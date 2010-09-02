@@ -19,6 +19,7 @@ BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     this->name = name;
     this->indexed = false;
     this->haveLastOutput = false;
+    this->overwrite = false;
     this->currentIndex = -1;
     this->solver = solver;
     this->context = context;
@@ -49,8 +50,8 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
     currentIndex++;
 
     std::ostream* out = indexed
-                        ? context->getOutputStream(name, currentIndex)
-                        : context->getOutputStream(name);
+                        ? context->getOutputStream(name, currentIndex, overwrite)
+                        : context->getOutputStream(name, overwrite);
 
 
     IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
@@ -118,6 +119,14 @@ void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
 {
     indexed = repeatable;
     reset();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setOverwrite(bool overwrite)
+{
+    this->overwrite = overwrite;
 }
 
 

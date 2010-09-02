@@ -27,7 +27,7 @@ BIO_SLV_NS::StopIfInvalidConcentrations::StopIfInvalidConcentrations(
     if (dataModel == 0)
         throw Exception("StopIfInvalidConcentrations: Solver dataModel must implement IComposite2D");
 
-    reset();
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount();
 }
 
 
@@ -61,7 +61,7 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::solveEventOccured()
     }
     LOG_DEBUG(LOGGER << "Validation successful");
 
-    reset();
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
 }
 
 
@@ -69,7 +69,7 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::solveEventOccured()
 /* ************************************************************************** */
 void BIO_SLV_NS::StopIfInvalidConcentrations::reset()
 {
-    nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
+    nextStepForCheck = iterativeSolver->getSolvedIterationCount();
 }
 
 
