@@ -39,8 +39,42 @@ def output_halftime(file):
 
 
 ################################################################################
+#
+#   Writes rurrent density by time, eliminating fallbacks in time.
+#
+def output_current(file):
+    sys.stdout.write('# A current density is calculated from: ' + file + '\n')
+    sys.stdout.write('# Time\tStep\tCurrentDensity\n')
+    inFile = open(file, 'r')
+    
+    fileRows = list();
+    for inLine in inFile:
+        if re.search('^#', inLine): continue
+        fileRows.append(inLine)
+    fileRows.reverse()
+    
+    outRows = list()
+    first = True
+    tPrev = 0.0
+    for line in fileRows:
+        if first:
+            outRows.append(line)
+            first = False
+            tPrev = float(line.split('\t')[0])
+        else:
+            tThis = float(line.split('\t')[0])
+            if tThis < tPrev:
+                outRows.append(line)
+                tPrev = tThis
+
+    outRows.reverse()
+    for line in outRows:
+        sys.stdout.write(line)
+
+
+################################################################################
 def output_steady_state_current(file):
-    sys.stdout.write('# A steady state current is calculated from: ' + file + '\n')
+    sys.stdout.write('# A steady state current density is calculated from: ' + file + '\n')
     inFile = open(file, 'r')
 
     lastLine = ''
@@ -91,6 +125,10 @@ if len(sys.argv) < 2 :
 if sys.argv[1] == 'halftime' or sys.argv[1].startswith("ha") :
     if len(sys.argv) != 3: error('Please specify currentDensityVersusTime file')
     output_halftime(sys.argv[2])
+
+elif sys.argv[1] == 'currentdensity':
+    if len(sys.argv) != 3: error('Please specify currentDensityVersusTime file')
+    output_current(sys.argv[2])
 
 elif sys.argv[1] == 'steadystate' or sys.argv[1].startswith("st") :
     if len(sys.argv) != 3: error('Please specify currentDensityVersusTime file')
