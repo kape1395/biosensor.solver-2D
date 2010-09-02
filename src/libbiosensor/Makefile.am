@@ -29,8 +29,9 @@ libbiosensor_la_SOURCES = \
     bio/slv/NullSolver.cxx \
     bio/slv/StopAtSpecifiedPoint.cxx \
     bio/slv/StopByCurrentDensityGradient.cxx \
-    bio/slv/StopIfSumOfConcentrationsNonConst.cxx \
+    bio/slv/StopIfConcentrationsOscillateBySpace.cxx \
     bio/slv/StopIfInvalidConcentrations.cxx \
+    bio/slv/StopIfSumOfConcentrationsNonConst.cxx \
     bio/trd/AmperometricElectrode2DOnBound.cxx \
     bio/trd/AmperometricInjectedElectrode2D.cxx \
     bio/trd/CompositeElectrode.cxx \
@@ -88,6 +89,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/NullSolver.hxx \
     bio/slv/StopAtSpecifiedPoint.hxx \
     bio/slv/StopByCurrentDensityGradient.hxx \
+    bio/slv/StopIfConcentrationsOscillateBySpace.hxx \
     bio/slv/StopIfInvalidConcentrations.hxx \
     bio/slv/StopIfSumOfConcentrationsNonConst.hxx \
     bio/trd/AmperometricElectrode2DOnBound.hxx \

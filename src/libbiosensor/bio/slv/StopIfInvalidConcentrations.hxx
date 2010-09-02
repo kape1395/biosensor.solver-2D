@@ -45,12 +45,12 @@ public:
      */
     virtual void reset();
 
-private:
+protected:
 
     /**
      *  Check one sub-area for the data validity.
      */
-    bool checkSubArea(BIO_DM_NS::IGrid2D* area);
+    virtual bool checkSubArea(BIO_DM_NS::IGrid2D* area, int posH, int posV);
 
 };
 

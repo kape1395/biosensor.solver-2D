@@ -7,6 +7,7 @@
 #include "slv/AdjustTimeStepAdaptively.hxx"
 #include "slv/StopAtSpecifiedPoint.hxx"
 #include "slv/StopByCurrentDensityGradient.hxx"
+#include "slv/StopIfConcentrationsOscillateBySpace.hxx"
 #include "slv/StopIfInvalidConcentrations.hxx"
 #include "slv/StopIfSumOfConcentrationsNonConst.hxx"
 #include "slv/InvokeNotBefore.hxx"
@@ -82,6 +83,16 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
         /* ****************************************************************** */
 
         return new BIO_SLV_NS::StopIfInvalidConcentrations(solver);
+
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+    }
+    else if (dynamic_cast<BIO_XML_MODEL_NS::solver::FailOnConcentrationOscillation*>(stopCondition))
+    {
+        /* ****************************************************************** */
+        /* ****************************************************************** */
+
+        return new BIO_SLV_NS::StopIfConcentrationsOscillateBySpace(solver);
 
         /* ****************************************************************** */
         /* ****************************************************************** */

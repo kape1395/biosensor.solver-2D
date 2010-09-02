@@ -165,7 +165,6 @@
     <xs:complexType name="FailOnConcentrationOscillation">
         <xs:annotation>
             <xs:documentation>
-                TBD: Implement.
                 Should fail, is oscilations are found in the concentrations.
                 I.e. second partial derivatives for adjacent points have different sign.
             </xs:documentation>

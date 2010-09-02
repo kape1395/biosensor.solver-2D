@@ -52,14 +52,10 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::solveEventOccured()
     {
         for (int h = 0; h < dataModel->sizeH(); h++)
         {
-            if (!checkSubArea(dataModel->getArea(h, v)))
+            if (!checkSubArea(dataModel->getArea(h, v), h, v))
             {
                 iterativeSolver->stop(false);
-                LOG_ERROR(LOGGER << "The solver is stopped because it is in an invalid state."
-                          << " Negative concentration of a substance or NaN was"
-                          << " found in the subArea with position:"
-                          << " h=" << h << " v=" << v
-                         );
+                LOG_ERROR(LOGGER << "The solver is stopped because it is in an invalid state.");
             }
         }
     }
@@ -79,7 +75,7 @@ void BIO_SLV_NS::StopIfInvalidConcentrations::reset()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool BIO_SLV_NS::StopIfInvalidConcentrations::checkSubArea(BIO_DM_NS::IGrid2D* area)
+bool BIO_SLV_NS::StopIfInvalidConcentrations::checkSubArea(BIO_DM_NS::IGrid2D* area, int posH, int posV)
 {
     std::auto_ptr<BIO_DM_NS::ICursor2D> cursor(area->newGridCursor());
 
@@ -93,9 +89,12 @@ bool BIO_SLV_NS::StopIfInvalidConcentrations::checkSubArea(BIO_DM_NS::IGrid2D* a
                 double c = concentrations->getConcentration(s);
                 if (area->getSubstanceConf(s) && (std::isnan(c) || c < ZERO_MIN))
                 {
-                    LOG_WARN(LOGGER << "An invalid concentration value " << c
-                             << " found for the substance "
+                    LOG_WARN(LOGGER
+                             << "An invalid concentration value \"" << c
+                             << "\" found for the substance \""
                              << area->getSubstanceConf(s)->name()
+                             << "\" in the subArea with position:"
+                             << " h=" << posH << " v=" << posV
                             );
                     return false;
                 }
