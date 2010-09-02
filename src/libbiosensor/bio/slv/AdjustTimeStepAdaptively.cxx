@@ -83,6 +83,11 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::resetInternal()
 /* ************************************************************************** */
 void BIO_SLV_NS::AdjustTimeStepAdaptively::solveEventOccured()
 {
+    if (!isStateSaved())
+    {
+        saveCurrentState();
+    }
+
     if (isTimeForFallbackCheck())
     {
         if (isFallbackNeeded())
@@ -90,18 +95,12 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::solveEventOccured()
             failTime = std::max(failTime, iterativeSolver->getSolvedTime());
             performFallback();
         }
-        else
-        {
-            if (!isStateSaved() || isTimeForIncrease())
-            {
-                saveCurrentState();
-            }
-        }
         scheduleNextFallbackCheckAfter(fallbackCheckEveryStepCount);
     }
 
     if (isTimeForIncrease())
     {
+        saveCurrentState();
         increaseTimeStep();
         scheduleNextIncreaseAfter(increaseEveryStepCount);
     }
