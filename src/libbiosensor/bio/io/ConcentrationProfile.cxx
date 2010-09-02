@@ -45,7 +45,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
 {
     using BIO_SLV_NS::IIterativeSolver;
     int substCount = grid->getSubstanceCount();
-    
+
     currentIndex++;
 
     std::ostream* out = indexed
@@ -111,7 +111,7 @@ void BIO_IO_NS::ConcentrationProfile::reset()
     haveLastOutput = false;
 }
 
-    
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
@@ -130,20 +130,20 @@ BIO_IO_NS::ConcentrationProfileReader* BIO_IO_NS::ConcentrationProfile::createRe
     if (!haveLastOutput)
     {
         LOG_WARN(LOGGER
-                << "createReaderForLastOutput: "
-                << "Reader is requested but no output was done before. Returning null."
+                 << "createReaderForLastOutput: "
+                 << "Reader is requested but no output was done before. Returning null."
                 );
         return 0;
     }
 
     std::istream* input = indexed
-            ? context->getInputStream(name, indexed)
-            : context->getInputStream(name);
+                          ? context->getInputStream(name, indexed)
+                          : context->getInputStream(name);
 
     ConcentrationProfileReader* reader = new ConcentrationProfileReader(
-            solver->getConfig(),
-            *input
-            );
+        solver->getConfig(),
+        *input
+    );
 
     context->close(input);
     return reader;

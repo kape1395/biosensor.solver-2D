@@ -65,7 +65,7 @@ public:
      *  Returned object should be deleted by the caller.
      */
     virtual BIO_IO_NS::ConcentrationProfileReader* createReaderForLastOutput();
-    
+
 };
 
 

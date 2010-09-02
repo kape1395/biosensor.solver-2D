@@ -317,7 +317,7 @@ bool BIO_IO_NS::ConcentrationProfileReader::parseDataLine(std::string line)
     std::stringstream log_subst;
     for (int i = 0; i < substanceCount; i++)
         log_subst << " " << dataPoint.substance[i];
-    LOG_DEBUG(LOGGER << "Data point was read:"
+    LOG_TRACE(LOGGER << "Data point was read:"
               << " posH=" << dataPoint.posH
               << " posV=" << dataPoint.posV
               << " idxH=" << dataPoint.idxH

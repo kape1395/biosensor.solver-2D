@@ -250,13 +250,13 @@ int main(int argn, char **argv)
             std::ifstream input;
             input.exceptions(std::ifstream::badbit);
             input.open(concentrationPath.file_string().c_str(), std::ios::in);
-            
+
             ConcentrationProfileReader concentrationReader(
                 &*model,
                 input
             );
             solver->setState(&concentrationReader);
-            
+
             input.close(); // TODO: Close on exception...
         }
 

@@ -73,7 +73,7 @@ protected:
     {
         return solver;
     }
-    
+
     /**
      *  Returns solver, governed by this object.
      */
@@ -89,7 +89,7 @@ protected:
     {
         return factor;
     }
-    
+
 };
 
 

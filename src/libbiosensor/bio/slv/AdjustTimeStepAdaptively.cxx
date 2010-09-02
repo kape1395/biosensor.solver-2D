@@ -1,12 +1,11 @@
-
-#include "AdjustTimeStepByFactor.hxx"
-
 #include "AdjustTimeStepAdaptively.hxx"
+#include "IIterativeSolver.hxx"
+#include "AdjustTimeStepByFactor.hxx"
 #include "../Exception.hxx"
-#include <iostream>
-#include <cmath>
 #include "../io/ConcentrationProfileReader.hxx"
 #include "../Logging.hxx"
+#include <iostream>
+#include <cmath>
 #define LOGGER "libbiosensor::AdjustTimeStepAdaptively: "
 
 
@@ -17,10 +16,13 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
     double factor,
     long adjustEveryNumberOfSteps,
     double maxTimeStep,
+    BIO_IO_NS::ConcentrationProfile* concentrationWriter,
     std::vector<ISolverListener*>& stopConditions
 ) : AdjustTimeStepByFactor(solver, factor, adjustEveryNumberOfSteps, maxTimeStep)
 {
+    this->concentrationWriter = concentrationWriter;
     this->stopConditions = stopConditions;
+    this->increateAfterStep = 0;
 }
 
 
@@ -56,42 +58,43 @@ double BIO_SLV_NS::AdjustTimeStepAdaptively::getNewTimeStep()
         double newTimeStep = prevTimeStep / getStepIncreaseFactor();
 
         LOG_WARN(LOGGER
-                << "getNewTimeStep: "
-                << "Failure reported, doing rollback in time. Updating"
-                << " time(" << prevTime << "->" << newTime
-                << ") iteration(" << prevIteration << "->" << reader->getIteration()
-                << ") timeStep(" << prevTimeStep << "->" << newTimeStep << ")."
+                 << "getNewTimeStep: "
+                 << "Failure reported, doing rollback in time. Updating"
+                 << " time(" << prevTime << "->" << newTime
+                 << ") iteration(" << prevIteration << "->" << reader->getIteration()
+                 << ") timeStep(" << prevTimeStep << "->" << newTimeStep << ")."
                 );
 
         getSolver()->setState(reader);
+        is->resume();
         delete reader;
 
         //
         //  Schedule next time adjustment not before failure time.
         //
-        scheduleNextAdjustment(std::ceil((prevTime - newTime) / newTimeStep));
+        //scheduleNextAdjustment(std::ceil((prevTime - newTime) / newTimeStep));
+        increateAfterStep = is->getSolvedIterationCount() + std::ceil((prevTime - newTime) / newTimeStep);
 
         return newTimeStep;
     }
     else
     {
-        return AdjustTimeStepByFactor::getNewTimeStep();
+        //
+        //  Store current state.
+        //
+        concentrationWriter->solveEventOccured();
+
+        if (is->getSolvedIterationCount() >= increateAfterStep)
+        {
+            LOG_DEBUG(LOGGER << "getNewTimeStep: No errors found, step will be increased.");
+            return AdjustTimeStepByFactor::getNewTimeStep();
+        }
+        else
+        {
+            LOG_DEBUG(LOGGER << "getNewTimeStep: No errors found, step will be left the same.");
+            return is->getTimeStep();
+        }
     }
-}
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_SLV_NS::AdjustTimeStepAdaptively::changeTimeStep(double newTimeStep)
-{
-    //
-    //  Store current state.
-    //
-    concentrationWriter->solveEventOccured();
-
-    //
-    //  Do usual things.
-    //
-    AdjustTimeStepByFactor::changeTimeStep(newTimeStep);
 }
 
 /* ************************************************************************** */

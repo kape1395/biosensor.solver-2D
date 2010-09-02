@@ -5,6 +5,8 @@
 #include <string>
 #include <boost/filesystem.hpp>
 #include "../Exception.hxx"
+#include "../Logging.hxx"
+#define LOGGER "libbiosensor::FilesystemContext: "
 
 namespace bf = boost::filesystem;
 
@@ -70,18 +72,36 @@ void BIO_IO_NS::FilesystemContext::setConfiguration(std::istream& config, std::s
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name)
+std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name, bool overwrite)
 {
+    bool found = false;
     for (std::vector<std::string>::iterator fn = fileNames.begin(); fn < fileNames.end(); fn++)
     {
-        if (fn->compare(name) == 0)
+        found = found || (fn->compare(name) == 0);
+    }
+    if (found)
+    {
+        if (overwrite)
+        {
+            LOG_DEBUG(LOGGER
+                      << "OutputStream with specified name is alredy used. File \""
+                      << name
+                      << "\" will be overwritten!"
+                     );
+        }
+        else
+        {
             throw Exception("OutputStream with specified name is alredy used.");
+        }
     }
 
     std::ofstream* out = new std::ofstream();
     out->open(getFilePath(name).file_string().c_str(), std::ios_base::out);
 
-    fileNames.push_back(name);
+    if (!found)
+    {
+        fileNames.push_back(name);
+    }
     openOStreams.insert(std::pair<std::string,std::ofstream*>(name, out));
     return out;
 }
@@ -89,9 +109,9 @@ std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& n
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name, long index)
+std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& name, long index, bool overwrite)
 {
-    return getOutputStream(createIndexedFileName(name, index));
+    return getOutputStream(createIndexedFileName(name, index), overwrite);
 }
 
 
@@ -172,7 +192,7 @@ void BIO_IO_NS::FilesystemContext::close()
         delete i->second;
     }
     openOStreams.clear();
-    
+
     for (std::vector<std::ifstream*>::iterator i = openIStreams.begin(); i != openIStreams.end(); i++)
     {
         (*i)->close();

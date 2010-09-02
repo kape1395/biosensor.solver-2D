@@ -45,6 +45,7 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
 {
     if (iterativeSolver->getSolvedIterationCount() >= nextStepForAdjustment)
     {
+        LOG_DEBUG(LOGGER << "solveEventOccured...");
         double newTimeStep = getNewTimeStep();
 
         if (newTimeStep != iterativeSolver->getTimeStep())
@@ -52,7 +53,8 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
             changeTimeStep(newTimeStep);
         }
 
-        reset();
+        scheduleNextAdjustment(adjustEveryNumberOfSteps);
+        LOG_DEBUG(LOGGER << "solveEventOccured... Done");
     }
 }
 
@@ -61,7 +63,7 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::solveEventOccured()
 /* ************************************************************************** */
 void BIO_SLV_NS::AdjustTimeStepByFactor::reset()
 {
-    scheduleNextAdjustment(adjustEveryNumberOfSteps);
+    nextStepForAdjustment = iterativeSolver->getSolvedIterationCount() + iterativeSolver->getSolvedIterationCount();
 }
 
 /* ************************************************************************** */
@@ -73,8 +75,9 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::scheduleNextAdjustment(long stepCount)
     if (nextStepForAdjustment < requested)
     {
         LOG_INFO(LOGGER
-                << "scheduleNextAdjustment: "
-                << " At iteration=" << requested
+                 << "scheduleNextAdjustment: "
+                 << "Current iteration=" << current
+                 << ", next attempt will be at iteration=" << requested
                 );
 
         nextStepForAdjustment = requested;
@@ -104,7 +107,7 @@ void BIO_SLV_NS::AdjustTimeStepByFactor::changeTimeStep(double newTimeStep)
     LOG_INFO(LOGGER << "Changing time step."
              << " oldTimeStep=" << iterativeSolver->getTimeStep()
              << " newTimeStep=" << newTimeStep
-             << " solvedTime=" << iterativeSolver->getSolvedTime()
+             << " at: solvedTime=" << iterativeSolver->getSolvedTime()
              << " solvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
             );
     iterativeSolver->setTimeStep(newTimeStep);

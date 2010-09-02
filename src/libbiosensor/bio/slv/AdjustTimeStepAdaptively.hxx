@@ -17,6 +17,7 @@ class AdjustTimeStepAdaptively : public AdjustTimeStepByFactor
 private:
     std::vector<ISolverListener*> stopConditions;
     BIO_IO_NS::ConcentrationProfile* concentrationWriter;
+    long increateAfterStep;
 
 public:
 
@@ -28,6 +29,7 @@ public:
         double factor,
         long adjustEveryNumberOfSteps,
         double maxTimeStep,
+        BIO_IO_NS::ConcentrationProfile* concentrationWriter,
         std::vector<ISolverListener*>& stopConditions
     );
 
@@ -41,11 +43,6 @@ protected:
      *  Calculates new time step.
      */
     virtual double getNewTimeStep();
-
-    /**
-     *  Upadtes time step in the solver.
-     */
-    virtual void changeTimeStep(double newTimeStep);
 
 };
 
