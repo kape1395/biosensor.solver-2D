@@ -283,11 +283,19 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
     {
         /* ****************************************************************** */
         /* ****************************************************************** */
+        BIO_XML_MODEL_NS::solver::ConcentrationProfile* cpOut;
+        cpOut = dynamic_cast<BIO_XML_MODEL_NS::solver::ConcentrationProfile*>(output);
+
         BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
-            output->name(),
+            cpOut->name(),
             solver,
             context
         );
+
+        if (cpOut->precision().present())
+        {
+            out->setPrecision(cpOut->precision().get());
+        }
 
         return out;
         /* ****************************************************************** */

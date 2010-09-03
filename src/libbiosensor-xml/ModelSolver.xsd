@@ -85,7 +85,15 @@
     <!-- ******************************************************************* -->
     <xs:complexType name="ConcentrationProfile">
         <xs:complexContent>
-            <xs:extension base="m:SolverOutput"/>
+            <xs:extension base="m:SolverOutput">
+                <xs:attribute name="precision" type="xs:int" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Precision, used when formatting numbers for the output.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 

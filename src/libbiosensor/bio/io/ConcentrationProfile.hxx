@@ -30,6 +30,12 @@ private:
     bool overwrite;
     long currentIndex;
 
+    /**
+     *  Precision, used when formatting numbers for the output.
+     *  Default precision is used is -1 is specified.
+     */
+    int precision;
+
 public:
     /**
      *  Constructor.
@@ -64,6 +70,11 @@ public:
      *  Set if output overwriting is allowed.
      */
     virtual void setOverwrite(bool overwrite);
+
+    /**
+     *  Precision, used when formatting numbers for the output.
+     */
+    virtual void setPrecision(int precision);
 
     /**
      *  Returns reader, that is configured to read last concentration file,

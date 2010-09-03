@@ -23,6 +23,7 @@ BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     this->currentIndex = -1;
     this->solver = solver;
     this->context = context;
+    this->precision = -1;
 
     if ((this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData())) == 0)
     {
@@ -53,6 +54,10 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
                         ? context->getOutputStream(name, currentIndex, overwrite)
                         : context->getOutputStream(name, overwrite);
 
+    if (precision != -1)
+    {
+        out->precision(precision);
+    }
 
     IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
     if (iterativeSolver != 0)
@@ -127,6 +132,14 @@ void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
 void BIO_IO_NS::ConcentrationProfile::setOverwrite(bool overwrite)
 {
     this->overwrite = overwrite;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setPrecision(int precision)
+{
+    this->precision = precision;
 }
 
 
