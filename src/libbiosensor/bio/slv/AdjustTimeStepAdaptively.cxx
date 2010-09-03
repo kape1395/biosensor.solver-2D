@@ -17,6 +17,7 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
     long    increaseEveryStepCount,
     double  increaseMaxTimeStep,
     double  fallbackFactor,
+    long    fallbackForStepCount,
     long    fallbackCheckEveryStepCount,
     double  fallbackMinTimeStep,
     BIO_IO_NS::ConcentrationProfile* concentrationWriter,
@@ -35,6 +36,7 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
     this->increaseMaxTimeStep = increaseMaxTimeStep;
 
     this->fallbackFactor = fallbackFactor;
+    this->fallbackForStepCount = fallbackForStepCount;
     this->fallbackCheckEveryStepCount = fallbackCheckEveryStepCount;
     this->fallbackMinTimeStep = fallbackMinTimeStep;
 
@@ -177,6 +179,7 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::performFallback()
     scheduleNextIncreaseAfter(
         std::ceil((std::max(failTime, prevTime) - newTime) / newTimeStep)
     );
+    scheduleNextIncreaseAfter(fallbackForStepCount);
 }
 
 

@@ -23,6 +23,7 @@ private:
     double increaseMaxTimeStep;
 
     double fallbackFactor;
+    long fallbackForStepCount;
     long fallbackCheckEveryStepCount;
     double fallbackMinTimeStep;
 
@@ -45,6 +46,7 @@ public:
         long    increaseEveryStepCount,
         double  increaseMaxTimeStep,
         double  fallbackFactor,
+        long    fallbackForStepCount,
         long    fallbackCheckEveryStepCount,
         double  fallbackMinTimeStep,
         BIO_IO_NS::ConcentrationProfile* concentrationWriter,

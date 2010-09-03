@@ -252,6 +252,7 @@
                         </xs:annotation>
                         <xs:complexType>
                             <xs:attribute name="factor"                 type="xs:double"    use="required"/>
+                            <xs:attribute name="forStepCount"           type="xs:integer"   use="required"/>
                             <xs:attribute name="checkEveryStepCount"    type="xs:integer"   use="required"/>
                             <xs:attribute name="minStepSize"            type="xs:double"    use="required"/>
                         </xs:complexType>

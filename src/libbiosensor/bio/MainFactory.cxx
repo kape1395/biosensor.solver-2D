@@ -198,6 +198,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
             adaptiveTSA->increase().everyStepCount(),
             adaptiveTSA->increase().maxStepSize(),
             adaptiveTSA->fallback().factor(),
+            adaptiveTSA->fallback().factor(),
             adaptiveTSA->fallback().checkEveryStepCount(),
             adaptiveTSA->fallback().minStepSize(),
             cw,

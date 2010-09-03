@@ -5,7 +5,7 @@ biosensor (0.6.1) lucid; urgency=low
     This fixes the problem, that arised at 0'th iteration in the
     profiles.
   * TBD: Permissible oscillation.
-  * TBD: Attribute 'forStepCount' in fallback element.
+  * Introduced attribute 'forStepCount' in fallback element.
   * Precision now can be specified for the concentration profile
     output writer.
 
