@@ -27,6 +27,9 @@ BIO_SLV_FD_IM2D_NS_BEGIN
  */
 class Solver : public BIO_SLV_NS::AbstractIterativeSolver
 {
+protected:
+    class SolverStateImpl;
+
 public:
     typedef BIO_NS::Splitted2DArea<AreaSubSolver*, BoundSubSolver*, CornerSubSolver*> SplittedSolver;
 
@@ -38,6 +41,7 @@ private:
     BIO_SLV_NS::ITransducer* transducer;
     SplittedSolver* subSolvers;
     DataModel* dataModel;
+    SolverStateImpl* solverState;
 
     /*
      *  It is used to switch this ant previous layers.
@@ -77,6 +81,11 @@ public:
     virtual void setState(BIO_SLV_NS::ISolverState* state);
 
     /**
+     *  Get state for the solver.
+     */
+    virtual BIO_SLV_NS::ISolverState* getState();
+
+    /**
      *  Returns subSolvers.
      */
     SplittedSolver* getSubSolvers();
@@ -104,6 +113,33 @@ protected:
      */
     virtual void solveIteration();
 
+
+    class SolverStateImpl : public BIO_SLV_NS::ISolverState
+    {
+    private:
+        Solver* solver;
+    public:
+        SolverStateImpl(Solver* solver)
+        {
+            this->solver = solver;
+        }
+        virtual ~SolverStateImpl()
+        {
+            //  Nothing.
+        }
+        virtual double getTime()
+        {
+            return solver->getSolvedTime();
+        }
+        virtual long getIteration()
+        {
+            return solver->getSolvedIterationCount();
+        }
+        virtual BIO_DM_NS::IDataModel* getData()
+        {
+            return solver->getData();
+        }
+    };
 };
 
 

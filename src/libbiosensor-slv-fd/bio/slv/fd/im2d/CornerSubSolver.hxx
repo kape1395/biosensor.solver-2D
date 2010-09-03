@@ -71,6 +71,17 @@ public:
      */
     void setConcentration(int s, double c);
 
+protected:
+    /**
+     *  Apply initial conditions.
+     */
+    void applyInitialConditions(
+        BoundSubSolver* boundTop,
+        BoundSubSolver* boundRight,
+        BoundSubSolver* boundBottom,
+        BoundSubSolver* boundLeft
+    );
+
 };
 
 

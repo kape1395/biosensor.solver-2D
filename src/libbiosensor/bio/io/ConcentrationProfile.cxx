@@ -23,12 +23,9 @@ BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
     this->currentIndex = -1;
     this->solver = solver;
     this->context = context;
+    this->precision = -1;
 
-    if ((this->grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(solver->getData())) == 0)
-    {
-        throw Exception("ConcentrationProfile: IGrid2D DataModel is required");
-    }
-    this->cursor = this->grid->newGridCursor();
+    this->lastStateReader = 0;
 }
 
 
@@ -36,7 +33,11 @@ BIO_IO_NS::ConcentrationProfile::ConcentrationProfile(
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfile::~ConcentrationProfile()
 {
-    delete cursor;
+    if (lastStateReader)
+    {
+        delete lastStateReader;
+        lastStateReader = 0;
+    }
 }
 
 
@@ -44,7 +45,78 @@ BIO_IO_NS::ConcentrationProfile::~ConcentrationProfile()
 /* ************************************************************************** */
 void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
 {
+    setSolverState(solver->getState(), overwrite);
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::reset()
+{
+    currentIndex = -1;
+    haveLastOutput = false;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
+{
+    indexed = repeatable;
+    reset();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setOverwrite(bool overwrite)
+{
+    this->overwrite = overwrite;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setPrecision(int precision)
+{
+    this->precision = precision;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_NS::ISolverState* BIO_IO_NS::ConcentrationProfile::getSolverState()
+{
+    if (lastStateReader)
+    {
+        delete lastStateReader;
+    }
+    lastStateReader = createReaderForLastOutput();
+    return lastStateReader;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setSolverState(BIO_SLV_NS::ISolverState* state)
+{
+    setSolverState(state, true);
+}
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_IO_NS::ConcentrationProfile::setSolverState(BIO_SLV_NS::ISolverState* state, bool overwrite)
+{
     using BIO_SLV_NS::IIterativeSolver;
+
+    BIO_DM_NS::IGrid2D* grid;
+    BIO_DM_NS::ICursor2D* cursor;
+    if ((grid = dynamic_cast<BIO_DM_NS::IGrid2D*>(state->getData())) == 0)
+    {
+        throw Exception("ConcentrationProfile: IGrid2D DataModel is required");
+    }
+    cursor = grid->newGridCursor();
+
     int substCount = grid->getSubstanceCount();
 
     currentIndex++;
@@ -53,6 +125,10 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
                         ? context->getOutputStream(name, currentIndex, overwrite)
                         : context->getOutputStream(name, overwrite);
 
+    if (precision != -1)
+    {
+        out->precision(precision);
+    }
 
     IIterativeSolver* iterativeSolver = dynamic_cast<IIterativeSolver*>(solver);
     if (iterativeSolver != 0)
@@ -98,6 +174,7 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
         }
         cursor->rowStart();
     }
+    delete cursor;
 
     haveLastOutput = true;
     context->close(out);
@@ -106,27 +183,9 @@ void BIO_IO_NS::ConcentrationProfile::solveEventOccured()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void BIO_IO_NS::ConcentrationProfile::reset()
+bool BIO_IO_NS::ConcentrationProfile::hasSolverState()
 {
-    currentIndex = -1;
-    haveLastOutput = false;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_IO_NS::ConcentrationProfile::setRepeatable(bool repeatable)
-{
-    indexed = repeatable;
-    reset();
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void BIO_IO_NS::ConcentrationProfile::setOverwrite(bool overwrite)
-{
-    this->overwrite = overwrite;
+    return haveLastOutput;
 }
 
 

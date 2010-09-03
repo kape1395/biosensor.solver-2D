@@ -1,4 +1,5 @@
 #include "AdjustTimeStepAdaptively.hxx"
+#include "ISolver.hxx"
 #include "IIterativeSolver.hxx"
 #include "AdjustTimeStepByFactor.hxx"
 #include "../Exception.hxx"
@@ -17,9 +18,10 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
     long    increaseEveryStepCount,
     double  increaseMaxTimeStep,
     double  fallbackFactor,
+    long    fallbackForStepCount,
     long    fallbackCheckEveryStepCount,
     double  fallbackMinTimeStep,
-    BIO_IO_NS::ConcentrationProfile* concentrationWriter,
+    BIO_SLV_NS::ISolverStateHolder* solverStateHolder,
     std::vector<BIO_SLV_NS::ISolverListener*>& stopConditions
 )
 {
@@ -35,11 +37,11 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::AdjustTimeStepAdaptively(
     this->increaseMaxTimeStep = increaseMaxTimeStep;
 
     this->fallbackFactor = fallbackFactor;
+    this->fallbackForStepCount = fallbackForStepCount;
     this->fallbackCheckEveryStepCount = fallbackCheckEveryStepCount;
     this->fallbackMinTimeStep = fallbackMinTimeStep;
 
-    this->concentrationWriter = concentrationWriter;
-    this->concentrationWriter->setOverwrite(true);
+    this->solverStateHolder = solverStateHolder;
     this->stopConditions = stopConditions;
 
     this->stateSaved = false;
@@ -58,7 +60,7 @@ BIO_SLV_NS::AdjustTimeStepAdaptively::~AdjustTimeStepAdaptively()
     {
         delete *it;
     }
-    delete concentrationWriter;
+    delete solverStateHolder;
 }
 
 
@@ -151,32 +153,32 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::performFallback()
     }
 
     // Read saved state
-    BIO_IO_NS::ConcentrationProfileReader* reader = concentrationWriter->createReaderForLastOutput();
-    if (!reader)
+    if (!solverStateHolder->hasSolverState())
     {
         throw new BIO_NS::Exception(
             "AdjustTimeStepAdaptively::performFallback: Unable to read last state. There was no output before?"
         );
     }
-    double newTime = reader->getTime();
+    BIO_SLV_NS::ISolverState* prevState = solverStateHolder->getSolverState();
+    double newTime = prevState->getTime();
     double newTimeStep = std::max(prevTimeStep / fallbackFactor, fallbackMinTimeStep);
 
     // Do fallback.
     LOG_WARN(LOGGER
              << "performFallback: Updating"
              << " time(" << prevTime << "->" << newTime
-             << ") iteration(" << prevIteration << "->" << reader->getIteration()
+             << ") iteration(" << prevIteration << "->" << prevState->getIteration()
              << ") timeStep(" << prevTimeStep << "->" << newTimeStep << ")."
             );
-    solver->setState(reader);
+    solver->setState(prevState);
     is->setTimeStep(newTimeStep);
     is->resume();
-    delete reader;
 
     // Schedule next step increase
     scheduleNextIncreaseAfter(
         std::ceil((std::max(failTime, prevTime) - newTime) / newTimeStep)
     );
+    scheduleNextIncreaseAfter(fallbackForStepCount);
 }
 
 
@@ -188,7 +190,7 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::saveCurrentState()
              << "Saving current state. Current iteration is "
              << iterativeSolver->getSolvedIterationCount()
             );
-    concentrationWriter->solveEventOccured();
+    solverStateHolder->setSolverState(solver->getState());
     stateSaved = true;
 }
 

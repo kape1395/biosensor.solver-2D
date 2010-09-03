@@ -50,6 +50,12 @@ public:
      *  Set state for the solver.
      */
     virtual void setState(ISolverState* state) = 0;
+
+    /**
+     *  Get state for the solver.
+     */
+    virtual ISolverState* getState() = 0;
+
 };
 
 

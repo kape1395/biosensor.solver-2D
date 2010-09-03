@@ -47,6 +47,15 @@ void BIO_SLV_FD_EX2D_NS::Solver::setState(BIO_SLV_NS::ISolverState* state)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+BIO_SLV_NS::ISolverState* BIO_SLV_FD_EX2D_NS::Solver::getState()
+{
+    //  FIXME: Implement.
+    return 0;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_SLV_FD_EX2D_NS::Solver::solveIteration()
 {
     //  FIXME: Implement.

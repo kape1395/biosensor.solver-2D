@@ -85,7 +85,16 @@
     <!-- ******************************************************************* -->
     <xs:complexType name="ConcentrationProfile">
         <xs:complexContent>
-            <xs:extension base="m:SolverOutput"/>
+            <xs:extension base="m:SolverOutput">
+                <xs:attribute name="precision" type="xs:int" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Precision, used when formatting numbers for the output.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="inMemory" type="xs:boolean" default="false" use="optional"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
@@ -244,6 +253,7 @@
                         </xs:annotation>
                         <xs:complexType>
                             <xs:attribute name="factor"                 type="xs:double"    use="required"/>
+                            <xs:attribute name="forStepCount"           type="xs:integer"   use="required"/>
                             <xs:attribute name="checkEveryStepCount"    type="xs:integer"   use="required"/>
                             <xs:attribute name="minStepSize"            type="xs:double"    use="required"/>
                         </xs:complexType>

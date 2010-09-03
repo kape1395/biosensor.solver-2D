@@ -1,4 +1,17 @@
-biosensor (1.6.0) lucid; urgency=low
+biosensor (0.6.1) lucid; urgency=low
+
+  * Implemented In-memory solver state holder.
+  * Workaround for initial conditions on corners is implemented.
+    This fixes the problem, that arised at 0'th iteration in the
+    profiles.
+  * TBD: Permissible oscillation.
+  * Introduced attribute 'forStepCount' in fallback element.
+  * Precision now can be specified for the concentration profile
+    output writer.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 12:06:04 +0300
+
+biosensor (0.6.0) lucid; urgency=low
 
   * Implementation of adaptive time step adjuster.
   * Implementation of concentration oscillation stop condition.
