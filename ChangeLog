@@ -1,4 +1,12 @@
-biosensor (1.6.0) lucid; urgency=low
+biosensor (0.6.1) lucid; urgency=low
+
+  * TBD: In-memory solver state.
+  * TBD: Bound condition initial conditions.
+  * TBD: Permissible oscillation.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 11:22:11 +0300
+
+biosensor (0.6.0) lucid; urgency=low
 
   * Implementation of adaptive time step adjuster.
   * Implementation of concentration oscillation stop condition.
