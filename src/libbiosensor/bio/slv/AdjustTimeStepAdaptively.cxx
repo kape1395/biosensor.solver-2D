@@ -236,12 +236,13 @@ void BIO_SLV_NS::AdjustTimeStepAdaptively::scheduleNextIncreaseAfter(long stepCo
                                    nextIterationForIncrease,
                                    iterativeSolver->getSolvedIterationCount() + stepCount
                                );
-    LOG_DEBUG(LOGGER
-              << "Scheduling next step increase at "
-              << nextIterationForIncrease
-              << " current iteration is "
-              << iterativeSolver->getSolvedIterationCount()
-             );
+    LOG_INFO(LOGGER
+             << "Scheduling next step increase at "
+             << nextIterationForIncrease
+             << " current iteration is "
+             << iterativeSolver->getSolvedIterationCount()
+             << " requested step count is " << stepCount
+            );
 }
 
 
