@@ -122,6 +122,8 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
     //  Add listeners.
     ////////////////////////////////////////////////////////////////////////////
 
+    solverState = new SolverStateImpl(this);
+
     LOG_DEBUG(LOGGER << "Solver()... Done");
 }
 
@@ -131,6 +133,8 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
     LOG_DEBUG(LOGGER << "~Solver()");
+
+    delete solverState;
 
     if (transducer)
     {
@@ -197,6 +201,14 @@ void BIO_SLV_FD_IM2D_NS::Solver::setState(BIO_SLV_NS::ISolverState* state)
     getData()->setState(state->getData());
 
     resetListeners();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_SLV_NS::ISolverState* BIO_SLV_FD_IM2D_NS::Solver::getState()
+{
+    return solverState;
 }
 
 

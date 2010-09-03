@@ -3,6 +3,7 @@
 #include "../../biosensor.hxx"
 #include "../dm/IGrid2D.hxx"
 #include "../dm/ICursor2D.hxx"
+#include "../slv/ISolverStateHolder.hxx"
 #include "IOutput.hxx"
 #include "IContext.hxx"
 #include "IRepeatable.hxx"
@@ -14,7 +15,10 @@ BIO_IO_NS_BEGIN
 /**
  *
  */
-class ConcentrationProfile : public BIO_IO_NS::IOutput, public BIO_IO_NS::IRepeatable
+class ConcentrationProfile :
+        public BIO_IO_NS::IOutput,
+        public BIO_IO_NS::IRepeatable,
+        public BIO_SLV_NS::ISolverStateHolder
 {
 private:
 
@@ -22,8 +26,6 @@ private:
     BIO_SLV_NS::ISolver* solver;
     BIO_IO_NS::IContext* context;
 
-    BIO_DM_NS::IGrid2D* grid;
-    BIO_DM_NS::ICursor2D* cursor;
 
     bool indexed;
     bool haveLastOutput;
@@ -35,6 +37,8 @@ private:
      *  Default precision is used is -1 is specified.
      */
     int precision;
+
+    BIO_IO_NS::ConcentrationProfileReader* lastStateReader;
 
 public:
     /**
@@ -51,6 +55,7 @@ public:
      */
     virtual ~ConcentrationProfile();
 
+    /* ********************************************************************** */
     /**
      *  EventListener.
      */
@@ -61,11 +66,13 @@ public:
      */
     virtual void reset();
 
+    /* ********************************************************************** */
     /**
      *  Set true, if this output writer will be called multiple times.
      */
     virtual void setRepeatable(bool repeatable);
 
+    /* ********************************************************************** */
     /**
      *  Set if output overwriting is allowed.
      */
@@ -75,6 +82,34 @@ public:
      *  Precision, used when formatting numbers for the output.
      */
     virtual void setPrecision(int precision);
+
+    /* ********************************************************************** */
+    /**
+     *  Returns solver state.
+     *  This is implementation of ISolverStateListener.
+     */
+    virtual BIO_SLV_NS::ISolverState* getSolverState();
+
+    /**
+     *  Remembers state of the solver.
+     *  This is implementation of ISolverStateListener.
+     */
+    virtual void setSolverState(BIO_SLV_NS::ISolverState* state);
+
+    /**
+     *  Tells, if this holder has a state,
+     *  This is implementation of ISolverStateListener.
+     */
+    virtual bool hasSolverState();
+
+    /* ********************************************************************** */
+protected:
+
+    /**
+     *  Remembers state of the solver.
+     *  This is implementation of ISolverStateListener.
+     */
+    virtual void setSolverState(BIO_SLV_NS::ISolverState* state, bool overwrite);
 
     /**
      *  Returns reader, that is configured to read last concentration file,

@@ -93,6 +93,7 @@
                         </xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
+                <xs:attribute name="inMemory" type="xs:boolean" default="false" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

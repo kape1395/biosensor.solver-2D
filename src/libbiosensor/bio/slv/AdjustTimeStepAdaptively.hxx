@@ -2,6 +2,7 @@
 #define BIO_SLV_AdjustTimeStepAdaptively_HXX
 #include "../../biosensor.hxx"
 #include "ISolverListener.hxx"
+#include "ISolverStateHolder.hxx"
 #include "AdjustTimeStepByFactor.hxx"
 #include "ISolverListener.hxx"
 #include "../io/ConcentrationProfile.hxx"
@@ -27,7 +28,7 @@ private:
     long fallbackCheckEveryStepCount;
     double fallbackMinTimeStep;
 
-    BIO_IO_NS::ConcentrationProfile* concentrationWriter;
+    BIO_SLV_NS::ISolverStateHolder* solverStateHolder;
     std::vector<BIO_SLV_NS::ISolverListener*> stopConditions;
 
     long nextIterationForFallbackCheck;
@@ -49,7 +50,7 @@ public:
         long    fallbackForStepCount,
         long    fallbackCheckEveryStepCount,
         double  fallbackMinTimeStep,
-        BIO_IO_NS::ConcentrationProfile* concentrationWriter,
+        BIO_SLV_NS::ISolverStateHolder* solverStateHolder,
         std::vector<BIO_SLV_NS::ISolverListener*>& stopConditions
     );
 

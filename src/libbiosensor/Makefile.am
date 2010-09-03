@@ -17,6 +17,7 @@ libbiosensor_la_SOURCES = \
     bio/dm/NullDM.cxx \
     bio/io/AveragedConcentration.cxx \
     bio/io/ConcentrationProfile.cxx \
+    bio/io/ConcentrationProfileInMemory.cxx \
     bio/io/ConcentrationProfileReader.cxx \
     bio/io/CurrentDensity.cxx \
     bio/io/FilesystemContext.cxx \
@@ -69,6 +70,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/NullDM.hxx \
     bio/io/AveragedConcentration.hxx \
     bio/io/ConcentrationProfile.hxx \
+    bio/io/ConcentrationProfileInMemory.hxx \
     bio/io/ConcentrationProfileReader.hxx \
     bio/io/CurrentDensity.hxx \
     bio/io/FilesystemContext.hxx \
@@ -83,6 +85,7 @@ nobase_pkginclude_HEADERS = \
     bio/slv/ISolver.hxx \
     bio/slv/ISolverListener.hxx \
     bio/slv/ISolverState.hxx \
+    bio/slv/ISolverStateHolder.hxx \
     bio/slv/ITransducer.hxx \
     bio/slv/InvokeEveryTimeStep.hxx \
     bio/slv/InvokeNotBefore.hxx \

@@ -1,6 +1,7 @@
 #include "MainFactory.hxx"
 #include "IFactory.hxx"
 #include "io/ConcentrationProfile.hxx"
+#include "io/ConcentrationProfileInMemory.hxx"
 #include "io/CurrentDensity.hxx"
 #include "io/AveragedConcentration.hxx"
 #include "slv/AdjustTimeStepByFactor.hxx"
@@ -12,6 +13,7 @@
 #include "slv/StopIfSumOfConcentrationsNonConst.hxx"
 #include "slv/InvokeNotBefore.hxx"
 #include "slv/InvokeEveryTimeStep.hxx"
+#include "slv/ISolverStateHolder.hxx"
 #include "trd/AmperometricElectrode2DOnBound.hxx"
 #include "trd/AmperometricInjectedElectrode2D.hxx"
 #include "trd/CompositeElectrode.hxx"
@@ -187,10 +189,10 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
             stopConditions.push_back(rootFactory->createStopCondition(solver, &*it));
         }
 
-        BIO_SLV_NS::ISolverListener* cwListener = rootFactory->createOutput(solver, &adaptiveTSA->stateStore());
-        BIO_IO_NS::ConcentrationProfile* cw = dynamic_cast<BIO_IO_NS::ConcentrationProfile*>(cwListener);
-        if (!cw)
-            throw new BIO_NS::Exception("Concentration profile writer must be specified for the AdaptiveTimeStepAdjuster");
+        BIO_SLV_NS::ISolverListener* sshListener = rootFactory->createOutput(solver, &adaptiveTSA->stateStore());
+        BIO_SLV_NS::ISolverStateHolder* ssh = dynamic_cast<BIO_SLV_NS::ISolverStateHolder*>(sshListener);
+        if (!ssh)
+            throw new BIO_NS::Exception("SolverStateHolder must be specified for the AdaptiveTimeStepAdjuster");
 
         BIO_SLV_NS::AdjustTimeStepAdaptively* tsa = new BIO_SLV_NS::AdjustTimeStepAdaptively(
             solver,
@@ -201,7 +203,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
             adaptiveTSA->fallback().factor(),
             adaptiveTSA->fallback().checkEveryStepCount(),
             adaptiveTSA->fallback().minStepSize(),
-            cw,
+            ssh,
             stopConditions
         );
 
@@ -286,19 +288,21 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         /* ****************************************************************** */
         BIO_XML_MODEL_NS::solver::ConcentrationProfile* cpOut;
         cpOut = dynamic_cast<BIO_XML_MODEL_NS::solver::ConcentrationProfile*>(output);
-
-        BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
-            cpOut->name(),
-            solver,
-            context
-        );
-
-        if (cpOut->precision().present())
+        if (!cpOut->inMemory())
         {
-            out->setPrecision(cpOut->precision().get());
+            BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
+                cpOut->name(),
+                solver,
+                context
+            );
+            if (cpOut->precision().present())
+                out->setPrecision(cpOut->precision().get());
+            return out;
         }
-
-        return out;
+        else
+        {
+            return new BIO_IO_NS::ConcentrationProfileInMemory(solver);
+        }
         /* ****************************************************************** */
         /* ****************************************************************** */
     }

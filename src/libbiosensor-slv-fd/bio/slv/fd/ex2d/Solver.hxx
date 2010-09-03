@@ -39,6 +39,10 @@ public:
      */
     virtual void setState(BIO_SLV_NS::ISolverState* state);
 
+    /**
+     *  Get state for the solver.
+     */
+    virtual BIO_SLV_NS::ISolverState* getState();
 
 protected:
     virtual void solveIteration();

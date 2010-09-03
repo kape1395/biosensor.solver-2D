@@ -1,6 +1,6 @@
 biosensor (0.6.1) lucid; urgency=low
 
-  * TBD: In-memory solver state.
+  * Implemented In-memory solver state holder.
   * Workaround for initial conditions on corners is implemented.
     This fixes the problem, that arised at 0'th iteration in the
     profiles.
