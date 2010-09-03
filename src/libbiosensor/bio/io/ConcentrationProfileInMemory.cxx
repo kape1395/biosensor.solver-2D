@@ -22,8 +22,8 @@ BIO_IO_NS::ConcentrationProfileInMemory::ConcentrationProfileInMemory(
     }
 
     sizeS = solverData->getSubstanceCount();
-    sizeH = solverData->getPointPositionsH()->getLength();
-    sizeV = solverData->getPointPositionsV()->getLength();
+    sizeH = solverData->getPointPositionsH()->getPointCount();
+    sizeV = solverData->getPointPositionsV()->getPointCount();
 
     matrix = new double**[sizeH];
     for (int h = 0; h < sizeH; h++)
