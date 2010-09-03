@@ -57,6 +57,14 @@ BIO_SLV_FD_IM2D_NS::CornerSubSolver::CornerSubSolver(
         cursors.push_back(substCursors);
         LOG_DEBUG(LOGGER << "Found " << substCursors.size() << " cursors for substance index=" << s);
     }
+
+    applyInitialConditions(
+        boundTop,
+        boundRight,
+        boundBottom,
+        boundLeft
+    );
+
     LOG_DEBUG(LOGGER << "Constructing CornerSubSolver for position h=" << positionH << " v=" << positionV << " ... Done");
 }
 
@@ -112,6 +120,37 @@ void BIO_SLV_FD_IM2D_NS::CornerSubSolver::setConcentration(int s, double c)
     }
 }
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+void BIO_SLV_FD_IM2D_NS::CornerSubSolver::applyInitialConditions(
+    BoundSubSolver* boundTop,
+    BoundSubSolver* boundRight,
+    BoundSubSolver* boundBottom,
+    BoundSubSolver* boundLeft
+)
+{
+    //
+    //  That's more a workaround, than a solution.
+    //
+    if (boundTop)
+        boundTop->applyInitialValues();
+    if (boundRight)
+        boundRight->applyInitialValues();
+    if (boundBottom)
+        boundBottom->applyInitialValues();
+    if (boundLeft)
+        boundLeft->applyInitialValues();
+
+    if (boundTop)
+        boundTop->applyInitialValues();
+    if (boundRight)
+        boundRight->applyInitialValues();
+    if (boundBottom)
+        boundBottom->applyInitialValues();
+    if (boundLeft)
+        boundLeft->applyInitialValues();
+}
 
 /* ************************************************************************** */
 /* ************************************************************************** */

@@ -1,7 +1,8 @@
 biosensor (0.6.1) lucid; urgency=low
 
   * TBD: In-memory solver state.
-  * TBD: Bound condition initial conditions.
+  * Workaround for initial conditions on corners is implemented.
+    This fixes the problem, that arised at 0'th iteration in the profiles.
   * TBD: Permissible oscillation.
   * TBD: Attribute 'forStepCount' in fallback element.
   * TBD: Precision for concentration profile output writer.
