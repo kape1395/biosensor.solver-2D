@@ -3,8 +3,10 @@ biosensor (0.6.1) lucid; urgency=low
   * TBD: In-memory solver state.
   * TBD: Bound condition initial conditions.
   * TBD: Permissible oscillation.
+  * TBD: Attribute 'forStepCount' in fallback element.
+  * TBD: Precision for concentration profile output writer.
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 11:22:11 +0300
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 03 Sep 2010 12:06:04 +0300
 
 biosensor (0.6.0) lucid; urgency=low
 
