@@ -1,3 +1,10 @@
+biosensor (0.6.3) lucid; urgency=low
+
+  * Changes stop condition, based on current gradient. It will fire
+    success only after 3 successfull tests.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 05 Sep 2010 15:47:58 +0300
+
 biosensor (0.6.2) lucid; urgency=low
 
   * Small bugfix for fallbackForStepCount. Now it works.

@@ -26,6 +26,13 @@ private:
 
     NextStepListener* nextStepListener;
 
+    /**
+     *  Number of iterations already passed the test.
+     */
+    int passedIterations;
+
+    static int MIN_PASSED_ITERATIONS;
+
 public:
     /**
      *  Constructor.

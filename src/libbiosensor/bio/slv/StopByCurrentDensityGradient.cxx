@@ -5,6 +5,7 @@
 #include "../Logging.hxx"
 #define LOGGER "libbiosensor::StopByCurrentDensityGradient: "
 
+int BIO_SLV_NS::StopByCurrentDensityGradient::MIN_PASSED_ITERATIONS = 3;
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -33,6 +34,7 @@ BIO_SLV_NS::StopByCurrentDensityGradient::StopByCurrentDensityGradient(
 
     this->nextStepListener = new NextStepListener(this);
     this->iterativeSolver->addListener(this->nextStepListener, false);
+    this->passedIterations = 0;
 }
 
 
@@ -76,6 +78,7 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::reset()
     prevTime = 0.0;
     nextStepForCheck = iterativeSolver->getSolvedIterationCount() + checkEveryNumberOfSteps;
     nextStepListener->reset();
+    passedIterations = 0;
 }
 
 
@@ -99,8 +102,17 @@ void BIO_SLV_NS::StopByCurrentDensityGradient::processNextStep()
 
     if (std::abs(normalized ? gradNormalized : grad) < gradient)
     {
+        passedIterations++;
+    }
+    else
+    {
+        passedIterations = 0;
+    }
+
+    if (passedIterations >= MIN_PASSED_ITERATIONS)
+    {
         iterativeSolver->stop(true);
-        LOG_INFO(LOGGER << "The solver reached a steady state");
+        LOG_INFO(LOGGER << "The solver reached a steady state, pass=" << passedIterations);
     }
 }
 
