@@ -1,3 +1,10 @@
+biosensor (0.6.5) lucid; urgency=low
+
+  * Some files were missing in the source distribution. This is fixed
+    now.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Thu, 09 Sep 2010 00:03:49 +0300
+
 biosensor (0.6.4) lucid; urgency=low
 
   * Precision is now set to 12 digits for the current density output

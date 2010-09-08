@@ -50,6 +50,7 @@ EXTRA_DIST = \
     bio/slv/fd/im2d/SubstanceGradOnEdge.hxx \
     bio/slv/fd/im2d/SubSolverFactory.hxx \
     bio/slv/fd/im2d/MergeCondition.hxx \
+    bio/slv/fd/im2d/ReactionMacro.hxx \
     bio/slv/fd/im2d/WallCondition.hxx
 
 
