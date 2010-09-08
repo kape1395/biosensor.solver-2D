@@ -1,3 +1,10 @@
+biosensor (0.6.4) lucid; urgency=low
+
+  * Precision is now set to 12 digits for the current density output
+    generator.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 08 Sep 2010 23:09:42 +0300
+
 biosensor (0.6.3) lucid; urgency=low
 
   * Changes stop condition, based on current gradient. It will fire

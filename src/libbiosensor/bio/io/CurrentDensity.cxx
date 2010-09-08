@@ -34,6 +34,7 @@ void BIO_IO_NS::CurrentDensity::solveEventOccured()
     if (!output)
     {
         output = Context->getOutputStream(name);
+        output->precision(12);
         (*output) << "# Time\tStep\tCurrentDensity" << std::endl;
     }
 
