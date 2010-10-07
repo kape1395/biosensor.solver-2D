@@ -1,3 +1,9 @@
+biosensor (0.8.0) lucid; urgency=low
+
+  * TODO: Implement parallel solver for 2D case.
+
+ -- Karolis Petrauskas <k.petrauskas@omnitel.net>  Thu, 07 Oct 2010 22:15:16 +0300
+
 biosensor (0.6.5) lucid; urgency=low
 
   * Some files were missing in the source distribution. This is fixed
