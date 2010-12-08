@@ -1,5 +1,4 @@
-*   Sprendejo uzrasymas i faila.
-*   Neisreikstine schema.
-*   XML apdorojimas, konfiguracijos papildymas.
-*   Parametrizavimas simboliais.
-*   Pakeisti list i vector. Gal taip bus lengviau rasyt softa.
+This list stands for known issues and other future plans,
+  * Investigate oscillation and its impact on dynamic steps by time.
+  * Use SBML.
+  * 
