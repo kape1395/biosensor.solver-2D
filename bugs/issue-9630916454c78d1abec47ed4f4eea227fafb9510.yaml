@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Implement reaction integral on open region.
+desc: ""
+type: :task
+component: kape1395.biosensor.solver-2D
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-09-03 06:30:46.497639 Z
+references: []
+
+id: 9630916454c78d1abec47ed4f4eea227fafb9510
+log_events: 
+- - 2011-09-03 06:30:48.269610 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
