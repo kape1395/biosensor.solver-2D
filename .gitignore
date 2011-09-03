@@ -5,6 +5,7 @@
 .libs
 .deps
 .dirstamp*
+.ditz-config
 *~
 stamp-h*
 Makefile
