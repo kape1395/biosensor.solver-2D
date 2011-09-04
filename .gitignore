@@ -6,6 +6,9 @@
 .deps
 .dirstamp*
 .ditz-config
+.classpath
+.project
+*.swp
 *~
 stamp-h*
 Makefile

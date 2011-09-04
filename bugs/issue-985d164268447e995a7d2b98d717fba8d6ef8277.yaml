@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Add recomendations about IDE to be used for development of this software.
+desc: ""
+type: :task
+component: kape1395.biosensor.solver-2D
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-09-04 12:19:47.130430 Z
+references: []
+
+id: 985d164268447e995a7d2b98d717fba8d6ef8277
+log_events: 
+- - 2011-09-04 12:19:49.054351 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
