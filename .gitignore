@@ -11,6 +11,7 @@
 *.swp
 *~
 stamp-h*
+Doxyfile
 Makefile
 Makefile.in
 autom4te.cache
