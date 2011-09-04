@@ -13,6 +13,7 @@ libbiosensor_la_SOURCES = \
     bio/cfg/StructureAnalyzer.cxx \
     bio/dm/CompositeSegmentSplit.cxx \
     bio/dm/ConstantSegmentSplit.cxx \
+    bio/dm/Cursor2DOpenBounds.cxx \
     bio/dm/Cursor2DWithoutBounds.cxx \
     bio/dm/NullDM.cxx \
     bio/io/AveragedConcentration.cxx \
@@ -56,6 +57,7 @@ nobase_pkginclude_HEADERS = \
     bio/dm/AbstractCursor2D.hxx \
     bio/dm/CompositeSegmentSplit.hxx \
     bio/dm/ConstantSegmentSplit.hxx \
+    bio/dm/Cursor2DOpenBounds.hxx \
     bio/dm/Cursor2DWithoutBounds.hxx \
     bio/dm/IComposite1D.hxx \
     bio/dm/IComposite2D.hxx \

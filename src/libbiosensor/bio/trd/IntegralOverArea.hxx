@@ -13,20 +13,37 @@ BIO_TRD_NS_BEGIN
 
 /**
  *  Calculates an integral for specifled IntegratedExpression.
+ *  By default the expression is integrated over a closed area.
+ *  You can use #forOpenArea(bool) before calculating integral
+ *  to get integral over an open area.
  */
 class IntegralOverArea
 {
 private:
     const double CONST_PI;
 
+    /**
+     *  Used to work with area definitions.
+     */
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
 
+    /**
+     *  Expression (function) to be integrated.
+     */
     IIntegratedExpression* expression;
 
     /**
      *  Arreas to be integrated.
      */
     std::vector<BIO_DM_NS::IGrid2D*> areas;
+
+    /**
+     *  True, if each area should be considered open instead of closed.
+     *  I.e. indicates, if boundaries should be used when calculating integral.
+     *  If integral should be calculated over an open area, values on area boundaries
+     *  are taken as equal to those one step from the boundary (like in non-leakage condition).
+     */
+    bool open;
 
 public:
 
@@ -54,6 +71,13 @@ public:
      */
     virtual ~IntegralOverArea();
 
+    /**
+     * Sets if integral should be calculated for open or closed areas.
+     * \param open True, if integral should be over open area and false otherwise.
+     * \return The same object.
+     */
+    IntegralOverArea* forOpenArea(bool open);
+    
     /**
      *  Calculate integral of concentration over area.
      *

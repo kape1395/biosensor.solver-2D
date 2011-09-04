@@ -3,6 +3,7 @@
 #include "../Exception.hxx"
 #include "../dm/IComposite2D.hxx"
 #include "../dm/ConstantSegmentSplit.hxx"
+#include "../dm/Cursor2DOpenBounds.hxx"
 #include "../slv/IIterativeSolver.hxx"
 #include <cmath>
 #define LOGGER "libbiosensor::IntegralOverArea: "
@@ -48,6 +49,8 @@ BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
     }
     if (areas.size() == 0)
         throw Exception("IntegralOverArea: No areas were found with specified medium name.");
+
+    this->open = false;
 }
 
 
@@ -87,6 +90,8 @@ BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
     }
     if (areas.size() == 0)
         throw Exception("IntegralOverArea: No areas were found where provided expression is defined.");
+
+    this->open = false;
 }
 
 
@@ -95,6 +100,15 @@ BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
 BIO_TRD_NS::IntegralOverArea::~IntegralOverArea()
 {
     areas.clear();
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_TRD_NS::IntegralOverArea* BIO_TRD_NS::IntegralOverArea::forOpenArea(bool open)
+{
+    this->open = open;
+    return this;
 }
 
 
@@ -122,6 +136,11 @@ double BIO_TRD_NS::IntegralOverArea::integrateSubArea(BIO_DM_NS::IGrid2D* area)
     LOG_TRACE(LOGGER << "integrateArea()...");
 
     BIO_DM_NS::ICursor2D* cursor = area->newGridCursor();
+    if (open)
+    {
+        cursor = new BIO_DM_NS::Cursor2DOpenBounds(cursor, true);
+    }
+
     double stepH = area->getPointPositionsH()->getStepSize(0);  // NOTE: Only valid constant step segment
     double stepV = area->getPointPositionsV()->getStepSize(0);  // NOTE: Only valid constant step segment
     int pointCountH = area->getPointPositionsH()->getPointCount();
