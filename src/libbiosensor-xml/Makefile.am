@@ -24,7 +24,8 @@ XSD_DEF_OPTS = cxx-tree \
     --cxx-suffix .cxx \
     $(XSD_DEF_NSMAP) \
     --generate-doxygen \
-    --generate-polymorphic
+    --generate-polymorphic \
+    --polymorphic-type-all
 
 
 Model.cxx: Model.xsd ModelBound.cxx ModelReaction.cxx

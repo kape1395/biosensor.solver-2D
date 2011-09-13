@@ -1,3 +1,12 @@
+biosensor (0.6.6) natty; urgency=low
+
+  * Minor fixes for the build to work with xsdcxx/natty uptodate
+    3.3.0.1-1.
+  * Reactions will now be integrated over open regions at least in
+    injected electrodes.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 14 Sep 2011 01:46:51 +0300
+
 biosensor (0.6.5) lucid; urgency=low
 
   * Some files were missing in the source distribution. This is fixed
