@@ -22,6 +22,7 @@ BIO_DM_NS::Cursor2DOpenBounds::Cursor2DOpenBounds(ICursor2D* baseCursor, bool au
         sizeH++;
     }
     cursor->right();
+    cursor->right();
 
     while (cursor->isValid())
     {
@@ -29,49 +30,53 @@ BIO_DM_NS::Cursor2DOpenBounds::Cursor2DOpenBounds(ICursor2D* baseCursor, bool au
         sizeV++;
     }
     cursor->down();
+    cursor->down();
 }
 
 /* ************************************************************************** */
 BIO_DM_NS::Cursor2DOpenBounds::~Cursor2DOpenBounds()
 {
     if (autoDelete)
-    {
         delete cursor;
-    }
 }
 
 /* ************************************************************************** */
 void BIO_DM_NS::Cursor2DOpenBounds::left()
 {
-    cursor->left();
     posH--;
+    if (posH > 0 && posH < sizeH - 2)
+    	cursor->left();
 }
 
 /* ************************************************************************** */
 void BIO_DM_NS::Cursor2DOpenBounds::right()
 {
-    cursor->right();
     posH++;
+    if (posH > 1 && posH < sizeH - 1)
+    	cursor->right();
 }
 
 /* ************************************************************************** */
 void BIO_DM_NS::Cursor2DOpenBounds::top()
 {
-    cursor->top();
     posV--;
+    if (posV > 0 && posV < sizeV - 2)
+    	cursor->top();
 }
 
 /* ************************************************************************** */
 void BIO_DM_NS::Cursor2DOpenBounds::down()
 {
-    cursor->down();
     posV++;
+    if (posV > 1 && posV < sizeV - 1)
+    	cursor->down();
 }
 
 /* ************************************************************************** */
 void BIO_DM_NS::Cursor2DOpenBounds::rowStart()
 {
     cursor->rowStart();
+    cursor->right();
     posH = 0;
 }
 
@@ -79,6 +84,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::rowStart()
 void BIO_DM_NS::Cursor2DOpenBounds::rowEnd()
 {
     cursor->rowEnd();
+    cursor->left();
     posH = sizeH - 1;
 }
 
@@ -86,6 +92,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::rowEnd()
 void BIO_DM_NS::Cursor2DOpenBounds::colStart()
 {
     cursor->colStart();
+    cursor->down();
     posV = 0;
 }
 
@@ -93,29 +100,23 @@ void BIO_DM_NS::Cursor2DOpenBounds::colStart()
 void BIO_DM_NS::Cursor2DOpenBounds::colEnd()
 {
     cursor->colEnd();
+    cursor->top();
     posV = sizeV - 1;
 }
 
 /* ************************************************************************** */
 bool BIO_DM_NS::Cursor2DOpenBounds::isValid()
 {
-    return cursor->isValid();
+    bool onTop    = posV < 0;
+    bool onBottom = posV > sizeV - 1;
+    bool onLeft   = posH < 0;
+    bool onRight  = posH > sizeH - 1;
+    return !(onTop || onBottom || onLeft || onRight) && cursor->isValid();
 }
 
 /* ************************************************************************** */
 BIO_DM_NS::IConcentrations* BIO_DM_NS::Cursor2DOpenBounds::getConcentrations()
 {
-    bool onTop    = posV == 0;
-    bool onBottom = posV == sizeV - 1;
-    bool onLeft   = posH == 0;
-    bool onRight  = posH == sizeH - 1;
-    if (onTop || onBottom || onLeft || onRight))
-    {
-        if (onTop) cursor->down();
-        if (onBottom) cursor->top();
-        if (onLeft) cursor->right();
-        if (onRight) cursor->left();
-    }
     return cursor->getConcentrations();
 }
 

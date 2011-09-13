@@ -8,7 +8,9 @@
 .ditz-config
 .classpath
 .project
+.cproject
 *.swp
+*.tmp
 *~
 stamp-h*
 Doxyfile
