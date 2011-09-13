@@ -27,12 +27,12 @@ BIO_TRD_NS::AmperometricInjectedElectrode2D::AmperometricInjectedElectrode2D(
     this->mediumName = mediumName;
     this->reactionName = reactionName;
 
-    this->areaIntegrator = new IntegralOverArea(
+    this->areaIntegrator = (new IntegralOverArea(
         solver,
         mediumName,
         IntegratedReaction::newInstance(structAnalyzer, reactionName),
         structAnalyzer
-    );
+    ))->forOpenArea(true);
 
     this->calculatedOutput = 0.0;
     this->calculatedOutputForStep = -1;

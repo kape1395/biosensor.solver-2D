@@ -253,7 +253,7 @@ int main(int argn, char **argv)
         ISolver* solver;
         if ((solver = factory->createSolver(&*model)) == 0)
         {
-            LOG_ERROR(LOGGER << "I dont know how to create requested solver.");
+            LOG_ERROR(LOGGER << "I don't know how to create requested solver.");
             return 2;
         }
         LOG_INFO(LOGGER << "Creating solver... Done");

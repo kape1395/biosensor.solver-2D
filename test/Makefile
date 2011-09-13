@@ -7,4 +7,3 @@ Cursor2DOpenBoundsTest:
 	$(CC) $(LDFLAGS) Cursor2DOpenBoundsTest.o -o Cursor2DOpenBoundsTest.tmp
 	./Cursor2DOpenBoundsTest.tmp
 
-.PHONY: Cursor2DOpenBoundsTest
