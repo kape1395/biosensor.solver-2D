@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Karolis Petrauskas
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "Factory.hxx"
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
@@ -28,7 +43,7 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
 )
 {
     if (model == 0)
-        throw BIO_NS::Exception("Model is NULL, no solver can be created.");
+        throw BIO_NS::Exception("Model is NULL in configuration, no solver can be created.");
 
 
     if (dynamic_cast<BIO_XML_NS::model::solver::Explicit1D*>(&model->solver()) != 0)
