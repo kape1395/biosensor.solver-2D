@@ -5,8 +5,8 @@ type: :task
 component: kape1395.biosensor.solver-2D
 release: 
 reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
-status: :unstarted
-disposition: 
+status: :closed
+disposition: :fixed
 creation_time: 2011-09-03 06:30:46.497639 Z
 references: []
 
@@ -16,3 +16,7 @@ log_events:
   - Karolis Petrauskas <k.petrauskas@gmail.com>
   - created
   - ""
+- - 2011-09-14 04:10:51.757454 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - closed with disposition fixed
+  - Implemented.
