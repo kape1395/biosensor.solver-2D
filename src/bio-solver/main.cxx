@@ -189,7 +189,8 @@ int main(int argn, char **argv)
         // Construct factories.
         IContext* context = new FilesystemContext(outputPath.directory_string());
 
-        {   // save original model.
+        {
+            // save original model.
             std::filebuf configFileBuf;
             configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
             std::istream configIStream(&configFileBuf);
@@ -198,7 +199,8 @@ int main(int argn, char **argv)
 
             configFileBuf.close();
         }
-        {   // save actual model.
+        {
+            // save actual model.
             std::stringstream buf;
             std::stringstream schemaUri;
             std::string schemaUriPrefix;
@@ -327,13 +329,13 @@ void print_usage(const std::string& errMsg)
         std::cerr << "#\n# " << errMsg << "\n";
     }
     std::cerr
-        << "#\n"
-        << "# usage: bio-solver [[--simulate] <file-name> <output-dir>] | [--resume <file-name> <concetrtation-file> <output-dir>]\n"
-        << "# \tfile-name\tBiosensor configuration XML file\n"
-        << "# \tconcentration-file\tConcentrarions used to resume from (including header with solved time and iteration number)\n"
-        << "# \toutput-dir\tOutput directory. Must not exist on invocation.\n"
-        << "#\n"
-        ;
+            << "#\n"
+            << "# usage: bio-solver [[--simulate] <file-name> <output-dir>] | [--resume <file-name> <concetrtation-file> <output-dir>]\n"
+            << "# \tfile-name\tBiosensor configuration XML file\n"
+            << "# \tconcentration-file\tConcentrarions used to resume from (including header with solved time and iteration number)\n"
+            << "# \toutput-dir\tOutput directory. Must not exist on invocation.\n"
+            << "#\n"
+            ;
 }
 
 /* ************************************************************************** */

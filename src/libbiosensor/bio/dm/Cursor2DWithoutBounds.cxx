@@ -17,7 +17,7 @@
 
 /* ************************************************************************** */
 BIO_DM_NS::Cursor2DWithoutBounds::Cursor2DWithoutBounds(ICursor2D& baseCursor)
-        : cursor(baseCursor)
+    : cursor(baseCursor)
 {
     updateValidity();
 }

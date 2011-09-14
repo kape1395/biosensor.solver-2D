@@ -224,7 +224,8 @@ bool BIO_IO_NS::ConcentrationProfileReader::parseHeaderLine(std::string line)
     //  Find column headers...
     //
     if (line.find(HDR_POS_H) != std::string::npos)
-    {   // column descriptions
+    {
+        // column descriptions
         std::istringstream lineStream(line);
         std::string word;
         int col = 0;
@@ -433,10 +434,10 @@ BIO_XML_NS::model::Substance* BIO_IO_NS::ConcentrationProfileReader::getSubstanc
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfileReader::Cursor2DImpl::Cursor2DImpl(ConcentrationProfileReader* reader) :
-        BIO_DM_NS::AbstractCursor2D(
-            reader->sizeH,
-            reader->sizeV
-        )
+    BIO_DM_NS::AbstractCursor2D(
+        reader->sizeH,
+        reader->sizeV
+    )
 {
     this->reader = reader;
 }

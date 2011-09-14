@@ -27,9 +27,9 @@
 BIO_CFG_NS::StructureAnalyzer::StructureAnalyzer(
     BIO_XML_MODEL_NS::Model* config
 ) :
-        axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
-        axisPoint1(BIO_XML_MODEL_NS::SymbolName("axisPoint1"), 1.0),
-        diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
+    axisPoint0(BIO_XML_MODEL_NS::SymbolName("axisPoint0"), 0.0),
+    axisPoint1(BIO_XML_MODEL_NS::SymbolName("axisPoint1"), 1.0),
+    diffusion0(BIO_XML_MODEL_NS::SymbolName("diffusion0"), 0.0)
 {
     axisPoint0.dimension("m");
     axisPoint1.dimension("m");

@@ -92,7 +92,7 @@ public:
      * \return The same object.
      */
     IntegralOverArea* forOpenArea(bool open);
-    
+
     /**
      *  Calculate integral of concentration over area.
      *

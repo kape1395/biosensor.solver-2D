@@ -858,11 +858,11 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool vertica
     out << "/-----------  AreaSubSolver::dumpData - begin (" << message << ")" << std::endl;
     out << "CurrentLayerIndex=" << getCurrentLayerIndex() << std::endl;
     out
-    << (verticalIsInner ? "h\tv" : "v\th")
-    << "\ts"
-    << (getCurrentLayerIndex() == 0 ? "\tcurrent\tinterm\tprevious" :  "\tprevious\tinterm\tcurrent")
-    << "\tp\tq\tf_r"
-    << std::endl;
+            << (verticalIsInner ? "h\tv" : "v\th")
+            << "\ts"
+            << (getCurrentLayerIndex() == 0 ? "\tcurrent\tinterm\tprevious" :  "\tprevious\tinterm\tcurrent")
+            << "\tp\tq\tf_r"
+            << std::endl;
     for (int i = 0; i < (verticalIsInner ? dataSizeH : dataSizeV); i++)
     {
         for (int j = 0; j < (verticalIsInner ? dataSizeV : dataSizeH); j++)
@@ -872,12 +872,12 @@ void BIO_SLV_FD_IM2D_NS::AreaSubSolver::dumpData(std::ostream& out, bool vertica
             {
                 double *dataHVS = dataHV[s];
                 out << i << '\t' << j << '\t' << s << '\t'
-                << dataHVS[0]  << '\t'
-                << dataHVS[1]  << '\t'
-                << dataHVS[2]  << '\t'
-                << dataHVS[3]  << '\t'
-                << dataHVS[4]  << '\t'
-                << dataHVS[5]  << std::endl;
+                    << dataHVS[0]  << '\t'
+                    << dataHVS[1]  << '\t'
+                    << dataHVS[2]  << '\t'
+                    << dataHVS[3]  << '\t'
+                    << dataHVS[4]  << '\t'
+                    << dataHVS[5]  << std::endl;
             }
         }
     }
@@ -995,10 +995,10 @@ BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::AreaSubSolver::newGridCursor()
 BIO_SLV_FD_IM2D_NS::AreaSubSolver::Cursor::Cursor(
     AreaSubSolver* subSolver
 ) :
-        BIO_DM_NS::AbstractCursor2D(
-            subSolver->getPointPositionsH()->getPointCount(),
-            subSolver->getPointPositionsV()->getPointCount()
-        )
+    BIO_DM_NS::AbstractCursor2D(
+        subSolver->getPointPositionsH()->getPointCount(),
+        subSolver->getPointPositionsV()->getPointCount()
+    )
 {
     this->subSolver = subSolver;
 }

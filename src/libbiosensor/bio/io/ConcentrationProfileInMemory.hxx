@@ -36,11 +36,11 @@ BIO_IO_NS_BEGIN
 /**
  */
 class ConcentrationProfileInMemory :
-        public BIO_SLV_NS::ISolverStateHolder,
-        public BIO_SLV_NS::ISolverListener,
-        public BIO_SLV_NS::ISolverState,
-        public BIO_DM_NS::IDataModel,
-        public BIO_DM_NS::IGrid2D
+    public BIO_SLV_NS::ISolverStateHolder,
+    public BIO_SLV_NS::ISolverListener,
+    public BIO_SLV_NS::ISolverState,
+    public BIO_DM_NS::IDataModel,
+    public BIO_DM_NS::IGrid2D
 {
 protected:
     class Cursor2DImpl;

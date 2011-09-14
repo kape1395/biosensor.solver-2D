@@ -20,7 +20,7 @@
  *  Calculates size of the corresponding grid and stops at the upper left corner.
  */
 BIO_DM_NS::Cursor2DOpenBounds::Cursor2DOpenBounds(ICursor2D* baseCursor, bool autoDelete)
-        : cursor(baseCursor)
+    : cursor(baseCursor)
 {
     this->cursor = baseCursor;
     this->autoDelete = autoDelete;
@@ -60,7 +60,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::left()
 {
     posH--;
     if (posH > 0 && posH < sizeH - 2)
-    	cursor->left();
+        cursor->left();
 }
 
 /* ************************************************************************** */
@@ -68,7 +68,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::right()
 {
     posH++;
     if (posH > 1 && posH < sizeH - 1)
-    	cursor->right();
+        cursor->right();
 }
 
 /* ************************************************************************** */
@@ -76,7 +76,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::top()
 {
     posV--;
     if (posV > 0 && posV < sizeV - 2)
-    	cursor->top();
+        cursor->top();
 }
 
 /* ************************************************************************** */
@@ -84,7 +84,7 @@ void BIO_DM_NS::Cursor2DOpenBounds::down()
 {
     posV++;
     if (posV > 1 && posV < sizeV - 1)
-    	cursor->down();
+        cursor->down();
 }
 
 /* ************************************************************************** */

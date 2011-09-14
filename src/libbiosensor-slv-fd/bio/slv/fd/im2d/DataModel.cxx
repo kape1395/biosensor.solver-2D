@@ -28,10 +28,10 @@ BIO_SLV_FD_IM2D_NS::DataModel::DataModel(
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) :
-        BIO_DM_NS::IComposite2D(
-            solver->getSubSolvers()->sizeH(),
-            solver->getSubSolvers()->sizeV()
-        )
+    BIO_DM_NS::IComposite2D(
+        solver->getSubSolvers()->sizeH(),
+        solver->getSubSolvers()->sizeV()
+    )
 {
     this->solver = solver;
     this->structAnalyzer = structAnalyzer;
@@ -191,10 +191,10 @@ BIO_DM_NS::ICursor2D* BIO_SLV_FD_IM2D_NS::DataModel::newGridCursor()
 BIO_SLV_FD_IM2D_NS::DataModel::Cursor::Cursor(
     DataModel* dataModel
 ) :
-        BIO_DM_NS::AbstractCursor2D(
-            dataModel->getPointPositionsH()->getPointCount(),
-            dataModel->getPointPositionsV()->getPointCount()
-        )
+    BIO_DM_NS::AbstractCursor2D(
+        dataModel->getPointPositionsH()->getPointCount(),
+        dataModel->getPointPositionsV()->getPointCount()
+    )
 {
     this->dataModel = dataModel;
     currentAreaH = 0;

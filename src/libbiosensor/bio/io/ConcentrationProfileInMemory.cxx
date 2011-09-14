@@ -212,10 +212,10 @@ BIO_XML_NS::model::Substance* BIO_IO_NS::ConcentrationProfileInMemory::getSubsta
 /* ****************    ConcentrationProfileInMemory::Cursor2DImpl    ******** */
 /* ************************************************************************** */
 BIO_IO_NS::ConcentrationProfileInMemory::Cursor2DImpl::Cursor2DImpl(ConcentrationProfileInMemory* source) :
-        BIO_DM_NS::AbstractCursor2D(
-            source->sizeH,
-            source->sizeV
-        )
+    BIO_DM_NS::AbstractCursor2D(
+        source->sizeH,
+        source->sizeV
+    )
 {
     this->source = source;
 }

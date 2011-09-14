@@ -38,9 +38,9 @@ BIO_IO_NS_BEGIN
  *  Implementation is not very clean...
  */
 class ConcentrationProfileReader :
-        public BIO_DM_NS::IGrid2D,
-        public BIO_DM_NS::IDataModel,
-        public BIO_SLV_NS::ISolverState
+    public BIO_DM_NS::IGrid2D,
+    public BIO_DM_NS::IDataModel,
+    public BIO_SLV_NS::ISolverState
 {
 protected:
     class Cursor2DImpl;

@@ -31,9 +31,9 @@ BIO_IO_NS_BEGIN
  *
  */
 class ConcentrationProfile :
-        public BIO_IO_NS::IOutput,
-        public BIO_IO_NS::IRepeatable,
-        public BIO_SLV_NS::ISolverStateHolder
+    public BIO_IO_NS::IOutput,
+    public BIO_IO_NS::IRepeatable,
+    public BIO_SLV_NS::ISolverStateHolder
 {
 private:
 

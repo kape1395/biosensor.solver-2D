@@ -27,9 +27,9 @@ BIO_SLV_FD_IM1D_NS::AreaSubSolver::AreaSubSolver(
     BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
     BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer
 ) :
-        BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
-            solver, positionH, positionV, structAnalyzer, fdAnalyzer
-        )
+    BIO_SLV_FD_IM2D_NS::AreaSubSolver::AreaSubSolver(
+        solver, positionH, positionV, structAnalyzer, fdAnalyzer
+    )
 {
     // Nothiong to do here.
 }

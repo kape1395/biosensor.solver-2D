@@ -149,9 +149,9 @@ void BIO_IO_NS::ConcentrationProfile::setSolverState(BIO_SLV_NS::ISolverState* s
     if (iterativeSolver != 0)
     {
         (*out) << "#"
-        << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
-        << " SolvedTime="           << iterativeSolver->getSolvedTime()
-        << std::endl;
+               << " SolvedIterationCount=" << iterativeSolver->getSolvedIterationCount()
+               << " SolvedTime="           << iterativeSolver->getSolvedTime()
+               << std::endl;
     }
     else
     {
@@ -177,10 +177,10 @@ void BIO_IO_NS::ConcentrationProfile::setSolverState(BIO_SLV_NS::ISolverState* s
             BIO_DM_NS::IConcentrations* concentrations = cursor->getConcentrations();
 
             (*out)
-            << grid->getPointPositionsH()->getPointPosition(h) << '\t'
-            << grid->getPointPositionsV()->getPointPosition(v) << '\t'
-            << h << '\t' << v
-            ;
+                    << grid->getPointPositionsH()->getPointPosition(h) << '\t'
+                    << grid->getPointPositionsV()->getPointPosition(v) << '\t'
+                    << h << '\t' << v
+                    ;
             for (int s = 0; s < substCount; s++)
             {
                 (*out) << '\t' << concentrations->getConcentration(s);

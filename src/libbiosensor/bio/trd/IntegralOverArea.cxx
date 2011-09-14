@@ -32,7 +32,7 @@ BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
     IIntegratedExpression*          expression,
     BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
 ) :
-        CONST_PI(std::atan2(0, -1))
+    CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
@@ -76,7 +76,7 @@ BIO_TRD_NS::IntegralOverArea::IntegralOverArea(
     IIntegratedExpression*          expression,
     BIO_CFG_NS::StructureAnalyzer*  structAnalyzer
 ) :
-        CONST_PI(std::atan2(0, -1))
+    CONST_PI(std::atan2(0, -1))
 {
     BIO_DM_NS::IComposite2D* dataModel = 0;
 
