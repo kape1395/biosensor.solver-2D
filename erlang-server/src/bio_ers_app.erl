@@ -1,4 +1,4 @@
--module(bio_erser).
+-module(bio_ers_app).
 -behaviour(application).
 -export([start/2, stop/1]).
 
