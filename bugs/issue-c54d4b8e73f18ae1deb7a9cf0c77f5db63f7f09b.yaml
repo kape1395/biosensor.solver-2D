@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Upgrade to new libboost (remove -DBOOST_FILESYSTEM_VERSION=2).
+desc: ""
+type: :task
+component: kape1395.biosensor.solver-2D
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2011-11-16 23:33:40.764801 Z
+references: []
+
+id: c54d4b8e73f18ae1deb7a9cf0c77f5db63f7f09b
+log_events: 
+- - 2011-11-16 23:33:42.225066 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
