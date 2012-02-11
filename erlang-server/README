@@ -1,0 +1,7 @@
+
+Some commands:
+    erl -pa ebin
+        application:start(bio_ers).
+        application:which_applications().
+        application:stop(bio_ers).
+
