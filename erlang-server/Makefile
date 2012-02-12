@@ -6,8 +6,11 @@ all: $(BEAM_FILES)
 clean:
 	rm -fv $(BEAM_FILES)
 	
-$(BEAM_FILES): ebin/bio_ers.app Emakefile $(ERL_FILES)
+$(BEAM_FILES): $(ERL_FILES)
 	erl -make
 
-.PHONY: all clean
+run: $(BEAM_FILES)
+	erl -pa ebin -s bio_ers_app startup
+
+.PHONY: all clean run
 

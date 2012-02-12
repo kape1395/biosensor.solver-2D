@@ -1,4 +1,4 @@
--module(bio_ers_mgr).
+-module(bio_ers).
 -behaviour(gen_server).
 -export([start_link/0]).
 -export([test/0]).
@@ -9,7 +9,7 @@
 %%
 
 start_link() ->
-    gen_server:start_link({local, bio_ers_mgr}, bio_ers_mgr, [], []).
+    gen_server:start_link({local, bio_ers}, bio_ers, [], []).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -17,7 +17,7 @@ start_link() ->
 %%
 
 test() ->
-    gen_server:call(bio_ers_mgr, test).
+    gen_server:call(bio_ers, test).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

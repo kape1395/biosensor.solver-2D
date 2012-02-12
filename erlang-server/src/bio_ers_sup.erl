@@ -14,5 +14,5 @@ start_link() ->
 %%
 init(_Args) ->
     {ok, {{one_for_one, 1, 60}, [
-        {bio_ers_mgr, {bio_ers_mgr, start_link, []}, permanent, brutal_kill, worker, [bio_ers_mgr]}
+        {bio_ers, {bio_ers, start_link, []}, permanent, brutal_kill, worker, [bio_ers]}
     ]}}.
