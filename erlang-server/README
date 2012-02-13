@@ -2,5 +2,6 @@
 Some commands:
     erl -pa ebin -s bio_ers_app startup
         application:which_applications().
+        eunit:test(bio_ers).
         init:stop().
 
