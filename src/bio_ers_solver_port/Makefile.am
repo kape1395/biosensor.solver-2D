@@ -13,7 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-datarootdir = @datarootdir@
+bin_PROGRAMS = bio_ers_solver_port
 
-SUBDIRS = libbiosensor-xml libbiosensor libbiosensor-slv-fd bio-solver bio-editor bio-output bio_ers bio_ers_solver_port
+bio_ers_solver_port_CPPFLAGS = \
+    -I../libbiosensor \
+    -I../libbiosensor-xml \
+    -I../libbiosensor-slv-fd
+
+bio_ers_solver_port_LDADD = \
+    ../libbiosensor/libbiosensor.la \
+    ../libbiosensor-xml/libbiosensor-xml.la \
+    ../libbiosensor-slv-fd/libbiosensor-slv-fd.la
+
+bio_ers_solver_port_SOURCES = \
+    main.cxx
+
+astyle:
+	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
 

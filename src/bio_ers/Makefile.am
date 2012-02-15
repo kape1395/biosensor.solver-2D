@@ -13,7 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-datarootdir = @datarootdir@
 
-SUBDIRS = libbiosensor-xml libbiosensor libbiosensor-slv-fd bio-solver bio-editor bio-output bio_ers bio_ers_solver_port
+
+ERL_FILES=$(wildcard src/*.erl)
+BEAM_FILES=$(patsubst src/%.erl,ebin/%.beam,$(ERL_FILES))
+
+all: $(BEAM_FILES)
+
+clean-local:
+	rm -fv $(BEAM_FILES)
+	
+$(BEAM_FILES): $(ERL_FILES)
+	erl -make
+
+run: $(BEAM_FILES)
+	erl -pa ebin -s bio_ers_app startup
+
+.PHONY: all clean-local run
 

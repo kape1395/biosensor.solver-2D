@@ -60,4 +60,4 @@ src/libbiosensor-slv-fd/biosensor-slv-fd.hxx
 src/libbiosensor/biosensor.hxx
 src/libbiosensor-xml/*.cxx
 src/libbiosensor-xml/*.hxx
-erlang-server/ebin/*.beam
+src/bio_ers/ebin/*.beam
