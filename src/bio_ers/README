@@ -15,7 +15,8 @@ Used modules:
 
 Some useful commands for a developer:
     erl -pa ebin -s bio_ers_app startup
-        application:which_applications().
-        eunit:test(bio_ers).
-        init:stop().
+        application:which_applications().   # List running apps.
+        eunit:test(bio_ers).                # Run unit tests.
+        code:purge(bio_ers_model), code:load_file(bio_ers_model). # Reload module.
+        init:stop().                        # Quit.
 
