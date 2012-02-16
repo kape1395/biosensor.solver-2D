@@ -22,11 +22,14 @@ ERL_BEAM_FILES=\
     ebin/bio_ers_solver.beam \
     ebin/bio_ers_sup.beam
 
+ERL_TEST_BEAM_FILES=\
+    ebin/bio_ers_tests.beam
+
 
 all: bio_ers
 
 
-#
+################################################################################
 #   Erlang specific build.
 #
 
@@ -47,14 +50,23 @@ $(ERL_APP_FILES): ebin/% : %
 $(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
 	$(ERLC) $(ERLCFLAGS) -o ebin $< 
 
+################################################################################
 #
 #   Some tests.
 #
-test_run: $(ERL_BEAM_FILES)
+
+$(ERL_TEST_BEAM_FILES): ebin/%.beam: test/%.erl
+	$(ERLC) $(ERLCFLAGS) -o ebin $< 
+
+test_run: $(ERL_BEAM_FILES) $(ERL_TEST_BEAM_FILES)
 	erl -pa ebin -s bio_ers_app startup
 
+test: bio_ers $(ERL_TEST_BEAM_FILES)
+	erl -pa ebin -noinput \
+	    -s eunit test bio_ers \
+	    -s init stop
 
-#
+################################################################################
 #   Formalities...
 #
 clean-local:

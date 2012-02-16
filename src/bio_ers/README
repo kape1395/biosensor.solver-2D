@@ -9,6 +9,9 @@ Erlang (er) Server (s)". The server should support:
   * Help to manage calculation on multiple machines.
   * Maybe to help submitting jobs to a grid.
 
+Used modules:
+  * xmerl_scan
+  * eunit
 
 Some useful commands for a developer:
     erl -pa ebin -s bio_ers_app startup
