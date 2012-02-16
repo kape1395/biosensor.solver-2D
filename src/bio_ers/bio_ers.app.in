@@ -1,12 +1,7 @@
 {application, bio_ers, [
     {description, "Erlang server for simulating biosensors"},
     {vsn, "@PACKAGE_VERSION@"},
-    {modules, [
-        bio_ers_app,
-        bio_ers_sup,
-        bio_ers_solver,
-        bio_ers
-    ]},
+    {modules, [MAKEFILE_REPLACE_WITH_MODULES]},
     {registered, [bio_ers]},
     {mod, {bio_ers_app, []}}
 ]}.

@@ -22,7 +22,6 @@ ERL_BEAM_FILES=\
     ebin/bio_ers_solver.beam \
     ebin/bio_ers_sup.beam
 
-ERL_MODULES=$(shell find ebin -name "*.erl" | sed 'sWebin/WWg; sW.beam W, Wg; sW.beamWW' )
 
 all: bio_ers
 
@@ -32,12 +31,15 @@ all: bio_ers
 #
 
 bio_ers: $(ERL_BEAM_FILES) $(ERL_APP_FILES)
-	@echo "Erlang modules: $(ERL_MODULES)"
 
 $(ERL_APP_FILES): ebin/% : %
-	sed echo "$(ERL_BEAM_FILES)" | sed 's#ebin/##g; s#.beam #, #g; s#.beam##'
-	awk -v "beams=$(ERL_BEAM_FILES)" ""
-	cp $< $@
+	awk -v "beams=$(ERL_BEAM_FILES)" '/MAKEFILE_REPLACE_WITH_MODULES/{ \
+	        modules=beams; \
+	        gsub("ebin/", "", modules); \
+	        gsub(".beam ", ", ", modules); \
+	        gsub(".beam", "", modules); \
+	        gsub("MAKEFILE_REPLACE_WITH_MODULES", modules); \
+	    }; {print;}' $< > $@
 
 $(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
 	$(ERLC) $(ERLCFLAGS) -o ebin $< 
