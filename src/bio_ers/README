@@ -1,5 +1,16 @@
+                      Biosensor Simulation Erlang Server
+                                    bio_ers
 
-Some commands:
+This is an Erlang application supposed to manage execution of multiple
+simulations. The name `bio_ers' stands for "Biosensor (bio) simulation
+Erlang (er) Server (s)". The server should support:
+  * Queue simulation jobs and execute them.
+  * Provide convenient way to express parameter variation.
+  * Help to manage calculation on multiple machines.
+  * Maybe to help submitting jobs to a grid.
+
+
+Some useful commands for a developer:
     erl -pa ebin -s bio_ers_app startup
         application:which_applications().
         init:stop().
