@@ -13,15 +13,16 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers_tests).
+-module(bio_ers_model_tests).
 -include_lib("eunit/include/eunit.hrl").
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Test descriptions
 %%
 
-basic_test_() ->
-    {setup, fun start/0, fun stop/1, fun test_returns_string/1}.
+main_test_() ->
+    {setup, fun start/0, fun stop/1, fun test_parsing_successful/1}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,19 +30,18 @@ basic_test_() ->
 %%
 
 start() ->
-    {ok, Pid} = bio_ers:start_link(),
-    Pid.
+    ok.
 
-stop(_Pid) ->
-    bio_ers:stop().
-
+stop(_) ->
+    ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Actual tests
 %%
 
-test_returns_string(_Pid) ->
-    [?_assertEqual("This is a test", bio_ers:test())].
+test_parsing_successful(_) ->
+    {Status, _Model} = bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml"),
+    [?_assertEqual(ok, Status)].
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

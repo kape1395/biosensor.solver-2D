@@ -24,7 +24,8 @@ ERL_BEAM_FILES=\
     ebin/bio_ers_sup.beam
 
 ERL_TEST_BEAM_FILES=\
-    ebin/bio_ers_tests.beam
+    ebin/bio_ers_tests.beam \
+    ebin/bio_ers_model_tests.beam
 
 
 all: bio_ers
@@ -64,7 +65,7 @@ test_run: $(ERL_BEAM_FILES) $(ERL_TEST_BEAM_FILES)
 
 test: bio_ers $(ERL_TEST_BEAM_FILES)
 	erl -pa ebin -noinput \
-	    -s eunit test bio_ers \
+	    -s eunit test bio_ers bio_ers_model \
 	    -s init stop
 
 ################################################################################
