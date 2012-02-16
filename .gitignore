@@ -47,6 +47,7 @@ acinclude/libtool.m4
 acinclude/ltversion.m4
 acinclude/lt~obsolete.m4
 acinclude/ltoptions.m4
+aclocal.m4
 admin/config.guess
 admin/config.sub
 admin/depcomp
