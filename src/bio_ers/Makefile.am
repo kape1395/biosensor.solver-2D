@@ -15,19 +15,45 @@
 #
 
 
-ERL_FILES=$(wildcard src/*.erl)
-BEAM_FILES=$(patsubst src/%.erl,ebin/%.beam,$(ERL_FILES))
+ERL_APP_FILES=ebin/bio_ers.app
+ERL_BEAM_FILES=\
+    ebin/bio_ers.beam \
+    ebin/bio_ers_app.beam \
+    ebin/bio_ers_solver.beam \
+    ebin/bio_ers_sup.beam
 
-all: $(BEAM_FILES)
+ERL_MODULES=$(shell find ebin -name "*.erl" | sed 'sWebin/WWg; sW.beam W, Wg; sW.beamWW' )
 
-clean-local:
-	rm -fv $(BEAM_FILES)
-	
-$(BEAM_FILES): $(ERL_FILES)
-	erl -make
+all: bio_ers
 
-run: $(BEAM_FILES)
+
+#
+#   Erlang specific build.
+#
+
+bio_ers: $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+	@echo "Erlang modules: $(ERL_MODULES)"
+
+$(ERL_APP_FILES): ebin/% : %
+	sed echo "$(ERL_BEAM_FILES)" | sed 's#ebin/##g; s#.beam #, #g; s#.beam##'
+	awk -v "beams=$(ERL_BEAM_FILES)" ""
+	cp $< $@
+
+$(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
+	$(ERLC) $(ERLCFLAGS) -o ebin $< 
+
+#
+#   Some tests.
+#
+test_run: $(ERL_BEAM_FILES)
 	erl -pa ebin -s bio_ers_app startup
 
-.PHONY: all clean-local run
+
+#
+#   Formalities...
+#
+clean-local:
+	rm -fv $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+	
+.PHONY: all bio_ers clean-local test_run
 

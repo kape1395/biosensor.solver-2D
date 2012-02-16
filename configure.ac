@@ -25,6 +25,11 @@ ASTYLE_OPTS="--style=ansi --options=none"
 #CXXFLAGS="-g -O2 -ansi -Wall"
 
 
+#### Check for erlang.
+# See also: AC_ERLANG_PATH_ERLC, AC_ERLANG_PATH_ERL.
+AC_ERLANG_NEED_ERLC
+AC_ERLANG_NEED_ERL
+
 #### Checks for programs.
 AC_PROG_CXX
 AC_PROG_LIBTOOL
@@ -72,6 +77,7 @@ AC_CONFIG_FILES([
     src/bio-solver/Makefile
     src/bio-output/Makefile
     src/bio_ers/Makefile
+    src/bio_ers/bio_ers.app
     src/bio_ers_solver_port/Makefile
     src/libbiosensor/Makefile
     src/libbiosensor-slv-fd/Makefile

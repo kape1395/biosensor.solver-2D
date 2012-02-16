@@ -61,5 +61,6 @@ src/libbiosensor-slv-fd/biosensor-slv-fd.hxx
 src/libbiosensor/biosensor.hxx
 src/libbiosensor-xml/*.cxx
 src/libbiosensor-xml/*.hxx
-src/bio_ers/ebin/*.beam
+src/bio_ers/ebin/
+src/bio_ers/bio_ers.app
 src/bio_ers_solver_port/bio_ers_solver_port
