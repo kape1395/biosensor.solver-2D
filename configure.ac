@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [0.6.6])
+AC_INIT([biosensor], [0.7.0])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])
@@ -24,6 +24,11 @@ AM_INIT_AUTOMAKE([subdir-objects -Wall])
 ASTYLE_OPTS="--style=ansi --options=none"
 #CXXFLAGS="-g -O2 -ansi -Wall"
 
+
+#### Check for erlang.
+# See also: AC_ERLANG_PATH_ERLC, AC_ERLANG_PATH_ERL.
+AC_ERLANG_NEED_ERLC
+AC_ERLANG_NEED_ERL
 
 #### Checks for programs.
 AC_PROG_CXX
@@ -71,6 +76,9 @@ AC_CONFIG_FILES([
     src/bio-editor/Makefile
     src/bio-solver/Makefile
     src/bio-output/Makefile
+    src/bio_ers/Makefile
+    src/bio_ers/bio_ers.app
+    src/bio_ers_solver_port/Makefile
     src/libbiosensor/Makefile
     src/libbiosensor-slv-fd/Makefile
     src/libbiosensor-xml/Makefile

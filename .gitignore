@@ -47,6 +47,7 @@ acinclude/libtool.m4
 acinclude/ltversion.m4
 acinclude/lt~obsolete.m4
 acinclude/ltoptions.m4
+aclocal.m4
 admin/config.guess
 admin/config.sub
 admin/depcomp
@@ -60,4 +61,6 @@ src/libbiosensor-slv-fd/biosensor-slv-fd.hxx
 src/libbiosensor/biosensor.hxx
 src/libbiosensor-xml/*.cxx
 src/libbiosensor-xml/*.hxx
-erlang-server/ebin/*.beam
+src/bio_ers/ebin/
+src/bio_ers/bio_ers.app
+src/bio_ers_solver_port/bio_ers_solver_port
