@@ -1,5 +1,5 @@
 #
-# Copyright 2011 Karolis Petrauskas
+# Copyright 2012 Karolis Petrauskas
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,10 @@ all: bio_ers
 #   Erlang specific build.
 #
 
-bio_ers: $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+bio_ers: ebin $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+
+ebin:
+	mkdir ebin
 
 $(ERL_APP_FILES): ebin/% : %
 	awk -v "beams=$(ERL_BEAM_FILES)" '/MAKEFILE_REPLACE_WITH_MODULES/{ \
@@ -55,7 +58,7 @@ test_run: $(ERL_BEAM_FILES)
 #   Formalities...
 #
 clean-local:
-	rm -fv $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+	rm -rfv ebin
 	
 .PHONY: all bio_ers clean-local test_run
 
