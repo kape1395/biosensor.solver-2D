@@ -24,8 +24,13 @@ ERL_BEAM_FILES=\
     ebin/bio_ers_sup.beam
 
 ERL_TEST_BEAM_FILES=\
+    ebin/bio_ers_testsuite.beam \
     ebin/bio_ers_tests.beam \
     ebin/bio_ers_model_tests.beam
+
+ERL_TEST_MODULES=\
+    bio_ers \
+    bio_ers_model
 
 
 all: bio_ers
@@ -64,15 +69,16 @@ test_run: $(ERL_BEAM_FILES) $(ERL_TEST_BEAM_FILES)
 	erl -pa ebin -s bio_ers_app startup
 
 test: bio_ers $(ERL_TEST_BEAM_FILES)
-	erl -pa ebin -noinput \
-	    -s eunit test bio_ers bio_ers_model \
-	    -s init stop
+	erl -pa ebin -noinput -s bio_ers_testsuite run $(ERL_TEST_MODULES)
+
 
 ################################################################################
 #   Formalities...
 #
 clean-local:
 	rm -rfv ebin
+
+check-local: test
 	
 .PHONY: all bio_ers clean-local test_run
 
