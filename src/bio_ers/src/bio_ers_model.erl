@@ -42,6 +42,7 @@ parse_file(FileName) ->
 -define(KPXML_M, 'http://karolis.5grupe.lt/biosensor/model').
 -define(KPXML_R, 'http://karolis.5grupe.lt/biosensor/model/reaction').
 -define(KPXML_B, 'http://karolis.5grupe.lt/biosensor/model/bound').
+-define(KPXML_T, 'http://karolis.5grupe.lt/biosensor/model/transducer').
 
 %%
 %%  Convert XML structure to the model definition.
@@ -59,6 +60,8 @@ process_xml(E) ->
 %%  to the corresponding model definition.
 %%
 process_xml_kpxml_v1(root, #xmlElement{expanded_name = {?KPXML_M, model}, content = Contents}) ->
+    [Transducer|_] = lists:filter(node_qn_pred({?KPXML_M, transducer}), Contents),
+    [Solver|_] = lists:filter(node_qn_pred({?KPXML_M, solver}), Contents),
     {ok, {model, kpxml_v1,
         lists:map(
             fun (X) -> {substance, attr_value(X, name)} end,
@@ -76,12 +79,12 @@ process_xml_kpxml_v1(root, #xmlElement{expanded_name = {?KPXML_M, model}, conten
             fun (X) -> process_xml_kpxml_v1(bound, X) end,
             lists:filter(node_qn_pred({?KPXML_M, bound}), Contents)
         ),
-        {transducer},
+        process_xml_kpxml_v1(transducer, Transducer),
         lists:map(
             fun (X) -> process_xml_kpxml_v1(symbol, X) end,
             lists:filter(node_qn_pred({?KPXML_M, symbol}), Contents)
         ),
-        {solver}
+        {solver, Solver}
     }};
 process_xml_kpxml_v1(reaction, E) ->
     case xsi_type(E) of
@@ -107,8 +110,8 @@ process_xml_kpxml_v1(R = reaction_mm, E) ->
         attr_value(E, name),
         attr_value(E, substrate),
         attr_value(E, product),
-        attr_value(E, "V_max"),
-        attr_value(E, "K_M")
+        attr_value(E, 'V_max'),
+        attr_value(E, 'K_M')
     };
 process_xml_kpxml_v1(medium, E = #xmlElement{content = Contents}) ->
     {medium,
@@ -169,6 +172,31 @@ process_xml_kpxml_v1(bound, E = #xmlElement{content = Contents}) ->
             lists:filter(node_qn_pred({?KPXML_M, reaction}), Contents)
         )
     };
+process_xml_kpxml_v1(transducer, E) ->
+    case xsi_type(E) of
+        {type, ?KPXML_T, "AmperometricElectrode"} -> process_xml_kpxml_v1(transducer_amp, E);
+        {type, ?KPXML_T, "InjectedElectrode"} -> process_xml_kpxml_v1(transducer_inj, E);
+        {type, ?KPXML_T, "CompositeElectrode"} -> process_xml_kpxml_v1(transducer_comp, E)
+    end;
+process_xml_kpxml_v1(transducer_amp = T, E) ->
+    {T,
+       attr_value(E, name),
+       attr_value(E, bound),
+       attr_value(E, substance)
+    };
+process_xml_kpxml_v1(transducer_inj = T, E) ->
+    {T,
+       attr_value(E, name),
+       attr_value(E, medium),
+       attr_value(E, reaction)
+    };
+process_xml_kpxml_v1(transducer_comp = T, #xmlElement{content = Contents}) ->
+   {T,
+       lists:map(
+           fun(X) -> process_xml_kpxml_v1(transducer, X) end,
+           lists:filter(node_qn_pred({?KPXML_T, transducer}), Contents)
+       )
+   };
 process_xml_kpxml_v1(symbol, E) ->
     {symbol,
         attr_value(E, name),
