@@ -20,7 +20,8 @@ Some useful commands for a developer:
         rr(xmerl).                          # Load record definitions.
         rp([list, {a}]).                    # Prints all the structure recursivelly
         i().                                # Lists processes.
-        pman:start().                       # Lists processes.
+        pman:start().                       # Process manager (GUI).
+        appmon:start().                     # Application manager (GUI).
         init:stop().                        # Quit.
 
     make test_run   # For the change-compile-check loop...

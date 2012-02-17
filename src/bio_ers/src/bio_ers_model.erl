@@ -198,6 +198,7 @@ attr_value(#xmlElement{attributes = Attrs}, Name) ->
 
 %%
 %%  @doc Resolves value of the xsi:type attribute.
+%%  @spec xsi_type(Element) -> {type, Namespace, LocalName}
 %%
 xsi_type(#xmlElement{attributes = Attrs}) ->
     [#xmlAttribute{namespace=#xmlNamespace{default = DefNs, nodes = Ns}, value = Val}|_] = lists:filter(
@@ -215,7 +216,8 @@ xsi_type(#xmlElement{attributes = Attrs}) ->
     end.
 
 %%
-%%  Returns predicate to filter xml elements by qualified name.
+%%  @doc Returns predicate to filter xml elements by qualified name.
+%%  @spec node_qn_pred(QName) -> Fun.
 %%
 node_qn_pred(QName) ->
     fun (#xmlElement{expanded_name = N}) when N == QName -> true; (_) -> false end.
