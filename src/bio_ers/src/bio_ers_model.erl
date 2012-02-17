@@ -41,6 +41,7 @@ parse_file(FileName) ->
 %%
 -define(KPXML_M, 'http://karolis.5grupe.lt/biosensor/model').
 -define(KPXML_R, 'http://karolis.5grupe.lt/biosensor/model/reaction').
+-define(KPXML_B, 'http://karolis.5grupe.lt/biosensor/model/bound').
 
 %%
 %%  Convert XML structure to the model definition.
@@ -58,19 +59,29 @@ process_xml(E) ->
 %%  to the corresponding model definition.
 %%
 process_xml_kpxml_v1(root, #xmlElement{expanded_name = {?KPXML_M, model}, content = Contents}) ->
-    ElemIsSubst = fun (#xmlElement{expanded_name = {?KPXML_M, substance}}) -> true; (_) -> false end,
-    ElemIsReact = fun (#xmlElement{expanded_name = {?KPXML_M, reaction}}) -> true; (_) -> false end,
     {ok, {model, kpxml_v1,
         lists:map(
             fun (X) -> {substance, attr_value(X, name)} end,
-            lists:filter(ElemIsSubst, Contents)
+            lists:filter(node_qn_pred({?KPXML_M, substance}), Contents)
         ),
         lists:map(
             fun (X) -> process_xml_kpxml_v1(reaction, X) end,
-            lists:filter(ElemIsReact, Contents)
-        ), 
-        [], 
-        []
+            lists:filter(node_qn_pred({?KPXML_M, reaction}), Contents)
+        ),
+        lists:map(
+            fun (X) -> process_xml_kpxml_v1(medium, X) end,
+            lists:filter(node_qn_pred({?KPXML_M, medium}), Contents)
+        ),
+        lists:map(
+            fun (X) -> process_xml_kpxml_v1(bound, X) end,
+            lists:filter(node_qn_pred({?KPXML_M, bound}), Contents)
+        ),
+        {transducer},
+        lists:map(
+            fun (X) -> process_xml_kpxml_v1(symbol, X) end,
+            lists:filter(node_qn_pred({?KPXML_M, symbol}), Contents)
+        ),
+        {solver}
     }};
 process_xml_kpxml_v1(reaction, E) ->
     case xsi_type(E) of
@@ -79,14 +90,17 @@ process_xml_kpxml_v1(reaction, E) ->
     end,
     process_xml_kpxml_v1(RType, E);
 process_xml_kpxml_v1(R = reaction_ro, E = #xmlElement{content = Contents}) ->
-    ElemIsS = fun (#xmlElement{expanded_name = {?KPXML_R, substrate}}) -> true; (_) -> false end,
-    ElemIsP = fun (#xmlElement{expanded_name = {?KPXML_R, product}}) -> true; (_) -> false end,
     {R,
         attr_value(E, name),
         attr_value(E, rate),
-        lists:map(fun (S) -> {substrate, attr_value(S, name)} end, lists:filter(ElemIsS, Contents))
-        ++
-        lists:map(fun (P) -> {product, attr_value(P, name)} end, lists:filter(ElemIsP, Contents))
+        lists:map(
+            fun (S) -> {substrate, attr_value(S, name), attr_value(S, coefficient)} end,
+            lists:filter(node_qn_pred({?KPXML_R, substrate}), Contents)
+        ),
+        lists:map(
+            fun (P) -> {product, attr_value(P, name), attr_value(P, coefficient)} end,
+            lists:filter(node_qn_pred({?KPXML_R, product}), Contents)
+        )
     };
 process_xml_kpxml_v1(R = reaction_mm, E) ->
     {R,
@@ -95,6 +109,71 @@ process_xml_kpxml_v1(R = reaction_mm, E) ->
         attr_value(E, product),
         attr_value(E, "V_max"),
         attr_value(E, "K_M")
+    };
+process_xml_kpxml_v1(medium, E = #xmlElement{content = Contents}) ->
+    {medium,
+        attr_value(E, name),
+        attr_value(E, diffusionRatio),
+        lists:map(
+            fun (S) -> {substance, attr_value(S, name), attr_value(S, diffusion), attr_value(S, initial)} end,
+            lists:filter(node_qn_pred({?KPXML_M, substance}), Contents)
+        ),
+        lists:map(
+            fun (S) -> {reaction, attr_value(S, name)} end,
+            lists:filter(node_qn_pred({?KPXML_M, reaction}), Contents)
+        ),
+        lists:map(
+            fun (S) -> {area,
+                attr_value(S, top),
+                attr_value(S, bottom),
+                attr_value(S, left),
+                attr_value(S, right),
+                attr_value(S, from),
+                attr_value(S, to)
+            } end,
+            lists:filter(node_qn_pred({?KPXML_M, area}), Contents)
+        )
+    };
+process_xml_kpxml_v1(bound, E = #xmlElement{content = Contents}) ->
+    {bound,
+        attr_value(E, name),
+        attr_value(E, from),
+        attr_value(E, to),
+        attr_value(E, at),
+        lists:map(
+            fun (S) ->
+                case xsi_type(S) of
+                    {type, ?KPXML_B, "Constant"} ->
+                        {substance_const,
+                            attr_value(S, name), attr_value(S, diffusion), attr_value(S, initial),
+                            attr_value(S, concentration)
+                        };
+                    {type, ?KPXML_B, "Wall"} ->
+                        {substance_wall,
+                            attr_value(S, name), attr_value(S, diffusion), attr_value(S, initial)
+                        };
+                    {type, ?KPXML_B, "Merge"} ->
+                        {substance_merge,
+                            attr_value(S, name), attr_value(S, diffusion), attr_value(S, initial)
+                        };
+                    {type, ?KPXML_B, "Null"} ->
+                        {substance_null,
+                            attr_value(S, name), attr_value(S, diffusion), attr_value(S, initial)
+                        }
+                end
+            end,
+            lists:filter(node_qn_pred({?KPXML_M, substance}), Contents)
+        ),
+        lists:map(
+            fun (S) -> {reaction, attr_value(S, name)} end,
+            lists:filter(node_qn_pred({?KPXML_M, reaction}), Contents)
+        )
+    };
+process_xml_kpxml_v1(symbol, E) ->
+    {symbol,
+        attr_value(E, name),
+        attr_value(E, value),
+        attr_value(E, dimension)
     }.
 
 
@@ -108,11 +187,14 @@ process_xml_kpxml_v1(R = reaction_mm, E) ->
 %%  @spec attr_value(XmlElement::#xmlElement, AttrName::atom()...) -> AttrValue::string()
 %%
 attr_value(#xmlElement{attributes = Attrs}, Name) ->
-    [#xmlAttribute{value = Value}|_] = lists:filter(
+    L = lists:filter(
         fun (#xmlAttribute{expanded_name = N}) when N == Name -> true; (_) -> false end,
         Attrs
     ),
-    Value.
+    if
+        L == [] -> undefined;
+        true -> [#xmlAttribute{value = Value}|_] = L, Value
+    end.
 
 %%
 %%  @doc Resolves value of the xsi:type attribute.
@@ -131,5 +213,11 @@ xsi_type(#xmlElement{attributes = Attrs}) ->
             [TypeName|_] = T2,
             {type, TypeNs, TypeName}
     end.
+
+%%
+%%  Returns predicate to filter xml elements by qualified name.
+%%
+node_qn_pred(QName) ->
+    fun (#xmlElement{expanded_name = N}) when N == QName -> true; (_) -> false end.
 
 

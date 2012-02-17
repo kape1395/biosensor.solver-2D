@@ -17,6 +17,12 @@ Some useful commands for a developer:
     erl -pa ebin -s bio_ers_app startup
         application:which_applications().   # List running apps.
         eunit:test(bio_ers).                # Run unit tests.
-        code:purge(bio_ers_model), code:load_file(bio_ers_model). # Reload module.
+        rr(xmerl).                          # Load record definitions.
+        rp([list, {a}]).                    # Prints all the structure recursivelly
+        i().                                # Lists processes.
+        pman:start().                       # Lists processes.
         init:stop().                        # Quit.
 
+    make test_run   # For the change-compile-check loop...
+        rp({os:cmd("make"), code:purge(bio_ers_model), code:load_file(bio_ers_model)}).
+        rp(bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml")).
