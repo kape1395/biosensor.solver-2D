@@ -1,6 +1,8 @@
                       Biosensor Simulation Erlang Server
                                     bio_ers
 
+Introduction
+============
 This is an Erlang application supposed to manage execution of multiple
 simulations. The name `bio_ers' stands for "Biosensor (bio) simulation
 Erlang (er) Server (s)". The server should support:
@@ -9,20 +11,42 @@ Erlang (er) Server (s)". The server should support:
   * Help to manage calculation on multiple machines.
   * Maybe to help submitting jobs to a grid.
 
-Design decisions:
+
+Design decisions
+================
+This section states main design decisions, made when developing bio_ers.
+The list is to not forget and follow them. Updates to the principles are
+of coutse allowed, just changes must be documented here including
+argumentation for the changes. As for today the decisions are the following:
   * Implement process pool (simulation job queue). No maintained embedable
     implementation was found.
-  * Use Erl_Interface to implement biosensor solver port. Maybe its better
-    to not invent own protocol.
+    TODO: Add known references here.
+  * Use EI (Erlang Interface) to implement biosensor solver port [ei1, ei2].
+    Maybe its better to not invent own protocol. Note that EI replaces
+    mostly deprecated erl_interface [ei3]. The biosensor solver port
+    implementation is in ../bio_ers_solver_port/.
   * Transformation of a model to a atructure of primitive solver components
     should be done in erlang. I am expecting to have cleaner code in this way.
     Another aspect is that C++ side should be rewritten anyway to employ
     IoC pattern instead of heavy constructors where appropriate.
 
-Used modules (dependencies):
+
+Dependencies
+============
+Used modules:
   * xmerl_scan
   * eunit
 
+
+References
+==========
+[ei1] http://www.erlang.org/doc/apps/erl_interface/users_guide.html
+[ei2] http://www.erlang.org/doc/man/ei.html
+[ei3] http://www.erlang.org/faq/how_do_i.html
+
+
+Appendix A.
+===========
 Some useful commands for a developer:
     erl -pa ebin -s bio_ers_app startup
         application:which_applications().   # List running apps.
@@ -39,3 +63,5 @@ Some useful commands for a developer:
         rp(bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml")).
 
     make check      # Runs all the unit tests.
+
+
