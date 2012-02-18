@@ -9,7 +9,17 @@ Erlang (er) Server (s)". The server should support:
   * Help to manage calculation on multiple machines.
   * Maybe to help submitting jobs to a grid.
 
-Used modules:
+Design decisions:
+  * Implement process pool (simulation job queue). No maintained embedable
+    implementation was found.
+  * Use Erl_Interface to implement biosensor solver port. Maybe its better
+    to not invent own protocol.
+  * Transformation of a model to a atructure of primitive solver components
+    should be done in erlang. I am expecting to have cleaner code in this way.
+    Another aspect is that C++ side should be rewritten anyway to employ
+    IoC pattern instead of heavy constructors where appropriate.
+
+Used modules (dependencies):
   * xmerl_scan
   * eunit
 
@@ -27,3 +37,5 @@ Some useful commands for a developer:
     make test_run   # For the change-compile-check loop...
         rp({os:cmd("make"), code:purge(bio_ers_model), code:load_file(bio_ers_model)}).
         rp(bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml")).
+
+    make check      # Runs all the unit tests.
