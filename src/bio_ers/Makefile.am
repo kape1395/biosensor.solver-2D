@@ -40,13 +40,18 @@ all: bio_ers
 #   Erlang specific build.
 #
 
-bio_ers: ebin $(ERL_BEAM_FILES) $(ERL_APP_FILES)
+bio_ers: ebin priv/bio_ers_solver_port $(ERL_BEAM_FILES) $(ERL_APP_FILES)
 
 ebin:
 	mkdir ebin
 
+priv/bio_ers_solver_port: ../bio_ers_solver_port/bio_ers_solver_port
+	make -C ../bio_ers_solver_port
+	cp ../bio_ers_solver_port/bio_ers_solver_port priv/
+
 $(ERL_APP_FILES): ebin/% : %
-	awk -v "beams=$(ERL_BEAM_FILES)" '/MAKEFILE_REPLACE_WITH_MODULES/{ \
+	@echo "awk -v \"beams=$(ERL_BEAM_FILES)\" '...' $< > $@"
+	@awk -v "beams=$(ERL_BEAM_FILES)" '/MAKEFILE_REPLACE_WITH_MODULES/{ \
 	        modules=beams; \
 	        gsub("ebin/", "", modules); \
 	        gsub(".beam ", ", ", modules); \
@@ -76,7 +81,7 @@ test: bio_ers $(ERL_TEST_BEAM_FILES)
 #   Formalities...
 #
 clean-local:
-	rm -rfv ebin
+	rm -rfv ebin priv/bio_ers_solver_port
 
 check-local: test
 	

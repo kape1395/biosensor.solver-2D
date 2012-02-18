@@ -15,5 +15,13 @@
 #
 datarootdir = @datarootdir@
 
-SUBDIRS = libbiosensor-xml libbiosensor libbiosensor-slv-fd bio-solver bio-editor bio-output bio_ers bio_ers_solver_port
+SUBDIRS = \
+    libbiosensor-xml \
+    libbiosensor \
+    libbiosensor-slv-fd \
+    bio-solver \
+    bio-editor \
+    bio-output \
+    bio_ers_solver_port \
+    bio_ers
 
