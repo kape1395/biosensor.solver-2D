@@ -6,9 +6,11 @@ Introduction
 This is an Erlang application supposed to manage execution of multiple
 simulations. The name `bio_ers' stands for "Biosensor (bio) simulation
 Erlang (er) Server (s)". The server should support:
-  * Queue simulation jobs and execute them.
-  * Provide convenient way to express parameter variation.
-  * Help to manage calculation on multiple machines.
+  * Queue simulation jobs and execute them. The queue should allow to
+    manage concurency and therefore increase speed of simulations.
+  * Provide convenient way to express parameter variation problems.
+  * Help to manage calculation on multiple machines. Migration of
+    running simulations should be supported also.
   * Maybe to help submitting jobs to a grid.
 
 
@@ -25,7 +27,7 @@ argumentation for the changes. As for today the decisions are the following:
     Maybe its better to not invent own protocol. Note that EI replaces
     mostly deprecated erl_interface [ei3]. The biosensor solver port
     implementation is in ../bio_ers_solver_port/.
-  * Transformation of a model to a atructure of primitive solver components
+  ? Transformation of a model to a atructure of primitive solver components
     should be done in erlang. I am expecting to have cleaner code in this way.
     Another aspect is that C++ side should be rewritten anyway to employ
     IoC pattern instead of heavy constructors where appropriate.
@@ -43,6 +45,12 @@ References
 [ei1] http://www.erlang.org/doc/apps/erl_interface/users_guide.html
 [ei2] http://www.erlang.org/doc/man/ei.html
 [ei3] http://www.erlang.org/faq/how_do_i.html
+[?ei4] http://kazmier.net/computer/port-howto/
+[?dev1] http://www.erlang.se/doc/programming_rules.shtml
+[?dev2] http://wwwhome.cs.utwente.nl/~tcm/index.html
+[?dev3] http://www.erlang.org/doc/apps/tools/erlang_mode_chapter.html
+[?tst1] http://erlymock-site.sourceforge.net/
+[?tst2] http://stackoverflow.com/questions/1202539/how-do-i-do-dependency-injection-and-mocks-in-erlang
 
 
 Appendix A.
