@@ -8,6 +8,8 @@ simulations. The name `bio_ers' stands for "Biosensor (bio) simulation
 Erlang (er) Server (s)". The server should support:
   * Queue simulation jobs and execute them. The queue should allow to
     manage concurency and therefore increase speed of simulations.
+  * Allow the simulations to be paused and resumed in a convenient way,
+    support simulation management in cases of machine restarts.
   * Provide convenient way to express parameter variation problems.
   * Help to manage calculation on multiple machines. Migration of
     running simulations should be supported also.

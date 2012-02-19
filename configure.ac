@@ -29,6 +29,14 @@ ASTYLE_OPTS="--style=ansi --options=none"
 # See also: AC_ERLANG_PATH_ERLC, AC_ERLANG_PATH_ERL.
 AC_ERLANG_NEED_ERLC
 AC_ERLANG_NEED_ERL
+AC_ERLANG_SUBST_ERTS_VER
+AC_ERLANG_SUBST_ROOT_DIR
+AC_ERLANG_SUBST_LIB_DIR
+AC_ERLANG_CHECK_LIB([kernel])
+AC_ERLANG_CHECK_LIB([stdlib])
+AC_ERLANG_CHECK_LIB([erl_interface])
+AC_ERLANG_CHECK_LIB([xmerl])
+AC_ERLANG_CHECK_LIB([eunit])
 
 #### Checks for programs.
 AC_PROG_CXX
@@ -78,6 +86,7 @@ AC_CONFIG_FILES([
     src/bio-output/Makefile
     src/bio_ers/Makefile
     src/bio_ers/bio_ers.app
+    src/bio_ers/bio_ers.rel
     src/bio_ers_solver_port/Makefile
     src/libbiosensor/Makefile
     src/libbiosensor-slv-fd/Makefile
