@@ -18,6 +18,7 @@
     {vsn, "@PACKAGE_VERSION@"},
     {modules, [MAKEFILE_REPLACE_WITH_MODULES]},
     {registered, [bio_ers]},
-    {mod, {bio_ers_app, []}}
+    {mod, {bio_ers_app, []}},
+    {applications, [kernel, stdlib]}
 ]}.
 

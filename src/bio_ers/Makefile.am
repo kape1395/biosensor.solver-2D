@@ -33,7 +33,7 @@ ERL_TEST_MODULES=\
     bio_ers_model
 
 
-all: bio_ers
+all: bio_ers.tar.gz
 
 
 ################################################################################
@@ -61,6 +61,13 @@ $(ERL_APP_FILES): ebin/% : %
 
 $(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
 	$(ERLC) $(ERLCFLAGS) -o ebin $< 
+
+bio_ers.boot: bio_ers bio_ers.rel $(ERL_APP_FILES)
+	erl -env ERL_LIBS . -noinput -eval 'ok = systools:make_script("bio_ers", [local, no_warn_sasl]), init:stop().'
+
+bio_ers.tar.gz: bio_ers.boot
+	erl -env ERL_LIBS . -noinput -eval 'ok = systools:make_tar("bio_ers"), init:stop().'
+
 
 ################################################################################
 #
