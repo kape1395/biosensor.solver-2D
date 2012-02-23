@@ -47,7 +47,7 @@ ebin:
 
 priv/bio_ers_solver_port: ../bio_ers_solver_port/bio_ers_solver_port
 	make -C ../bio_ers_solver_port
-	cp ../bio_ers_solver_port/bio_ers_solver_port priv/
+	cp ../bio_ers_solver_port/.libs/bio_ers_solver_port priv/
 
 $(ERL_APP_FILES): ebin/% : %
 	@echo "awk -v \"beams=$(ERL_BEAM_FILES)\" '...' $< > $@"

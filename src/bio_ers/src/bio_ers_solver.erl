@@ -19,6 +19,28 @@
 -export([running/2]).
 
 
+%
+% E = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
+% erlang:port_command(E, erlang:term_to_binary({test, 123})).
+% erlang:port_close(E).
+%
+%   READ: count=2 good=1 bad=0 eof=0 fail=0
+%   DATA: 0 ''
+%   DATA: 9 '       '
+%   READ: count=9 good=1 bad=0 eof=0 fail=0
+%   DATA: ffffff83 '�'
+%   DATA: 6b 'k'
+%   DATA: 0 ''
+%   DATA: 5 ''
+%   DATA: 6c 'l'
+%   DATA: 61 'a'
+%   DATA: 62 'b'
+%   DATA: 61 'a'
+%   DATA: 73 's'
+%   MSG: size=9
+%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Callbacks.
 %%
