@@ -16,8 +16,8 @@
 -module(bio_ers_solver).
 -behaviour(gen_fsm).
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
--export([running/2]).
-
+-export([init/2, running/2, suspended/2]).
+-include("bio_ers_solver.hrl").
 
 %
 % P = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
@@ -39,14 +39,17 @@
 %   DATA: 73 's'
 %   MSG: size=9
 %
+% file:read_file("test/bio_ers_model_tests-AllElems.xml")
+
+-record(fsm_state, {solver, port}).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Callbacks.
 %%
 
-init(_Args) ->
-    {ok, running, {}}.
+init(SolverState) when is_record(SolverState, solver_state_v1) ->
+    {ok, init, #fsm_state{solver = SolverState, port = undefined}}.
 
 
 handle_event(_Event, StateName, StateData) ->
@@ -73,6 +76,65 @@ code_change(_OldVsn, StateName, StateData, _Extra) ->
 %%  State callbacks.
 %%
 
-running(_Event, StateData) ->
+%
+%   States:
+%       init
+%       running
+%       suspended
+%
+%   Events:
+%       start
+%       suspend
+%       cancel
+%       simulation_state
+%       simulation_done
+%       simulation_failed
+%
+
+init(start, #fsm_state{solver = SolverState}) ->
+    Port = open_and_configure_port(SolverState),
+    {next_state, running, #fsm_state{solver = SolverState, port = Port}};
+
+init(cancel, StateData) ->
     {stop, normal, StateData}.
+
+
+
+running(suspend, State = #fsm_state{port = Port}) ->
+    erlang:port_command(Port, erlang:term_to_binary(stop)),
+    {next_state, suspended, State#fsm_state{port = undefined}};
+
+running(cancel, State = #fsm_state{port = Port}) ->
+    erlang:port_command(Port, erlang:term_to_binary(stop)),
+    {stop, normal, State#fsm_state{port = undefined}};
+
+running(simulation_state, StateData) ->
+    % save state
+    {next_state, running, StateData};
+
+running(simulation_done, StateData) ->
+    {stop, normal, StateData};
+
+running(simulation_failed, StateData) ->
+    {stop, normal, StateData}.
+
+
+
+suspended(start, #fsm_state{solver = SolverState}) ->
+    Port = open_and_configure_port(SolverState),
+    {next_state, running, #fsm_state{solver = SolverState, port = Port}};
+
+suspended(cancel, StateData) ->
+    {stop, normal, StateData}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Helper functions.
+%%
+
+open_and_configure_port(SolverState) ->
+    Port = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]),
+    erlang:port_command(Port, erlang:term_to_binary({config, SolverState})),
+    Port.
+
 
