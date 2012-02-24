@@ -33,7 +33,7 @@ int main(int argn, char **argv)
 
     while (eio.live())
     {
-        eio.test();
+        //eio.test();
     }
 
     eio.setLog(0);

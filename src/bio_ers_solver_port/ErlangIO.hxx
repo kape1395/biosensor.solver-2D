@@ -23,7 +23,8 @@
  *  Handles all the input/output from/to the erlang.
  *  Other side of the communication protocol is implemented in bio_ers_solver.erl.
  */
-class ErlangIO {
+class ErlangIO
+{
 private:
     int packetSize;
     std::istream &in;
@@ -34,6 +35,7 @@ private:
     char *buf;
 
     std::vector<ErlangMsgCodec*> codecs;
+    ErlangMsgCodec* currentMsg;
 
 public:
     /**
@@ -71,13 +73,40 @@ public:
     bool live();
 
     /**
-     * XXX: Temporary test.
+     *  Returns message codec which parsed the message succesfully.
+     *  @param blocking Indicates, wether we should block until message is received.
+     *  @return Encoder/Decoder with message data or 0, if no message was received.
+     *  @see {#messageProcessed}.
      */
-    void test();
+    ErlangMsgCodec* getMessage(bool blocking = false);
+
+    /**
+     *  Indicate, that the message is processed. If this method is not
+     *  called after the message is processed, all the subsequent calls
+     *  to the {#getMessage} will return the same message.
+     *  @param message processed message.
+     */
+    void messageProcessed(ErlangMsgCodec* message);
 
 protected:
-    int readMessage(char* buf, int bufLen);
-    int readBytes(char* buf, int count);
+    /**
+     *  Reads one erlang binnary message fom the input stream.
+     *  Data is read into the {#buf} buffer. Buffer is resized if needed.
+     *  @param blocking indicates, wether we should block and wait for a message
+     *      if no data is currently available from the input stream.
+     *  @param Number of bytes read,
+     *      or -1 in the case of an error,
+     *      or 0 in the case of non blocking call and no data available.
+     */
+    int readMessage(bool blocking);
+
+    /**
+     *  Reads specified number of bytes from the input stream.
+     *  @param readBuf Buffer to read into.
+     *  @param readCount Number of bytes to read.
+     *  @return number of bytes read, or -1 if an error occured.
+     */
+    int readBytes(char* readBuf, int readCount);
 };
 
 
