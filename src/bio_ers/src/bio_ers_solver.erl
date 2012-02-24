@@ -20,9 +20,9 @@
 
 
 %
-% E = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
-% erlang:port_command(E, erlang:term_to_binary({test, 123})).
-% erlang:port_close(E).
+% P = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
+% erlang:port_command(P, erlang:term_to_binary({test, 123})).
+% erlang:port_close(P).
 %
 %   READ: count=2 good=1 bad=0 eof=0 fail=0
 %   DATA: 0 ''
