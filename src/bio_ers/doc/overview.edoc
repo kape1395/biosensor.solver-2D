@@ -1,0 +1,12 @@
+@author Karolis Petrauskas <k.petrauskas@gmail.com>
+@copyright 2012 Karolis Petrauskas
+@version 0.7.0
+@title bio_ers documentation
+@doc
+%
+%  http://www.erlang.org/doc/man/edoc.html
+%  https://support.process-one.net/doc/display/ERL/Documenting+your+code+and+generating+the+Erlang+code+documentation
+%
+== Introduction ==
+
+`bio_ers' is an erlang server for simulating biosensor operation.

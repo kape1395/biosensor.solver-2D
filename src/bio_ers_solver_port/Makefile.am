@@ -20,13 +20,17 @@ bio_ers_solver_port_CPPFLAGS = \
     -I../libbiosensor-xml \
     -I../libbiosensor-slv-fd
 
+bio_ers_solver_port_LDFLAGS = -lerl_interface -lei -lpthread
+
 bio_ers_solver_port_LDADD = \
     ../libbiosensor/libbiosensor.la \
     ../libbiosensor-xml/libbiosensor-xml.la \
     ../libbiosensor-slv-fd/libbiosensor-slv-fd.la
 
 bio_ers_solver_port_SOURCES = \
-    main.cxx
+    main.cxx \
+    ErlangIO.cxx \
+    ErlangMsgCodec.cxx
 
 astyle:
 	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
