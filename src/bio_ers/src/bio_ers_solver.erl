@@ -17,53 +17,73 @@
 -behaviour(gen_fsm).
 -export([start_link/1, run/1, suspend/1, cancel/1, status/1]).
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
--export([init/2, running/2, suspended/2]).
+-export([init/2, running/2, restarting/2, suspending/2, suspended/2]).
 -include("bio_ers_solver.hrl").
 
-%
-% P = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
-% erlang:port_command(P, erlang:term_to_binary({test, 123})).
-% erlang:port_close(P).
-%
-%   READ: count=2 good=1 bad=0 eof=0 fail=0
-%   DATA: 0 ''
-%   DATA: 9 '       '
-%   READ: count=9 good=1 bad=0 eof=0 fail=0
-%   DATA: ffffff83 '�'
-%   DATA: 6b 'k'
-%   DATA: 0 ''
-%   DATA: 5 ''
-%   DATA: 6c 'l'
-%   DATA: 61 'a'
-%   DATA: 62 'b'
-%   DATA: 61 'a'
-%   DATA: 73 's'
-%   MSG: size=9
-%
-% file:read_file("test/bio_ers_model_tests-AllElems.xml")
 
 -define(PORT_PROGRAM, "priv/bio_ers_solver_port").
 -record(fsm_state, {solver, port}).
+
+
+%%
+%%  @todo module doc.
+%%  see doc/bio_ers_uml/bio_ers_solver.svg
+%%
+%%  States:
+%%      init
+%%      running
+%%      suspending
+%%      suspended
+%%      restarting
+%%
+%%  Events:
+%%      solver_run
+%%      solver_suspend
+%%      solver_cancel (global)
+%%      solver_status (global)
+%%      simulation_done
+%%      simulation_failed
+%%      simulation_stopped
+%%      simulation_state (global)
+%%
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Public API.
 %%
 
+%%
+%%  @doc Start the solver. The solver is started in the init state, waiting
+%%  for a command to run the simulation.
+%%
 start_link(State) ->
     gen_fsm:start_link(?MODULE, State, []).
 
+%%
+%%  @doc Run the actual simulation or resume it, if the simulation was suspended.
+%%
 run(FsmRef) ->
-    gen_fsm:send_event(FsmRef, run).
+    gen_fsm:send_event(FsmRef, solver_run).
 
+%%
+%%  @doc Suspend the simulation, if it is running now.
+%%
 suspend(FsmRef) ->
-    gen_fsm:send_event(FsmRef, suspend).
+    gen_fsm:send_event(FsmRef, solver_suspend).
 
+%%
+%%  @doc Cancel the simulation and delete all the related data.
+%%  Use this in the case, when the simulation is not relevant anymore.
+%%
 cancel(FsmRef) ->
-    gen_fsm:send_event(FsmRef, cancel).
+    gen_fsm:send_all_state_event(FsmRef, solver_cancel).
 
+%%
+%%  @doc Returns current status of the solver.
+%%
 status(FsmRef) ->
-    gen_fsm:sync_send_all_state_event(FsmRef, status).
+    gen_fsm:sync_send_all_state_event(FsmRef, solver_status).
 
 
 
@@ -71,25 +91,39 @@ status(FsmRef) ->
 %%  Callbacks.
 %%
 
+%%
+%%  @doc Initialize the FSM.
+%%  @todo read process state from DB if needed.
+%%
 init(SolverState) when is_record(SolverState, solver_state_v1) ->
+    process_flag(trap_exit, true),
     {ok, init, #fsm_state{solver = SolverState, port = undefined}}.
 
 
-handle_event(_Event, StateName, StateData) ->
+%%
+%%  @doc The solver_cancel event can occur at any time during lifecycle
+%%  of the solver.
+%%
+handle_event(solver_cancel, _StateName, StateData) ->
+    {stop, cancel, StateData};
+handle_event(simulation_state, StateName, StateData) ->
+    % @todo save data.
     {next_state, StateName, StateData}.
 
 
-handle_sync_event(status, _From, StateName, StateData) ->
-    {reply, {StateName}, StateName, StateData};
-handle_sync_event(Event, From, StateName, StateData) ->
-    io:format("# handle_info: Event=~p From=~p StateName=~p~n", [Event, From, StateName]),
-    {reply, undefined, StateName, StateData}.
+%%
+%%  @doc Synchronous query for the current status can be invoked at any time.
+%%
+handle_sync_event(solver_status, _From, StateName, StateData) ->
+    {reply, {StateName}, StateName, StateData}.
+
 
 %%
-%%  This function will be invoked for any other messages than normal events.
-%%  They will include:
+%%  @doc This function will be invoked for any other messages than normal events.
+%%  The events will include:
 %%      messages from the port.
-%%      port exit status ...
+%%      port exit status
+%%      trap exit?
 %%
 handle_info({Port, {exit_status, RC}}, StateName, StateData) ->
     io:format("# handle_info: Port ~p process terminated with RC=~p at StateName=~p~n", [Port, RC, StateName]),
@@ -99,77 +133,112 @@ handle_info(Info, StateName, StateData) ->
     {next_state, StateName, StateData}.
 
 
+%%
+%%  @doc Termination of the FSM. Reasons can be the following:
+%%      cancel   - when the FSM was canceled by the user,
+%%      failure  - when the simulation fails (non stable scheme, etc),
+%%      normal   - when the solver is done with its job,
+%%      shutdown - when the OTP application will be going down.
+%%      _        - just in case.
+%%
+terminate(cancel, StateName, _StateData) ->
+    io:format("# terminate: cancel at state=~p~n", [StateName]),
+    ok;
+terminate(failure, StateName, _StateData) ->
+    io:format("# terminate: failure at state=~p~n", [StateName]),
+    ok;
+terminate(normal, StateName, _StateData) ->
+    io:format("# terminate: normal at state=~p~n", [StateName]),
+    ok;
+terminate(shutdown, StateName, _StateData) ->
+    io:format("# terminate: shutdown at state=~p~n", [StateName]),
+    ok;
 terminate(Reason, StateName, _StateData) ->
     io:format("# terminate: Reason=~p StateName=~p~n", [Reason, StateName]),
     ok.
 
 
+%%
+%%  @doc Handler for a code_change. There are no plans to use it.
+%%
 code_change(_OldVsn, StateName, StateData, _Extra) ->
     {ok, StateName, StateData}.
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  State callbacks.
 %%
 
-%
-%   States:
-%       init
-%       running
-%       suspending
-%       suspended
-%
-%   Events:
-%       run
-%       suspend
-%       cancel
-%       simulation_state
-%       simulation_done
-%       simulation_failed
-%
-
-init(run, #fsm_state{solver = SolverState}) ->
+%%
+%%  @doc Initialized solver. It can be either started or canceled.
+%%
+init(solver_run, SolverData = #fsm_state{solver = SolverState}) ->
     Port = start_solver_port(SolverState),
-    {next_state, running, #fsm_state{solver = SolverState, port = Port}};
-init(cancel, State) ->
-    {stop, normal, State};
-init(Event, State)
-    io:format("# Ignoring event=~p in the state init~n"),
-    {next_state, State).
+    {next_state, running, SolverData#fsm_state{port = Port}};
+init(solver_suspend, StateData) ->
+    {next_state, init, StateData}.
 
 
-
-running(suspend, State = #fsm_state{port = Port}) ->
-    stop_solver_port(Port),
-    {next_state, suspended, State#fsm_state{port = undefined}};
-running(cancel, State = #fsm_state{port = Port}) ->
-    stop_solver_port(Port),
-    {stop, normal, State#fsm_state{port = undefined}};
-running(simulation_state, StateData) ->
-    % save state
+%%
+%%  @doc Simulation is actually executed in this state. The solver
+%%  can be suspended in this state.
+%%
+running(solver_run, StateData) ->
     {next_state, running, StateData};
+running(solver_suspend, StateData = #fsm_state{port = Port}) ->
+    stop_solver_port(Port),
+    {next_state, suspending, StateData#fsm_state{port = undefined}};
 running(simulation_done, StateData) ->
     {stop, normal, StateData};
 running(simulation_failed, StateData) ->
-    {stop, normal, StateData}.
+    {stop, failure, StateData};
+running(simulation_stopped, StateData) ->
+    % @todo Restart solver.
+    {next_state, running, StateData}.
+
+%%
+%%  @doc The state restarting is considered for the cases, when
+%%  someone is sending solver_run event while solver is in the
+%%  suspending state.
+%%
+restarting(solver_run, StateData) ->
+    {next_state, restarting, StateData};
+restarting(solver_suspend, StateData) ->
+    {next_state, suspending, StateData};
+restarting(simulation_done, StateData) ->
+    {stop, normal, StateData};
+restarting(simulation_failed, StateData) ->
+    {stop, failure, StateData};
+restarting(simulation_stopped, StateData) ->
+    % @todo Restart solver.
+    {next_state, restarting, StateData}.
 
 
+%%
+%%  @doc The solver is requested to be suspended. Now we are waiting
+%%  the solver to notify, that the simulation is stopped gracefully.
+%%
+suspending(solver_run, StateData) ->
+    {next_state, restarting, StateData};
+suspending(solver_suspend, StateData) ->
+    {next_state, suspending, StateData};
+suspending(simulation_done, StateData) ->
+    {stop, normal, StateData};
+suspending(simulation_failed, StateData) ->
+    {stop, failure, StateData};
+suspending(simulation_stopped, StateData) ->
+    {next_state, suspended, StateData}.
 
-suspending(simulation_stopped, State) ->
-    {next_state, suspended, State};
-suspending(cancel, State) ->
-    {stop, normal, State};
-suspending(_Event, State) ->
-    {next_state, suspending, State}.
-    
 
-
-suspended(run, #fsm_state{solver = SolverState}) ->
+%%
+%%  @doc The solver is already suspended completely. One can resume it.
+%%
+suspended(solver_run, StateData = #fsm_state{solver = SolverState}) ->
     Port = start_solver_port(SolverState),
-    {next_state, running, #fsm_state{solver = SolverState, port = Port}};
-
-suspended(cancel, StateData) ->
-    {stop, normal, StateData}.
+    {next_state, running, StateData#fsm_state{port = Port}};
+suspended(solver_suspend, StateData) ->
+    {next_state, suspended, StateData}.
 
 
 
@@ -179,7 +248,6 @@ suspended(cancel, StateData) ->
 
 %%
 %%  @doc Creates and configures the solver port.
-%%
 %%
 start_solver_port(SolverState) ->
     Port = erlang:open_port(
@@ -196,6 +264,5 @@ start_solver_port(SolverState) ->
 %%
 stop_solver_port(Port) ->
     erlang:port_command(Port, erlang:term_to_binary({stop, self()})).
-
 
 
