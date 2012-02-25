@@ -13,6 +13,7 @@
 *.tmp
 *.log
 *~
+*.bak
 stamp-h*
 Doxyfile
 Makefile
@@ -66,4 +67,7 @@ src/bio_ers/ebin/
 src/bio_ers/priv/bio_ers_solver_port
 src/bio_ers/bio_ers.app
 src/bio_ers/bio_ers.rel
+src/bio_ers/bio_ers.boot
+src/bio_ers/bio_ers.script
+src/bio_ers/bio_ers.tar.gz
 src/bio_ers_solver_port/bio_ers_solver_port

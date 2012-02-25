@@ -69,10 +69,13 @@ Some useful commands for a developer:
         appmon:start().                     # Application manager (GUI).
         init:stop().                        # Quit.
 
+    erl -env ERL_LIBS .                     # TODO: Versions should be respected here.
+        systools:make_script("bio_ers", [local, no_warn_sasl]).
+        systools:make_tar("bio_ers").
+
     make test_run   # For the change-compile-check loop...
         rp({os:cmd("make"), code:purge(bio_ers_model), code:load_file(bio_ers_model)}).
         rp(bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml")).
 
     make check      # Runs all the unit tests.
-
 
