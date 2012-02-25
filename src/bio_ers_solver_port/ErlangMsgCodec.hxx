@@ -15,12 +15,16 @@
  */
 #ifndef BIO_ERS_ErlangMsgCodec_HXX
 #define BIO_ERS_ErlangMsgCodec_HXX
+#include <iostream>
 
 /**
  *  Base class for all Erlang message encoders/decoders.
  */
 class ErlangMsgCodec
 {
+protected:
+    std::ostream *log;
+
 public:
     /**
      *  Constructor.
@@ -41,6 +45,19 @@ public:
      *  Decodes message from the Erlang format.
      */
     virtual bool decode(char *msgBuf, int msgLen) = 0;
+
+    /**
+     *  This will be invoked when all message info is already processed.
+     *  The method sgould prepare codec for processing of next message.
+     */
+    virtual void cleanup() = 0;
+
+    /**
+     *  Sets stream for writing logs. The logging is disabled if 0 (null) is passed here.
+     *  @param log Log stream or null, if logging should be disabled.
+     *  @returns Previous logging stream or null if logging was disabled.
+     */
+    std::ostream* setLog(std::ostream* logStream);
 
 protected:
 

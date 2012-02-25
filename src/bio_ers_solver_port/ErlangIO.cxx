@@ -18,6 +18,8 @@
 #include <fstream>
 #include <ei.h>
 #include <erl_interface.h>
+#define BINARY_VERSION 131
+#define LOG(message) if (log) (*log) << "ErlangIO: " << message << std::endl
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -88,16 +90,38 @@ ErlangMsgCodec* ErlangIO::getMessage(bool blocking)
     int messageSize = readMessage(blocking);
     if (messageSize == 0)
     {
-        return 0; // No message is currently available (non-blocking mode).
+        LOG("No message is currently available (non-blocking mode).");
+        return 0;
     }
     if (messageSize < 0)
     {
-        if (log)
-            (*log) << "Message cannot be parsed.";
-        return 0; // Error.
+        LOG("Message cannod be read correctly, rc=" << messageSize);
+        return 0;
     }
 
-    // TODO: Here the message should be parsed.
+    int eirc;
+    int termIndex = 0;
+    int binVersion = 0;
+    eirc = ei_decode_version(buf, &termIndex, &binVersion);
+    if (eirc == -1 || binVersion != BINARY_VERSION)
+    {
+        LOG("Message is invalid binary: eirc=" << eirc << " binVersion=" << binVersion);
+        return 0;
+    }
+
+    for (std::vector<ErlangMsgCodec*>::iterator i = codecs.begin(); i != codecs.end(); i++)
+    {
+        LOG("Trying to decode message using codec=" << (*i) << " at termIndex=" << termIndex);
+        ErlangMsgCodec* codec = *i;
+        if (codec->decode(buf + termIndex, messageSize - termIndex))
+        {
+            LOG("  -> Successfully decoded.");
+            currentMsg = codec;
+            return currentMsg;
+        }
+        LOG("  -> Decoding failed.");
+    }
+    LOG("No coded found for the message.");
     return 0;
 }
 
@@ -106,40 +130,13 @@ ErlangMsgCodec* ErlangIO::getMessage(bool blocking)
 /* ************************************************************************** */
 void ErlangIO::messageProcessed(ErlangMsgCodec* message)
 {
-    if (currentMsg == message)
-        currentMsg = 0;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/*
-void ErlangIO::test()
-{
-    int messageSize = readMessage(buf, bufSize);
-    if (messageSize > 0)
+    if (currentMsg == message && message != 0)
     {
-        int termIndex = 0;
-        int termType;
-        int termSize;
-        int eirc;
-        eirc = ei_get_type(buf, &termIndex, &termType, &termSize);
-        (*log) << "MSG: eirc=" << eirc << " termIndex=" << termIndex
-               << " msgSize=" << messageSize
-               << " termType=" << termType
-               << " termSize=" << termSize
-               << std::endl;
-
-        int binVersion = 0;
-        eirc = ei_decode_version(buf, &termIndex, &binVersion);
-        (*log) << "  VERSI: eirc=" << eirc << " termIndex=" << termIndex << " version=" << binVersion << std::endl;
-
-        int tupleArity;
-        ei_decode_tuple_header(buf, &termIndex, &tupleArity);
-        (*log) << "  TUPLE: eirc=" << eirc << " arity=" << tupleArity << std::endl;
+        currentMsg->cleanup();
+        currentMsg = 0;
     }
 }
-*/
+
 
 /* ************************************************************************** */
 /* ************************************************************************** */
@@ -151,9 +148,9 @@ int ErlangIO::readMessage(bool blocking)
     //  Get message length
     int msgLen = 0;
     if (readBytes(buf, packetSize) != packetSize)
-        return -1;
+        return -2;
     for (int i = 0; i < packetSize; i++)
-        msgLen = (msgLen << 8) | buf[i];
+        msgLen = (msgLen << 8) | (unsigned char)buf[i];
 
     //  Reallocate buffer if it is too small.
     if (bufSize < msgLen)
@@ -162,7 +159,7 @@ int ErlangIO::readMessage(bool blocking)
         bufSize = msgLen;
         buf = new char[bufSize];
         if (buf == 0)
-            return -1;
+            return -3;
     }
 
     //  Read it.
@@ -179,21 +176,21 @@ int ErlangIO::readBytes(char* readBuf, int readCount)
     if (log)
     {
         (*log) << "READ:"
-               << " count=" << count
+               << " count=" << count << " (should be " << readCount << ")"
                << " good=" << in.good()
                << " bad=" << in.bad()
                << " eof=" << in.eof()
                << " fail=" << in.fail()
                << std::endl;
         for (int i = 0; i < count; i++)
-            (*log) << "DATA: "
-                   << std::hex << (int) readBuf[i] << std::dec
+            (*log) << "DATA: [" << i << "] "
+                   << std::hex << (int) (unsigned char) readBuf[i] << std::dec
                    << " '" << readBuf[i] << "'" << std::endl;
     }
     if (count == readCount)
         return count;
     else
-        return -1;
+        return -4;
 }
 
 

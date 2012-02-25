@@ -30,7 +30,8 @@ bio_ers_solver_port_LDADD = \
 bio_ers_solver_port_SOURCES = \
     main.cxx \
     ErlangIO.cxx \
-    ErlangMsgCodec.cxx
+    ErlangMsgCodec.cxx \
+    ErlangMsgCodec_stop.cxx
 
 astyle:
 	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`
