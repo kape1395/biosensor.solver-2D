@@ -15,7 +15,7 @@
 %
 -module(bio_ers_solver_tests).
 -include_lib("eunit/include/eunit.hrl").
-
+-include("bio_ers_solver.hrl").
 %
 % P = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
 % erlang:port_command(P, erlang:term_to_binary({test, 123})).
@@ -42,9 +42,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Test descriptions
 %%
+-define(setup(F), {setup, fun start/0, fun stop/1, F}).
 
-basic_test_() ->
-    {setup, fun start/0, fun stop/1, fun test_returns_string/1}.
+start_test_() ->
+    ?setup(fun is_started/1).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,19 +55,22 @@ basic_test_() ->
 start() ->
     {ok, Model} = file:read_file("test/bio_ers_model_tests-CNT-2D.xml"),
     State = #solver_state_v1{model = Model, datadir = "tmp/S1"},
-    {ok, Pid} = bio_ers_solver:start_link(bio_ers_solver, State, []),
+    {ok, Pid} = bio_ers_solver:start_link(State),
     Pid.
 
 stop(Pid) ->
-    bio_ers_solver:cancel(Pid).
+    case erlang:is_process_alive(Pid) of
+        true -> bio_ers_solver:cancel(Pid);
+        false -> ok
+    end.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Actual tests
 %%
 
-test_returns_string(_Pid) ->
-    [?_assertEqual("This is a test", bio_ers:test())].
+is_started(Pid) ->
+    [?_assert(erlang:is_process_alive(Pid))].
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

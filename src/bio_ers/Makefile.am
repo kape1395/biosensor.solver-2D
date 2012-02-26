@@ -26,11 +26,13 @@ ERL_BEAM_FILES=\
 ERL_TEST_BEAM_FILES=\
     ebin/bio_ers_testsuite.beam \
     ebin/bio_ers_tests.beam \
-    ebin/bio_ers_model_tests.beam
+    ebin/bio_ers_model_tests.beam \
+    ebin/bio_ers_solver_tests.beam
 
 ERL_TEST_MODULES=\
     bio_ers \
-    bio_ers_model
+    bio_ers_model \
+    bio_ers_solver
 
 
 all: bio_ers.tar.gz
@@ -60,7 +62,7 @@ $(ERL_APP_FILES): ebin/% : %
 	    }; {print;}' $< > $@
 
 $(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
-	$(ERLC) $(ERLCFLAGS) -o ebin $< 
+	$(ERLC) $(ERLCFLAGS) -I include -o ebin $< 
 
 bio_ers.boot: bio_ers bio_ers.rel $(ERL_APP_FILES)
 	erl -env ERL_LIBS . -noinput -eval 'ok = systools:make_script("bio_ers", [local, no_warn_sasl]), init:stop().'
@@ -75,12 +77,14 @@ bio_ers.tar.gz: bio_ers.boot
 #
 
 $(ERL_TEST_BEAM_FILES): ebin/%.beam: test/%.erl
-	$(ERLC) $(ERLCFLAGS) -o ebin $< 
+	$(ERLC) $(ERLCFLAGS) -I include -o ebin $< 
 
-test_run: $(ERL_BEAM_FILES) $(ERL_TEST_BEAM_FILES)
+test-compile: $(ERL_TEST_BEAM_FILES)
+
+test-run: $(ERL_BEAM_FILES) test-compile
 	erl -pa ebin -s bio_ers_app startup
 
-test: bio_ers $(ERL_TEST_BEAM_FILES)
+test: bio_ers test-compile
 	erl -pa ebin -noinput -s bio_ers_testsuite run $(ERL_TEST_MODULES)
 
 
@@ -92,5 +96,5 @@ clean-local:
 
 check-local: test
 	
-.PHONY: all bio_ers clean-local test_run
+.PHONY: all bio_ers clean-local test-run test-compile
 

@@ -30,19 +30,23 @@
 
 %%
 %%  @type solver_state_v1() = #solver_state_v1{
+%%      state = atom(),
 %%      model = binary(),
 %%      datadir = string(),
 %%      params = [#param{}],
-%%      concentrations = binary() | atom()
+%%      concentrations = binary() | atom(),
+%%      response = term()
 %%      }.
 %%  This biosensor state record basically matches the parameters for invoking
 %%  bio-solver command. The records should be versioned, I am not sure yet,
 %%  shat approach should be taken to handle that.
 %%
 -record(solver_state_v1, {
+    state,                 % State of the solver, corresponds to the state of the FSM.
     model,                 % Model description XML as one binary: {ok, Model) = file:read_file("file").
     datadir,               % String represending data directory for the simulations.
     params = [],           % List of parameters of type #param{}.
-    concentrations         % Contents of a concentrations file or empty.
+    concentrations,        % Contents of a concentrations file or empty.
+    response               % Simulated response of the biosensor.
     }).
 

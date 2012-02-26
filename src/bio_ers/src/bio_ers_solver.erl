@@ -22,11 +22,12 @@
 
 
 -define(PORT_PROGRAM, "priv/bio_ers_solver_port").
--record(fsm_state, {solver, port}).
+-record(fsm_state, {state, solver, port}).
 
 
 %%
 %%  @todo module doc.
+%%  @todo update #fsm_state.state correctly.
 %%  see doc/bio_ers_uml/bio_ers_solver.svg
 %%
 %%  States:
@@ -97,7 +98,7 @@ status(FsmRef) ->
 %%
 init(SolverState) when is_record(SolverState, solver_state_v1) ->
     process_flag(trap_exit, true),
-    {ok, init, #fsm_state{solver = SolverState, port = undefined}}.
+    {ok, init, #fsm_state{state = init, solver = SolverState, port = undefined}}.
 
 
 %%
@@ -105,7 +106,7 @@ init(SolverState) when is_record(SolverState, solver_state_v1) ->
 %%  of the solver.
 %%
 handle_event(solver_cancel, _StateName, StateData) ->
-    {stop, cancel, StateData};
+    {stop, normal, StateData#fsm_state{state = canceled}};
 handle_event(simulation_state, StateName, StateData) ->
     % @todo save data.
     {next_state, StateName, StateData}.
@@ -127,7 +128,8 @@ handle_sync_event(solver_status, _From, StateName, StateData) ->
 %%
 handle_info({Port, {exit_status, RC}}, StateName, StateData) ->
     io:format("# handle_info: Port ~p process terminated with RC=~p at StateName=~p~n", [Port, RC, StateName]),
-    {stop, normal, StateData};
+    % @todo check RC.
+    {stop, normal, StateData#fsm_state{state = done}};
 handle_info(Info, StateName, StateData) ->
     io:format("# handle_info: Info=~p StateName=~p~n", [Info, StateName]),
     {next_state, StateName, StateData}.
@@ -135,26 +137,31 @@ handle_info(Info, StateName, StateData) ->
 
 %%
 %%  @doc Termination of the FSM. Reasons can be the following:
-%%      cancel   - when the FSM was canceled by the user,
-%%      failure  - when the simulation fails (non stable scheme, etc),
 %%      normal   - when the solver is done with its job,
 %%      shutdown - when the OTP application will be going down.
 %%      _        - just in case.
+%%  The final states can be the following:
+%%      done     - simulation was completed successfully.
+%%      canceled - when the FSM was canceled by the user,
+%%      failed   - when the simulation fails (unstable scheme, etc),
 %%
-terminate(cancel, StateName, _StateData) ->
-    io:format("# terminate: cancel at state=~p~n", [StateName]),
+terminate(normal, StateName, #fsm_state{state = canceled}) ->
+    error_logger:info_msg("Cancel at state=~p~n", [StateName]),
     ok;
-terminate(failure, StateName, _StateData) ->
-    io:format("# terminate: failure at state=~p~n", [StateName]),
+terminate(normal, StateName, #fsm_state{state = failed}) ->
+    error_logger:warning_msg("Simulation failed at state=~p~n", [StateName]),
     ok;
-terminate(normal, StateName, _StateData) ->
-    io:format("# terminate: normal at state=~p~n", [StateName]),
+terminate(normal, StateName, #fsm_state{state = done}) ->
+    error_logger:info_msg("Simulation done at state=~p~n", [StateName]),
     ok;
 terminate(shutdown, StateName, _StateData) ->
-    io:format("# terminate: shutdown at state=~p~n", [StateName]),
+    error_logger:info_msg("Shutdown at state=~p~n", [StateName]),
     ok;
 terminate(Reason, StateName, _StateData) ->
-    io:format("# terminate: Reason=~p StateName=~p~n", [Reason, StateName]),
+    error_logger:error_msg(
+        "Unexpected termination Reason=~p StateName=~p~n",
+        [Reason, StateName]
+    ),
     ok.
 
 
@@ -175,7 +182,7 @@ code_change(_OldVsn, StateName, StateData, _Extra) ->
 %%
 init(solver_run, SolverData = #fsm_state{solver = SolverState}) ->
     Port = start_solver_port(SolverState),
-    {next_state, running, SolverData#fsm_state{port = Port}};
+    {next_state, running, SolverData#fsm_state{state = running, port = Port}};
 init(solver_suspend, StateData) ->
     {next_state, init, StateData}.
 
@@ -188,11 +195,11 @@ running(solver_run, StateData) ->
     {next_state, running, StateData};
 running(solver_suspend, StateData = #fsm_state{port = Port}) ->
     stop_solver_port(Port),
-    {next_state, suspending, StateData#fsm_state{port = undefined}};
+    {next_state, suspending, StateData#fsm_state{state = suspended, port = undefined}};
 running(simulation_done, StateData) ->
-    {stop, normal, StateData};
+    {stop, normal, StateData#fsm_state{state = done}};
 running(simulation_failed, StateData) ->
-    {stop, failure, StateData};
+    {stop, normal, StateData#fsm_state{state = failed}};
 running(simulation_stopped, StateData) ->
     % @todo Restart solver.
     {next_state, running, StateData}.
@@ -205,14 +212,14 @@ running(simulation_stopped, StateData) ->
 restarting(solver_run, StateData) ->
     {next_state, restarting, StateData};
 restarting(solver_suspend, StateData) ->
-    {next_state, suspending, StateData};
+    {next_state, suspending, StateData#fsm_state{state = suspended}};
 restarting(simulation_done, StateData) ->
-    {stop, normal, StateData};
+    {stop, normal, StateData#fsm_state{state = done}};
 restarting(simulation_failed, StateData) ->
-    {stop, failure, StateData};
+    {stop, normal, StateData#fsm_state{state = failed}};
 restarting(simulation_stopped, StateData) ->
     % @todo Restart solver.
-    {next_state, restarting, StateData}.
+    {next_state, running, StateData}.
 
 
 %%
@@ -224,9 +231,9 @@ suspending(solver_run, StateData) ->
 suspending(solver_suspend, StateData) ->
     {next_state, suspending, StateData};
 suspending(simulation_done, StateData) ->
-    {stop, normal, StateData};
+    {stop, normal, StateData#fsm_state{state = done}};
 suspending(simulation_failed, StateData) ->
-    {stop, failure, StateData};
+    {stop, normal, StateData#fsm_state{state = failed}};
 suspending(simulation_stopped, StateData) ->
     {next_state, suspended, StateData}.
 
