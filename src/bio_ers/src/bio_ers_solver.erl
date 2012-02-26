@@ -83,6 +83,11 @@ cancel(FsmRef) ->
 %%
 %%  @doc Returns current status of the solver.
 %%
+status(Pid) when erlang:is_pid(Pid) ->
+    case erlang:is_process_alive(Pid) of
+        true -> gen_fsm:sync_send_all_state_event(Pid, solver_status);
+        false -> down        % @todo get status from DB.
+    end;
 status(FsmRef) ->
     gen_fsm:sync_send_all_state_event(FsmRef, solver_status).
 

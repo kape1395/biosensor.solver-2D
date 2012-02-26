@@ -47,6 +47,9 @@
 start_test_() ->
     ?setup(fun is_started/1).
 
+cancel_test_() ->
+    ?setup(fun is_canceled_at_init/1).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Setup functions
@@ -70,7 +73,24 @@ stop(Pid) ->
 %%
 
 is_started(Pid) ->
-    [?_assert(erlang:is_process_alive(Pid))].
+    {Status} = bio_ers_solver:status(Pid),
+    [
+        ?_assertEqual(init, Status),
+        ?_assert(erlang:is_process_alive(Pid))
+    ].
+
+is_canceled_at_init(Pid) ->
+    timer:sleep(15),
+    {Status1} = bio_ers_solver:status(Pid),
+    bio_ers_solver:cancel(Pid),
+    timer:sleep(100), % The following call is failing without this sleep.
+    Status2 = bio_ers_solver:status(Pid),
+    [
+        ?_assertEqual(init, Status1),
+        ?_assertEqual(down, Status2),
+        ?_assertNot(erlang:is_process_alive(Pid))
+    ].
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

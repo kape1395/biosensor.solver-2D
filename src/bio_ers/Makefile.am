@@ -35,7 +35,7 @@ ERL_TEST_MODULES=\
     bio_ers_solver
 
 
-all: bio_ers.tar.gz
+all: bio_ers
 
 
 ################################################################################
@@ -95,6 +95,8 @@ clean-local:
 	rm -rfv ebin priv/bio_ers_solver_port
 
 check-local: test
-	
-.PHONY: all bio_ers clean-local test-run test-compile
+
+dist-local: bio_ers.tar.gz
+
+.PHONY: all bio_ers clean-local check-local dist-local test-run test-compile
 
