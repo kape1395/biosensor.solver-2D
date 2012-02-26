@@ -21,6 +21,11 @@
 #include "ErlangMsgCodec.hxx"
 #include "ErlangMsgCodec_stop.hxx"
 
+#define PORT_PACKET_SIZE 2
+#define RC_UNDEFINED          10
+#define RC_SIMULATION_DONE    11
+#define RC_SIMULATION_STOPPED 12
+#define RC_SIMULATION_FAILED  13
 
 /**
  *  Entry point for the bio_ers_solver_port.
@@ -31,7 +36,7 @@ int main(int argn, char **argv)
     log.open("bio_ers_solver_port.log", std::fstream::out);
     log << "main: Start" << std::endl;
 
-    ErlangIO eio(std::cin, std::cout, 2);
+    ErlangIO eio(std::cin, std::cout, PORT_PACKET_SIZE);
     eio.setLog(&log);
 
     ErlangMsgCodec_stop codec_stop;
@@ -41,6 +46,7 @@ int main(int argn, char **argv)
     log << "main: ErlangIO created" << std::endl;
 
     bool stop = false;
+    int rc = RC_UNDEFINED;
     while (eio.live() && !stop)
     {
         log << "main: try to get message..." << std::endl;
@@ -51,12 +57,13 @@ int main(int argn, char **argv)
 
         if (dynamic_cast<ErlangMsgCodec_stop*>(msg))
         {
-            log << "main: receied stop message." << std::endl;
+            log << "main: received stop message." << std::endl;
             stop = true;
+            rc = RC_SIMULATION_STOPPED;
         }
         else
         {
-            log << "main: receied unknown message." << std::endl;
+            log << "main: received unknown message." << std::endl;
         }
         eio.messageProcessed(msg);
     }
@@ -65,6 +72,6 @@ int main(int argn, char **argv)
     log << "main: Stop" << std::endl;
     eio.setLog(0);
     log.close();
-    return 0;
+    return rc;
 }
 

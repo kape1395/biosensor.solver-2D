@@ -121,7 +121,7 @@ ErlangMsgCodec* ErlangIO::getMessage(bool blocking)
         }
         LOG("  -> Decoding failed.");
     }
-    LOG("No coded found for the message.");
+    LOG("No codec found for the message.");
     return 0;
 }
 

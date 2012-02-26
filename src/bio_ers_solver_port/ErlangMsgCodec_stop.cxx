@@ -66,7 +66,7 @@ bool ErlangMsgCodec_stop::decode(char *msgBuf, int msgLen)
     // #1: First element is atom of correct length?
     eirc = ei_get_type(msgBuf, &termIndex, &termType, &termSize);
     LOG("Atom type=" << termType << " size=" << termSize);
-    if (!(eirc == 0 && termType != ERL_ATOM_EXT && termSize == (int) TUPLE_NAME.length()))
+    if (!(eirc == 0 && termType == ERL_ATOM_EXT && termSize == (int) TUPLE_NAME.length()))
         return false;
 
     // #1: Is atom name correct?

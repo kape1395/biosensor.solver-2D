@@ -15,7 +15,9 @@
 %
 -module(bio_ers_solver_tests).
 -include_lib("eunit/include/eunit.hrl").
+-export([start/0]).
 -include("bio_ers_solver.hrl").
+
 %
 % P = erlang:open_port({spawn_executable, "priv/bio_ers_solver_port"}, [{packet, 2}, use_stdio, exit_status, binary]).
 % erlang:port_command(P, erlang:term_to_binary({test, 123})).
@@ -49,6 +51,9 @@ start_test_() ->
 
 cancel_test_() ->
     ?setup(fun is_canceled_at_init/1).
+
+suspend_test_() ->
+    ?setup(fun test_suspend/1).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,6 +96,25 @@ is_canceled_at_init(Pid) ->
         ?_assertNot(erlang:is_process_alive(Pid))
     ].
 
+test_suspend(Pid) ->
+    {S1} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
+    {S2} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
+    {S3} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
+    {S4} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
+    {S5} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
+    {S6} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
+    {S7} = bio_ers_solver:status(Pid), bio_ers_solver:cancel(Pid),  timer:sleep(100),
+    S8 = bio_ers_solver:status(Pid),
+    [
+        ?_assertEqual(init, S1),
+        ?_assertEqual(running, S2),
+        ?_assertEqual(running, S3),
+        ?_assertEqual(suspended, S4),
+        ?_assertEqual(suspended, S5),
+        ?_assertEqual(running, S6),
+        ?_assertEqual(suspended, S7),
+        ?_assertEqual(down, S8)
+    ].
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
