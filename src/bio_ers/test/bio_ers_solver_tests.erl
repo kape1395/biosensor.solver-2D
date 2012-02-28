@@ -62,7 +62,10 @@ suspend_test_() ->
 
 start() ->
     {ok, Model} = file:read_file("test/bio_ers_model_tests-CNT-2D.xml"),
-    State = #solver_state_v1{model = Model, datadir = "tmp/S1"},
+    State = #solver_state_v1{model = Model, datadir = "tmp/S1", params = [
+        #param{name = 'V_max', value = 12.3},
+        #param{name = 'K_M', value = 3.12}
+    ]},
     {ok, Pid} = bio_ers_solver:start_link(State),
     Pid.
 

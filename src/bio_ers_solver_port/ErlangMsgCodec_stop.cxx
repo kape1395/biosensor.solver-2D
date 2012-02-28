@@ -45,40 +45,15 @@ bool ErlangMsgCodec_stop::encode()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-/**
- *  Decodes messages like: {stop, self()}
- */
 bool ErlangMsgCodec_stop::decode(char *msgBuf, int msgLen)
 {
-    int eirc;
-    int tupleArity;
     int termIndex = 0;
-    int termType;
-    int termSize;
-    char atomName[MAXATOMLEN+1];
 
-    // Is tuple and arity is correct?
-    eirc = ei_decode_tuple_header(msgBuf, &termIndex, &tupleArity);
-    LOG("Tuple arity=" << tupleArity);
-    if (!(eirc == 0 && tupleArity == TUPLE_ARITY))
-        return false;
-
-    // #1: First element is atom of correct length?
-    eirc = ei_get_type(msgBuf, &termIndex, &termType, &termSize);
-    LOG("Atom type=" << termType << " size=" << termSize);
-    if (!(eirc == 0 && termType == ERL_ATOM_EXT && termSize == (int) TUPLE_NAME.length()))
-        return false;
-
-    // #1: Is atom name correct?
-    eirc = ei_decode_atom(msgBuf, &termIndex, atomName);
-    LOG("Atom name=" << atomName);
-    if (!(eirc == 0 && TUPLE_NAME.compare(atomName) == 0))
+    if (!isRecord(msgBuf, &termIndex, TUPLE_NAME, TUPLE_ARITY))
         return false;
 
     // #2: Extract process PID.
-    eirc = ei_decode_pid(msgBuf, &termIndex, &pid);
-    if (eirc != 0)
-        return false;
+    assertRC(ei_decode_pid(msgBuf, &termIndex, &pid));
 
     LOG("Successfully decoded.");
     return true;

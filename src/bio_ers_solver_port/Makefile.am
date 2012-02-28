@@ -28,10 +28,14 @@ bio_ers_solver_port_LDADD = \
     ../libbiosensor-slv-fd/libbiosensor-slv-fd.la
 
 bio_ers_solver_port_SOURCES = \
-    main.cxx \
+    bio_ers_solver_port.cxx \
     ErlangIO.cxx \
     ErlangMsgCodec.cxx \
+    ErlangMsgCodec_config.cxx \
     ErlangMsgCodec_stop.cxx
+
+clean-local:
+	rm -fv *.log *.orig
 
 astyle:
 	astyle @ASTYLE_OPTS@ `find  . -name  "*.cxx"` `find  . -name  "*.hxx"`

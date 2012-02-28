@@ -19,6 +19,7 @@
 #include <erl_interface.h>
 #include "ErlangIO.hxx"
 #include "ErlangMsgCodec.hxx"
+#include "ErlangMsgCodec_config.hxx"
 #include "ErlangMsgCodec_stop.hxx"
 
 #define PORT_PACKET_SIZE 2
@@ -33,11 +34,15 @@
 int main(int argn, char **argv)
 {
     std::ofstream log;
-    log.open("bio_ers_solver_port.log", std::fstream::out);
+    log.open("bio_ers_solver_port.log", std::fstream::out | std::fstream::app);
     log << "main: Start" << std::endl;
 
     ErlangIO eio(std::cin, std::cout, PORT_PACKET_SIZE);
     eio.setLog(&log);
+
+    ErlangMsgCodec_config codec_config;
+    codec_config.setLog(&log);
+    eio.addMessageCodec(&codec_config);
 
     ErlangMsgCodec_stop codec_stop;
     codec_stop.setLog(&log);
@@ -55,20 +60,33 @@ int main(int argn, char **argv)
         if (!msg)
             continue;
 
-        if (dynamic_cast<ErlangMsgCodec_stop*>(msg))
+        try
         {
-            log << "main: received stop message." << std::endl;
-            stop = true;
-            rc = RC_SIMULATION_STOPPED;
+            if (dynamic_cast<ErlangMsgCodec_config*>(msg))
+            {
+                ErlangMsgCodec_config* config = dynamic_cast<ErlangMsgCodec_config*>(msg);
+                std::string modelStr = config->getModel();
+                log << "main: received config message. Model is:\n" << modelStr << std::endl;
+            }
+            else if (dynamic_cast<ErlangMsgCodec_stop*>(msg))
+            {
+                log << "main: received stop message." << std::endl;
+                stop = true;
+                rc = RC_SIMULATION_STOPPED;
+            }
+            else
+            {
+                log << "main: received unknown message." << std::endl;
+            }
         }
-        else
+        catch (int error)
         {
-            log << "main: received unknown message." << std::endl;
+            log << "main: error=" << error << " returned while decoding message." << std::endl;
         }
         eio.messageProcessed(msg);
     }
 
-    
+
     log << "main: Stop" << std::endl;
     eio.setLog(0);
     log.close();
