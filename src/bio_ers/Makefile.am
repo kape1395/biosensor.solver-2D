@@ -47,7 +47,7 @@ bio_ers: ebin priv/bio_ers_solver_port $(ERL_BEAM_FILES) $(ERL_APP_FILES)
 ebin:
 	mkdir ebin
 
-priv/bio_ers_solver_port: ../bio_ers_solver_port/bio_ers_solver_port
+priv/bio_ers_solver_port: ../bio_ers_solver_port/.libs/bio_ers_solver_port
 	make -C ../bio_ers_solver_port
 	cp ../bio_ers_solver_port/.libs/bio_ers_solver_port priv/
 
@@ -92,7 +92,7 @@ test: bio_ers test-compile
 #   Formalities...
 #
 clean-local:
-	rm -rfv ebin priv/bio_ers_solver_port
+	rm -rfv ebin priv/bio_ers_solver_port *.log
 
 check-local: test
 
