@@ -212,7 +212,7 @@ process_xml_kpxml_v1(symbol, E) ->
 
 %%
 %%  @doc Get attribute value of the specified xmlElement.
-%%  @spec attr_value(XmlElement::#xmlElement, AttrName::atom()...) -> AttrValue::string()
+%%  @spec attr_value(XmlElement::#xmlElement{}, AttrName::atom()) -> AttrValue::string()
 %%
 attr_value(#xmlElement{attributes = Attrs}, Name) ->
     L = lists:filter(
@@ -245,7 +245,9 @@ xsi_type(#xmlElement{attributes = Attrs}) ->
 
 %%
 %%  @doc Returns predicate to filter xml elements by qualified name.
-%%  @spec node_qn_pred(QName) -> Fun.
+%%  @spec node_qn_pred(QualifiedName::qname()) -> function()
+%%  where
+%%      qname() = {Namespace::atom(), LocalName::atom()}
 %%
 node_qn_pred(QName) ->
     fun (#xmlElement{expanded_name = N}) when N == QName -> true; (_) -> false end.
