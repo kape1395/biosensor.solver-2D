@@ -29,6 +29,14 @@ argumentation for the changes. As for today the decisions are the following:
     Maybe its better to not invent own protocol. Note that EI replaces
     mostly deprecated erl_interface [ei3]. The biosensor solver port
     implementation is in ../bio_ers_solver_port/.
+  * Use SHA1 of the experiment definition for its identification. The
+    approach whould be similar to one used in GIT. The model and sorted
+    set of its parameters could be used for the hashing.
+  * Use Mnesia DB for storing data in run (simulation) time. Filesystem and
+    simple file formats (CSV, etc) should be used for storing data for long
+    term (archiving). Model definitions can be stored opaque, in the format
+    used to run simulations directly (for the traceability). Export from the
+    Mnesia DB to the external format should be implemented.
   ? Transformation of a model to a atructure of primitive solver components
     should be done in erlang. I am expecting to have cleaner code in this way.
     Another aspect is that C++ side should be rewritten anyway to employ
