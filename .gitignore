@@ -70,4 +70,9 @@ src/bio_ers/bio_ers.rel
 src/bio_ers/bio_ers.boot
 src/bio_ers/bio_ers.script
 src/bio_ers/bio_ers.tar.gz
+src/bio_ers/doc/*.html
+src/bio_ers/doc/edoc-info
+src/bio_ers/doc/erlang.png
+src/bio_ers/doc/stylesheet.css
+
 src/bio_ers_solver_port/bio_ers_solver_port
