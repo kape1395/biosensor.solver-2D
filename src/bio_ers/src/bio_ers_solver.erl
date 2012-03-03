@@ -63,15 +63,6 @@
 %%      simulation_state   (global)
 %%
 
-%%
-%%  A = {labas, [1, 2, 3, 4, 5, rytas]}.
-%%  Data = erlang:term_to_binary(A).
-%%  SHA = crypto:sha(Data).
-%%  lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
-%%
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Public API.
@@ -315,12 +306,16 @@ start_solver_port(Simulation, PortProgram) when is_record(Simulation, simulation
        {spawn_executable, PortProgram},
        [{packet, 2}, use_stdio, exit_status, binary]
     ),
-    erlang:port_command(Port, erlang:term_to_binary(#configure_port{
-        self = self(),
-        id = Id,
-        model = Model,
-        params = Params,
-        checkpoint = undefined})), % @todo Implement support for checkpoints.
+    erlang:port_command(Port, erlang:term_to_binary(
+        #configure_port{
+            self = self(),
+            id = Id,
+            model = Model,
+            params = Params,
+            checkpoint = undefined % @todo Implement support for checkpoints.
+        },
+        [{minor_version, 1}]
+    )),
     Port.
 
 %%
@@ -329,6 +324,8 @@ start_solver_port(Simulation, PortProgram) when is_record(Simulation, simulation
 %%  handled by handle_info/3.
 %%
 stop_solver_port(Port) ->
-    erlang:port_command(Port, erlang:term_to_binary(#stop_port{self = self()})).
-
+    erlang:port_command(Port, erlang:term_to_binary(
+        #stop_port{self = self()},
+        [{minor_version, 1}]
+    )).
 
