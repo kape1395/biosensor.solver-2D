@@ -53,6 +53,14 @@
 %%      simulation_state   (global)
 %%
 
+%%
+%%  A = {labas, [1, 2, 3, 4, 5, rytas]}.
+%%  Data = erlang:term_to_binary(A).
+%%  SHA = crypto:sha(Data).
+%%  lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
+%%
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
