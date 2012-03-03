@@ -18,12 +18,14 @@
 #define LOG(message) if (log) (*log) << "ErlangMsgCodec_conf: " << message << std::endl
 
 
+std::string ErlangMsgCodec_conf::SUPPORTED_MODEL_TYPE("kp1_xml");
+
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 ErlangMsgCodec_conf::ErlangMsgCodec_conf() : ErlangMsgCodec()
 {
-    model.clear();
-    //concentrations.clear();
+    cleanup();
 }
 
 
@@ -58,32 +60,42 @@ bool ErlangMsgCodec_conf::decode(char *msgBuf, int msgLen)
     // #1: Extract process PID.
     assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
     assertType(termType, ERL_PID_EXT);
-    assertRC(ei_decode_pid(msgBuf, &termIndex, &pid));
+    assertRC(ei_decode_pid(msgBuf, &termIndex, &connectedPid));
 
     // #2: Extract simulation ID.
     assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
     assertType(termType, ERL_STRING_EXT);
     charBuf = new char[termSize + 1];
     assertRC(ei_decode_string(msgBuf, &termIndex, charBuf));
-    id.assign(charBuf);
+    simulationId.assign(charBuf);
     delete [] charBuf;
 
-    // #3: Extract model (XML in binary).
+    // #3: Extract model
     if (!isRecord(msgBuf, &termIndex, ErlangRecordDef::MODEL))
         throw -4;
 
-    // #3.1: Skip model type. TODO: Check model type.
-    assertRC(ei_skip_term(msgBuf, &termIndex));
+    // #3.1: Check model type.
+    assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
+    assertType(termType, ERL_ATOM_EXT);
+    charBuf = new char[termSize + 1];
+    assertRC(ei_decode_atom(msgBuf, &termIndex, charBuf));
+    modelType.assign(charBuf);
+    delete [] charBuf;
+    if (modelType.compare(SUPPORTED_MODEL_TYPE) != 0)
+    {
+        LOG("Unsupported model type: " << modelType);
+        throw -5;
+    }
 
-    // #3.2: Extraxt model.
-    decodeBinaryToString(msgBuf, &termIndex, &model);
+    // #3.2: Extraxt model definition (XML in binary).
+    decodeBinaryToString(msgBuf, &termIndex, &modelDefinition);
 
     // #4: Extract params
     assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
     assertType(termType, ERL_LIST_EXT);
     assertRC(ei_decode_list_header(msgBuf, &termIndex, &termSize));
     for (int i = 0; i < termSize; i++)
-        params.insert(params.end(), decodeParam(msgBuf, &termIndex));
+        parameters.insert(parameters.end(), decodeParam(msgBuf, &termIndex));
 
     // #5: Extract concentrations
     //decodeBinaryToString(msgBuf, &termIndex, &concentrations);
@@ -93,6 +105,9 @@ bool ErlangMsgCodec_conf::decode(char *msgBuf, int msgLen)
     return true;
 }
 
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 std::pair<std::string, double> ErlangMsgCodec_conf::decodeParam(char *msgBuf, int *termIndex)
 {
     int termType;
@@ -117,29 +132,49 @@ std::pair<std::string, double> ErlangMsgCodec_conf::decodeParam(char *msgBuf, in
     return std::pair<std::string, double>(paramName, paramValue);
 }
 
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 void ErlangMsgCodec_conf::cleanup()
 {
-    model.clear();
-    params.clear();
+    simulationId.clear();
+    modelType.clear();
+    modelDefinition.clear();
+    parameters.clear();
     //concentrations.clear();
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::string& ErlangMsgCodec_conf::getModel()
+
+erlang_pid& ErlangMsgCodec_conf::getConnectedPid()
 {
-    return model;
+    return connectedPid;
 }
 
 
-/* ************************************************************************** */
-/* ************************************************************************** */
-std::map<std::string, double>& ErlangMsgCodec_conf::getParams()
+std::string& ErlangMsgCodec_conf::getSimulationId()
 {
-    return params;
+    return simulationId;
+}
+
+
+std::string& ErlangMsgCodec_conf::getModelType()
+{
+    return modelType;
+}
+
+
+std::string& ErlangMsgCodec_conf::getModelDefinition()
+{
+    return modelDefinition;
+}
+
+
+std::map<std::string, double>& ErlangMsgCodec_conf::getParameters()
+{
+    return parameters;
 }
 
 

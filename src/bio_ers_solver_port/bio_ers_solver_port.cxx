@@ -65,8 +65,11 @@ int main(int argn, char **argv)
             if (dynamic_cast<ErlangMsgCodec_conf*>(msg))
             {
                 ErlangMsgCodec_conf* conf = dynamic_cast<ErlangMsgCodec_conf*>(msg);
-                std::string modelStr = conf->getModel();
-                log << "main: received conf message. Model is:\n" << modelStr << std::endl;
+                std::string modelStr = conf->getModelDefinition();
+                log << "main: received conf message."
+                    << " SimulationID=" << conf->getSimulationId()
+                    << " ModelType=" << conf->getModelType()
+                    << " and ModelDefinition is:\n" << modelStr << std::endl;
             }
             else if (dynamic_cast<ErlangMsgCodec_stop*>(msg))
             {
@@ -81,7 +84,15 @@ int main(int argn, char **argv)
         }
         catch (int error)
         {
-            log << "main: error=" << error << " returned while decoding message." << std::endl;
+            log << "main: error1=" << error << " returned while decoding message." << std::endl;
+        }
+        catch (int &error)
+        {
+            log << "main: error2=" << error << " returned while decoding message." << std::endl;
+        }
+        catch (...)
+        {
+            log << "main: unknown error while decoding message." << std::endl;
         }
         eio.messageProcessed(msg);
     }

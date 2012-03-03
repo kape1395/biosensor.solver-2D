@@ -27,10 +27,13 @@
 class ErlangMsgCodec_conf : public ErlangMsgCodec
 {
 private:
-    erlang_pid pid;
-    std::string id;
-    std::string model;
-    std::map<std::string, double> params;
+    static std::string SUPPORTED_MODEL_TYPE;
+
+    erlang_pid connectedPid;
+    std::string simulationId;
+    std::string modelType;
+    std::string modelDefinition;
+    std::map<std::string, double> parameters;
     //std::string concentrations;
 
 public:
@@ -61,16 +64,32 @@ public:
     virtual void cleanup();
 
     /**
-     *  Returns biosensor model as a string.
-     *  The content is decoded from the model property of the solver state record.
+     *  Returns connected process ID of the port.
+     *  @return PID.
      */
-    std::string& getModel();
+    erlang_pid& getConnectedPid();
+
+    /**
+     *  Returns simulation ID.
+     *  @return SHA1 in hex string.
+     */
+    std::string& getSimulationId();
+
+    /**
+     *  Returns model type (only one type is currently supported).
+     *  @return model type.
+     */
+    std::string& getModelType();
+
+    /**
+     *  Returns biosensor model as a string.
+     */
+    std::string& getModelDefinition();
 
     /**
      *  Returns biosensor model parameters (overrides).
-     *  The content is decoded from the params property in the solver state record.
      */
-    std::map<std::string, double>& getParams();
+    std::map<std::string, double>& getParameters();
 
 protected:
 
