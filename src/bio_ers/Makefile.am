@@ -95,7 +95,7 @@ test: bio_ers test-compile
 #
 
 erlang-docs-html:
-	erl -noshell -run edoc_run application "'bio_ers'" '"."' '[]'
+	erl -noshell -run edoc_run application "'bio_ers'" '"."' '[{hidden, true}, {private, true}]'
 
 
 ################################################################################

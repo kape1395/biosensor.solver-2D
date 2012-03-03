@@ -62,6 +62,8 @@ References
 [?dev3] http://www.erlang.org/doc/apps/tools/erlang_mode_chapter.html
 [?tst1] http://erlymock-site.sourceforge.net/
 [?tst2] http://stackoverflow.com/questions/1202539/how-do-i-do-dependency-injection-and-mocks-in-erlang
+[?doc1] http://www.erlang.org/doc/man/edoc.html
+[?doc2] https://support.process-one.net/doc/display/ERL/Documenting+your+code+and+generating+the+Erlang+code+documentation
 
 
 Appendix A.
