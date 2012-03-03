@@ -108,6 +108,14 @@ bool ErlangMsgCodec::isRecord(char *msgBuf, int *termIndex, std::string &name, i
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+bool ErlangMsgCodec::isRecord(char *msgBuf, int *termIndex, ErlangRecordDef &recordDef)
+{
+    return isRecord(msgBuf, termIndex, recordDef.getName(), recordDef.getTupleArity());
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void ErlangMsgCodec::decodeBinaryToString(char *msgBuf, int *termIndex, std::string *contents)
 {
     int termType;

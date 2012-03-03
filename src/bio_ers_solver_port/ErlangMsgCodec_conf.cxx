@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "ErlangMsgCodec_config.hxx"
-#define LOG(message) if (log) (*log) << "ErlangMsgCodec_config: " << message << std::endl
-
-std::string ErlangMsgCodec_config::TUPLE_NAME("config");
-int         ErlangMsgCodec_config::TUPLE_ARITY = 3;
-
-std::string ErlangMsgCodec_config::SOLVER_STATE_NAME("solver_state_v1");
-int         ErlangMsgCodec_config::SOLVER_STATE_ARITY = 7;
-
-std::string ErlangMsgCodec_config::PARAM_NAME("param");
-int         ErlangMsgCodec_config::PARAM_ARITY = 3;
+#include "ErlangMsgCodec_conf.hxx"
+#include "ErlangRecordDef.hxx"
+#define LOG(message) if (log) (*log) << "ErlangMsgCodec_conf: " << message << std::endl
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-ErlangMsgCodec_config::ErlangMsgCodec_config() : ErlangMsgCodec()
+ErlangMsgCodec_conf::ErlangMsgCodec_conf() : ErlangMsgCodec()
 {
     model.clear();
-    concentrations.clear();
+    //concentrations.clear();
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-ErlangMsgCodec_config::~ErlangMsgCodec_config()
+ErlangMsgCodec_conf::~ErlangMsgCodec_conf()
 {
     cleanup();
 }
@@ -45,7 +37,7 @@ ErlangMsgCodec_config::~ErlangMsgCodec_config()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool ErlangMsgCodec_config::encode()
+bool ErlangMsgCodec_conf::encode()
 {
     return false;
 }
@@ -53,54 +45,60 @@ bool ErlangMsgCodec_config::encode()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool ErlangMsgCodec_config::decode(char *msgBuf, int msgLen)
+bool ErlangMsgCodec_conf::decode(char *msgBuf, int msgLen)
 {
     int termIndex = 0;
     int termType;
     int termSize;
+    char *charBuf;
 
-    if (!isRecord(msgBuf, &termIndex, TUPLE_NAME, TUPLE_ARITY))
+    if (!isRecord(msgBuf, &termIndex, ErlangRecordDef::CONF_PORT))
         return false;
 
-    // #2: Extract process PID.
+    // #1: Extract process PID.
+    assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
+    assertType(termType, ERL_PID_EXT);
     assertRC(ei_decode_pid(msgBuf, &termIndex, &pid));
 
-    // #3: Extract solver state.
-    if (!isRecord(msgBuf, &termIndex, SOLVER_STATE_NAME, SOLVER_STATE_ARITY))
-        throw -2;
+    // #2: Extract simulation ID.
+    assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
+    assertType(termType, ERL_STRING_EXT);
+    charBuf = new char[termSize + 1];
+    assertRC(ei_decode_string(msgBuf, &termIndex, charBuf));
+    id.assign(charBuf);
+    delete [] charBuf;
 
-    // #3.2: Skip state
+    // #3: Extract model (XML in binary).
+    if (!isRecord(msgBuf, &termIndex, ErlangRecordDef::MODEL))
+        throw -4;
+
+    // #3.1: Skip model type. TODO: Check model type.
     assertRC(ei_skip_term(msgBuf, &termIndex));
 
-    // #3.3: Extract model (XML in binary).
+    // #3.2: Extraxt model.
     decodeBinaryToString(msgBuf, &termIndex, &model);
 
-    // #3.4: Skip datadir
-    assertRC(ei_skip_term(msgBuf, &termIndex));
-
-    // #3.5: Extract params
+    // #4: Extract params
     assertRC(ei_get_type(msgBuf, &termIndex, &termType, &termSize));
     assertType(termType, ERL_LIST_EXT);
     assertRC(ei_decode_list_header(msgBuf, &termIndex, &termSize));
     for (int i = 0; i < termSize; i++)
         params.insert(params.end(), decodeParam(msgBuf, &termIndex));
 
-    // #3.6: Extract concentrations
-    decodeBinaryToString(msgBuf, &termIndex, &concentrations);
-
-    // #3.7: Skip response
+    // #5: Extract concentrations
+    //decodeBinaryToString(msgBuf, &termIndex, &concentrations);
     assertRC(ei_skip_term(msgBuf, &termIndex));
 
     LOG("Successfully decoded.");
     return true;
 }
 
-std::pair<std::string, double> ErlangMsgCodec_config::decodeParam(char *msgBuf, int *termIndex)
+std::pair<std::string, double> ErlangMsgCodec_conf::decodeParam(char *msgBuf, int *termIndex)
 {
     int termType;
     int termSize;
 
-    if (!isRecord(msgBuf, termIndex, PARAM_NAME, PARAM_ARITY))
+    if (!isRecord(msgBuf, termIndex, ErlangRecordDef::PARAM))
         throw -5;
 
     std::string paramName;
@@ -121,17 +119,17 @@ std::pair<std::string, double> ErlangMsgCodec_config::decodeParam(char *msgBuf, 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-void ErlangMsgCodec_config::cleanup()
+void ErlangMsgCodec_conf::cleanup()
 {
     model.clear();
     params.clear();
-    concentrations.clear();
+    //concentrations.clear();
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::string& ErlangMsgCodec_config::getModel()
+std::string& ErlangMsgCodec_conf::getModel()
 {
     return model;
 }
@@ -139,7 +137,7 @@ std::string& ErlangMsgCodec_config::getModel()
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-std::map<std::string, double>& ErlangMsgCodec_config::getParams()
+std::map<std::string, double>& ErlangMsgCodec_conf::getParams()
 {
     return params;
 }

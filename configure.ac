@@ -37,6 +37,7 @@ AC_ERLANG_CHECK_LIB([stdlib])
 AC_ERLANG_CHECK_LIB([erl_interface])
 AC_ERLANG_CHECK_LIB([xmerl])
 AC_ERLANG_CHECK_LIB([eunit])
+AC_ERLANG_CHECK_LIB([crypto])
 
 #### Checks for programs.
 AC_PROG_CXX

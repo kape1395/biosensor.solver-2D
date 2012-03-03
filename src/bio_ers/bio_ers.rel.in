@@ -20,6 +20,7 @@
        {kernel, "@ERLANG_LIB_VER_kernel@"},
        {stdlib, "@ERLANG_LIB_VER_stdlib@"},
        {xmerl, "@ERLANG_LIB_VER_xmerl@"},
+       {crypto, "@ERLANG_LIB_VER_crypto@"},
        {bio_ers, "@VERSION@"}
     ]
 }.

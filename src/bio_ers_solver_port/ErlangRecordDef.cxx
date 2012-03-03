@@ -13,57 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "ErlangMsgCodec_stop.hxx"
 #include "ErlangRecordDef.hxx"
-#define LOG(message) if (log) (*log) << "ErlangMsgCodec_stop: " << message << std::endl
+
+ErlangRecordDef ErlangRecordDef::CONF_PORT(std::string("configure_port"), 5);
+ErlangRecordDef ErlangRecordDef::STOP_PORT(std::string("stop_port"), 1);
+ErlangRecordDef ErlangRecordDef::MODEL(std::string("model"), 2);
+ErlangRecordDef ErlangRecordDef::PARAM(std::string("param"), 2);
+ErlangRecordDef ErlangRecordDef::CHECKPOINT(std::string("checkpoint"), 4);
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-ErlangMsgCodec_stop::ErlangMsgCodec_stop() : ErlangMsgCodec()
+ErlangRecordDef::ErlangRecordDef(std::string recordName, int recordArity)
 {
-    // Nothing.
+    this->recordName = recordName;
+    this->recordArity = recordArity;
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-ErlangMsgCodec_stop::~ErlangMsgCodec_stop()
+std::string& ErlangRecordDef::getName()
 {
-    cleanup();
+    return recordName;
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool ErlangMsgCodec_stop::encode()
+int ErlangRecordDef::getArity()
 {
-    return false;
+    return recordArity;
 }
 
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-bool ErlangMsgCodec_stop::decode(char *msgBuf, int msgLen)
+int ErlangRecordDef::getTupleArity()
 {
-    int termIndex = 0;
-
-    if (!isRecord(msgBuf, &termIndex, ErlangRecordDef::STOP_PORT))
-        return false;
-
-    // #2: Extract connected process PID.
-    assertRC(ei_decode_pid(msgBuf, &termIndex, &pid));
-
-    LOG("Successfully decoded.");
-    return true;
-}
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-void ErlangMsgCodec_stop::cleanup()
-{
-    // Nothing.
+    return recordArity + 1;
 }
 
 

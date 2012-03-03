@@ -16,6 +16,7 @@
 #ifndef BIO_ERS_ErlangMsgCodec_HXX
 #define BIO_ERS_ErlangMsgCodec_HXX
 #include <iostream>
+#include "ErlangRecordDef.hxx"
 
 /**
  *  Base class for all Erlang message encoders/decoders.
@@ -89,6 +90,11 @@ protected:
      *  @returns true, if the record decoded successfully.
      */
     bool isRecord(char *msgBuf, int *termIndex, std::string &name, int arity);
+
+    /**
+     *  The same as isRecord(char *msgBuf, int *termIndex, std::string &name, int arity).
+     */
+    bool isRecord(char *msgBuf, int *termIndex, ErlangRecordDef &recordDef);
 
     /**
      *  Decodes erlang binary to string.

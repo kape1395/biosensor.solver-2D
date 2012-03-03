@@ -21,14 +21,11 @@
 
 /**
  *  Codec for the 'stop' command.
- *  The message is a tuple in the follwoing form:
- *      \code {stop, self()} \endcode
+ *  The message is the record \code #stop_port{} \endcode .
  */
 class ErlangMsgCodec_stop : public ErlangMsgCodec
 {
 private:
-    static std::string TUPLE_NAME;
-    static int TUPLE_ARITY;
     erlang_pid pid;
 
 public:

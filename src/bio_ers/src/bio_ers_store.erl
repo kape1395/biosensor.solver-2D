@@ -13,42 +13,45 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
--module(bio_ers).
+
+%%
+%% @doc An entry point to the data store managing biosensor simulations
+%% and related entities.
+%% 
+
+-module(bio_ers_store).
 -behaviour(gen_server).
--export([start_link/0, stop/0, simulation_id/1]).
--export([test/0]).
+-export([start/0, start_link/0, stop/0, save_simulation/1, get_simulation/1]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("bio_ers.hrl").
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  Initialization.
-%%
-
-start_link() ->
-    gen_server:start_link({local, bio_ers}, bio_ers, [], []).
-
-stop() ->
-    gen_server:cast(bio_ers, stop).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Public interface.
 %%
 
-test() ->
-    gen_server:call(bio_ers, test).
+start() ->
+    gen_server:start({local, ?MODULE}, ?MODULE, [], []).
 
 
-%%
-%%  @doc Generates SHA1 ID for the specified simulation.
-%%  @spec simulation_id(Simulation::#simulation{}) -> string()
-%%
-simulation_id(Simulation) when is_record(Simulation, simulation) ->
-    #simulation{version = Version, model = Model, params = Params} = Simulation,
-    Key = {Version, Model, lists:sort(Params)},
-    SHA = crypto:sha(erlang:term_to_binary(Key)),
-    lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
+start_link() ->
+    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+
+
+stop() ->
+    gen_server:cast(?MODULE, stop).
+
+
+save_simulation(Simulation) when is_record(Simulation, simulation) ->
+    ok.
+
+
+get_simulation(Simulation) when is_record(Simulation, simulation)->
+    ok;
+get_simulation(SHA) when is_list(SHA) ->
+    ok.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,15 +64,9 @@ init(_Args) ->
 terminate(_Reason, _State) ->
     ok.
 
-%%
-%%  Sync calls.
-%%
-handle_call(test, _From, State) ->
-    {reply, "This is a test", State}.
+handle_call(_Event, _From, State) ->
+    {reply, "Hmm...", State}.
 
-%%
-%%  Async calls.
-%%
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(_, State) ->

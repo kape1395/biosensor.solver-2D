@@ -19,7 +19,7 @@
 #include <erl_interface.h>
 #include "ErlangIO.hxx"
 #include "ErlangMsgCodec.hxx"
-#include "ErlangMsgCodec_config.hxx"
+#include "ErlangMsgCodec_conf.hxx"
 #include "ErlangMsgCodec_stop.hxx"
 
 #define PORT_PACKET_SIZE 2
@@ -40,9 +40,9 @@ int main(int argn, char **argv)
     ErlangIO eio(std::cin, std::cout, PORT_PACKET_SIZE);
     eio.setLog(&log);
 
-    ErlangMsgCodec_config codec_config;
-    codec_config.setLog(&log);
-    eio.addMessageCodec(&codec_config);
+    ErlangMsgCodec_conf codec_conf;
+    codec_conf.setLog(&log);
+    eio.addMessageCodec(&codec_conf);
 
     ErlangMsgCodec_stop codec_stop;
     codec_stop.setLog(&log);
@@ -62,11 +62,11 @@ int main(int argn, char **argv)
 
         try
         {
-            if (dynamic_cast<ErlangMsgCodec_config*>(msg))
+            if (dynamic_cast<ErlangMsgCodec_conf*>(msg))
             {
-                ErlangMsgCodec_config* config = dynamic_cast<ErlangMsgCodec_config*>(msg);
-                std::string modelStr = config->getModel();
-                log << "main: received config message. Model is:\n" << modelStr << std::endl;
+                ErlangMsgCodec_conf* conf = dynamic_cast<ErlangMsgCodec_conf*>(msg);
+                std::string modelStr = conf->getModel();
+                log << "main: received conf message. Model is:\n" << modelStr << std::endl;
             }
             else if (dynamic_cast<ErlangMsgCodec_stop*>(msg))
             {

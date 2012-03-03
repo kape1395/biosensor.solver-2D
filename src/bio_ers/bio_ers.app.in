@@ -19,6 +19,6 @@
     {modules, [MAKEFILE_REPLACE_WITH_MODULES]},
     {registered, [bio_ers]},
     {mod, {bio_ers_app, []}},
-    {applications, [kernel, stdlib]}
+    {applications, [kernel, stdlib, xmerl, crypto]}
 ]}.
 

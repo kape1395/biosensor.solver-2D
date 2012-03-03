@@ -14,8 +14,6 @@
 % limitations under the License.
 %
 
--include("bio_ers.hrl").
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Data structures for communicating with the solver port.
 %%

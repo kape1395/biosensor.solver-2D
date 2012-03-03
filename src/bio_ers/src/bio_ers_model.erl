@@ -14,8 +14,9 @@
 % limitations under the License.
 %
 -module(bio_ers_model).
--export([parse_file/1]).
+-export([parse_file/1, read_model/2]).
 -include_lib("xmerl/include/xmerl.hrl").
+-include("bio_ers.hrl").
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Public functions.
@@ -34,6 +35,14 @@ parse_file(FileName) ->
     ]),
     process_xml(Document).
 
+
+%%
+%%  @doc Reads model from a file and returns it as #model{}.
+%%  @spec read_model(FileName::string(), Type::atom()) -> #model{}
+%%
+read_model(FileName, _Type) ->
+    {ok, Model} = file:read_file(FileName),
+    #model{type = kp1_xml, definition = Model}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

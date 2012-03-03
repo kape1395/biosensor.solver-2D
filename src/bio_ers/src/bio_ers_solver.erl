@@ -18,6 +18,7 @@
 -export([start_link/1, start_link/2, run/1, suspend/1, cancel/1, status/1]).
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 -export([init/2, running/2, restarting/2, suspending/2, suspended/2]).
+-include("bio_ers.hrl").
 -include("bio_ers_solver.hrl").
 
 
@@ -26,12 +27,15 @@
 -define(RC_SIMULATION_DONE,    11).
 -define(RC_SIMULATION_STOPPED, 12).
 -define(RC_SIMULATION_FAILED,  13).
--record(fsm_state, {state, solver, port, prog}).
+
+%%
+%%
+%%
+-record(fsm_state, {simulation, port, prog, state}).
 
 
 %%
 %%  @todo module doc.
-%%  @todo update #fsm_state.state correctly.
 %%  see doc/bio_ers_uml/bio_ers_solver.svg
 %%
 %%  States:
@@ -67,15 +71,21 @@
 %%  Public API.
 %%
 
+
+%%
+%%  @doc Start the solver with the default port program.
+%%  @see start_link/2.
+%%
+start_link(Simulation) ->
+    start_link(Simulation, ?DEFAULT_PORT_PROGRAM).
+
 %%
 %%  @doc Start the solver. The solver is started in the init state, waiting
 %%  for a command to run the simulation.
 %%
-start_link(SolverState) ->
-    gen_fsm:start_link(?MODULE, {SolverState, ?DEFAULT_PORT_PROGRAM}, []).
+start_link(Simulation, PortProgram) ->
+    gen_fsm:start_link(?MODULE, {Simulation, PortProgram}, []).
 
-start_link(SolverState, PortProgram) ->
-    gen_fsm:start_link(?MODULE, {SolverState, PortProgram}, []).
 
 %%
 %%  @doc Run the actual simulation or resume it, if the simulation was suspended.
@@ -117,11 +127,10 @@ status(FsmRef) ->
 %%  @doc Initialize the FSM.
 %%  @todo read process state from DB if needed.
 %%
-init({SolverState, PortProgram}) when is_record(SolverState, solver_state_v1) ->
+init({Simulation, PortProgram}) when is_record(Simulation, simulation) ->
     process_flag(trap_exit, true),
     {ok, init, #fsm_state{
-        state = init,
-        solver = SolverState,
+        simulation = Simulation,
         port = undefined,
         prog = PortProgram
     }}.
@@ -217,9 +226,9 @@ code_change(_OldVsn, StateName, StateData, _Extra) ->
 %%
 %%  @doc Initialized solver. It can be either started or canceled.
 %%
-init(solver_run, SolverData = #fsm_state{solver = SolverState, prog = PortProgram}) ->
-    Port = start_solver_port(SolverState, PortProgram),
-    {next_state, running, SolverData#fsm_state{state = running, port = Port}};
+init(solver_run, StateData = #fsm_state{simulation = Simulation, prog = PortProgram}) ->
+    Port = start_solver_port(Simulation, PortProgram),
+    {next_state, running, StateData#fsm_state{state = running, port = Port}};
 init(solver_suspend, StateData) ->
     {next_state, init, StateData}.
 
@@ -279,8 +288,8 @@ suspending(simulation_stopped, StateData) ->
 %%
 %%  @doc The solver is already suspended completely. One can resume it.
 %%
-suspended(solver_run, StateData = #fsm_state{solver = SolverState, prog = PortProgram}) ->
-    Port = start_solver_port(SolverState, PortProgram),
+suspended(solver_run, StateData = #fsm_state{simulation = Simulation, prog = PortProgram}) ->
+    Port = start_solver_port(Simulation, PortProgram),
     {next_state, running, StateData#fsm_state{port = Port}};
 suspended(solver_suspend, StateData) ->
     {next_state, suspended, StateData}.
@@ -294,12 +303,18 @@ suspended(solver_suspend, StateData) ->
 %%
 %%  @doc Creates and configures the solver port.
 %%
-start_solver_port(SolverState, PortProgram) ->
+start_solver_port(Simulation, PortProgram) when is_record(Simulation, simulation) ->
+    #simulation{id = Id, model = Model, params = Params} = Simulation,
     Port = erlang:open_port(
        {spawn_executable, PortProgram},
        [{packet, 2}, use_stdio, exit_status, binary]
     ),
-    erlang:port_command(Port, erlang:term_to_binary({config, self(), SolverState})),
+    erlang:port_command(Port, erlang:term_to_binary(#configure_port{
+        self = self(),
+        id = Id,
+        model = Model,
+        params = Params,
+        checkpoint = undefined})), % @todo Implement support for checkpoints.
     Port.
 
 %%
@@ -308,6 +323,6 @@ start_solver_port(SolverState, PortProgram) ->
 %%  handled by handle_info/3.
 %%
 stop_solver_port(Port) ->
-    erlang:port_command(Port, erlang:term_to_binary({stop, self()})).
+    erlang:port_command(Port, erlang:term_to_binary(#stop_port{self = self()})).
 
 

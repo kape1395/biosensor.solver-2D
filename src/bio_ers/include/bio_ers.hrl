@@ -14,6 +14,11 @@
 % limitations under the License.
 %
 
+%%
+%% @doc Main interface of the `bio_ers' application.
+%% @headerfile bio_ers.hrl
+%%
+
 
 %%
 %%  @type biosensor() = #biosensor{id::atom(), description::string()}
@@ -30,8 +35,8 @@
 %%      definition = any()
 %%  }
 %%  Describes biosensor model definition. Types can be
-%%      `kpxml1_xml' for raw XML as a binary and
-%%      `kpxml1_parsed' for the model transformed to tuples.
+%%      `kp1_xml' for raw XML as a binary and
+%%      `kp1_parsed' for the model transformed to tuples.
 %%  Contents of the `definition' depends on the type.
 %%
 -record(model, {
@@ -132,9 +137,9 @@
     id,
     version = 1,
     model,
-    params,
-    state,
-    checkpoints,
-    outputs
+    params = [],
+    state = undefined,
+    checkpoints = [],
+    outputs = []
     }).
 

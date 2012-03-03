@@ -31,8 +31,9 @@ bio_ers_solver_port_SOURCES = \
     bio_ers_solver_port.cxx \
     ErlangIO.cxx \
     ErlangMsgCodec.cxx \
-    ErlangMsgCodec_config.cxx \
-    ErlangMsgCodec_stop.cxx
+    ErlangMsgCodec_conf.cxx \
+    ErlangMsgCodec_stop.cxx \
+    ErlangRecordDef.cxx
 
 clean-local:
 	rm -fv *.log *.orig

@@ -13,54 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BIO_ERS_ErlangMsgCodec_config_HXX
-#define BIO_ERS_ErlangMsgCodec_config_HXX
+#ifndef BIO_ERS_ErlangMsgCodec_conf_HXX
+#define BIO_ERS_ErlangMsgCodec_conf_HXX
 #include "ErlangMsgCodec.hxx"
 #include <string>
 #include <map>
 #include <ei.h>
 
 /**
- *  Codec for the 'config' command.
- *  The message is a tuple in the follwoing form:
- *  \code
- *      {config, self(), {solver_state_v1,
- *          State,
- *          Model,
- *          DataDir,
- *          Params,
- *          Concentrations,
- *          Response
- *      }}
- *  \endcode
+ *  Codec for the 'conf' command.
+ *  The message is the record \code #configure_port{} \endcode .
  */
-class ErlangMsgCodec_config : public ErlangMsgCodec
+class ErlangMsgCodec_conf : public ErlangMsgCodec
 {
 private:
-    static std::string TUPLE_NAME;
-    static int         TUPLE_ARITY;
-
-    static std::string SOLVER_STATE_NAME;
-    static int         SOLVER_STATE_ARITY;
-
-    static std::string PARAM_NAME;
-    static int         PARAM_ARITY;
-
     erlang_pid pid;
+    std::string id;
     std::string model;
     std::map<std::string, double> params;
-    std::string concentrations;
+    //std::string concentrations;
 
 public:
     /**
      *  Constructor.
      */
-    ErlangMsgCodec_config();
+    ErlangMsgCodec_conf();
 
     /**
      *  Destructor.
      */
-    virtual ~ErlangMsgCodec_config();
+    virtual ~ErlangMsgCodec_conf();
 
     /**
      *  @copydoc ErlangMsgCodec::encode()
