@@ -16,6 +16,7 @@
 #ifndef BIO_ERS_ErlangMsgCodec_conf_HXX
 #define BIO_ERS_ErlangMsgCodec_conf_HXX
 #include "ErlangMsgCodec.hxx"
+#include "ErlangMsgCodec_checkpoint.hxx"
 #include <string>
 #include <map>
 #include <ei.h>
@@ -34,7 +35,8 @@ private:
     std::string modelType;
     std::string modelDefinition;
     std::map<std::string, double> parameters;
-    //std::string concentrations;
+    bool checkpointProvided;
+    ErlangMsgCodec_checkpoint checkpointMsg;
 
 public:
     /**
@@ -90,6 +92,13 @@ public:
      *  Returns biosensor model parameters (overrides).
      */
     std::map<std::string, double>& getParameters();
+
+    /**
+     *  Returns checkpoint data.
+     *  @returns Checkpoint data (do not delete the object) or 0,
+     *      if simulation should be started from the beginning.
+     */
+    ErlangMsgCodec_checkpoint* getCheckpoint();
 
 protected:
 

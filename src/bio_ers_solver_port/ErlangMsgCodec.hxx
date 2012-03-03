@@ -24,6 +24,7 @@
 class ErlangMsgCodec
 {
 protected:
+    static std::string UNDEFINED;
     std::ostream *log;
 
 public:
@@ -78,11 +79,20 @@ protected:
     void assertType(int termType, int expectedType);
 
     /**
+     *  Checks wether the term type is as expected (one of two).
+     *  @param termType - type returned by ei_get_type.
+     *  @param extectedType1 - see ei.h.
+     *  @param extectedType1 - see ei.h.
+     *  @throws -12 if types not match.
+     */
+    void assertType(int termType, int expectedType1, int expectedType2);
+
+    /**
      *  Tries to decode a record header i.e. tuple and its first member. The record
      *  is recognized by arity of the tuple (including first atom) and name of the
      *  first atom.
      *  @param msgBuf Buffer, where message resides.
-     *  @param termIndex Position in the buffer, wgere decoding should start.
+     *  @param termIndex Position in the buffer, where decoding should start.
      *      The index will be updated. In the case of successfull decoding, the
      *      index will point to the second member in the record (1'st after the atom).
      *  @param name Name of the record (equals to name of the first atom).
@@ -97,9 +107,19 @@ protected:
     bool isRecord(char *msgBuf, int *termIndex, ErlangRecordDef &recordDef);
 
     /**
+     *  Checks wether the intex points to the NIL or atom 'undefined'.
+     *  @param msgBuf Buffer, where message resides.
+     *  @param termIndex Position in the buffer, where decoding should start.
+     *      The index is left unchanged, if false is returned by this function
+     *      and is updated to the next term otherwise.
+     *  @return true, if the term was NIL or atom 'undefined'.
+     */
+    bool isNilOrUndefined(char *msgBuf, int *termIndex);
+
+    /**
      *  Decodes erlang binary to string.
      *  @param msgBuf Buffer, where message resides.
-     *  @param termIndex Position in the buffer, wgere decoding should start.
+     *  @param termIndex Position in the buffer, where decoding should start.
      *      The index will be updated the same way as it is done by ei_decode_* functions.
      *  @param contents A string to be filled with the contents of the binary.
      *  @throws negative integer on error.

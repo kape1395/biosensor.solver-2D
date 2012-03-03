@@ -182,10 +182,12 @@ int ErlangIO::readBytes(char* readBuf, int readCount)
                << " eof=" << in.eof()
                << " fail=" << in.fail()
                << std::endl;
+        /*
         for (int i = 0; i < count; i++)
             (*log) << "DATA: [" << i << "] "
                    << std::hex << (int) (unsigned char) readBuf[i] << std::dec
                    << " '" << readBuf[i] << "'" << std::endl;
+        */
     }
     if (count == readCount)
         return count;

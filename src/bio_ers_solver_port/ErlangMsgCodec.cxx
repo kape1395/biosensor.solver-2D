@@ -17,11 +17,14 @@
 #include <ei.h>
 #define LOG(message) if (log) (*log) << "ErlangMsgCodec: " << message << std::endl
 
+std::string ErlangMsgCodec::UNDEFINED("undefined");
+
+
 /* ************************************************************************** */
 /* ************************************************************************** */
 ErlangMsgCodec::ErlangMsgCodec()
 {
-    // Nothing.
+    log = 0;
 }
 
 
@@ -57,7 +60,6 @@ void ErlangMsgCodec::assertRC(int eirc)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
-/* ************************************************************************** */
 void ErlangMsgCodec::assertType(int termType, int expectedType)
 {
     if (termType != expectedType)
@@ -70,12 +72,24 @@ void ErlangMsgCodec::assertType(int termType, int expectedType)
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+void ErlangMsgCodec::assertType(int termType, int expectedType1, int expectedType2)
+{
+    if (termType != expectedType1 && termType != expectedType2)
+    {
+        LOG("assertType(type=" << termType << ", expected=" << expectedType1 << "|" << expectedType2 << ")");
+        throw -12;
+    }
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 bool ErlangMsgCodec::isRecord(char *msgBuf, int *termIndex, std::string &name, int arity)
 {
     int eirc;
     int tupleArity;
-    int termType;
-    int termSize;
+    int termType = 0;
+    int termSize = 0;
     char atomName[MAXATOMLEN+1];
 
     // Is it a tuple?
@@ -111,6 +125,34 @@ bool ErlangMsgCodec::isRecord(char *msgBuf, int *termIndex, std::string &name, i
 bool ErlangMsgCodec::isRecord(char *msgBuf, int *termIndex, ErlangRecordDef &recordDef)
 {
     return isRecord(msgBuf, termIndex, recordDef.getName(), recordDef.getTupleArity());
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
+bool ErlangMsgCodec::isNilOrUndefined(char *msgBuf, int *termIndex)
+{
+    int startIndex = *termIndex;
+    int termType = 0;
+    int termSize = 0;
+
+    assertRC(ei_get_type(msgBuf, termIndex, &termType, &termSize));
+    if (termType == ERL_NIL_EXT)
+    {
+        assertRC(ei_skip_term(msgBuf, termIndex));
+        return true;
+    }
+    else if (termType == ERL_ATOM_EXT)
+    {
+        char atomName[MAXATOMLEN+1];
+        assertRC(ei_decode_atom(msgBuf, termIndex, atomName));
+        if (UNDEFINED.compare(atomName) == 0)
+        {
+            return true;
+        }
+    }
+    *termIndex = startIndex;
+    return false;
 }
 
 

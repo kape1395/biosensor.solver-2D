@@ -8,6 +8,8 @@
 
 `bio_ers' is an Erlang server for simulating biosensor operation.
 
+Main data structures are described in the {@link bio_ers} module.
+
 
 == Simulation output ==
 

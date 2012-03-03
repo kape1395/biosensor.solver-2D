@@ -82,22 +82,27 @@
 %%      step = pos_integer(),
 %%      time = float(),
 %%      concentrations = binary(),
-%%      listeners = [listener()]
+%%      outputs = [output_state()],
+%%      listeners = [listener_state()]
 %%      }
 %%  where
-%%      listener() = {Name::atom(), [{Property::atom(), Value::string()}]}.
-%%  The record describes solver state, from which the simulation
-%%  could be resumed. Here
-%%      `step' stands for simulation step number by time (in),
-%%      `time' is the simulated time,
-%%      `concentrations' is for storing all the species concentrations
-%%          in all domains, and 
-%%      `listeners' is a list of tuples describing solver listeners.
+%%      output_state() = {FileName::string(), Position::pos_integer()}
+%%      listener_state() = {Name::atom(), [listener_prop()]},
+%%      listener_prop() = {Property::atom(), Value::string()}.
+%%  The record describes solver state, from which the simulation could be resumed.
+%%  Here<ul>
+%%      <li>`step' stands for simulation step number by time,</li>
+%%      <li>`time' is the simulated time,</li>
+%%      <li>`concentrations' is for storing all the species concentrations in all domains, and </li>
+%%      <li>`outputs' holds all the output files along with current write positions,</li>
+%%      <li>`listeners' is a list of tuples describing solver listeners.</li>
+%%  </ul>
 -record(checkpoint, {
     step,
     time,
     concentrations,
-    listeners
+    outputs = [],
+    listeners = []
     }).
 
 

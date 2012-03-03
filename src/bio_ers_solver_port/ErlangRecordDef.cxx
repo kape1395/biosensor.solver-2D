@@ -19,7 +19,7 @@ ErlangRecordDef ErlangRecordDef::CONF_PORT(std::string("configure_port"), 5);
 ErlangRecordDef ErlangRecordDef::STOP_PORT(std::string("stop_port"), 1);
 ErlangRecordDef ErlangRecordDef::MODEL(std::string("model"), 2);
 ErlangRecordDef ErlangRecordDef::PARAM(std::string("param"), 2);
-ErlangRecordDef ErlangRecordDef::CHECKPOINT(std::string("checkpoint"), 4);
+ErlangRecordDef ErlangRecordDef::CHECKPOINT(std::string("checkpoint"), 5);
 
 
 /* ************************************************************************** */

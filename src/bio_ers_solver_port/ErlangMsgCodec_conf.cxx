@@ -97,9 +97,16 @@ bool ErlangMsgCodec_conf::decode(char *msgBuf, int msgLen)
     for (int i = 0; i < termSize; i++)
         parameters.insert(parameters.end(), decodeParam(msgBuf, &termIndex));
 
-    // #5: Extract concentrations
-    //decodeBinaryToString(msgBuf, &termIndex, &concentrations);
-    assertRC(ei_skip_term(msgBuf, &termIndex));
+    // #5: Extract checkpoint
+    checkpointProvided = false;
+    if (!isNilOrUndefined(msgBuf, &termIndex))
+    {
+        checkpointMsg.setLog(log);
+        if (!checkpointMsg.decode(msgBuf + termIndex, msgLen - termIndex))
+            throw -8;
+        checkpointProvided = true;
+        assertRC(ei_skip_term(msgBuf, &termIndex));
+    }
 
     LOG("Successfully decoded.");
     return true;
@@ -125,7 +132,7 @@ std::pair<std::string, double> ErlangMsgCodec_conf::decodeParam(char *msgBuf, in
 
     double paramValue = 0;
     assertRC(ei_get_type(msgBuf, termIndex, &termType, &termSize));
-    assertType(termType, ERL_FLOAT_EXT);
+    assertType(termType, ERL_FLOAT_EXT, NEW_FLOAT_EXT);
     assertRC(ei_decode_double(msgBuf, termIndex, &paramValue));
 
     LOG("Decoded #param{" << paramName << ", " << paramValue << "}");
@@ -141,7 +148,8 @@ void ErlangMsgCodec_conf::cleanup()
     modelType.clear();
     modelDefinition.clear();
     parameters.clear();
-    //concentrations.clear();
+    checkpointProvided = false;
+    checkpointMsg.cleanup();
 }
 
 
@@ -175,6 +183,11 @@ std::string& ErlangMsgCodec_conf::getModelDefinition()
 std::map<std::string, double>& ErlangMsgCodec_conf::getParameters()
 {
     return parameters;
+}
+
+ErlangMsgCodec_checkpoint* ErlangMsgCodec_conf::getCheckpoint()
+{
+    return checkpointProvided ? &checkpointMsg : 0;
 }
 
 
