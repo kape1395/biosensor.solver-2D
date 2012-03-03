@@ -13,6 +13,12 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
+
+
+%%
+%% @doc Main interface of the `bio_ers' application.
+%% @headerfile "bio_ers.hrl"
+%%
 -module(bio_ers).
 -behaviour(gen_server).
 -export([start_link/0, stop/0, simulation_id/1]).

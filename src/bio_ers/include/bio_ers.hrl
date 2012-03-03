@@ -14,14 +14,9 @@
 % limitations under the License.
 %
 
-%%
-%% @doc Main interface of the `bio_ers' application.
-%% @headerfile bio_ers.hrl
-%%
-
 
 %%
-%%  @type biosensor() = #biosensor{id::atom(), description::string()}
+%%  @type biosensor() = #biosensor{id = atom(), description = string()}.
 %%  Describes one biosensor, for which several models can be defined.
 %%  I am not sure, wether will it be needed. It could be used for
 %%  grouping simulations, but labels and series are also suitable for this. 
@@ -33,7 +28,7 @@
 %%  @type model() = #model{
 %%      type = atom(),
 %%      definition = any()
-%%  }
+%%      }.
 %%  Describes biosensor model definition. Types can be
 %%      `kp1_xml' for raw XML as a binary and
 %%      `kp1_parsed' for the model transformed to tuples.
@@ -49,7 +44,7 @@
 %%  @type param() = #param{
 %%      name = atom(),
 %%      value = number()
-%%      }
+%%      }.
 %%  This type should be used for specifying simulation parameter overrides.
 %%  I.e. list of such records will be passed to the solver along with the
 %%  model definition when performing parameter variations.
@@ -64,11 +59,11 @@
 %%  @type series() = #series{
 %%      id = string(),
 %%      comment = string(),
-%%      model = #model{},
-%%      default = [#param()],
-%%      vectors = [[#param()]],
+%%      model = model(),
+%%      default = [param()],
+%%      vectors = [[param()]],
 %%      labels = [string()]
-%%      }
+%%      }.
 %%  Describes several simulations for the same biosensor model
 %%  with different parameter values.
 %%
@@ -90,7 +85,7 @@
 %%      listeners = [listener()]
 %%      }
 %%  where
-%%      listener() = {Name::atom(), [{Property::atom(), Value::string()}]}
+%%      listener() = {Name::atom(), [{Property::atom(), Value::string()}]}.
 %%  The record describes solver state, from which the simulation
 %%  could be resumed. Here
 %%      `step' stands for simulation step number by time (in),
@@ -111,7 +106,7 @@
 %%      type = atom(),
 %%      name = atom(),
 %%      data = {Step::pos_integer(), Time::float(), Value::term()}
-%%      }
+%%      }.
 %%  Describes output produced by one output generator (usually a listener).
 %%
 -record(output, {
@@ -125,12 +120,12 @@
 %%  @type simulation() = #simulation{
 %%      id = string(),
 %%      version = pos_integer(),
-%%      model = #model{},
-%%      params = [#param{}],
+%%      model = model(),
+%%      params = [param()],
 %%      state = atom(),
-%%      checkpoints = [#checkpoint()],
+%%      checkpoints = [checkpoint()],
 %%      outputs = []
-%%  }
+%%      }.
 %%  Describes one numerical simulation (experiment).
 %%
 -record(simulation, {

@@ -13,6 +13,12 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
+
+%%
+%% @doc This module is responsible for managing solver processes (ports).
+%% The module implements FSM that is acting as a connected process for the solver port.
+%% @headerfile "bio_ers_solver.hrl"
+%%
 -module(bio_ers_solver).
 -behaviour(gen_fsm).
 -export([start_link/1, start_link/2, run/1, suspend/1, cancel/1, status/1]).

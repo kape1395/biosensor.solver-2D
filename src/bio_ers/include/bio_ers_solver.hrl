@@ -22,8 +22,11 @@
 %%
 %%  @type configure_port() = #configure_port{
 %%      self = pid(),
-%%      model = any(),
-%%      }
+%%      id = string(),
+%%      model = model(),
+%%      params = [params()],
+%%      checkpoint = undefined | checkpoint()
+%%      }.
 %%  A message sent to the biosensor simulation port to configure it
 %%  and start the simulation.
 %%
@@ -39,7 +42,7 @@
 %%
 %%  @type stop_port() = #stop_port{
 %%      self = pid()
-%%      }
+%%      }.
 %%  A message sent to the biosensor simulation port to stop it gracefully.
 %%
 -record(stop_port, {
@@ -50,7 +53,7 @@
 %%
 %%  @type checkpoint_port() = #checkpoint_port{
 %%      self = pid()
-%%  }
+%%  }.
 %%  A message sent to the biosensor simulation port to ask to make checkpoint
 %%  (send add its internal data to the connected process).
 %%
@@ -62,7 +65,7 @@
 %%
 %%  @type port_stopped() = #port_stopped{
 %%      pid = pid()
-%%      }
+%%      }.
 %%  This message is sent from the port before its exit,
 %%  if port was asked to stop.
 %%
@@ -74,7 +77,7 @@
 %%
 %%  @type port_output() = #port_output{
 %%      pid = pid()
-%%      }
+%%      }.
 %%  This message is sent regularly from the port to report
 %%  output data of the simulation. 
 %%
@@ -84,7 +87,7 @@
 %%
 %%  @type port_checkpoint() = #port_checkpoint{
 %%      pid = pid()
-%%      }
+%%      }.
 %%  This message is sent from port to the connected process after
 %%  the port was asked to produce the checkpoint. This message is
 %%  used to transver actual data.
