@@ -89,6 +89,15 @@ test: bio_ers test-compile
 
 
 ################################################################################
+#
+#   Documentation.
+#
+
+erlang-docs-html:
+	erl -noshell -run edoc_run application "'bio_ers'" '"."' '[]'
+
+
+################################################################################
 #   Formalities...
 #
 clean-local:
@@ -96,7 +105,9 @@ clean-local:
 
 check-local: test
 
+html-local: erlang-docs-html
+
 dist-local: bio_ers.tar.gz
 
-.PHONY: all bio_ers clean-local check-local dist-local test-run test-compile
+.PHONY: all bio_ers clean-local check-local html-local dist-local test-run test-compile erlang-docs-html
 
