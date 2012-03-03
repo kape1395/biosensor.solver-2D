@@ -40,6 +40,14 @@
 %
 % file:read_file("test/bio_ers_model_tests-AllElems.xml")
 
+-ifdef(VALGRIND).
+-define(PORT_NAME, "test/bio_ers_solver_port-t01-valgrind").
+-define(PORT_SLEEP, 1000).
+-else.
+-define(PORT_NAME, "test/bio_ers_solver_port-t01-proxy").
+-define(PORT_SLEEP, 100).
+-endif.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Test descriptions
@@ -66,7 +74,7 @@ start() ->
         #param{name = 'V_max', value = 12.3},
         #param{name = 'K_M', value = 3.12}
     ]},
-    {ok, Pid} = bio_ers_solver:start_link(State),
+    {ok, Pid} = bio_ers_solver:start_link(State, ?PORT_NAME),
     Pid.
 
 stop(Pid) ->
@@ -100,13 +108,13 @@ is_canceled_at_init(Pid) ->
     ].
 
 test_suspend(Pid) ->
-    {S1} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
-    {S2} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
-    {S3} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
-    {S4} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
-    {S5} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(100),
-    {S6} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(100),
-    {S7} = bio_ers_solver:status(Pid), bio_ers_solver:cancel(Pid),  timer:sleep(100),
+    {S1} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(?PORT_SLEEP),
+    {S2} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(?PORT_SLEEP),
+    {S3} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(?PORT_SLEEP),
+    {S4} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(?PORT_SLEEP),
+    {S5} = bio_ers_solver:status(Pid), bio_ers_solver:run(Pid),     timer:sleep(?PORT_SLEEP),
+    {S6} = bio_ers_solver:status(Pid), bio_ers_solver:suspend(Pid), timer:sleep(?PORT_SLEEP),
+    {S7} = bio_ers_solver:status(Pid), bio_ers_solver:cancel(Pid),  timer:sleep(?PORT_SLEEP),
     S8 = bio_ers_solver:status(Pid),
     [
         ?_assertEqual(init, S1),
