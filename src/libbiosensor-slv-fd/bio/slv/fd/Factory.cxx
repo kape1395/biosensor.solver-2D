@@ -24,9 +24,19 @@
 #define LOGGER "libbiosensor-slv-fd: "
 
 /* ************************************************************************** */
-BIO_SLV_FD_NS::Factory::Factory(IFactory* rootFactory)
+BIO_SLV_FD_NS::Factory::Factory(
+    IFactory* rootFactory,
+    BIO_CFG_NS::BoundAnalyzer* boundAnalyzer,
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer *fdAnalyzer,
+    BIO_CFG_NS::ISymbolResolver* symbolResolver
+)
 {
     this->rootFactory = rootFactory;
+    this->boundAnalyzer = boundAnalyzer;
+    this->structAnalyzer = structAnalyzer;
+    this->fdAnalyzer = fdAnalyzer;
+    this->symbolResolver = symbolResolver;
 }
 
 
@@ -58,7 +68,11 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
         BIO_SLV_FD_NS::im1d::Solver* solver = new BIO_SLV_FD_NS::im1d::Solver(
             model,
             rootFactory,
-            &subSolverFactory
+            &subSolverFactory,
+            structAnalyzer,
+            boundAnalyzer,
+            fdAnalyzer,
+            symbolResolver
         );
 
         return solver;
@@ -77,14 +91,18 @@ BIO_SLV_NS::ISolver* BIO_SLV_FD_NS::Factory::createSolver(
         BIO_SLV_FD_IM2D_NS::Solver* solver = new BIO_SLV_FD_NS::im2d::Solver(
             model,
             rootFactory,
-            &subSolverFactory
+            &subSolverFactory,
+            structAnalyzer,
+            boundAnalyzer,
+            fdAnalyzer,
+            symbolResolver
         );
 
         return solver;
     }
     else
     {
-        LOG_DEBUG(LOGGER << "I dont know the requested solver, so returning 0.");
+        LOG_DEBUG(LOGGER << "I don't know the requested solver, so returning 0.");
         return 0;
     }
 }

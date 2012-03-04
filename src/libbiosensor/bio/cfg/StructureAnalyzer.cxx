@@ -349,6 +349,19 @@ BIO_XML_MODEL_NS::Symbol* BIO_CFG_NS::StructureAnalyzer::getSymbol(BIO_XML_MODEL
 
 /* ************************************************************************** */
 /* ************************************************************************** */
+std::map<std::string, double> BIO_CFG_NS::StructureAnalyzer::getSymbolValues()
+{
+    std::map<std::string, double> map;
+    for (unsigned i = 0; i < symbols.size(); i++)
+    {
+        map[symbols[i]->name()] = symbols[i]->value();
+    }
+    return map;
+}
+
+
+/* ************************************************************************** */
+/* ************************************************************************** */
 void BIO_CFG_NS::StructureAnalyzer::fillListWithAxisPoints(std::vector< BIO_XML_MODEL_NS::Symbol* >& list,
         BIO_XML_MODEL_NS::Axis& axis,
         bool invert

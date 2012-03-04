@@ -20,6 +20,7 @@
 #include <bio/IFactory.hxx>
 #include <bio/slv/IIterativeSolver.hxx>
 #include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/cfg/ISymbolResolver.hxx>
 #include <bio/dm/ISegmentSplit.hxx>
 #include <vector>
 
@@ -38,7 +39,8 @@ private:
     int partCountH;
     int partCountV;
 
-    BIO_CFG_NS::StructureAnalyzer structureAnalyzer;
+    BIO_CFG_NS::StructureAnalyzer* structureAnalyzer;
+    BIO_CFG_NS::ISymbolResolver*   symbolResolver;
     BIO_XML_NS::model::solver::Axis** axisPartsH;
     BIO_XML_NS::model::solver::Axis** axisPartsV;
     BIO_DM_NS::ISegmentSplit** axisPartSegmentSplitH;
@@ -54,7 +56,10 @@ public:
      *  Constructor.
      *  \param config  Configuration to be analyzed.
      */
-    FiniteDifferencesSolverAnalyzer(BIO_XML_NS::model::Model* config);
+    FiniteDifferencesSolverAnalyzer(
+        BIO_XML_NS::model::Model* config,
+        BIO_CFG_NS::StructureAnalyzer* structureAnalyzer,
+        BIO_CFG_NS::ISymbolResolver*   symbolResolver);
 
     /**
      *  Destructor.

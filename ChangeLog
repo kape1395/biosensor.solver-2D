@@ -1,3 +1,12 @@
+biosensor (0.7.0) oneiric; urgency=low
+
+  * Erlang server for simulating biosensors is implemented.
+  * Symbols are now also used in the solver definition. Implicit symbol
+    declarations are also supported (write value directly, instead of
+    defing useless parameters like '0').
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 04 Mar 2012 16:41:49 +0200
+
 biosensor (0.6.6) natty; urgency=low
 
   * Minor fixes for the build to work with xsdcxx/natty uptodate

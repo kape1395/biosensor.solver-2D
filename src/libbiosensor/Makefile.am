@@ -24,6 +24,7 @@ libbiosensor_la_SOURCES = \
     bio/Exception.cxx \
     bio/MainFactory.cxx \
     bio/cfg/BoundAnalyzer.cxx \
+    bio/cfg/DefaultSymbolResolver.cxx \
     bio/cfg/ReactionAnalyzer.cxx \
     bio/cfg/StructureAnalyzer.cxx \
     bio/dm/CompositeSegmentSplit.cxx \
@@ -65,8 +66,10 @@ nobase_pkginclude_HEADERS = \
     bio/IFactory.hxx \
     bio/MainFactory.hxx \
     bio/cfg/BoundAnalyzer.hxx \
+    bio/cfg/DefaultSymbolResolver.hxx \
     bio/cfg/IConfigTransformer.hxx \
     bio/cfg/IConfigValidator.hxx \
+    bio/cfg/ISymbolResolver.hxx \
     bio/cfg/ReactionAnalyzer.hxx \
     bio/cfg/StructureAnalyzer.hxx \
     bio/dm/AbstractCursor2D.hxx \

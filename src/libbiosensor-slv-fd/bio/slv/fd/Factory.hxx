@@ -16,6 +16,10 @@
 #ifndef BIO_SLV_FD_Factory_HXX
 #define BIO_SLV_FD_Factory_HXX
 #include "../../../biosensor-slv-fd.hxx"
+#include "FiniteDifferencesSolverAnalyzer.hxx"
+#include <bio/cfg/BoundAnalyzer.hxx>
+#include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/cfg/ISymbolResolver.hxx>
 #include <bio/IFactory.hxx>
 BIO_SLV_FD_NS_BEGIN
 
@@ -27,13 +31,23 @@ class Factory : public IFactory
 {
 private:
     IFactory* rootFactory;
+    BIO_CFG_NS::BoundAnalyzer* boundAnalyzer;
+    BIO_CFG_NS::StructureAnalyzer* structAnalyzer;
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer *fdAnalyzer;
+    BIO_CFG_NS::ISymbolResolver* symbolResolver;
 
 public:
 
     /**
-     *
+     *  Constructor.
      */
-    Factory(IFactory* rootFactory);
+    Factory(
+        IFactory* rootFactory,
+        BIO_CFG_NS::BoundAnalyzer* boundAnalyzer,
+        BIO_CFG_NS::StructureAnalyzer* structAnalyzer,
+        BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer *fdAnalyzer,
+        BIO_CFG_NS::ISymbolResolver* symbolResolver
+    );
 
     /**
      *

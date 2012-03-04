@@ -28,10 +28,12 @@
 #include <bio/io/ConcentrationProfileReader.hxx>
 #include <bio/slv/ISolver.hxx>
 #include <bio/slv/IIterativeSolver.hxx>
-#include <biosensor-slv-fd.hxx>
+#include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/cfg/DefaultSymbolResolver.hxx>
+#include <bio/slv/fd/Factory.hxx>
+#include <bio/slv/fd/FiniteDifferencesSolverAnalyzer.hxx>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <Model.hxx>
-#include <bio/cfg/StructureAnalyzer.hxx>
 
 #define LOGGER "bio-solver: "
 
@@ -72,6 +74,7 @@ int main(int argn, char **argv)
 
     using namespace BIO_NS;
     using namespace BIO_IO_NS;
+    using namespace BIO_CFG_NS;
     using namespace BIO_SLV_NS;
     using namespace BIO_XML_NS::model;
 
@@ -245,10 +248,24 @@ int main(int argn, char **argv)
             context->setActualConfiguration(buf);
         }
 
-        DelegatingFactory* factory = new DelegatingFactory();
-        factory->addFactory(new BIO_NS::MainFactory(factory, context), true);
-        factory->addFactory(new BIO_SLV_FD_NS::Factory(factory), true);
+        StructureAnalyzer structAnalyzer(&*model);
+        BoundAnalyzer boundAnalyzer(&structAnalyzer);
+        DefaultSymbolResolver symbolResolver(structAnalyzer.getSymbolValues());
+        BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer fdAnalyzer(&*model, &structAnalyzer, &symbolResolver);
 
+        DelegatingFactory* factory = new DelegatingFactory();
+        factory->addFactory(new BIO_NS::MainFactory(
+                                factory,
+                                context,
+                                &symbolResolver
+                            ), true);
+        factory->addFactory(new BIO_SLV_FD_NS::Factory(
+                                factory,
+                                &boundAnalyzer,
+                                &structAnalyzer,
+                                &fdAnalyzer,
+                                &symbolResolver
+                            ), true);
 
         // Create solver
         LOG_INFO(LOGGER << "Creating solver...");

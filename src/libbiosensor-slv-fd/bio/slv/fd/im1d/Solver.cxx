@@ -23,10 +23,17 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM1D_NS::Solver::Solver(
-    BIO_XML_NS::model::Model* config,
-    BIO_NS::IFactory* factory,
-    BIO_SLV_FD_IM2D_NS::ISubSolverFactory* subSolverFactory
-) : BIO_SLV_FD_IM2D_NS::Solver::Solver(config, factory, subSolverFactory)
+    BIO_XML_NS::model::Model*                       config,
+    BIO_NS::IFactory*                               factory,
+    BIO_SLV_FD_IM2D_NS::ISubSolverFactory*          subSolverFactory,
+    BIO_CFG_NS::StructureAnalyzer*                  structAnalyzer,
+    BIO_CFG_NS::BoundAnalyzer*                      boundAnalyzer,
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
+    BIO_CFG_NS::ISymbolResolver*                    symbolResolver
+) : BIO_SLV_FD_IM2D_NS::Solver::Solver(
+        config, factory, subSolverFactory, structAnalyzer,
+        boundAnalyzer, fdAnalyzer, symbolResolver
+    )
 {
     //  TODO: Implement.
 }

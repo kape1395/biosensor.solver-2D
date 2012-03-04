@@ -40,9 +40,13 @@ public:
      *  Constructor.
      */
     Solver(
-        BIO_XML_NS::model::Model* config,
-        BIO_NS::IFactory* factory,
-        BIO_SLV_FD_IM2D_NS::ISubSolverFactory* subSolverFactory
+        BIO_XML_NS::model::Model*                       config,
+        BIO_NS::IFactory*                               factory,
+        BIO_SLV_FD_IM2D_NS::ISubSolverFactory*          subSolverFactory,
+        BIO_CFG_NS::StructureAnalyzer*                  structAnalyzer,
+        BIO_CFG_NS::BoundAnalyzer*                      boundAnalyzer,
+        BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
+        BIO_CFG_NS::ISymbolResolver*                    symbolResolver
     );
 
     /**

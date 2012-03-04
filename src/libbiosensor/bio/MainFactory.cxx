@@ -41,11 +41,13 @@
 /* ************************************************************************** */
 BIO_NS::MainFactory::MainFactory(
     BIO_NS::IFactory* rootFactory,
-    BIO_IO_NS::IContext* context
+    BIO_IO_NS::IContext* context,
+    BIO_CFG_NS::ISymbolResolver* symbolResolver
 )
 {
     this->rootFactory = rootFactory;
     this->context = context;
+    this->symbolResolver = symbolResolver;
 }
 
 
@@ -84,11 +86,11 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
         BIO_SLV_NS::StopAtSpecifiedPoint* stop = new BIO_SLV_NS::StopAtSpecifiedPoint(solver);
         if (fia->stepCount().present())
         {
-            stop->setStepCount(fia->stepCount().get());
+            stop->setStepCount(symbolResolver->getValueAsLong(fia->stepCount().get()));
         }
         if (fia->time().present())
         {
-            stop->setTime(fia->time().get());
+            stop->setTime(symbolResolver->getValueAsDouble(fia->time().get()));
         }
         return stop;
         /* ****************************************************************** */
@@ -133,7 +135,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
             solver,
             fail->medium(),
             fail->sum(),
-            fail->error(),
+            symbolResolver->getValueAsDouble(fail->error()),
             substances
         );
         return stop;
@@ -150,11 +152,11 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
 
         //  Set stepCount.
         if (scva->stepCount().present())
-            stop->setStepCount(scva->stepCount().get());
+            stop->setStepCount(symbolResolver->getValueAsLong(scva->stepCount().get()));
 
         //  Set time
         if (scva->time().present())
-            stop->setTime(scva->time().get());
+            stop->setTime(symbolResolver->getValueAsDouble(scva->time().get()));
 
         //  Add all sub stop conditions.
         StopConditionValidAfter::stopCondition_sequence& subStops = scva->stopCondition();
@@ -173,8 +175,8 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createStopCondition(
 
         BIO_SLV_NS::StopByCurrentDensityGradient* stop = new BIO_SLV_NS::StopByCurrentDensityGradient(
             solver,
-            scg->lessThan(),
-            scg->normalized()
+            symbolResolver->getValueAsDouble(scg->lessThan()),
+            symbolResolver->getValueAsBool(scg->normalized())
         );
         return stop;
     }
@@ -211,13 +213,13 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
 
         BIO_SLV_NS::AdjustTimeStepAdaptively* tsa = new BIO_SLV_NS::AdjustTimeStepAdaptively(
             solver,
-            adaptiveTSA->increase().factor(),
-            adaptiveTSA->increase().everyStepCount(),
-            adaptiveTSA->increase().maxStepSize(),
-            adaptiveTSA->fallback().factor(),
-            adaptiveTSA->fallback().forStepCount(),
-            adaptiveTSA->fallback().checkEveryStepCount(),
-            adaptiveTSA->fallback().minStepSize(),
+            symbolResolver->getValueAsDouble(adaptiveTSA->increase().factor()),
+            symbolResolver->getValueAsLong(adaptiveTSA->increase().everyStepCount()),
+            symbolResolver->getValueAsDouble(adaptiveTSA->increase().maxStepSize()),
+            symbolResolver->getValueAsDouble(adaptiveTSA->fallback().factor()),
+            symbolResolver->getValueAsLong(adaptiveTSA->fallback().forStepCount()),
+            symbolResolver->getValueAsLong(adaptiveTSA->fallback().checkEveryStepCount()),
+            symbolResolver->getValueAsDouble(adaptiveTSA->fallback().minStepSize()),
             ssh,
             stopConditions
         );
@@ -231,9 +233,11 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createTimeStepAdjuster(
 
         BIO_SLV_NS::AdjustTimeStepByFactor* tsa = new BIO_SLV_NS::AdjustTimeStepByFactor(
             solver,
-            simpleTSA->factor(),
-            simpleTSA->everyStepCount(),
-            simpleTSA->maxStepSize().present() ? simpleTSA->maxStepSize().get() : 0.0
+            symbolResolver->getValueAsDouble(simpleTSA->factor()),
+            symbolResolver->getValueAsLong(simpleTSA->everyStepCount()),
+            simpleTSA->maxStepSize().present()
+            ? symbolResolver->getValueAsDouble(simpleTSA->maxStepSize().get())
+            : 0.0
         );
         return tsa;
     }
@@ -267,10 +271,10 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         BIO_SLV_NS::InvokeEveryTimeStep* out = new BIO_SLV_NS::InvokeEveryTimeStep(solver);
 
         if (kinetic->stepCount().present())
-            out->setStepByStepCount(kinetic->stepCount().get());
+            out->setStepByStepCount(symbolResolver->getValueAsLong(kinetic->stepCount().get()));
 
         if (kinetic->time().present())
-            out->setStepByTime(kinetic->time().get());
+            out->setStepByTime(symbolResolver->getValueAsDouble(kinetic->time().get()));
 
 
         Kinetic::output_sequence& subOuts = kinetic->output();
@@ -303,7 +307,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
         /* ****************************************************************** */
         BIO_XML_MODEL_NS::solver::ConcentrationProfile* cpOut;
         cpOut = dynamic_cast<BIO_XML_MODEL_NS::solver::ConcentrationProfile*>(output);
-        if (!cpOut->inMemory())
+        if (!symbolResolver->getValueAsBool(cpOut->inMemory()))
         {
             BIO_IO_NS::ConcentrationProfile* out = new BIO_IO_NS::ConcentrationProfile(
                 cpOut->name(),
@@ -311,7 +315,7 @@ BIO_SLV_NS::ISolverListener* BIO_NS::MainFactory::createOutput(
                 context
             );
             if (cpOut->precision().present())
-                out->setPrecision(cpOut->precision().get());
+                out->setPrecision((int)symbolResolver->getValueAsLong(cpOut->precision().get()));
             return out;
         }
         else
@@ -409,7 +413,7 @@ BIO_SLV_NS::ITransducer* BIO_NS::MainFactory::createTransducer(
             }
             else
             {
-                LOG_ERROR(LOGGER << "I dond know how to create sub-transducer for CompositeElectrode.");
+                LOG_ERROR(LOGGER << "I don't know how to create sub-transducer for CompositeElectrode.");
                 delete electrode;
                 return 0;
             }

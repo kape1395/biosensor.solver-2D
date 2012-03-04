@@ -17,6 +17,8 @@
 #define BIO_CFG_StructureAnalyzer_HXX
 #include "../../biosensor.hxx"
 #include <biosensor-xml.hxx>
+#include <string>
+#include <map>
 #include <vector>
 BIO_CFG_NS_BEGIN
 
@@ -265,12 +267,19 @@ public:
     BIO_XML_MODEL_NS::MediumName* getMediumName(int h, int v);
 
     /**
+     *  \deprecated Use ISymbolResolver instead.
      *  Finds symbol definition by the name.
      *
      *  \param name Symbol name.
      *  \return Symbol definition or 0 if symbol not found.
      */
     BIO_XML_MODEL_NS::Symbol* getSymbol(BIO_XML_MODEL_NS::SymbolName& name);
+
+    /**
+     *  Returns all the symbol definitions found in the XML configuration.
+     *  \returns map (symbolName -> symbolValue).
+     */
+    std::map<std::string, double> getSymbolValues();
 
     /**
      *  Check if specified symbol is a point in the specified axis.

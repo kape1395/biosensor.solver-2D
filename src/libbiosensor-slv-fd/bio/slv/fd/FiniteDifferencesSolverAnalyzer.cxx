@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "FiniteDifferencesSolverAnalyzer.hxx"
 #include "ModelSolver.hxx"
 #include "bio/slv/IIterativeSolver.hxx"
-#include "FiniteDifferencesSolverAnalyzer.hxx"
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
 #include <bio/dm/ConstantSegmentSplit.hxx>
@@ -31,8 +31,10 @@
  *  NOTE: For now only ConstantAxisPart elements are supported.
  */
 BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
-    BIO_XML_NS::model::Model* config
-) : structureAnalyzer(config)
+    BIO_XML_NS::model::Model*      config,
+    BIO_CFG_NS::StructureAnalyzer* structureAnalyzer,
+    BIO_CFG_NS::ISymbolResolver*   symbolResolver
+)
 {
     this->config = 0;
     this->axisPartsH = 0;
@@ -48,6 +50,8 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     LOG_DEBUG(LOGGER << "FiniteDifferencesSolverAnalyzer()...");
 
     this->config = config;
+    this->structureAnalyzer = structureAnalyzer;
+    this->symbolResolver = symbolResolver;
 
     FiniteDifferences* fdSolver = dynamic_cast<FiniteDifferences*>(&config->solver());
     if (!fdSolver)
@@ -58,17 +62,17 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
     //  Create pseudo axis for 1d case
     pseudoAxisH = new BIO_XML_MODEL_NS::solver::ConstantAxisPart(
-        structureAnalyzer.getPointsH()[0]->name(),
-        structureAnalyzer.getPointsH()[1]->name(),
-        2   // step count
+        structureAnalyzer->getPointsH()[0]->name(),
+        structureAnalyzer->getPointsH()[1]->name(),
+        "2"   // step count, implicit symbol declaration
     );
 
 
     ////////////////////////////////////////////////////////////////////////////
     //  Collect axis-parts and assign them to the concrete "cells"
     //
-    partCountH = structureAnalyzer.getPointsH().size() - 1; // intervalu yra 1 maziau nei tasku.
-    partCountV = structureAnalyzer.getPointsV().size() - 1; // intervalu yra 1 maziau nei tasku.
+    partCountH = structureAnalyzer->getPointsH().size() - 1; // intervalu yra 1 maziau nei tasku.
+    partCountV = structureAnalyzer->getPointsV().size() - 1; // intervalu yra 1 maziau nei tasku.
 
     axisPartsH = new Axis*[partCountH];
     axisPartsV = new Axis*[partCountV];
@@ -90,14 +94,14 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
 
     ////////////    Analyze HORIZONTAL axis
-    if (structureAnalyzer.isOneDimensional())
+    if (structureAnalyzer->isOneDimensional())
     {
         axisPartsH[0] = pseudoAxisH;
         axisPartSegmentSplitH[0] = this->createSegmentSplit(pseudoAxisH);
     }
     else
     {
-        symbols = &structureAnalyzer.getPointsH();
+        symbols = &(structureAnalyzer->getPointsH());
         int pointPosition = 0;
         for (Symbol_it point = symbols->begin(); point < symbols->end() - 1; point++, pointPosition++)
         {
@@ -120,7 +124,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
 
 
     ////////////    Analyze VERTICAL axis
-    symbols = &structureAnalyzer.getPointsV();
+    symbols = &(structureAnalyzer->getPointsV());
     int pointPosition = 0;
     for (Symbol_it point = symbols->begin(); point < symbols->end() - 1; point++, pointPosition++)
     {
@@ -162,7 +166,7 @@ BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::FiniteDifferencesSolverAnalyzer(
     //  Collect axis-parts and assign them to the concrete "cells"
     ////////////////////////////////////////////////////////////////////////////
 
-    this->timeStep = fdSolver->timeStep();
+    this->timeStep = symbolResolver->getValueAsDouble(fdSolver->timeStep());
 
     LOG_DEBUG(LOGGER << "FiniteDifferencesSolverAnalyzer()... Done");
 }
@@ -300,9 +304,9 @@ BIO_DM_NS::ISegmentSplit* BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer::create
         BIO_XML_NS::model::solver::ConstantAxisPart* cap;
         cap = dynamic_cast<BIO_XML_NS::model::solver::ConstantAxisPart*>(axis);
 
-        double from = structureAnalyzer.getSymbol(axis->from())->value();
-        double to = structureAnalyzer.getSymbol(axis->to())->value();
-        int count = cap->stepCount();
+        double from = symbolResolver->getValueAsDouble(axis->from());
+        double to = symbolResolver->getValueAsDouble(axis->to());
+        int count = (int)symbolResolver->getValueAsLong(cap->stepCount());
 
         BIO_DM_NS::ConstantSegmentSplit* split = new BIO_DM_NS::ConstantSegmentSplit(
             from,

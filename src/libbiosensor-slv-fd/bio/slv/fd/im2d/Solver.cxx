@@ -17,6 +17,8 @@
 #include "Solver.hxx"
 #include <bio/trd/AmperometricElectrode2DOnBound.hxx>
 #include <bio/trd/AmperometricInjectedElectrode2D.hxx>
+#include <bio/cfg/StructureAnalyzer.hxx>
+#include <bio/cfg/ISymbolResolver.hxx>
 #include <bio/Exception.hxx>
 #include <bio/Logging.hxx>
 #define LOGGER "libbiosensor-slv-fd::im2d::Solver: "
@@ -25,21 +27,25 @@
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_SLV_FD_IM2D_NS::Solver::Solver(
-    BIO_XML_NS::model::Model* config,
-    BIO_NS::IFactory* factory,
-    BIO_SLV_FD_IM2D_NS::ISubSolverFactory* subSolverFactory
+    BIO_XML_NS::model::Model*                       config,
+    BIO_NS::IFactory*                               factory,
+    BIO_SLV_FD_IM2D_NS::ISubSolverFactory*          subSolverFactory,
+    BIO_CFG_NS::StructureAnalyzer*                  structAnalyzer,
+    BIO_CFG_NS::BoundAnalyzer*                      boundAnalyzer,
+    BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer* fdAnalyzer,
+    BIO_CFG_NS::ISymbolResolver*                    symbolResolver
 ) : AbstractIterativeSolver(config)
 {
     LOG_DEBUG(LOGGER << "Solver()...");
 
-    structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
-    boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
-    fdAnalyzer = new BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer(config);
+    this->structAnalyzer = structAnalyzer;
+    this->boundAnalyzer = boundAnalyzer;
+    this->fdAnalyzer = fdAnalyzer;
 
     if (!structAnalyzer->isTwoDimensional())
     {
         LOG_ERROR(LOGGER << "Config is not two-dimensional, this solver supports only two-dimensional models");
-        throw Exception("Unsuppordet model");
+        throw Exception("Unsupported model");
     }
 
 
@@ -177,10 +183,6 @@ BIO_SLV_FD_IM2D_NS::Solver::~Solver()
         }
     }
     delete subSolvers;
-
-    delete fdAnalyzer;
-    delete boundAnalyzer;
-    delete structAnalyzer;
 }
 
 

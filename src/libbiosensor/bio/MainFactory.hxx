@@ -18,6 +18,7 @@
 #include "../biosensor.hxx"
 #include "IFactory.hxx"
 #include "io/IContext.hxx"
+#include "cfg/ISymbolResolver.hxx"
 #include "slv/ISolver.hxx"
 #include "slv/ISolverListener.hxx"
 #include <biosensor-xml.hxx>
@@ -33,19 +34,21 @@ class MainFactory : public IFactory
 private:
     BIO_NS::IFactory* rootFactory;
     BIO_IO_NS::IContext* context;
+    BIO_CFG_NS::ISymbolResolver* symbolResolver;
 
 public:
 
     /**
-     *
+     *  Constructor.
      */
     MainFactory(
         BIO_NS::IFactory* rootFactory,
-        BIO_IO_NS::IContext* context
+        BIO_IO_NS::IContext* context,
+        BIO_CFG_NS::ISymbolResolver* symbolResolver
     );
 
     /**
-     *
+     *  Destructor.
      */
     virtual ~MainFactory();
 
