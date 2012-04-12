@@ -36,7 +36,4 @@
 #define BIO_SLV_FD_IM2D_NS_BEGIN BIO_SLV_FD_NS_BEGIN namespace im2d {
 #define BIO_SLV_FD_IM2D_NS_END   BIO_SLV_FD_NS_END }
 
-#include "bio/slv/fd/Factory.hxx"
-
-
 #endif
