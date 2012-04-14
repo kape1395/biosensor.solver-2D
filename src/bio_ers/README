@@ -64,6 +64,9 @@ References
 [?tst2] http://stackoverflow.com/questions/1202539/how-do-i-do-dependency-injection-and-mocks-in-erlang
 [?doc1] http://www.erlang.org/doc/man/edoc.html
 [?doc2] https://support.process-one.net/doc/display/ERL/Documenting+your+code+and+generating+the+Erlang+code+documentation
+[ssh1] http://www.erlang.org/doc/man/ssh.html
+[ssh2] http://easyerl.blogspot.com/2007/11/experimenting-with-erlang-ssh-support.html
+[ssh3] https://github.com/jj1bdx/sshrpc/
 
 
 Appendix A.
@@ -89,3 +92,24 @@ Some useful commands for a developer:
 
     make check      # Runs all the unit tests.
 
+Appendix B.
+===========
+SSH connection to the MIF PST can be implemented using erlang's ssh module [ssh1].
+The following is a working code, writen using an example [ssh2]:
+    application:start(crypto).
+    application:start(ssh).
+    {ok, CR} = ssh:connect("uosis.mif.vu.lt", 22, [{user_dir, "/home/karolis/.ssh"}, {user, "karolis"}, {silently_accept_hosts, true}]).
+    {ok, CH} = ssh_connection:session_channel(CR, 5000).
+    receive R1 -> rp(R1) after 1000 -> timeout end.
+    ok = ssh_connection:shell(CR, CH).
+    receive R2 -> rp(R2) after 1000 -> timeout end.
+    X2 = ssh_connection:send(CR, CH, "pwd\n").
+    receive R3 -> rp(R3) after 1000 -> timeout end.
+    receive R4 -> rp(R4) after 1000 -> timeout end.
+    receive R5 -> rp(R5) after 1000 -> timeout end.
+    receive R6 -> rp(R6) after 1000 -> timeout end.
+    ok = ssh_connection:close(CR, CH).
+    ok = ssh:close(CR).
+
+It looks reasonable to do the SSH communication by implementing ssh_channel
+module (callbacks) [ssh3].
