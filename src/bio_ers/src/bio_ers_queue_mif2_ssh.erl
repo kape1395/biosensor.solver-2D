@@ -1,6 +1,6 @@
 -module(bio_ers_queue_mif2_ssh).
 -behaviour(ssh_channel).
--export([start/0, start_link/0, stop/1, check/1, store_config/3, submit_simulation/2]). % API
+-export([start/0, start_link/0, stop/1, check/1, store_config/3, submit_simulation/2, simulation_status/2]). % API
 -export([init/1, terminate/2, handle_ssh_msg/2,handle_msg/2]). % Server side ssh_channel?
 -export([handle_call/3, handle_cast/2, code_change/3]).        % Client side ssh_tunnel
 -include("bio_ers.hrl").
@@ -61,16 +61,25 @@ start_internal(StartFun) ->
 check(Ref) ->
     ssh_channel:call(Ref, check).
 
+
 stop(Ref) ->
     ssh_channel:cast(Ref, stop).
 
+
 store_config(Ref, ConfigName, ConfigData) ->
     ssh_channel:call(Ref, {store_config, ConfigName, ConfigData}).
+
 
 submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id /= undefined ->
     ssh_channel:cast(Ref, {submit_simulation, Simulation});
 submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id == undefined ->
     ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = bio_ers:get_id(Simulation)}}).
+
+
+simulation_status(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id /= undefined ->
+    ssh_channel:call(Ref, {simulation_status, Simulation});
+simulation_status(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id == undefined ->
+    ssh_channel:call(Ref, {simulation_status, Simulation#simulation{id = bio_ers:get_id(Simulation)}}).
 
 
 
@@ -113,6 +122,14 @@ handle_call({store_config = Cmd, ConfigName, ConfigData}, From, State) ->
     ssh_connection:send(CRef, Chan, CmdLine),
     ssh_connection:send(CRef, Chan, bin_to_base64(ConfigData)),
     ssh_connection:send(CRef, Chan, ["#END_OF_FILE__store_config__", CallRef, "\n"]),
+    {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT};
+
+handle_call({simulation_status = Cmd, Simulation}, From, State) ->
+    #state{cref = CRef, chan = Chan} = State,
+    #simulation{id = SimulationId} = Simulation,
+    CallRef = make_uid(),
+    CmdLine = make_cmd(State, CallRef, "simulation_status", [SimulationId]),
+    ssh_connection:send(CRef, Chan, CmdLine),
     {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT};
 
 handle_call(Msg, From, State) ->
@@ -198,7 +215,10 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
                 "bio_ers_queue_mif2_ssh: Simulation ~s id duplicate therefore not submited~n",
                 [SimulationId]
             )
-    end.
+    end;
+
+handle_ssh_cmd_response(simulation_status, From, Message) ->
+    ssh_channel:reply(From, {ok, binary:replace(Message, <<"\n">>, <<>>)}).
 
 
 %%
