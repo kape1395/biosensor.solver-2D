@@ -1,11 +1,12 @@
 -module(bio_ers_queue_mif2_ssh).
 -behaviour(ssh_channel).
--export([start/0, start_link/0, check/1, stop/1, store_config/3]). % API
+-export([start/0, start_link/0, stop/1, check/1, store_config/3, submit_simulation/2]). % API
 -export([init/1, terminate/2, handle_ssh_msg/2,handle_msg/2]). % Server side ssh_channel?
 -export([handle_call/3, handle_cast/2, code_change/3]).        % Client side ssh_tunnel
+-include("bio_ers.hrl").
 
 -define(TIMEOUT, 10000).
--record(state, {cref, chan, cmd, wd, req}).
+-record(state, {cref, chan, cmd, wd, req, part}).
 
 %%
 %%  Some initial ideas were:
@@ -52,7 +53,8 @@ start_internal(StartFun) ->
         cref = CRef, chan = Chan,
         cmd = "/users3/karolis/PST/bin/cluster",
         wd = "/scratch/lustre/karolis/PST",
-        req = []
+        req = [],
+        part = "short"
     }).
 
 
@@ -64,6 +66,12 @@ stop(Ref) ->
 
 store_config(Ref, ConfigName, ConfigData) ->
     ssh_channel:call(Ref, {store_config, ConfigName, ConfigData}).
+
+submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id /= undefined ->
+    ssh_channel:cast(Ref, {submit_simulation, Simulation});
+submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id == undefined ->
+    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = bio_ers:get_id(Simulation)}}).
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,6 +128,19 @@ handle_cast(stop, State = #state{cref = CRef, chan = Chan}) ->
     ssh_connection:send_eof(CRef, Chan),
     {stop, normal, State};
 
+handle_cast({submit_simulation = Cmd, Simulation}, State) ->
+    #simulation{id = SimulationName, model = Model, params = Params} = Simulation,
+    #state{cref = CRef, chan = Chan, part = Partition} = State,
+    CallRef = make_uid(),
+    CmdLine = make_cmd(State, CallRef, "submit_simulation", [
+        SimulationName,                              % sim_name
+        bio_ers:get_id(Model),                       % cfg_name
+        Partition,                                   % partition
+        [param_to_option(Param) || Param <- Params]  % params
+    ]),
+    ssh_connection:send(CRef, Chan, CmdLine),
+    {noreply, add_req(State, Cmd, CallRef, undefined), ?TIMEOUT};
+
 handle_cast(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_cast(msg=~p)~n", [Msg]),
     {noreply, State}.
@@ -135,7 +156,7 @@ handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}}, State) ->
         <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
             CallRef = binary:bin_to_list(CallRefBin),
             {Cmd, From} = get_req(State, CallRef),
-            handle_ssh_msg_call(Cmd, From, Msg),
+            handle_ssh_cmd_response(Cmd, From, Msg),
             {ok, rem_req(State, CallRef)};
         <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
             error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
@@ -156,13 +177,27 @@ handle_ssh_msg(Msg, State) ->
     {ok, State}.
 
 
-handle_ssh_msg_call(check, From, <<"OK\n">>) ->
+handle_ssh_cmd_response(check, From, <<"OK\n">>) ->
     ssh_channel:reply(From, ok);
 
-handle_ssh_msg_call(store_config, From, Message) ->
+handle_ssh_cmd_response(store_config, From, Message) ->
     case Message of
         <<"STORED\n">>   -> ssh_channel:reply(From, {ok, stored});
         <<"EXISTING\n">> -> ssh_channel:reply(From, {ok, existing})
+    end;
+
+handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
+    case Message of
+        <<"SUBMITTED:", SimulationId:40/binary, ":", JobId/binary>> ->
+            error_logger:info_msg(
+                "bio_ers_queue_mif2_ssh: Simulation ~s submitted, jobid=~s.~n",
+                [SimulationId, binary:replace(JobId, <<"\n">>, <<>>)]
+            );
+        <<"DUPLICATE:", SimulationId:40/binary, "\n">> ->
+            error_logger:info_msg(
+                "bio_ers_queue_mif2_ssh: Simulation ~s id duplicate therefore not submited~n",
+                [SimulationId]
+            )
     end.
 
 
@@ -190,6 +225,7 @@ make_uid() ->
 make_cmd(#state{cmd = Cmd, wd = WD}, Ref, Command, Args) ->
     [Cmd, " ", Ref, " ", WD, " ", Command, " ", [ [" \"", A, "\"" ] || A <- Args ], "\n"].
 
+
 %%
 %%  Functions for manipulating with the request queue.
 %%
@@ -203,6 +239,7 @@ get_req(#state{req = Req}, CallRef) ->
 rem_req(State = #state{req = Req}, CallRef) ->
     State#state{req = lists:filter(fun ({_, CR, _}) when CR == CallRef -> false; (_) -> true end, Req)}.
 
+
 %%
 %%  Function for converting binary to the wrapped base64.
 %%
@@ -215,4 +252,14 @@ bin_to_base64_wrap(<<Line:76/binary, Tail/binary>>, Lines) ->
 
 bin_to_base64_wrap(<<LastLine/binary>>, Lines) ->
     [ <<LastLine/binary, "\n">> | Lines ].
+
+
+%%
+%%  Converts model parameters to options to be passed when invoking the solver.
+%%
+param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param, param), is_float(Value) ->
+    io_lib:format(" -S~p=~p", [atom_to_list(Name), Value]);
+param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param, param), is_integer(Value) ->
+    [" -S", atom_to_list(Name), "=", integer_to_list(Value)].
+
 
