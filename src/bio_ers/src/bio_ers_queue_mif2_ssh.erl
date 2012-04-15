@@ -135,10 +135,7 @@ handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}}, State) ->
         <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
             CallRef = binary:bin_to_list(CallRefBin),
             {Cmd, From} = get_req(State, CallRef),
-            case Cmd of
-                check        -> ssh_channel:reply(From, ok); %TODO: Message contents should ve validated.
-                store_config -> ssh_channel:reply(From, {ok, binary:bin_to_list(Msg)})
-            end,
+            handle_ssh_msg_call(Cmd, From, Msg),
             {ok, rem_req(State, CallRef)};
         <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
             error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
@@ -157,6 +154,16 @@ handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}}, State) ->
 handle_ssh_msg(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(msg=~p)~n", [Msg]),
     {ok, State}.
+
+
+handle_ssh_msg_call(check, From, <<"OK\n">>) ->
+    ssh_channel:reply(From, ok);
+
+handle_ssh_msg_call(store_config, From, Message) ->
+    case Message of
+        <<"STORED\n">>   -> ssh_channel:reply(From, {ok, stored});
+        <<"EXISTING\n">> -> ssh_channel:reply(From, {ok, existing})
+    end.
 
 
 %%
