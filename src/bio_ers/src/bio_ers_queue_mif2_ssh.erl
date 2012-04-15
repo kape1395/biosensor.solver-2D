@@ -22,10 +22,16 @@
 %%     http://binaries.erlang-solutions.com/R15A/lib/ssh-2.0.8./src/ssh_shell.erl
 %%
 %% Tests:
+%%      rr(bio_ers).
 %%      application:start(crypto), application:start(ssh).
 %%      {ok, PID} = bio_ers_queue_mif2_ssh:start_link().
 %%      ok = bio_ers_queue_mif2_ssh:check(PID).
-%%           bio_ers_queue_mif2_ssh:store_config(PID, "t2", "konfigas\n").
+%%
+%%      Model = bio_ers_model:read_model("test/bio_ers_model_tests-CNT-2D.xml", kp1_xml).
+%%      #model{definition = ModelDef} = Model.
+%%      ModelId = bio_ers:get_id(Model).
+%%      bio_ers_queue_mif2_ssh:store_config(PID, ModelId, ModelDef).
+%%
 %%      ok = bio_ers_queue_mif2_ssh:stop(PID).
 %%
 
@@ -97,7 +103,7 @@ handle_call({store_config = Cmd, ConfigName, ConfigData}, From, State) ->
     CallRef = make_uid(),
     CmdLine = make_cmd(State, CallRef, "store_config", [ConfigName]),
     ssh_connection:send(CRef, Chan, CmdLine),
-    ssh_connection:send(CRef, Chan, ConfigData),
+    ssh_connection:send(CRef, Chan, bin_to_base64(ConfigData)),
     ssh_connection:send(CRef, Chan, ["#END_OF_FILE__store_config__", CallRef, "\n"]),
     {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT};
 
@@ -123,24 +129,24 @@ handle_cast(Msg, State) ->
 %%
 handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}}, State) ->
     case BinaryData of
-        <<"#CLUSTER:LGN(0000000000000000000000000000000000000000)==>", Msg/bitstring>> ->
+        <<"#CLUSTER:LGN(0000000000000000000000000000000000000000)==>", Msg/binary>> ->
             error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(LGN): msg=~p~n", [Msg]),
             {ok, State};
-        <<"#CLUSTER:OUT(", CallRefBin:320/bitstring, ")==>", Msg/bitstring>> ->
-            CallRef = bitstring_to_list(CallRefBin),
+        <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
+            CallRef = binary:bin_to_list(CallRefBin),
             {Cmd, From} = get_req(State, CallRef),
             case Cmd of
                 check        -> ssh_channel:reply(From, ok); %TODO: Message contents should ve validated.
-                store_config -> ssh_channel:reply(From, {ok, bitstring_to_list(Msg)})
+                store_config -> ssh_channel:reply(From, {ok, binary:bin_to_list(Msg)})
             end,
             {ok, rem_req(State, CallRef)};
-        <<"#CLUSTER:ERR(", CallRefBin:320/bitstring, ")==>", ErrCode:24/bitstring, ":", ErrMsg/bitstring>> ->
+        <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
             error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
-            CallRef = bitstring_to_list(CallRefBin),
+            CallRef = binary:bin_to_list(CallRefBin),
             {_, From} = get_req(State, CallRef),
             ssh_channel:reply(From, error),
             {ok, rem_req(State, CallRef)};
-        <<"#", Msg/bitstring>> ->
+        <<"#", Msg/binary>> ->
             error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(#??): ~p~n", [Msg]),
             {ok, State};
         _ ->
@@ -156,6 +162,10 @@ handle_ssh_msg(Msg, State) ->
 %%
 %%  Other messages.
 %%
+handle_msg({ssh_channel_up, _Chan, _CRef}, State) ->
+    {ok, State};
+handle_msg(timeout, State = #state{chan = Chan}) ->
+    {stop, Chan, State};
 handle_msg(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_msg(msg=~p)~n", [Msg]),
     {ok, State}.
@@ -168,13 +178,14 @@ code_change(_OldVsn, State, _Extra) ->
 
 
 make_uid() ->
-    SHA = crypto:sha(erlang:term_to_binary(erlang:make_ref())),
-    lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
+    bio_ers:get_id(unique).
 
 make_cmd(#state{cmd = Cmd, wd = WD}, Ref, Command, Args) ->
     [Cmd, " ", Ref, " ", WD, " ", Command, " ", [ [" \"", A, "\"" ] || A <- Args ], "\n"].
 
-
+%%
+%%  Functions for manipulating with the request queue.
+%%
 add_req(State = #state{req = Req}, Cmd, Ref, From) ->
     State#state{req = [{Cmd, Ref, From} | Req]}.
 
@@ -185,4 +196,16 @@ get_req(#state{req = Req}, CallRef) ->
 rem_req(State = #state{req = Req}, CallRef) ->
     State#state{req = lists:filter(fun ({_, CR, _}) when CR == CallRef -> false; (_) -> true end, Req)}.
 
+%%
+%%  Function for converting binary to the wrapped base64.
+%%
+bin_to_base64(Binary) when is_binary(Binary) ->
+    Base64 = base64:encode(Binary),
+    lists:reverse(bin_to_base64_wrap(Base64, [])).
+
+bin_to_base64_wrap(<<Line:76/binary, Tail/binary>>, Lines) ->
+    bin_to_base64_wrap(Tail, [ <<Line/binary, "\n">> | Lines ]);
+
+bin_to_base64_wrap(<<LastLine/binary>>, Lines) ->
+    [ <<LastLine/binary, "\n">> | Lines ].
 

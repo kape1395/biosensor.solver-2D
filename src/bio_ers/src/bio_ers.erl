@@ -21,7 +21,7 @@
 %%
 -module(bio_ers).
 -behaviour(gen_server).
--export([start_link/0, stop/0, simulation_id/1]).
+-export([start_link/0, stop/0, get_id/1]).
 -export([test/0]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]).
 -include("bio_ers.hrl").
@@ -50,11 +50,23 @@ test() ->
 %%  @doc Generates SHA1 ID for the specified simulation.
 %%  @spec simulation_id(Simulation::#simulation{}) -> string()
 %%
-simulation_id(Simulation) when is_record(Simulation, simulation) ->
+get_id(Simulation) when is_record(Simulation, simulation) ->
     #simulation{version = Version, model = Model, params = Params} = Simulation,
     Key = {Version, Model, lists:sort(Params)},
-    SHA = crypto:sha(erlang:term_to_binary(Key)),
+    get_id(erlang:term_to_binary(Key));
+
+get_id(Model) when is_record(Model, model) ->
+    #model{type = Type, definition = Definition} = Model,
+    Key = {Type, Definition},
+    get_id(erlang:term_to_binary(Key));
+
+get_id(unique) ->
+    get_id(erlang:term_to_binary(erlang:make_ref()));
+
+get_id(Binary) when is_binary(Binary) ->
+    SHA = crypto:sha(Binary),
     lists:flatten([io_lib:format("~2.16.0B", [X]) || X <- binary_to_list(SHA)]).
+    
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
