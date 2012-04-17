@@ -218,7 +218,27 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
     end;
 
 handle_ssh_cmd_response(simulation_status, From, Message) ->
-    ssh_channel:reply(From, {ok, binary:replace(Message, <<"\n">>, <<>>)}).
+    ParsedMessage = string:tokens(binary:bin_to_list(binary:replace(Message, <<"\n">>, <<>>)), ":"),
+    [ SimName, _NameRT, StatusRT, _JobIdRT, _NameFS, StatusFS, _JobIdFS ] = ParsedMessage,
+    case {StatusRT, StatusFS} of
+        {"UNKNOWN", "STARTED"} ->              Status = failed;
+        {"UNKNOWN", "STOPPED_SUCCESSFUL"} ->   Status = done;
+        {"UNKNOWN", "STOPPED_FAILED"} ->       Status = failed;
+        {"UNKNOWN", "UNKNOWN"} ->              Status = unknown;
+        {"CANCELLED", _} ->                    Status = failed;
+        {"COMPLETED", "STOPPED_SUCCESSFUL"} -> Status = done;
+        {"COMPLETED", "STOPPED_FAILED"} ->     Status = failed;
+        {"CONFIGURING", _} ->                  Status = running;
+        {"COMPLETING", _} ->                   Status = running;
+        {"FAILED", _} ->                       Status = failed;
+        {"NODE_FAIL", _} ->                    Status = failed;
+        {"PENDING", _} ->                      Status = pending;
+        {"PREEMPTED", _} ->                    Status = failed;
+        {"RUNNING", _} ->                      Status = running;
+        {"SUSPENDED", _} ->                    Status = running;
+        {"TIMEOUT", _} ->                      Status = failed
+    end,
+    ssh_channel:reply(From, {ok, SimName, Status}).
 
 
 %%
