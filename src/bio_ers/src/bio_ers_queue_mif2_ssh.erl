@@ -6,7 +6,16 @@
 -include("bio_ers.hrl").
 
 -define(TIMEOUT, 10000).
--record(state, {cref, chan, cmd, wd, req, part}).
+-record(state, {
+    cref,    % SSH Connection reference
+    chan,    % SSH Channel ID
+    cmd,     % Command to execute on the server
+    wd,      % Directory, where to work on the server
+    req,     % List of pending requests
+    part,    % SLURM partition to submit jobs on
+    lineBuf, % Partial line got from the ssh server
+    fileBuf  % Buffer used to collect the results file streamed from the server.
+}).
 
 %%
 %%  Some initial ideas were:
@@ -54,7 +63,9 @@ start_internal(StartFun) ->
         cmd = "/users3/karolis/PST/bin/cluster",
         wd = "/scratch/lustre/karolis/PST",
         req = [],
-        part = "short"
+        part = "short",
+        lineBuf = <<>>,
+        fileBuf = []
     }).
 
 
@@ -164,43 +175,56 @@ handle_cast(Msg, State) ->
 
 %%
 %%  Messages comming from the SSH server.
+%%  In the first case the function splits input into lines and checks whether the
+%%  last line was complete (ending with \n).
 %%
-handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}}, State) ->
-    case BinaryData of
-        <<"#CLUSTER:LGN(0000000000000000000000000000000000000000)==>", Msg/binary>> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(LGN): msg=~p~n", [Msg]),
-            {ok, State};
-        <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
-            CallRef = binary:bin_to_list(CallRefBin),
-            {Cmd, From} = get_req(State, CallRef),
-            handle_ssh_cmd_response(Cmd, From, Msg),
-            {ok, rem_req(State, CallRef)};
-        <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
-            CallRef = binary:bin_to_list(CallRefBin),
-            {_, From} = get_req(State, CallRef),
-            ssh_channel:reply(From, error),
-            {ok, rem_req(State, CallRef)};
-        <<"#", Msg/binary>> ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(#??): ~p~n", [Msg]),
-            {ok, State};
-        _ ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(???): ~p~n", [BinaryData]),
-            {ok, State}
-    end;
+handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}} = Msg, State = #state{lineBuf = LineBuf}) ->
+    DataWithBuf = <<LineBuf/binary, BinaryData/binary>>,
+    [ PartialLine | FullLines ] = lists:reverse(binary:split(DataWithBuf, <<"\n">>, [global])),
+    handle_ssh_msg_line(Msg, State#state{lineBuf = PartialLine}, lists:reverse(FullLines));
 
 handle_ssh_msg(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(msg=~p)~n", [Msg]),
     {ok, State}.
 
 
-handle_ssh_cmd_response(check, From, <<"OK\n">>) ->
+%%
+%%  Handles messages comming from the SSH server line by line.
+%%
+handle_ssh_msg_line(_SshMsg, State, []) ->
+    {ok, State};
+handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
+    case MsgLine of
+        <<"#CLUSTER:LGN(0000000000000000000000000000000000000000)==>", Msg/binary>> ->
+            error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(LGN): msg=~p~n", [Msg]),
+            handle_ssh_msg_line(SshMsg, State, OtherLines);
+        <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
+            CallRef = binary:bin_to_list(CallRefBin),
+            {Cmd, From} = get_req(State, CallRef),
+            handle_ssh_cmd_response(Cmd, From, Msg),
+            handle_ssh_msg_line(SshMsg, rem_req(State, CallRef), OtherLines);
+        <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
+            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
+            CallRef = binary:bin_to_list(CallRefBin),
+            {_, From} = get_req(State, CallRef),
+            ssh_channel:reply(From, error),
+            handle_ssh_msg_line(SshMsg, rem_req(State, CallRef), OtherLines);
+        <<"#", Msg/binary>> ->
+            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(#??): ~p~n", [Msg]),
+            handle_ssh_msg_line(SshMsg, State, OtherLines);
+        _ ->
+            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(???): ~p~n", [MsgLine]),
+            handle_ssh_msg_line(SshMsg, State, OtherLines)
+    end .
+
+
+handle_ssh_cmd_response(check, From, <<"OK">>) ->
     ssh_channel:reply(From, ok);
 
 handle_ssh_cmd_response(store_config, From, Message) ->
     case Message of
-        <<"STORED\n">>   -> ssh_channel:reply(From, {ok, stored});
-        <<"EXISTING\n">> -> ssh_channel:reply(From, {ok, existing})
+        <<"STORED">>   -> ssh_channel:reply(From, {ok, stored});
+        <<"EXISTING">> -> ssh_channel:reply(From, {ok, existing})
     end;
 
 handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
@@ -208,9 +232,9 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
         <<"SUBMITTED:", SimulationId:40/binary, ":", JobId/binary>> ->
             error_logger:info_msg(
                 "bio_ers_queue_mif2_ssh: Simulation ~s submitted, jobid=~s.~n",
-                [SimulationId, binary:replace(JobId, <<"\n">>, <<>>)]
+                [SimulationId, JobId]
             );
-        <<"DUPLICATE:", SimulationId:40/binary, "\n">> ->
+        <<"DUPLICATE:", SimulationId:40/binary>> ->
             error_logger:info_msg(
                 "bio_ers_queue_mif2_ssh: Simulation ~s id duplicate therefore not submited~n",
                 [SimulationId]
@@ -218,7 +242,7 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
     end;
 
 handle_ssh_cmd_response(simulation_status, From, Message) ->
-    ParsedMessage = string:tokens(binary:bin_to_list(binary:replace(Message, <<"\n">>, <<>>)), ":"),
+    ParsedMessage = string:tokens(binary:bin_to_list(Message), ":"),
     [ SimName, _NameRT, StatusRT, _JobIdRT, _NameFS, StatusFS, _JobIdFS ] = ParsedMessage,
     case {StatusRT, StatusFS} of
         {"UNKNOWN", "STARTED"} ->              Status = failed;
