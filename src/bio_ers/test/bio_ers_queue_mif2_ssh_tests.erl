@@ -34,5 +34,10 @@ bio_ers_queue_mif2_ssh:simulation_status(PID, Sb).
 bio_ers_queue_mif2_ssh:simulation_status(PID, Sc).
 bio_ers_queue_mif2_ssh:simulation_status(PID, Sd).
 
+{ok, SIDc, RESc} = bio_ers_queue_mif2_ssh:simulation_result(PID, Sc).
+file:write_file(lists:flatten([SIDc, ".tar.gz"]), binary:list_to_bin(RESc)).
+
+bio_ers_queue_mif2_ssh:delete_simulation(PID, Sa).
+
 ok = bio_ers_queue_mif2_ssh:stop(PID).
 

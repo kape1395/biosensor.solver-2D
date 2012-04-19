@@ -1,6 +1,7 @@
 -module(bio_ers_queue_mif2_ssh).
 -behaviour(ssh_channel).
--export([start/0, start_link/0, stop/1, check/1, store_config/3, submit_simulation/2, simulation_status/2]). % API
+-export([start/0, start_link/0, stop/1, check/1, store_config/3]). % API
+-export([submit_simulation/2, delete_simulation/2, simulation_status/2, simulation_result/2]). % API
 -export([init/1, terminate/2, handle_ssh_msg/2,handle_msg/2]). % Server side ssh_channel?
 -export([handle_call/3, handle_cast/2, code_change/3]).        % Client side ssh_tunnel
 -include("bio_ers.hrl").
@@ -14,7 +15,7 @@
     req,     % List of pending requests
     part,    % SLURM partition to submit jobs on
     lineBuf, % Partial line got from the ssh server
-    fileBuf  % Buffer used to collect the results file streamed from the server.
+    respHandler % Function to be used for handling SSH responses.
 }).
 
 %%
@@ -65,7 +66,7 @@ start_internal(StartFun) ->
         req = [],
         part = "short",
         lineBuf = <<>>,
-        fileBuf = []
+        respHandler = fun handle_ssh_msg_line/3
     }).
 
 
@@ -81,16 +82,20 @@ store_config(Ref, ConfigName, ConfigData) ->
     ssh_channel:call(Ref, {store_config, ConfigName, ConfigData}).
 
 
-submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id /= undefined ->
-    ssh_channel:cast(Ref, {submit_simulation, Simulation});
-submit_simulation(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id == undefined ->
-    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = bio_ers:get_id(Simulation)}}).
+submit_simulation(Ref, Simulation) when is_record(Simulation, simulation) ->
+    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = get_simulation_id(Simulation)}}).
 
 
-simulation_status(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id /= undefined ->
-    ssh_channel:call(Ref, {simulation_status, Simulation});
-simulation_status(Ref, Simulation) when is_record(Simulation, simulation), Simulation#simulation.id == undefined ->
-    ssh_channel:call(Ref, {simulation_status, Simulation#simulation{id = bio_ers:get_id(Simulation)}}).
+delete_simulation(Ref, Simulation) ->
+    ssh_channel:cast(Ref, {delete_simulation, get_simulation_id(Simulation)}).
+
+
+simulation_status(Ref, Simulation) ->
+    ssh_channel:call(Ref, {simulation_status, get_simulation_id(Simulation)}).
+
+
+simulation_result(Ref, Simulation) ->
+    ssh_channel:call(Ref, {simulation_result, get_simulation_id(Simulation)}).
 
 
 
@@ -135,17 +140,19 @@ handle_call({store_config = Cmd, ConfigName, ConfigData}, From, State) ->
     ssh_connection:send(CRef, Chan, ["#END_OF_FILE__store_config__", CallRef, "\n"]),
     {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT};
 
-handle_call({simulation_status = Cmd, Simulation}, From, State) ->
+handle_call({simulation_status = Cmd, SimulationId}, From, State) ->
     #state{cref = CRef, chan = Chan} = State,
-    #simulation{id = SimulationId} = Simulation,
     CallRef = make_uid(),
     CmdLine = make_cmd(State, CallRef, "simulation_status", [SimulationId]),
     ssh_connection:send(CRef, Chan, CmdLine),
     {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT};
 
-handle_call(Msg, From, State) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_call(msg=~p, from=~p)~n", [Msg, From]),
-    {reply, ok, State}.
+handle_call({simulation_result = Cmd, SimulationId}, From, State) ->
+    #state{cref = CRef, chan = Chan} = State,
+    CallRef = make_uid(),
+    CmdLine = make_cmd(State, CallRef, "simulation_result", [SimulationId]),
+    ssh_connection:send(CRef, Chan, CmdLine),
+    {noreply, add_req(State, Cmd, CallRef, From), ?TIMEOUT}.
 
 
 %%
@@ -169,19 +176,23 @@ handle_cast({submit_simulation = Cmd, Simulation}, State) ->
     ssh_connection:send(CRef, Chan, CmdLine),
     {noreply, add_req(State, Cmd, CallRef, undefined), ?TIMEOUT};
 
-handle_cast(Msg, State) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_cast(msg=~p)~n", [Msg]),
-    {noreply, State}.
+handle_cast({delete_simulation = Cmd, SimulationId}, State) ->
+    #state{cref = CRef, chan = Chan} = State,
+    CallRef = make_uid(),
+    CmdLine = make_cmd(State, CallRef, "delete_simulation", [SimulationId]),
+    ssh_connection:send(CRef, Chan, CmdLine),
+    {noreply, add_req(State, Cmd, CallRef, undefined), ?TIMEOUT}.
+
 
 %%
 %%  Messages comming from the SSH server.
 %%  In the first case the function splits input into lines and checks whether the
 %%  last line was complete (ending with \n).
 %%
-handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}} = Msg, State = #state{lineBuf = LineBuf}) ->
+handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}} = Msg, State = #state{lineBuf = LineBuf, respHandler = RespHandler}) ->
     DataWithBuf = <<LineBuf/binary, BinaryData/binary>>,
     [ PartialLine | FullLines ] = lists:reverse(binary:split(DataWithBuf, <<"\n">>, [global])),
-    handle_ssh_msg_line(Msg, State#state{lineBuf = PartialLine}, lists:reverse(FullLines));
+    RespHandler(Msg, State#state{lineBuf = PartialLine}, lists:reverse(FullLines));
 
 handle_ssh_msg(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(msg=~p)~n", [Msg]),
@@ -201,8 +212,8 @@ handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
         <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
             CallRef = binary:bin_to_list(CallRefBin),
             {Cmd, From} = get_req(State, CallRef),
-            handle_ssh_cmd_response(Cmd, From, Msg),
-            handle_ssh_msg_line(SshMsg, rem_req(State, CallRef), OtherLines);
+            {ok, NewState} = handle_ssh_cmd_response(Cmd, From, Msg, State),
+            handle_ssh_msg_line(SshMsg, rem_req(NewState, CallRef), OtherLines);
         <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
             error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
             CallRef = binary:bin_to_list(CallRefBin),
@@ -217,17 +228,44 @@ handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
             handle_ssh_msg_line(SshMsg, State, OtherLines)
     end .
 
+%%
+%%  Handles simulation result messages comming from the SSH server.
+%%  This function is "sometimes" used instead of handle_ssh_msg_line/3 (see #state.respHandler).
+%%
+handle_ssh_cmd_line_sr(_SshMsg, State, [], From, SimulationId, ResultLines) ->
+    RH = fun (M, S, L) -> handle_ssh_cmd_line_sr(M, S, L, From, SimulationId, ResultLines) end,
+    {ok, State#state{respHandler = RH}};
+handle_ssh_cmd_line_sr(SshMsg, State, [MsgLine | OtherLines], From, SimulationId, ResultLines) ->
+    case MsgLine of
+        <<"#SR:", MsgBase64/binary>> ->
+            DecodedMsg = base64:decode(MsgBase64),
+            handle_ssh_cmd_line_sr(SshMsg, State, OtherLines, From, SimulationId, [DecodedMsg | ResultLines]);
+        <<"#CLUSTER:OUT(", _CallRefBin:40/binary, ")==>RESULT:", _SimIdEnd:40/binary, ":END">> ->
+            ssh_channel:reply(From, {ok, SimulationId, lists:reverse(ResultLines)}),
+            RH = fun handle_ssh_msg_line/3,
+            handle_ssh_msg_line(SshMsg, State#state{respHandler = RH}, OtherLines);
+        _ ->
+            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_cmd_line_sr(???): ~p~n", [MsgLine]),
+            RH = fun handle_ssh_msg_line/3,
+            handle_ssh_msg_line(SshMsg, State#state{respHandler = RH}, OtherLines)
+    end.
 
-handle_ssh_cmd_response(check, From, <<"OK">>) ->
-    ssh_channel:reply(From, ok);
 
-handle_ssh_cmd_response(store_config, From, Message) ->
+%%
+%%
+%%
+handle_ssh_cmd_response(check, From, <<"OK">>, State) ->
+    ssh_channel:reply(From, ok),
+    {ok, State};
+
+handle_ssh_cmd_response(store_config, From, Message, State) ->
     case Message of
         <<"STORED">>   -> ssh_channel:reply(From, {ok, stored});
         <<"EXISTING">> -> ssh_channel:reply(From, {ok, existing})
-    end;
+    end,
+    {ok, State};
 
-handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
+handle_ssh_cmd_response(submit_simulation, undefined, Message, State) ->
     case Message of
         <<"SUBMITTED:", SimulationId:40/binary, ":", JobId/binary>> ->
             error_logger:info_msg(
@@ -236,12 +274,20 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message) ->
             );
         <<"DUPLICATE:", SimulationId:40/binary>> ->
             error_logger:info_msg(
-                "bio_ers_queue_mif2_ssh: Simulation ~s id duplicate therefore not submited~n",
+                "bio_ers_queue_mif2_ssh: Simulation ~s is duplicate therefore not submited~n",
                 [SimulationId]
             )
-    end;
+    end,
+    {ok, State};
 
-handle_ssh_cmd_response(simulation_status, From, Message) ->
+handle_ssh_cmd_response(delete_simulation, undefined, Message, State) ->
+    case Message of
+        <<"DELETED:", SimulationId:40/binary>> ->
+            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s deleted~n", [SimulationId])
+    end,
+    {ok, State};
+
+handle_ssh_cmd_response(simulation_status, From, Message, State) ->
     ParsedMessage = string:tokens(binary:bin_to_list(Message), ":"),
     [ SimName, _NameRT, StatusRT, _JobIdRT, _NameFS, StatusFS, _JobIdFS ] = ParsedMessage,
     case {StatusRT, StatusFS} of
@@ -262,7 +308,21 @@ handle_ssh_cmd_response(simulation_status, From, Message) ->
         {"SUSPENDED", _} ->                    Status = running;
         {"TIMEOUT", _} ->                      Status = failed
     end,
-    ssh_channel:reply(From, {ok, SimName, Status}).
+    ssh_channel:reply(From, {ok, SimName, Status}),
+    {ok, State};
+
+handle_ssh_cmd_response(simulation_result, From, Message, State) ->
+    case Message of
+        <<"RESULT:", SimulationId:40/binary, ":START">> ->
+            RespHandler = fun (M, S, L) -> handle_ssh_cmd_line_sr(M, S, L, From, binary:bin_to_list(SimulationId), []) end,
+            {ok, State#state{respHandler = RespHandler}};
+        <<"RESULT:", SimulationId:40/binary, ":SIM_RUNNING">> ->
+            ssh_channel:reply(From, {error, binary:bin_to_list(SimulationId), running}),
+            {ok, State};
+        <<"RESULT:", SimulationId:40/binary, ":NOT_FOUND">> ->
+            ssh_channel:reply(From, {error, binary:bin_to_list(SimulationId), not_found}),
+            {ok, State}
+    end.
 
 
 %%
@@ -325,5 +385,17 @@ param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param
     io_lib:format(" -S~p=~p", [atom_to_list(Name), Value]);
 param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param, param), is_integer(Value) ->
     [" -S", atom_to_list(Name), "=", integer_to_list(Value)].
+
+
+%%
+%%  Get simulation id, or generate it.
+%%
+get_simulation_id(Simulation) when is_record(Simulation, simulation) ->
+    case Simulation#simulation.id of
+        undefined -> bio_ers:get_id(Simulation);
+        SimId     -> SimId
+    end;
+get_simulation_id(SimulationId) when is_list(SimulationId) ->
+    SimulationId.
 
 
