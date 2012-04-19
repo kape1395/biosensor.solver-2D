@@ -1,7 +1,7 @@
 -module(bio_ers_queue_mif2_ssh).
 -behaviour(ssh_channel).
 -export([start/0, start_link/0, stop/1, check/1, store_config/3]). % API
--export([submit_simulation/2, delete_simulation/2, simulation_status/2, simulation_result/2]). % API
+-export([submit_simulation/2, delete_simulation/2, cancel_simulation/2, simulation_status/2, simulation_result/2]). % API
 -export([init/1, terminate/2, handle_ssh_msg/2,handle_msg/2]). % Server side ssh_channel?
 -export([handle_call/3, handle_cast/2, code_change/3]).        % Client side ssh_tunnel
 -include("bio_ers.hrl").
@@ -88,6 +88,10 @@ submit_simulation(Ref, Simulation) when is_record(Simulation, simulation) ->
 
 delete_simulation(Ref, Simulation) ->
     ssh_channel:cast(Ref, {delete_simulation, get_simulation_id(Simulation)}).
+
+
+cancel_simulation(Ref, Simulation) ->
+    ssh_channel:cast(Ref, {cancel_simulation, get_simulation_id(Simulation)}).
 
 
 simulation_status(Ref, Simulation) ->
@@ -181,7 +185,15 @@ handle_cast({delete_simulation = Cmd, SimulationId}, State) ->
     CallRef = make_uid(),
     CmdLine = make_cmd(State, CallRef, "delete_simulation", [SimulationId]),
     ssh_connection:send(CRef, Chan, CmdLine),
+    {noreply, add_req(State, Cmd, CallRef, undefined), ?TIMEOUT};
+
+handle_cast({cancel_simulation = Cmd, SimulationId}, State) ->
+    #state{cref = CRef, chan = Chan} = State,
+    CallRef = make_uid(),
+    CmdLine = make_cmd(State, CallRef, "cancel_simulation", [SimulationId]),
+    ssh_connection:send(CRef, Chan, CmdLine),
     {noreply, add_req(State, Cmd, CallRef, undefined), ?TIMEOUT}.
+
 
 
 %%
@@ -201,6 +213,7 @@ handle_ssh_msg(Msg, State) ->
 
 %%
 %%  Handles messages comming from the SSH server line by line.
+%%  Implementation of the response handler "fun (M, S, L)".
 %%
 handle_ssh_msg_line(_SshMsg, State, []) ->
     {ok, State};
@@ -231,6 +244,8 @@ handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
 %%
 %%  Handles simulation result messages comming from the SSH server.
 %%  This function is "sometimes" used instead of handle_ssh_msg_line/3 (see #state.respHandler).
+%%  Implementation of the response handler "fun (M, S, L)", but is used indirectly, via funs, used
+%%  to implement continuations.
 %%
 handle_ssh_cmd_line_sr(_SshMsg, State, [], From, SimulationId, ResultLines) ->
     RH = fun (M, S, L) -> handle_ssh_cmd_line_sr(M, S, L, From, SimulationId, ResultLines) end,
@@ -252,7 +267,7 @@ handle_ssh_cmd_line_sr(SshMsg, State, [MsgLine | OtherLines], From, SimulationId
 
 
 %%
-%%
+%%  Command response handler, used for first lines of the command responses.
 %%
 handle_ssh_cmd_response(check, From, <<"OK">>, State) ->
     ssh_channel:reply(From, ok),
@@ -283,7 +298,16 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message, State) ->
 handle_ssh_cmd_response(delete_simulation, undefined, Message, State) ->
     case Message of
         <<"DELETED:", SimulationId:40/binary>> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s deleted~n", [SimulationId])
+            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s deleted~n", [SimulationId]);
+        <<"DELETE:", SimulationId:40/binary, ":SIM_RUNNING">> ->
+            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s not deleted (still running)~n", [SimulationId])
+    end,
+    {ok, State};
+
+handle_ssh_cmd_response(cancel_simulation, undefined, Message, State) ->
+    case Message of
+        <<"CANCELED:", SimulationId:40/binary>> ->
+            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s canceled~n", [SimulationId])
     end,
     {ok, State};
 
