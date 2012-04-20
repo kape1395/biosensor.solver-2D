@@ -11,7 +11,6 @@
     cref,    % SSH Connection reference
     chan,    % SSH Channel ID
     cmd,     % Command to execute on the server
-    wd,      % Directory, where to work on the server
     req,     % List of pending requests
     part,    % SLURM partition to submit jobs on
     lineBuf, % Partial line got from the ssh server
@@ -56,15 +55,15 @@ start_internal(StartFun) ->
     {ok, CRef} = ssh:connect("uosis.mif.vu.lt", 22, [
         {user_dir, "/home/karolis/GITWORK/kape1395.biosensor.solver-2D/src/bio_ers/etc/ssh"},
         {user, "karolis"},
-        {silently_accept_hosts, true}
-    ]),
+        {silently_accept_hosts, true},
+        {connect_timeout, ?TIMEOUT}
+    ], ?TIMEOUT),
     {ok, Chan} = ssh_connection:session_channel(CRef, ?TIMEOUT),
     StartFun(CRef, Chan, ?MODULE, #state{
         cref = CRef, chan = Chan,
         cmd = "/users3/karolis/PST/bin/cluster",
-        wd = "/scratch/lustre/karolis/PST",
         req = [],
-        part = "short",
+        part = "long",
         lineBuf = <<>>,
         respHandler = fun handle_ssh_msg_line/3
     }).
@@ -355,6 +354,7 @@ handle_ssh_cmd_response(simulation_result, From, Message, State) ->
 handle_msg({ssh_channel_up, _Chan, _CRef}, State) ->
     {ok, State};
 handle_msg(timeout, State = #state{chan = Chan}) ->
+    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_msg(timeout)~n"),
     {stop, Chan, State};
 handle_msg(Msg, State) ->
     error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_msg(msg=~p)~n", [Msg]),
@@ -364,14 +364,15 @@ handle_msg(Msg, State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 make_uid() ->
     bio_ers:get_id(unique).
 
-make_cmd(#state{cmd = Cmd, wd = WD}, Ref, Command, Args) ->
-    [Cmd, " ", Ref, " ", WD, " ", Command, " ", [ [" \"", A, "\"" ] || A <- Args ], "\n"].
+make_cmd(#state{cmd = Cmd}, Ref, Command, Args) ->
+    [Cmd, " ", Ref, " ", Command, " ", [ [" \"", A, "\"" ] || A <- Args ], "\n"].
 
 
 %%
