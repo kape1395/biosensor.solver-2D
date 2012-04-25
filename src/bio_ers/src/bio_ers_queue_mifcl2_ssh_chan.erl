@@ -1,4 +1,4 @@
--module(bio_ers_queue_mif2_ssh).
+-module(bio_ers_queue_mifcl2_ssh_chan).
 -behaviour(ssh_channel).
 -export([start/0, start_link/0, stop/1, check/1, store_config/3]). % API
 -export([submit_simulation/2, delete_simulation/2, cancel_simulation/2, simulation_status/2, simulation_result/2]). % API
@@ -118,7 +118,7 @@ init(Args = #state{cref = CRef, chan = Chan}) ->
 %%  Termination.
 %%
 terminate(Reason, #state{cref = CRef, chan = Chan}) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: destroy(reason=~p)~n", [Reason]),
+    error_logger:info_msg("~s: destroy(reason=~p)~n", [?MODULE, Reason]),
     ssh_connection:close(CRef, Chan),
     ssh:close(CRef),
     ok.
@@ -162,7 +162,7 @@ handle_call({simulation_result = Cmd, SimulationId}, From, State) ->
 %%  Async commands.
 %%
 handle_cast(stop, State = #state{cref = CRef, chan = Chan}) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_cast(stop)~n"),
+    error_logger:info_msg("~s: handle_cast(stop)~n", [?MODULE]),
     ssh_connection:send_eof(CRef, Chan),
     {stop, normal, State};
 
@@ -206,7 +206,7 @@ handle_ssh_msg({ssh_cm, _Ref, {data, _Chan, _Type, BinaryData}} = Msg, State = #
     RespHandler(Msg, State#state{lineBuf = PartialLine}, lists:reverse(FullLines));
 
 handle_ssh_msg(Msg, State) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(msg=~p)~n", [Msg]),
+    error_logger:info_msg("~s: handle_ssh_msg(msg=~p)~n", [?MODULE, Msg]),
     {ok, State}.
 
 
@@ -219,7 +219,7 @@ handle_ssh_msg_line(_SshMsg, State, []) ->
 handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
     case MsgLine of
         <<"#CLUSTER:LGN(0000000000000000000000000000000000000000)==>", Msg/binary>> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(LGN): msg=~p~n", [Msg]),
+            error_logger:info_msg("~s: handle_ssh_msg(LGN): msg=~p~n", [?MODULE, Msg]),
             handle_ssh_msg_line(SshMsg, State, OtherLines);
         <<"#CLUSTER:OUT(", CallRefBin:40/binary, ")==>", Msg/binary>> ->
             CallRef = binary:bin_to_list(CallRefBin),
@@ -227,16 +227,16 @@ handle_ssh_msg_line(SshMsg, State, [MsgLine | OtherLines]) ->
             {ok, NewState} = handle_ssh_cmd_response(Cmd, From, Msg, State),
             handle_ssh_msg_line(SshMsg, rem_req(NewState, CallRef), OtherLines);
         <<"#CLUSTER:ERR(", CallRefBin:40/binary, ")==>", ErrCode:3/binary, ":", ErrMsg/binary>> ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [CallRefBin, ErrCode, ErrMsg]),
+            error_logger:error_msg("~s: handle_ssh_msg(ERR): ref=~p, code=~p, msg=~p~n", [?MODULE, CallRefBin, ErrCode, ErrMsg]),
             CallRef = binary:bin_to_list(CallRefBin),
             {_, From} = get_req(State, CallRef),
             ssh_channel:reply(From, error),
             handle_ssh_msg_line(SshMsg, rem_req(State, CallRef), OtherLines);
         <<"#", Msg/binary>> ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(#??): ~p~n", [Msg]),
+            error_logger:error_msg("~s: handle_ssh_msg(#??): ~p~n", [?MODULE, Msg]),
             handle_ssh_msg_line(SshMsg, State, OtherLines);
         _ ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_msg(???): ~p~n", [MsgLine]),
+            error_logger:error_msg("~s: handle_ssh_msg(???): ~p~n", [?MODULE, MsgLine]),
             handle_ssh_msg_line(SshMsg, State, OtherLines)
     end .
 
@@ -259,7 +259,7 @@ handle_ssh_cmd_line_sr(SshMsg, State, [MsgLine | OtherLines], From, SimulationId
             RH = fun handle_ssh_msg_line/3,
             handle_ssh_msg_line(SshMsg, State#state{respHandler = RH}, OtherLines);
         _ ->
-            error_logger:error_msg("bio_ers_queue_mif2_ssh: handle_ssh_cmd_line_sr(???): ~p~n", [MsgLine]),
+            error_logger:error_msg("~s: handle_ssh_cmd_line_sr(???): ~p~n", [?MODULE, MsgLine]),
             RH = fun handle_ssh_msg_line/3,
             handle_ssh_msg_line(SshMsg, State#state{respHandler = RH}, OtherLines)
     end.
@@ -283,13 +283,13 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message, State) ->
     case Message of
         <<"SUBMITTED:", SimulationId:40/binary, ":", JobId/binary>> ->
             error_logger:info_msg(
-                "bio_ers_queue_mif2_ssh: Simulation ~s submitted, jobid=~s.~n",
-                [SimulationId, JobId]
+                "~s: Simulation ~s submitted, jobid=~s.~n",
+                [?MODULE, SimulationId, JobId]
             );
         <<"DUPLICATE:", SimulationId:40/binary>> ->
             error_logger:info_msg(
-                "bio_ers_queue_mif2_ssh: Simulation ~s is duplicate therefore not submited~n",
-                [SimulationId]
+                "~s: Simulation ~s is duplicate therefore not submited~n",
+                [?MODULE, SimulationId]
             )
     end,
     {ok, State};
@@ -297,16 +297,16 @@ handle_ssh_cmd_response(submit_simulation, undefined, Message, State) ->
 handle_ssh_cmd_response(delete_simulation, undefined, Message, State) ->
     case Message of
         <<"DELETED:", SimulationId:40/binary>> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s deleted~n", [SimulationId]);
+            error_logger:info_msg("~s: Simulation ~s deleted~n", [?MODULE, SimulationId]);
         <<"DELETE:", SimulationId:40/binary, ":SIM_RUNNING">> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s not deleted (still running)~n", [SimulationId])
+            error_logger:info_msg("~s: Simulation ~s not deleted (still running)~n", [?MODULE, SimulationId])
     end,
     {ok, State};
 
 handle_ssh_cmd_response(cancel_simulation, undefined, Message, State) ->
     case Message of
         <<"CANCELED:", SimulationId:40/binary>> ->
-            error_logger:info_msg("bio_ers_queue_mif2_ssh: Simulation ~s canceled~n", [SimulationId])
+            error_logger:info_msg("~s: Simulation ~s canceled~n", [?MODULE, SimulationId])
     end,
     {ok, State};
 
@@ -354,10 +354,10 @@ handle_ssh_cmd_response(simulation_result, From, Message, State) ->
 handle_msg({ssh_channel_up, _Chan, _CRef}, State) ->
     {ok, State};
 handle_msg(timeout, State = #state{chan = Chan}) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_msg(timeout)~n"),
+    error_logger:info_msg("~s: handle_msg(timeout)~n", [?MODULE]),
     {stop, Chan, State};
 handle_msg(Msg, State) ->
-    error_logger:info_msg("bio_ers_queue_mif2_ssh: handle_msg(msg=~p)~n", [Msg]),
+    error_logger:info_msg("~s: handle_msg(msg=~p)~n", [?MODULE, Msg]),
     {ok, State}.
 
 

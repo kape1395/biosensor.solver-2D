@@ -20,7 +20,7 @@ ERL_BEAM_FILES=\
     ebin/bio_ers.beam \
     ebin/bio_ers_app.beam \
     ebin/bio_ers_model.beam \
-    ebin/bio_ers_queue_mif2_ssh.beam \
+    ebin/bio_ers_queue_mifcl2_ssh_chan.beam \
     ebin/bio_ers_store.beam \
     ebin/bio_ers_solver.beam \
     ebin/bio_ers_sup.beam
