@@ -34,15 +34,15 @@
 %% Tests:
 %%      rr(bio_ers).
 %%      application:start(crypto), application:start(ssh).
-%%      {ok, PID} = bio_ers_queue_mif2_ssh:start_link().
-%%      ok = bio_ers_queue_mif2_ssh:check(PID).
+%%      {ok, PID} = bio_ers_queue_mifcl2_ssh_chan:start_link().
+%%      ok = bio_ers_queue_mifcl2_ssh_chan:check(PID).
 %%
 %%      Model = bio_ers_model:read_model("test/bio_ers_model_tests-CNT-2D.xml", kp1_xml).
 %%      #model{definition = ModelDef} = Model.
 %%      ModelId = bio_ers:get_id(Model).
-%%      bio_ers_queue_mif2_ssh:store_config(PID, ModelId, ModelDef).
+%%      bio_ers_queue_mifcl2_ssh_chan:store_config(PID, ModelId, ModelDef).
 %%
-%%      ok = bio_ers_queue_mif2_ssh:stop(PID).
+%%      ok = bio_ers_queue_mifcl2_ssh_chan:stop(PID).
 %%
 
 start() ->
@@ -82,23 +82,23 @@ store_config(Ref, ConfigName, ConfigData) ->
 
 
 submit_simulation(Ref, Simulation) when is_record(Simulation, simulation) ->
-    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = get_simulation_id(Simulation)}}).
+    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = bio_ers_queue_mifcl2:get_simulation_id(Simulation)}}).
 
 
 delete_simulation(Ref, Simulation) ->
-    ssh_channel:cast(Ref, {delete_simulation, get_simulation_id(Simulation)}).
+    ssh_channel:cast(Ref, {delete_simulation, bio_ers_queue_mifcl2:get_simulation_id(Simulation)}).
 
 
 cancel_simulation(Ref, Simulation) ->
-    ssh_channel:cast(Ref, {cancel_simulation, get_simulation_id(Simulation)}).
+    ssh_channel:cast(Ref, {cancel_simulation, bio_ers_queue_mifcl2:get_simulation_id(Simulation)}).
 
 
 simulation_status(Ref, Simulation) ->
-    ssh_channel:call(Ref, {simulation_status, get_simulation_id(Simulation)}).
+    ssh_channel:call(Ref, {simulation_status, bio_ers_queue_mifcl2:get_simulation_id(Simulation)}).
 
 
 simulation_result(Ref, Simulation) ->
-    ssh_channel:call(Ref, {simulation_result, get_simulation_id(Simulation)}).
+    ssh_channel:call(Ref, {simulation_result, bio_ers_queue_mifcl2:get_simulation_id(Simulation)}).
 
 
 
@@ -410,17 +410,5 @@ param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param
     io_lib:format(" -S~p=~p", [atom_to_list(Name), Value]);
 param_to_option(Param = #param{name = Name, value = Value}) when is_record(Param, param), is_integer(Value) ->
     [" -S", atom_to_list(Name), "=", integer_to_list(Value)].
-
-
-%%
-%%  Get simulation id, or generate it.
-%%
-get_simulation_id(Simulation) when is_record(Simulation, simulation) ->
-    case Simulation#simulation.id of
-        undefined -> bio_ers:get_id(Simulation);
-        SimId     -> SimId
-    end;
-get_simulation_id(SimulationId) when is_list(SimulationId) ->
-    SimulationId.
 
 

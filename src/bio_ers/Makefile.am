@@ -19,10 +19,14 @@ ERL_APP_FILES=ebin/bio_ers.app
 ERL_BEAM_FILES=\
     ebin/bio_ers.beam \
     ebin/bio_ers_app.beam \
+    ebin/bio_ers_experiment.beam \
+    ebin/bio_ers_exp_series.beam \
     ebin/bio_ers_model.beam \
+    ebin/bio_ers_queue.beam \
     ebin/bio_ers_queue_mifcl2_ssh_chan.beam \
-    ebin/bio_ers_queue_mifcl2_ssh_mgr.beam \
     ebin/bio_ers_queue_mifcl2_ssh_sup.beam \
+    ebin/bio_ers_queue_mifcl2_sup.beam \
+    ebin/bio_ers_queue_mifcl2.beam \
     ebin/bio_ers_store.beam \
     ebin/bio_ers_solver.beam \
     ebin/bio_ers_sup.beam

@@ -48,7 +48,7 @@ test() ->
 
 %%
 %%  @doc Generates SHA1 ID for the specified simulation.
-%%  @spec simulation_id(Simulation::#simulation{}) -> string()
+%%  @spec get_id(Simulation::#simulation{}) -> string()
 %%
 get_id(Simulation) when is_record(Simulation, simulation) ->
     #simulation{version = Version, model = Model, params = Params} = Simulation,
