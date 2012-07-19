@@ -305,7 +305,7 @@ handle_ssh_cmd_response(delete_simulation, undefined, Message, State) ->
 
 handle_ssh_cmd_response(cancel_simulation, undefined, Message, State) ->
     case Message of
-        <<"CANCELED:", SimulationId:40/binary>> ->
+        <<"CANCELLED:", SimulationId:40/binary>> ->
             error_logger:info_msg("~s: Simulation ~s canceled~n", [?MODULE, SimulationId])
     end,
     {ok, State};
@@ -317,6 +317,7 @@ handle_ssh_cmd_response(simulation_status, From, Message, State) ->
         {"UNKNOWN", "STARTED"} ->              Status = failed;
         {"UNKNOWN", "STOPPED_SUCCESSFUL"} ->   Status = done;
         {"UNKNOWN", "STOPPED_FAILED"} ->       Status = failed;
+        {"UNKNOWN", "STOPPED_"} ->             Status = failed;
         {"UNKNOWN", "UNKNOWN"} ->              Status = unknown;
         {"CANCELLED", _} ->                    Status = failed;
         {"COMPLETED", "STOPPED_SUCCESSFUL"} -> Status = done;

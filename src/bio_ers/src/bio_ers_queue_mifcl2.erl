@@ -43,6 +43,7 @@
 -behaviour(gen_server).
 -export([start/2, start_link/2, stop/1]). % API
 -export([check/1, submit/2, delete/2, cancel/2, status/2, result/2]). % API
+-export([get_simulation_id/1]).
 -export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]). % Callbacks.
 
 -include("bio_ers.hrl").
