@@ -86,8 +86,7 @@ AC_CONFIG_FILES([
     src/bio-solver/Makefile
     src/bio-output/Makefile
     src/bio_ers/Makefile
-    src/bio_ers/bio_ers.app
-    src/bio_ers/bio_ers.rel
+    src/bio_ers/src/bio_ers.app.src
     src/bio_ers_solver_port/Makefile
     src/libbiosensor/Makefile
     src/libbiosensor-slv-fd/Makefile

@@ -20,10 +20,10 @@
 -include("bio_ers_solver.hrl").
 
 -ifdef(VALGRIND).
--define(PORT_NAME, "test/bio_ers_solver_port-t01-valgrind").
+-define(PORT_NAME, "../test/bio_ers_solver_port-t01-valgrind").
 -define(PORT_SLEEP, 1000).
 -else.
--define(PORT_NAME, "test/bio_ers_solver_port-t01-proxy").
+-define(PORT_NAME, "../test/bio_ers_solver_port-t01-proxy").
 -define(PORT_SLEEP, 100).
 -endif.
 
@@ -49,7 +49,7 @@ suspend_test_() ->
 
 start() ->
     Model = bio_ers_model:read_model(
-        "test/bio_ers_model_tests-CNT-2D.xml",
+        "../test/bio_ers_model_tests-CNT-2D.xml",
         kp1_xml
     ),
     Simulation = #simulation{

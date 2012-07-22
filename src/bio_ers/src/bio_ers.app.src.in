@@ -13,14 +13,11 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
-{release,
-    {"bio_ers", "@VERSION@"},
-    {erts, "@ERLANG_ERTS_VER@"},
-    [
-       {kernel, "@ERLANG_LIB_VER_kernel@"},
-       {stdlib, "@ERLANG_LIB_VER_stdlib@"},
-       {xmerl, "@ERLANG_LIB_VER_xmerl@"},
-       {crypto, "@ERLANG_LIB_VER_crypto@"},
-       {bio_ers, "@VERSION@"}
-    ]
-}.
+{application, bio_ers, [
+    {description, "Erlang server for simulating biosensors"},
+    {vsn, "@PACKAGE_VERSION@"},
+    {registered, [bio_ers]},
+    {mod, {bio_ers_app, []}},
+    {applications, [kernel, stdlib, xmerl, crypto, ssh]},
+    {env, []}
+]}.

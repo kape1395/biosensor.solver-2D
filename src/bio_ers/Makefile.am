@@ -14,108 +14,39 @@
 # limitations under the License.
 #
 
+REBAR=/opt/rebar/bin/rebar
 
-ERL_APP_FILES=ebin/bio_ers.app
-ERL_BEAM_FILES=\
-    ebin/bio_ers.beam \
-    ebin/bio_ers_app.beam \
-    ebin/bio_ers_experiment.beam \
-    ebin/bio_ers_exp_series.beam \
-    ebin/bio_ers_model.beam \
-    ebin/bio_ers_queue.beam \
-    ebin/bio_ers_queue_mifcl2_ssh_chan.beam \
-    ebin/bio_ers_queue_mifcl2_ssh_sup.beam \
-    ebin/bio_ers_queue_mifcl2_sup.beam \
-    ebin/bio_ers_queue_mifcl2.beam \
-    ebin/bio_ers_store.beam \
-    ebin/bio_ers_solver.beam \
-    ebin/bio_ers_sup.beam
+all: erlang-compile erlang-test erlang-doc
 
-ERL_TEST_BEAM_FILES=\
-    ebin/bio_ers_testsuite.beam \
-    ebin/bio_ers_tests.beam \
-    ebin/bio_ers_model_tests.beam \
-    ebin/bio_ers_solver_tests.beam
+erlang-compile:
+	$(REBAR) compile
 
-ERL_TEST_MODULES=\
-    bio_ers \
-    bio_ers_model \
-    bio_ers_solver
+erlang-test: priv/bio_ers_solver_port
+	$(REBAR) eunit
 
+erlang-doc:
+	rm -f doc/edoc-info doc/*.html
+	$(REBAR) doc
 
-all: bio_ers
-
-
-################################################################################
-#   Erlang specific build.
-#
-
-bio_ers: ebin priv/bio_ers_solver_port $(ERL_BEAM_FILES) $(ERL_APP_FILES)
-
-ebin:
-	mkdir ebin
+erlang-clean:
+	$(REBAR) clean
+	rm -rfv ebin priv/bio_ers_solver_port *.log
 
 priv/bio_ers_solver_port: ../bio_ers_solver_port/.libs/bio_ers_solver_port
 	make -C ../bio_ers_solver_port
 	cp ../bio_ers_solver_port/.libs/bio_ers_solver_port priv/
 
-$(ERL_APP_FILES): ebin/% : %
-	@echo "awk -v \"beams=$(ERL_BEAM_FILES)\" '...' $< > $@"
-	@awk -v "beams=$(ERL_BEAM_FILES)" '/MAKEFILE_REPLACE_WITH_MODULES/{ \
-	        modules=beams; \
-	        gsub("ebin/", "", modules); \
-	        gsub(".beam ", ", ", modules); \
-	        gsub(".beam", "", modules); \
-	        gsub("MAKEFILE_REPLACE_WITH_MODULES", modules); \
-	    }; {print;}' $< > $@
-
-$(ERL_BEAM_FILES): ebin/%.beam: src/%.erl
-	$(ERLC) $(ERLCFLAGS) -I include -o ebin $< 
-
-bio_ers.boot: bio_ers bio_ers.rel $(ERL_APP_FILES)
-	erl -env ERL_LIBS . -noinput -eval 'ok = systools:make_script("bio_ers", [local, no_warn_sasl]), init:stop().'
-
-bio_ers.tar.gz: bio_ers.boot
-	erl -env ERL_LIBS . -noinput -eval 'ok = systools:make_tar("bio_ers"), init:stop().'
-
-
-################################################################################
-#
-#   Some tests.
-#
-
-$(ERL_TEST_BEAM_FILES): ebin/%.beam: test/%.erl
-	$(ERLC) $(ERLCFLAGS) -I include -o ebin $< 
-
-test-compile: $(ERL_TEST_BEAM_FILES)
-
-test-run: $(ERL_BEAM_FILES) test-compile
-	erl -pa ebin -s bio_ers_app startup
-
-test: bio_ers test-compile
-	erl -pa ebin -noinput -s bio_ers_testsuite run $(ERL_TEST_MODULES)
-
-
-################################################################################
-#
-#   Documentation.
-#
-
-erlang-docs-html:
-	erl -noshell -run edoc_run application "'bio_ers'" '"."' '[{hidden, true}, {private, true}]'
-
 
 ################################################################################
 #   Formalities...
 #
-clean-local:
-	rm -rfv ebin priv/bio_ers_solver_port *.log
+clean-local: erlang-clean
 
-check-local: test
+check-local: erlang-test
 
-html-local: erlang-docs-html
+html-local: doc
 
-dist-local: bio_ers.tar.gz
+#dist-local: bio_ers.tar.gz
 
-.PHONY: all bio_ers clean-local check-local html-local dist-local test-run test-compile erlang-docs-html
+.PHONY: all clean-local check-local html-local dist-local erlang-compile erlang-test erlang-doc erlang-clean
 

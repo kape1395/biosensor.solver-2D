@@ -30,6 +30,7 @@ main_test_() ->
     ].
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Setup functions
 %%
@@ -40,20 +41,23 @@ start() ->
 stop(_) ->
     ok.
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Actual tests
 %%
 
 test_parsing_successful(_) ->
-    {Status, _Model} = bio_ers_model:parse_file("test/bio_ers_model_tests-CNT-2D.xml"),
+    {Status, _Model} = bio_ers_model:parse_file("../test/bio_ers_model_tests-CNT-2D.xml"),
     [?_assertEqual(ok, Status)].
 
 
 test_read_model(_) ->
     #model{type = Type} = bio_ers_model:read_model(
-        "test/bio_ers_model_tests-CNT-2D.xml",
+        "../test/bio_ers_model_tests-CNT-2D.xml",
         undefined),
     [?_assertEqual(kp1_xml, Type)].
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
