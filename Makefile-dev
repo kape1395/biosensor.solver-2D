@@ -1,0 +1,11 @@
+
+all:
+
+rebuild:
+	make maintainer-clean  
+	rm -rf local_install
+	mkdir local_install
+	./configure --prefix=`pwd`/local_install --enable-shared --disable-static --with-pic "CXXFLAGS=-g -O0 -ansi -Wall -DLOG_LEVEL_DEBUG -DBOOST_FILESYSTEM_VERSION=2" --with-boost-filesystem=boost_filesystem-mt && make && make install
+
+.PHONY: all rebuild
+
