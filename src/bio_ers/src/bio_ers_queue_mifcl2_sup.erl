@@ -14,43 +14,55 @@
 % limitations under the License.
 %
 
-
 %%
 %%  @private
 %%  @doc Supervisor for the {@link bio_ers_queue_mifcl2} and related modules.
-%%  The {@link bio_ers_queue_mifcl2. interfacing module} (api) is started by this
-%%  supervisor automatically, and the second child --
-%%  {@link bio_ers_queue_mifcl2_ssh_sup. ssh channel supervisor} (ssh_sup)
-%%  is started dynamically, on the startup of the  the api module.
-%%
 %%  @see bio_ers_queue_mifcl2
 %%
 -module(bio_ers_queue_mifcl2_sup).
 -behaviour(supervisor).
--export([start_link/0]). % API
+-export([start_link/2, create_ssh_sup/4]). % API
 -export([init/1]). % Callbacks
+-include("bio_ers_queue_mifcl2.hrl").
 
--define(SSH_SUP_DEF, {ssh_sup,
-        {bio_ers_queue_mifcl2_ssh_sup, start_link, []},
-        permanent, 10, supervisor, [bio_ers_queue_mifcl2_ssh_sup]
-    }).
+%% =============================================================================
+%%  API functions.
+%% =============================================================================
 
 %%
 %%  @doc Start and link this supervisor.
-%%  @spec start_link() -> PID
+%%  `Name' is used to register the queue process and
+%%  `External' is used as a configuration in an external form (see {@link bio_ers_queue_mifcl2}).
 %%
-start_link() ->
-    supervisor:start_link(?MODULE, []).
+-spec start_link({local, atom()}, {}) -> {ok, pid()} | term().
+start_link(Name, ExternalCfg) ->
+    supervisor:start_link(?MODULE, {Name, ExternalCfg}).
+
+
+%%
+%% @doc Create SSH_SUP and pass the queue PID to it.
+%%
+-spec create_ssh_sup(pid(), atom(), #part_cfg{}, pid()) -> {ok, pid()} | term().
+create_ssh_sup(Supervisor, Name, PartCfg, Queue) when is_record(PartCfg, part_cfg)->
+    SSH = bio_ers_queue_mifcl2_ssh_sup,
+    SSHSpec = {
+        {ssh_sup, Name},
+        {SSH, start_link, [PartCfg, Queue]},
+        permanent, brutal_kill, supervisor, [SSH]
+    }, 
+    supervisor:start_child(Supervisor, SSHSpec).
+
+
+
+%% =============================================================================
+%%  Callbacks.
+%% =============================================================================
 
 %%
 %%  @doc Configures this supervisor (callback).
-%%  @spec init(Args) -> SupervisorDefinition
 %%
-init(_Args) ->
-    {ok, {{one_for_all, 1, 60}, [
-        {api,
-            {bio_ers_queue_mifcl2, start_link, [self(), ?SSH_SUP_DEF]},
-            permanent, brutal_kill, worker, [bio_ers_queue_mifcl2]
-        }
-    ]}}.
+init({Name, ExternalCfg}) ->
+    QUE = bio_ers_queue_mifcl2,
+    QUESpec = {queue, {QUE, start_link, [Name, ExternalCfg, self()]}, permanent, brutal_kill, worker, [QUE]}, 
+    {ok, {{one_for_all, 1, 60}, [QUESpec]}}.
 

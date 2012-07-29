@@ -44,7 +44,7 @@ clean-local: erlang-clean
 
 check-local: erlang-test
 
-html-local: doc
+html-local: erlang-doc
 
 #dist-local: bio_ers.tar.gz
 

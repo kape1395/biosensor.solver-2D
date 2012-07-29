@@ -14,7 +14,6 @@
 % limitations under the License.
 %
 
-
 %%
 %%  @doc Queue implementation for delegating calculations to the "MIF cluster v2".
 %%  A structure of this module is the following:
@@ -40,105 +39,101 @@
 %%  is restarted and should redo the operations, that were performed at that time.
 %%
 -module(bio_ers_queue_mifcl2).
--behaviour(gen_server).
--export([start/2, start_link/2, stop/1]). % API
--export([check/1, submit/2, delete/2, cancel/2, status/2, result/2]). % API
+-behaviour(bio_ers_queue).
+-export([start_link/3]). % API
+-export([handle_submit/2, handle_delete/2, handle_cancel/2, handle_status/2, handle_result/2]). % CB
+-export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2]). % CB
 -export([get_simulation_id/1]).
--export([init/1, terminate/2, handle_call/3, handle_cast/2, handle_info/2, code_change/3]). % Callbacks.
-
 -include("bio_ers.hrl").
--record(state, {ssh_channel}).
+-include("bio_ers_queue_mifcl2.hrl").
+
+
+-record(state, {cfg = #cfg{}, running = [], pending = []}).
+
+
+%% =============================================================================
+%%  API.
+%% =============================================================================
 
 %%
-%%  @doc Start this module (called by {@link bio_ers_queue_mifcl2_sup}).
-%%  @spec start(Supervisor, SshChildSpec) -> QueueRef
+%%  @doc Create this queue.
+%%  Configuration in its external form should be passed here as the `ExternalCfg'
+%%  parameter, and its structure should be as follows.
+%%  ````
+%%      {bio_ers_queue_mifcl2, QueueName, [
+%%          {partition, PartitionName,
+%%              SshHost, SshPort, SshUser, LocalUserDir,
+%%              ClusterCommand, ClusterPartition,
+%%              MaxParallelJobs, StatusCheckMS
+%%          }
+%%      ]}
+%%  ''''
+%%  Multiple partitions can be listed here.
 %%
-start(Supervisor, SshChildSpec) ->
-    gen_server:start(?MODULE, {Supervisor, SshChildSpec}, []).
-
-
-%%
-%%  @doc Start and link this module (called by {@link bio_ers_queue_mifcl2_sup}).
-%%  @spec start_link(Supervisor, SshChildSpec) -> QueueRef
-%%  @see start/2
-%%
-start_link(Supervisor, SshChildSpec) ->
-    gen_server:start_link(?MODULE, {Supervisor, SshChildSpec}, []).
-
-
-%%
-%%  @doc Stop this mofule.
-%%  @spec stop(QueueRef) -> ok
-%%
-stop(Ref) ->
-    ssh_channel:cast(Ref, stop).
-
-
-%%
-%%  @doc Check, if this queue is operational.
-%%  @spec check(QueueRef) -> ok
-%%  @todo remove from API
-%%
-check(Ref) ->
-    ssh_channel:call(Ref, check).
-
-
-%%
-%%  @doc Submit new simulation to this queue.
-%%  @spec submit(QueueRef, Simulation) -> ok
-%%
-submit(Ref, Simulation) when is_record(Simulation, simulation) ->
-    ssh_channel:cast(Ref, {submit_simulation, Simulation#simulation{id = get_simulation_id(Simulation)}}).
-
-
-%%
-%%  @doc Delete the specified simulation including its results.
-%%  @spec delete(QueueRef, Simulation) -> ok
-%%
-delete(Ref, Simulation) ->
-    ssh_channel:cast(Ref, {delete_simulation, get_simulation_id(Simulation)}).
-
-
-%%
-%%  @doc Cancel the specified simulation (data will not be deleted).
-%%  @spec cancel(QueueRef, Simulation) -> ok
-%%
-cancel(Ref, Simulation) ->
-    ssh_channel:cast(Ref, {cancel_simulation, get_simulation_id(Simulation)}).
-
-
-%%
-%%  @doc Returns status of the specified simulation.
-%%  @spec status(QueueRef, Simulation) -> Status
-%%
-status(Ref, Simulation) ->
-    ssh_channel:call(Ref, {simulation_status, get_simulation_id(Simulation)}).
-
-
-%%
-%%  @doc Returns results of the simulation.
-%%  @spec result(QueueRef, Simulation) -> SimulationResult
-%%
-result(Ref, Simulation) ->
-    ssh_channel:call(Ref, {simulation_result, get_simulation_id(Simulation)}).
+-spec start_link(term(), term(), pid()) -> {ok, pid()} | term().
+start_link(Name, ExternalCfg, Supervisor) ->
+    bio_ers_queue:start_link(Name, ?MODULE, {Name, ExternalCfg, Supervisor}).
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% =============================================================================
 %%  Callbacks.
-%%
+%% =============================================================================
+
 
 %%
 %%
-%%
-init({Supervisor, SshChildSpec}) ->
-    self() ! {start_ssh_channel, Supervisor, SshChildSpec},
-    {ok, #state{}}.
+init({_Name, ExternalCfg, Supervisor}) ->
+    State = #state{
+        cfg = mk_cfg(ExternalCfg),
+        pending = [],
+        running = []
+    },
+    self() ! {configure_supervisor, Supervisor},
+    {ok, State}.
+
+
 %%
 %%
 %%
 terminate(_Reason, _State) ->
     ok.
+
+
+%%
+%%
+%%
+handle_submit(_Simulation, State) ->
+    {ok, State}.
+
+
+%%
+%%
+%%
+handle_cancel(_Simulation, State) ->
+    {ok, State}.
+
+
+%%
+%%
+%%
+handle_delete(_Simulation, State) ->
+    {ok, State}.
+
+
+%%
+%%
+%%
+handle_result(_Simulation, State) ->
+    {error, undefined, State}.
+
+
+%%
+%%
+%%
+handle_status(_Simulation, State) ->
+    {ok, undefined, State}.
+
 
 %%
 %%  Sync calls.
@@ -146,29 +141,53 @@ terminate(_Reason, _State) ->
 handle_call(_Message, _From, State) ->
     {stop, badarg, State}.
 
+
 %%
 %%  Async calls.
 %%
 handle_cast(_Message, State) ->
     {noreply, State}.
 
+
 %%
+%%  Other messages:
+%%    configure_supervisor -- start ssh_sup and pass out PID to it.
 %%
-%%
-handle_info({start_ssh_channel, Supervisor, SshChildSpec}, State) ->
-    {ok, Pid} = supervisor:start_child(Supervisor, SshChildSpec),
-    {noreply, State#state{ssh_channel = Pid}};
-handle_info(_, State) ->
+handle_info({configure_supervisor, Supervisor}, State = #state{cfg = Cfg}) ->
+    #cfg{partitions = Partitions} = Cfg,
+    StartPartition = fun (PCFG) ->
+        #part_cfg{name = Name} = PCFG,
+        {ok, _PID} = bio_ers_queue_mifcl2_sup:create_ssh_sup(Supervisor, Name, PCFG, self())
+    end,
+    lists:map(StartPartition, Partitions),
     {noreply, State}.
 
-%%
-%%
-%%
-code_change(_OldVsn, State, _Extra) ->
-    {ok, State}.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% =============================================================================
+%%  Other.
+%% =============================================================================
+
+mk_cfg(ExternalCfg) ->
+    {Name, Partitions} = ExternalCfg,
+    #cfg{
+        name = Name,
+        partitions = [ mk_part_cfg(EPC) || EPC <- Partitions ]
+    }.
+
+mk_part_cfg(ExternalPartitionCfg) ->
+    {Name, Host, Port, User, LUDir, CCmd, CPart, MPJ, SCMS} = ExternalPartitionCfg,
+    #part_cfg{
+        name = Name,
+        ssh_host = Host,
+        ssh_port = Port,
+        ssh_user = User,
+        local_user_dir = LUDir,
+        cluster_command = CCmd,
+        cluster_partition = CPart,
+        max_parallel_jobs = MPJ,
+        status_check_ms = SCMS
+    }.
 
 %%
 %%  @doc Get simulation id, or generate it.
