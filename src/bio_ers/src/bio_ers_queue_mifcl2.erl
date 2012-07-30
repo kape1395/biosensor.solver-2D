@@ -17,7 +17,7 @@
 %%
 %%  @doc Queue implementation for delegating calculations to the "MIF cluster v2".
 %%  A structure of this module is the following:
-%%  ```
+%%  ``` OUTDATED:
 %%  + bio_ers_queue_mifcl2_sup.erl (main supervisor)
 %%    |       Supervisor for all the queue implementation (mifcl2).
 %%    |
@@ -154,12 +154,8 @@ handle_cast(_Message, State) ->
 %%    configure_supervisor -- start ssh_sup and pass out PID to it.
 %%
 handle_info({configure_supervisor, Supervisor}, State = #state{cfg = Cfg}) ->
-    #cfg{partitions = Partitions} = Cfg,
-    StartPartition = fun (PCFG) ->
-        #part_cfg{name = Name} = PCFG,
-        {ok, _PID} = bio_ers_queue_mifcl2_sup:create_ssh_sup(Supervisor, Name, PCFG, self())
-    end,
-    lists:map(StartPartition, Partitions),
+    #cfg{partitions = PartitionCfgs} = Cfg,
+    bio_ers_queue_mifcl2_sup:create_partitions(Supervisor, PartitionCfgs, self()),
     {noreply, State}.
 
 

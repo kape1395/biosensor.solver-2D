@@ -16,40 +16,36 @@
 
 %%
 %%  @private
-%%  @doc Supervisor for the {@link bio_ers_queue_mifcl2} and related modules.
+%%  @doc Supervisor governing the fragile part of the queue: ssh channel
+%%  and associated simulation processes (supervisor of them).
 %%  @see bio_ers_queue_mifcl2
 %%
--module(bio_ers_queue_mifcl2_sup).
+-module(bio_ers_queue_mifcl2_part_sup).
 -behaviour(supervisor).
--export([start_link/2, create_partitions/3]). % API
+-export([start_link/2, create_sim_sup/3]). % API
 -export([init/1]). % Callbacks
 -include("bio_ers_queue_mifcl2.hrl").
+
 
 %% =============================================================================
 %%  API functions.
 %% =============================================================================
 
 %%
-%%  @doc Start and link this supervisor.
-%%  `Name' is used to register the queue process and
-%%  `External' is used as a configuration in an external form (see {@link bio_ers_queue_mifcl2}).
+%%  @doc Initialize this supervisor.
 %%
--spec start_link({local, atom()}, {}) -> {ok, pid()} | term().
-start_link(Name, ExternalCfg) ->
-    supervisor:start_link(?MODULE, {Name, ExternalCfg}).
+-spec start_link(#part_cfg{}, pid()) -> {ok, Supervisor :: pid()}.
+start_link(PartCfg, Queue) ->
+    supervisor:start_link(?MODULE, {PartCfg, Queue}).
 
 
 %%
-%% @doc Create SSH_SUP and pass the queue PID to it.
+%%  @doc Create simulations supervisor.
 %%
--spec create_partitions(pid(), [#part_cfg{}], pid()) -> {ok, pid()} | term().
-create_partitions(Supervisor, PartCfgs, Queue) ->
-    Mod = bio_ers_queue_mifcl2_part_supersup,
-    Spec = {
-        part_supersup,
-        {Mod, start_link, [PartCfgs, Queue]},
-        permanent, brutal_kill, supervisor, [Mod]
-    }, 
+-spec create_sim_sup(pid(), pid(), pid()) -> {ok, pid()}.
+create_sim_sup(Supervisor, Queue, SshChan) ->
+    Mod = bio_ers_queue_mifcl2_sim_sup,
+    Spec = {sim_sup, {Mod, start_link, [Queue, SshChan]}, permanent, brutal_kill, supervisor, [Mod]},
     supervisor:start_child(Supervisor, Spec).
 
 
@@ -59,10 +55,10 @@ create_partitions(Supervisor, PartCfgs, Queue) ->
 %% =============================================================================
 
 %%
-%%  @doc Configures this supervisor (callback).
+%%  @doc Configure the supervisor.
 %%
-init({Name, ExternalCfg}) ->
-    QUE = bio_ers_queue_mifcl2,
-    QUESpec = {queue, {QUE, start_link, [Name, ExternalCfg, self()]}, permanent, brutal_kill, worker, [QUE]}, 
-    {ok, {{one_for_all, 1, 60}, [QUESpec]}}.
+init({PartCfg, Queue}) ->
+    Mod = bio_ers_queue_mifcl2_ssh_channel,
+    Spec = {ssh_chan, {Mod, start_link, [self(), PartCfg, Queue]}, permanent, brutal_kill, worker, [Mod]}, 
+    {ok, {{one_for_all, 120, 60}, [Spec]}}.
 

@@ -15,7 +15,7 @@
 %
 -module(bio_ers_queue_mifcl2_sim).
 -behaviour(gen_fsm).
--export([start_link/1]). % API
+-export([start_link/3]). % API
 -export([init/2, starting/2]). % FSM States
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 -include("bio_ers.hrl").
@@ -32,8 +32,8 @@
 %% API Function Definitions
 %% ------------------------------------------------------------------
 
-start_link(Args) ->
-    gen_fsm:start_link(?MODULE, Args, []).
+start_link(Queue, SshChan, Simulation) ->      % FIXED according to supervisor.
+    gen_fsm:start_link(?MODULE, {Queue, SshChan, Simulation}, []).
 
 
 
