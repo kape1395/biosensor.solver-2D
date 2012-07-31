@@ -1,2 +1,4 @@
 .eunit/
-src/bio_ers.app.src
+logs/
+*.beam
+src/ebi.app.src

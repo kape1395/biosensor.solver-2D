@@ -24,6 +24,9 @@ erlang-compile:
 erlang-test: priv/bio_ers_solver_port
 	$(REBAR) eunit
 
+erlang-itest: priv/bio_ers_solver_port
+	$(REBAR) ct
+
 erlang-doc:
 	rm -f doc/edoc-info doc/*.html
 	$(REBAR) doc
@@ -42,11 +45,11 @@ priv/bio_ers_solver_port: ../bio_ers_solver_port/.libs/bio_ers_solver_port
 #
 clean-local: erlang-clean
 
-check-local: erlang-test
+check-local: erlang-test erlang-itest
 
 html-local: erlang-doc
 
 #dist-local: bio_ers.tar.gz
 
-.PHONY: all clean-local check-local html-local dist-local erlang-compile erlang-test erlang-doc erlang-clean
+.PHONY: all clean-local check-local html-local dist-local erlang-compile erlang-test erlang-itest erlang-doc erlang-clean
 

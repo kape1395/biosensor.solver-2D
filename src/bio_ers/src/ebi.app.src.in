@@ -13,11 +13,11 @@
 % See the License for the specific language governing permissions and
 % limitations under the License.
 %
-{application, bio_ers, [
+{application, ebi, [
     {description, "Erlang server for simulating biosensors"},
     {vsn, "@PACKAGE_VERSION@"},
-    {registered, [bio_ers]},
-    {mod, {bio_ers_app, []}},
-    {applications, [kernel, stdlib, xmerl, crypto, ssh]},
+    {registered, [ebi]},
+    {mod, {ebi_app, []}},
+    {applications, [kernel, stdlib, xmerl, crypto, ssh, mnesia]},
     {env, []}
 ]}.

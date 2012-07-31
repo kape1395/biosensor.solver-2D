@@ -12,3 +12,5 @@
 %%  Queue configuration.
 %%
 -record(cfg, {name, partitions = []}).
+
+-record(ebi_mifcl2_sim, {id, definition, state}).

@@ -15,7 +15,7 @@
 %
 -module(bio_ers_sup).
 -behaviour(supervisor).
--export([start_link/0]).
+-export([start_link/1]).
 -export([init/1]).
 
 -define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
@@ -23,7 +23,7 @@
 %%
 %%  Start supervisor.
 %%
-start_link() ->
+start_link(Config) -> % XXX: pass config further.
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 %%
