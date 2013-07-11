@@ -1,4 +1,0 @@
-.eunit/
-logs/
-*.beam
-src/ebi.app.src

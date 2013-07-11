@@ -21,7 +21,5 @@ SUBDIRS = \
     libbiosensor-slv-fd \
     bio-solver \
     bio-editor \
-    bio-output \
-    bio_ers_solver_port \
-    bio_ers
+    bio-output
 
