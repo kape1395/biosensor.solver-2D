@@ -9,6 +9,7 @@
 .classpath
 .project
 .cproject
+.kateproject.d/
 *.swp
 *.tmp
 *~
