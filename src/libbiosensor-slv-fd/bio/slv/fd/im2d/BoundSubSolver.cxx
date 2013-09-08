@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Karolis Petrauskas
+ * Copyright 2011-2013 Karolis Petrauskas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #include "ModelReaction.hxx"
 #include "BoundSubSolver.hxx"
 #include "ConstantCondition.hxx"
+#include "GradCondition.hxx"
 #include "WallCondition.hxx"
 #include "MergeCondition.hxx"
 #include "IAreaEdgeFunction.hxx"
@@ -203,9 +204,31 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
     LOG_DEBUG(LOGGER << "applyInitialValues()... Done");
 }
 
+/* ************************************************************************** */
+/* ************************************************************************** */
+BIO_XML_MODEL_NS::reaction::ReductionOxidation *
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::get_single_ro_fast_bound_reaction(
+    const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
+)
+{
+    if (boundReactions.size() != 1)
+        throw Exception("Only single bound reaction (related to one substance) is supported for now...");
+    BIO_XML_MODEL_NS::Reaction *reaction = boundReactions[0];
 
-/* ************************************************************************** */
-/* ************************************************************************** */
+    BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro;
+    ro = dynamic_cast<BIO_XML_MODEL_NS::reaction::ReductionOxidation*>(reaction);
+    if (!ro)
+        throw Exception("Only ReductionOxidation reaction is supported on bound.");
+
+    if (!std::isinf(structAnalyzer->getSymbol(ro->rate())->value()))
+        throw Exception("Only reaction with infinite rate is supported for now.");
+
+    if (ro->substrate().size() != 1)
+        throw Exception("Only reaction with one substrate is supported for now.");
+    return ro;
+}
+
+
 void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     BIO_XML_MODEL_NS::BoundSubstance * boundSubstance,
     const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions,
@@ -224,7 +247,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
         if (boundReactions.size() > 0)
         {
             LOG_WARN(LOGGER << "Ignoring reactions, that are related to CONST bound condition");
-            //  FIXME:  Implement reactions on bounds normally.
+            //  FIXME:  Implement reactions on bounds properly.
         }
         BIO_XML_MODEL_NS::bound::Constant* bsConst = dynamic_cast<BIO_XML_MODEL_NS::bound::Constant*>(boundSubstance);
         bc = new ConstantCondition(
@@ -236,15 +259,67 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
     else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Wall*>(boundSubstance) != 0)
     {
         LOG_DEBUG(LOGGER << "createBoundCondition: type=Wall");
+        AreaSubSolver* area = (atStart ? areaNext : areaPrev);
         if (boundReactions.size() > 0)
         {
-            LOG_WARN(LOGGER << "Ignoring reactions, that are related to WALL bound condition");
-            //  FIXME:  Implement reactions on bounds normally.
+            LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing...");
+            BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro = get_single_ro_fast_bound_reaction(boundReactions);
+            std::auto_ptr<BIO_CFG_NS::ReactionAnalyzer> roa(BIO_CFG_NS::ReactionAnalyzer::newAnalyzer(ro));
+
+            if (roa->isProduct(structAnalyzer->getSubstances()[substance]->name()))
+            {
+                //  Gradient should be applied to the product of the reaction.
+                LOG_DEBUG(LOGGER << "createBoundCondition: substance is in products of the reaction, function will be constructed...");
+
+                int roS = structAnalyzer->getSubstanceIndex(ro->substrate()[0].name());
+                int roP = substance;
+                //  NOTE: This implementation implies requirements on rhe ordering of substances.
+                //        The substrate must be listed before the product.
+                if (roS >= roP)
+                    throw Exception("Wrong order of substances.");
+
+                double diffS = structAnalyzer->getDiffusionCoef(
+                    roS,
+                    area->getPositionH(), area->getPositionV(), !horizontal
+                );
+                double diffP = structAnalyzer->getDiffusionCoef(
+                    roP,
+                    area->getPositionH(), area->getPositionV(), !horizontal
+                );
+                IAreaEdgeFunction *function = new SubstanceGradOnEdge(
+                    area->getEdgeData(roS, horizontal, atStart),
+                     -diffS // Multiplier -1 is used here to model generation of the material.
+                );
+                bc = new GradCondition(
+                    area->getEdgeData(roP, horizontal, atStart),
+                    atStart,
+                    diffP,
+                    function
+                );
+                allocatedFunctions.push_back(function);
+            }
+            else if (roa->isSubstrate(structAnalyzer->getSubstances()[substance]->name()))
+            {
+                //  Zero concentration should be applied to the substrate of the reaction.
+                //  NOTE: This is currently has no meaning, because the user must specify the zero-concentration
+                //        condition explicitly because of the way, how BoundAnalyser is implemented (bounds
+                //        are tied to geometry AND SUBSTANCES).
+                bc = new ConstantCondition(
+                    area->getEdgeData(substance, horizontal, atStart),
+                    0.0,
+                    atStart
+                );
+            }
+
+            LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing... Done");
+        } // if (boundReactions.size() > 0)
+        else
+        {
+            bc = new WallCondition(
+                area->getEdgeData(substance, horizontal, atStart),
+                atStart
+            );
         }
-        bc = new WallCondition(
-            (atStart ? areaNext : areaPrev)->getEdgeData(substance, horizontal, atStart),
-            atStart
-        );
     }
     else if (dynamic_cast<BIO_XML_MODEL_NS::bound::Merge*>(boundSubstance) != 0)
     {
@@ -255,22 +330,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             if  (boundReactions.size() != 0)
             {
                 LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing...");
-
-                if (boundReactions.size() != 1)
-                    throw Exception("Only single bound reaction (related to one substance) is supported for now...");
-                BIO_XML_MODEL_NS::Reaction* reaction = boundReactions[0];
-
-                BIO_XML_MODEL_NS::reaction::ReductionOxidation* ro;
-                ro = dynamic_cast<BIO_XML_MODEL_NS::reaction::ReductionOxidation*>(reaction);
-                if (!ro)
-                    throw Exception("Only ReductionOxidation reaction is supported on bound.");
-
-                if (!std::isinf(structAnalyzer->getSymbol(ro->rate())->value()))
-                    throw Exception("Only reaction with infinite rate is supported for now.");
-
-                if (ro->substrate().size() != 1)
-                    throw Exception("Only reaction with one substrate is supported for now.");
-
+                BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro = get_single_ro_fast_bound_reaction(boundReactions);
                 std::auto_ptr<BIO_CFG_NS::ReactionAnalyzer> roa(BIO_CFG_NS::ReactionAnalyzer::newAnalyzer(ro));
 
                 //  Function must be applied only when base substance is a product.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Karolis Petrauskas
+ * Copyright 2011-2013 Karolis Petrauskas
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef BIO_SLV_FD_IM2D_WallCondition_HXX
-#define BIO_SLV_FD_IM2D_WallCondition_HXX
+#ifndef BIO_SLV_FD_IM2D_GradCondition_HXX
+#define BIO_SLV_FD_IM2D_GradCondition_HXX
 #include "../../../../biosensor-slv-fd.hxx"
 #include "IBoundCondition.hxx"
 #include "AreaSubSolver.hxx"
@@ -23,17 +23,17 @@ BIO_SLV_FD_IM2D_NS_BEGIN
 
 
 /**
- *  Bound condition "Wall" (or "Non-leakage").
- *  This condition is a special case of the "GradCondition", where f=0.
- *  This implementation is left here for the performance
- *  reasons (evaluation of the function "f" takes some time).
+ *  Bound condition "Grad".
+ *  The "Wall" condition is a special case (f = 0) of this boundary condition.
  */
-class WallCondition : public IBoundCondition
+class GradCondition : public IBoundCondition
 {
 private:
 
     IAreaEdgeData* edge;
     bool atStart;
+    double diffusion;
+    IAreaEdgeFunction* function;
 
 public:
 
@@ -43,15 +43,17 @@ public:
      *  \param edge     Reference to the data in the area.
      *  \param atStart  Is this condition at top|left (true) or bottom|right (false)?
      */
-    WallCondition(
+    GradCondition(
         IAreaEdgeData* edge,
-        bool atStart
+        bool atStart,
+        double diffusion,
+        IAreaEdgeFunction* function
     );
 
     /**
      *
      */
-    virtual ~WallCondition();
+    virtual ~GradCondition();
 
     /**
      *

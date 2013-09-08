@@ -176,6 +176,10 @@ protected:
         bool atStart
     );
 
+    BIO_XML_MODEL_NS::reaction::ReductionOxidation *get_single_ro_fast_bound_reaction(
+        const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
+    );
+
     /*
      *  FIXME: delete this.
      *

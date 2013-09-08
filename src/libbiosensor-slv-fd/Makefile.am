@@ -34,6 +34,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/im2d/CornerSubSolver.cxx \
     bio/slv/fd/im2d/ConstantCondition.cxx \
     bio/slv/fd/im2d/ConstantOnEdge.cxx \
+    bio/slv/fd/im2d/GradCondition.cxx \
     bio/slv/fd/im2d/SubstanceGradOnEdge.cxx \
     bio/slv/fd/im2d/SubSolverFactory.cxx \
     bio/slv/fd/im2d/MergeCondition.cxx \
@@ -56,6 +57,7 @@ EXTRA_DIST = \
     bio/slv/fd/im2d/AreaSubSolver.hxx \
     bio/slv/fd/im2d/BoundSubSolver.hxx \
     bio/slv/fd/im2d/CornerSubSolver.hxx \
+    bio/slv/fd/im2d/GradCondition.hxx \
     bio/slv/fd/im2d/IAreaEdgeData.hxx \
     bio/slv/fd/im2d/IAreaEdgeFunction.hxx \
     bio/slv/fd/im2d/IBoundCondition.hxx \
