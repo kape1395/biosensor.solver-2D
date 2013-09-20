@@ -21,6 +21,7 @@
 #include "MergeCondition.hxx"
 #include "IAreaEdgeFunction.hxx"
 #include "ConstantOnEdge.hxx"
+#include "SubstanceConcOnEdge.hxx"
 #include "SubstanceGradOnEdge.hxx"
 #include <bio/cfg/ReactionAnalyzer.hxx>
 #include <bio/Logging.hxx>
@@ -207,7 +208,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::applyInitialValues()
 /* ************************************************************************** */
 /* ************************************************************************** */
 BIO_XML_MODEL_NS::reaction::ReductionOxidation *
-BIO_SLV_FD_IM2D_NS::BoundSubSolver::get_single_ro_fast_bound_reaction(
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::get_single_ro_bound_reaction(
     const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
 )
 {
@@ -220,12 +221,29 @@ BIO_SLV_FD_IM2D_NS::BoundSubSolver::get_single_ro_fast_bound_reaction(
     if (!ro)
         throw Exception("Only ReductionOxidation reaction is supported on bound.");
 
-    if (!std::isinf(structAnalyzer->getSymbol(ro->rate())->value()))
-        throw Exception("Only reaction with infinite rate is supported for now.");
-
     if (ro->substrate().size() != 1)
         throw Exception("Only reaction with one substrate is supported for now.");
     return ro;
+}
+
+BIO_XML_MODEL_NS::reaction::ReductionOxidation *
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::get_single_ro_fast_bound_reaction(
+    const std::vector<BIO_XML_MODEL_NS::Reaction*>& boundReactions
+)
+{
+    BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro = get_single_ro_bound_reaction(boundReactions);
+
+    if (!is_ro_reaction_fast(ro))
+        throw Exception("Only reaction with infinite rate is supported for now.");
+    return ro;
+}
+
+bool
+BIO_SLV_FD_IM2D_NS::BoundSubSolver::is_ro_reaction_fast(
+    BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro
+)
+{
+    return std::isinf(structAnalyzer->getSymbol(ro->rate())->value());
 }
 
 
@@ -263,7 +281,7 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
         if (boundReactions.size() > 0)
         {
             LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing...");
-            BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro = get_single_ro_fast_bound_reaction(boundReactions);
+            BIO_XML_MODEL_NS::reaction::ReductionOxidation *ro = get_single_ro_bound_reaction(boundReactions);
             std::auto_ptr<BIO_CFG_NS::ReactionAnalyzer> roa(BIO_CFG_NS::ReactionAnalyzer::newAnalyzer(ro));
 
             if (roa->isProduct(structAnalyzer->getSubstances()[substance]->name()))
@@ -300,15 +318,38 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
             }
             else if (roa->isSubstrate(structAnalyzer->getSubstances()[substance]->name()))
             {
+
                 //  Zero concentration should be applied to the substrate of the reaction.
                 //  NOTE: This is currently has no meaning, because the user must specify the zero-concentration
                 //        condition explicitly because of the way, how BoundAnalyser is implemented (bounds
                 //        are tied to geometry AND SUBSTANCES).
-                bc = new ConstantCondition(
-                    area->getEdgeData(substance, horizontal, atStart),
-                    0.0,
-                    atStart
-                );
+                //  NOTE: It has a meaning, if user specifies wall condition instead of zero concentration.
+                if (is_ro_reaction_fast(ro))
+                {
+                    bc = new ConstantCondition(
+                        area->getEdgeData(substance, horizontal, atStart),
+                        0.0,
+                        atStart
+                    );
+                }
+                else
+                {
+                    IAreaEdgeFunction *function = new SubstanceConcOnEdge(
+                        area->getEdgeData(substance, horizontal, atStart),
+                        structAnalyzer->getSymbol(ro->rate())->value()
+                    );
+                    double diff = structAnalyzer->getDiffusionCoef(
+                        substance,
+                        area->getPositionH(), area->getPositionV(), !horizontal
+                    );
+                    bc = new GradCondition(
+                        area->getEdgeData(substance, horizontal, atStart),
+                        atStart,
+                        diff,
+                        function
+                    );
+                    allocatedFunctions.push_back(function);
+                }
             }
 
             LOG_DEBUG(LOGGER << "createBoundCondition: reactions exists, analyzing... Done");
