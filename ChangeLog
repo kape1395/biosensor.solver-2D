@@ -1,8 +1,14 @@
-biosensor (0.6.7) UNRELEASED; urgency=low
+biosensor (0.6.8) UNRELEASED; urgency=low
+
+  * Support for finite rate reactions on surface.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 20 Sep 2013 06:43:27 +0300
+
+biosensor (0.6.7) raring; urgency=low
 
   * Added support for fast reactions on a surface of a solid electrode.
 
- -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 08 Sep 2013 21:44:44 +0300
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Fri, 20 Sep 2013 06:42:08 +0300
 
 biosensor (0.6.6) natty; urgency=low
 
