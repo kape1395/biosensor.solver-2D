@@ -17,6 +17,7 @@
 #include <vector>
 #include <string>
 #include <ctime>
+#include <algorithm>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem.hpp>
 #include <bio/Exception.hxx>
@@ -354,10 +355,18 @@ ModelSymbols::ModelSymbols(int argn, char **argv)
 
         std::string symbolName = arg.substr(key.length(), arg.find('=') - key.length());
         std::string symbolValueStr = arg.substr(arg.find('=') + 1);
+        std::transform(symbolValueStr.begin(), symbolValueStr.end(), symbolValueStr.begin(), toupper);
         double symbolValue;
 
-        std::stringstream tmp(symbolValueStr);
-        tmp >> symbolValue;
+        if (symbolValueStr == "INF")
+        {
+            symbolValue = std::numeric_limits<double>::infinity();
+        }
+        else
+        {
+            std::stringstream tmp(symbolValueStr);
+            tmp >> symbolValue;
+        }
 
         symbols.insert(symbols.end(), std::pair<std::string, double>(symbolName, symbolValue));
 
