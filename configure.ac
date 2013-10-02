@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 AC_PREREQ(2.61)
-AC_INIT([biosensor], [0.6.8])
+AC_INIT([biosensor], [0.6.9])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
 AC_CONFIG_HEADERS([ src/libbiosensor-xml/biosensor-xml.hxx src/libbiosensor/biosensor.hxx src/libbiosensor-slv-fd/biosensor-slv-fd.hxx ])

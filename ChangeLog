@@ -1,3 +1,9 @@
+biosensor (0.6.9) raring; urgency=low
+
+  * Support for reversible RO reaction on surface.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Wed, 02 Oct 2013 21:53:37 +0300
+
 biosensor (0.6.8) raring; urgency=low
 
   * Support for finite rate reactions on surface.
