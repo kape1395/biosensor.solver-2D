@@ -20,16 +20,16 @@
     xmlns:m         ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
-    
-    
-    
+
+
+
     <xs:import
         namespace="http://karolis.5grupe.lt/biosensor/model"
         schemaLocation="Model.xsd">
     </xs:import>
-    
-    
-    
+
+
+
     <xs:complexType name="MichaelisMenten">
         <xs:complexContent>
             <xs:extension base="m:Reaction">
@@ -40,9 +40,9 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
-    
-    
+
+
+
     <xs:complexType name="ReductionOxidation">
         <xs:complexContent>
             <xs:extension base="m:Reaction">
@@ -51,6 +51,7 @@
                     <xs:element name="product"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="rate" type="m:SymbolName" use="required"/>
+                <xs:attribute name="bw_rate" type="m:SymbolName" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -58,7 +59,7 @@
         <xs:attribute name="name" type="m:SubstanceName" use="required"/>
         <xs:attribute name="coefficient" type="xs:integer" use="optional" default="1"/>
     </xs:complexType>
-    
-    
-    
+
+
+
 </xs:schema>

@@ -23,6 +23,7 @@
 #include "ConstantOnEdge.hxx"
 #include "SubstanceConcOnEdge.hxx"
 #include "SubstanceGradOnEdge.hxx"
+#include "FunctionSumOnEdge.hxx"
 #include <bio/cfg/ReactionAnalyzer.hxx>
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
@@ -332,8 +333,11 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                         atStart
                     );
                 }
-                else
+                else if (!ro->bw_rate().present())
                 {
+                    //
+                    //  Reaction has finite rate but is not reversible.
+                    //
                     IAreaEdgeFunction *function = new SubstanceConcOnEdge(
                         area->getEdgeData(substance, horizontal, atStart),
                         structAnalyzer->getSymbol(ro->rate())->value()
@@ -348,6 +352,40 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                         diff,
                         function
                     );
+                    allocatedFunctions.push_back(function);
+                }
+                else
+                {
+                    //
+                    //  Reaction has finite rates and is reversible.
+                    //
+                    int roS = substance;
+                    int roP = structAnalyzer->getSubstanceIndex(ro->product()[0].name());
+                    IAreaEdgeFunction *function_fw = new SubstanceConcOnEdge(
+                        area->getEdgeData(roS, horizontal, atStart),
+                        structAnalyzer->getSymbol(ro->rate())->value()
+                    );
+                    IAreaEdgeFunction *function_bw = new SubstanceConcOnEdge(
+                        area->getEdgeData(roP, horizontal, atStart),
+                        -structAnalyzer->getSymbol(ro->bw_rate().get())->value()
+                    );
+                    IAreaEdgeFunction *function = new FunctionSumOnEdge(
+                        function_fw,
+                        function_bw,
+                        1.0
+                    );
+                    double diff = structAnalyzer->getDiffusionCoef(
+                        roS,
+                        area->getPositionH(), area->getPositionV(), !horizontal
+                    );
+                    bc = new GradCondition(
+                        area->getEdgeData(roS, horizontal, atStart),
+                        atStart,
+                        diff,
+                        function
+                    );
+                    allocatedFunctions.push_back(function_fw);
+                    allocatedFunctions.push_back(function_bw);
                     allocatedFunctions.push_back(function);
                 }
             }
