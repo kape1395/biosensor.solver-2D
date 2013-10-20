@@ -87,7 +87,6 @@ BIO_CFG_NS::BoundAnalyzer::BoundAnalyzer(
 )
 {
     typedef BIO_XML_MODEL_NS::Model::bound_iterator bIt;
-    typedef BIO_XML_MODEL_NS::Bound::substance_iterator bsIt;
 
     this->structAnalyzer = structAnalyzer;
     this->sizeH = structAnalyzer->getPointsH().size() - 1;
