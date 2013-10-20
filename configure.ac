@@ -26,6 +26,7 @@ ASTYLE_OPTS="--style=ansi --options=none"
 
 
 #### Checks for programs.
+AM_PROG_AR
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 KP_PROG_XSD
