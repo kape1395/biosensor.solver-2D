@@ -111,7 +111,7 @@ std::ostream* BIO_IO_NS::FilesystemContext::getOutputStream(const std::string& n
     }
 
     std::ofstream* out = new std::ofstream();
-    out->open(getFilePath(name).file_string().c_str(), std::ios_base::out);
+    out->open(getFilePath(name).string().c_str(), std::ios_base::out);
 
     if (!found)
     {
@@ -144,7 +144,7 @@ std::istream* BIO_IO_NS::FilesystemContext::getInputStream(const std::string& na
 
     std::ifstream* in = new std::ifstream();
     in->exceptions(std::ifstream::badbit);
-    in->open(getFilePath(name).file_string().c_str(), std::ios_base::in);
+    in->open(getFilePath(name).string().c_str(), std::ios_base::in);
 
     openIStreams.push_back(in);
     return in;

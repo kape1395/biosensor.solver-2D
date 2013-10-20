@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-AC_PREREQ(2.61)
+AC_PREREQ(2.69)
 AC_INIT([biosensor], [0.6.9])
 AC_CONFIG_AUX_DIR(admin)
 AC_CONFIG_SRCDIR([src/README])
@@ -39,7 +39,7 @@ KP_LIB_XERCESC
 
 #### Checks for header files.
 # ...
-AX_BOOST_BASE([1.34.1])
+AX_BOOST_BASE([1.53.0])
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 LIBS="$LIBS $BOOST_SYSTEM_LIB $BOOST_FILESYSTEM_LIB"

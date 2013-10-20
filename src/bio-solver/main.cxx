@@ -152,15 +152,15 @@ int main(int argn, char **argv)
         boost::filesystem::path outputPath(paramOutputDir);
 
         LOG_INFO(LOGGER << "Command line is          : " << commandLine.str());
-        LOG_INFO(LOGGER << "Using configuration file : " << configPath.file_string());
-        LOG_INFO(LOGGER << "Using output directory   : " << outputPath.directory_string());
+        LOG_INFO(LOGGER << "Using configuration file : " << configPath.string());
+        LOG_INFO(LOGGER << "Using output directory   : " << outputPath.string());
 
         // Parse file
         LOG_INFO(LOGGER << "Parsing config file...");
         std::auto_ptr<Model> model;
         {
             std::filebuf configFileBuf;
-            configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+            configFileBuf.open(configPath.string().c_str(), std::ios::in);
             std::istream configIStream(&configFileBuf);
 
             long flags = 0;
@@ -188,12 +188,12 @@ int main(int argn, char **argv)
 
 
         // Construct factories.
-        IContext* context = new FilesystemContext(outputPath.directory_string());
+        IContext* context = new FilesystemContext(outputPath.string());
 
         {
             // save original model.
             std::filebuf configFileBuf;
-            configFileBuf.open(configPath.file_string().c_str(), std::ios::in);
+            configFileBuf.open(configPath.string().c_str(), std::ios::in);
             std::istream configIStream(&configFileBuf);
 
             context->setOriginalConfiguration(configIStream);
@@ -267,7 +267,7 @@ int main(int argn, char **argv)
             boost::filesystem::path concentrationPath(concentrationFile);
             std::ifstream input;
             input.exceptions(std::ifstream::badbit);
-            input.open(concentrationPath.file_string().c_str(), std::ios::in);
+            input.open(concentrationPath.string().c_str(), std::ios::in);
 
             ConcentrationProfileReader concentrationReader(
                 &*model,
