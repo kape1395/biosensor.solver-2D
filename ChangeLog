@@ -1,3 +1,10 @@
+biosensor (0.6.10) saucy; urgency=low
+
+  * Fixes to work with libboost-filesystem 1.53.0
+  * Updated to be able to build it on kubuntu soucy.
+
+ -- Karolis Petrauskas <k.petrauskas@gmail.com>  Sun, 20 Oct 2013 14:15:35 +0300
+
 biosensor (0.6.9) raring; urgency=low
 
   * Support for reversible RO reaction on surface.
