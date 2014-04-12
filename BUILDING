@@ -52,6 +52,9 @@ valgrind --suppressions=valgrind.supp local_install/bin/bio-solver  src/libbiose
 
 autoreconf --install
 
+Paketo kompiliavimui reikalingi sekantys ubuntu paketai:
+    sudo apt-get install gcc g++ build-essential autoconf libtool xsdcxx libboost-filesystem-dev libboost-system-dev libxerces-c-dev
+
 
 ################################################################################
 apt-get install build-essential dh-make debhelper devscripts 

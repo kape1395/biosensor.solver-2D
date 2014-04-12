@@ -1,3 +1,9 @@
+biosensor (0.6.11) saucy; urgency=low
+
+  * Libboost M4 updated.
+
+ -- Karolis Petrauskas <karolis@karolis-8049>  Sat, 12 Apr 2014 17:26:07 +0300
+
 biosensor (0.6.10) saucy; urgency=low
 
   * Fixes to work with libboost-filesystem 1.53.0

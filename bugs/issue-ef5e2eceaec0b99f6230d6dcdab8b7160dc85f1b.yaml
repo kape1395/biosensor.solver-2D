@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Check erlang version.
+desc: ""
+type: :task
+component: kape1395.biosensor.solver-2D
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2012-08-15 07:47:37.213981 Z
+references: []
+
+id: ef5e2eceaec0b99f6230d6dcdab8b7160dc85f1b
+log_events: 
+- - 2012-08-15 07:47:38.027452 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""

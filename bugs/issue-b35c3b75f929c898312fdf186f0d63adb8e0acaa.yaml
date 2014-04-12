@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: Create AC check for rebar.
+desc: ""
+type: :task
+component: kape1395.biosensor.solver-2D
+release: 
+reporter: Karolis Petrauskas <k.petrauskas@gmail.com>
+status: :unstarted
+disposition: 
+creation_time: 2012-08-15 07:34:33.328561 Z
+references: []
+
+id: b35c3b75f929c898312fdf186f0d63adb8e0acaa
+log_events: 
+- - 2012-08-15 07:34:34.679135 Z
+  - Karolis Petrauskas <k.petrauskas@gmail.com>
+  - created
+  - ""
