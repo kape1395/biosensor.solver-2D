@@ -20,9 +20,9 @@
     xmlns:m         ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
-    
-    
-    
+
+
+
     <xs:import
         namespace="http://karolis.5grupe.lt/biosensor/model"
         schemaLocation="Model.xsd">
@@ -33,8 +33,8 @@
         <xs:attribute name="stepCount"  type="xs:int"    use="optional"/>
         <xs:attribute name="time"       type="xs:double" use="optional"/>
     </xs:attributeGroup>
-    
-    
+
+
     <xs:complexType name="FiniteDifferences">
         <xs:complexContent>
             <xs:extension base="m:Solver">
@@ -71,9 +71,9 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
-    
-    
+
+
+
     <xs:complexType name="Axis">
         <xs:attribute name="from" type="m:SymbolName" use="required"/>
         <xs:attribute name="to"   type="m:SymbolName" use="required"/>
@@ -93,9 +93,9 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
 
-    
+
+
     <!-- ******************************************************************* -->
     <!-- ******************************************************************* -->
     <xs:complexType name="ConcentrationProfile">
@@ -126,7 +126,7 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
+
     <xs:complexType name="SteadyStateHalfTime">
         <xs:complexContent>
             <xs:extension base="m:SolverOutput"/>
@@ -160,7 +160,7 @@
     <!-- ******************************************************************* -->
     <xs:complexType name="StopCondition" abstract="true">
     </xs:complexType>
-    
+
     <xs:complexType name="StopConditionValidAfter">
         <xs:complexContent>
             <xs:extension base="StopCondition">
@@ -171,7 +171,7 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
+
     <xs:complexType name="FailIfAbove">
         <xs:complexContent>
             <xs:extension base="StopCondition">
@@ -185,7 +185,7 @@
             <xs:extension base="StopCondition"/>
         </xs:complexContent>
     </xs:complexType>
-    
+
     <xs:complexType name="FailOnConcentrationOscillation">
         <xs:annotation>
             <xs:documentation>
@@ -221,7 +221,7 @@
     </xs:complexType>
 
 
-    
+
     <!-- ******************************************************************* -->
     <!-- ******************************************************************* -->
     <xs:complexType name="TimeStepAdjuster" abstract="true">

@@ -20,16 +20,16 @@
     xmlns:m         ="http://karolis.5grupe.lt/biosensor/model"
     xmlns:xs        ="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified">
-    
-    
-    
+
+
+
     <xs:import
         namespace="http://karolis.5grupe.lt/biosensor/model"
         schemaLocation="Model.xsd">
     </xs:import>
-    
-    
-    
+
+
+
     <xs:complexType name="Constant">
         <xs:complexContent>
             <xs:extension base="m:BoundSubstance">
@@ -37,13 +37,13 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
+
     <xs:complexType name="Wall">
         <xs:complexContent>
             <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
-    
+
     <xs:complexType name="Merge">
         <xs:complexContent>
             <xs:extension base="m:BoundSubstance"/>
@@ -61,7 +61,7 @@
             <xs:extension base="m:BoundSubstance"/>
         </xs:complexContent>
     </xs:complexType>
-    
 
-    
+
+
 </xs:schema>
