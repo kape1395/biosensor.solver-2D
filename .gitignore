@@ -13,6 +13,7 @@
 *.swp
 *.tmp
 *~
+admin/
 stamp-h*
 Doxyfile
 Makefile

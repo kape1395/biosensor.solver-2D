@@ -32,6 +32,8 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
 {
     LOG_DEBUG(LOGGER << "Solver()...");
 
+    solverState = new SolverStateImpl(this);
+
     structAnalyzer = new BIO_CFG_NS::StructureAnalyzer(config);
     boundAnalyzer = new BIO_CFG_NS::BoundAnalyzer(structAnalyzer);
     fdAnalyzer = new BIO_SLV_FD_NS::FiniteDifferencesSolverAnalyzer(config);
@@ -137,8 +139,6 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
     //  Add listeners.
     ////////////////////////////////////////////////////////////////////////////
 
-    solverState = new SolverStateImpl(this);
-
     LOG_DEBUG(LOGGER << "Solver()... Done");
 }
 
@@ -148,8 +148,6 @@ BIO_SLV_FD_IM2D_NS::Solver::Solver(
 BIO_SLV_FD_IM2D_NS::Solver::~Solver()
 {
     LOG_DEBUG(LOGGER << "~Solver()");
-
-    delete solverState;
 
     if (transducer)
     {
@@ -181,6 +179,8 @@ BIO_SLV_FD_IM2D_NS::Solver::~Solver()
     delete fdAnalyzer;
     delete boundAnalyzer;
     delete structAnalyzer;
+
+    delete solverState;
 }
 
 

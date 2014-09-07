@@ -63,8 +63,12 @@
 
     <xs:complexType name="Reaction" abstract="true">
         <xs:attribute name="name" type="ReactionName" use="required"/>
-        <xs:attribute name="fouling-reaction" type="ReactionName" use="optional"/>
-        <xs:attribute name="fouling-factor"   type="SymbolName"   use="optional"/>
+        <!--
+            TODO: Fouling is only supported in the case, when the reaction
+            is fouling itself and it is done on a boundary (wall condition).
+        -->
+        <xs:attribute name="fouling_reaction" type="ReactionName" use="optional"/><!-- TODO: this reaction, if absent -->
+        <xs:attribute name="fouling_rate"     type="SymbolName"   use="optional"/><!-- no fouling, if absent -->
     </xs:complexType>
 
 

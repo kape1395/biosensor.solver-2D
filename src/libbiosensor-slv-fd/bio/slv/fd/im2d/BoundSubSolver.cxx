@@ -24,6 +24,7 @@
 #include "SubstanceConcOnEdge.hxx"
 #include "SubstanceGradOnEdge.hxx"
 #include "FunctionSumOnEdge.hxx"
+#include "TimeIntegralOnEdge.hxx"
 #include <bio/cfg/ReactionAnalyzer.hxx>
 #include <bio/Logging.hxx>
 #include <bio/Exception.hxx>
@@ -342,6 +343,13 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                         area->getEdgeData(substance, horizontal, atStart),
                         structAnalyzer->getSymbol(ro->rate())->value()
                     );
+                    allocatedFunctions.push_back(function);
+                    if (ro->fouling_rate().present())
+                    {
+                        double fouling_rate = structAnalyzer->getSymbol(ro->fouling_rate().get())->value();
+                        function = new TimeIntegralOnEdge(function, solver->getState(), 1.0, 1.0, -fouling_rate);
+                        allocatedFunctions.push_back(function);
+                    }
                     double diff = structAnalyzer->getDiffusionCoef(
                         substance,
                         area->getPositionH(), area->getPositionV(), !horizontal
@@ -352,7 +360,6 @@ void BIO_SLV_FD_IM2D_NS::BoundSubSolver::createBoundCondition(
                         diff,
                         function
                     );
-                    allocatedFunctions.push_back(function);
                 }
                 else
                 {

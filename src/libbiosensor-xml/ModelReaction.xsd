@@ -48,7 +48,7 @@
             <xs:extension base="m:Reaction">
                 <xs:sequence>
                     <xs:element name="substrate" type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
-                    <xs:element name="product"   type="ReductionOxidationElement" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element name="product"   type="ReductionOxidationElement" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
                 <xs:attribute name="rate" type="m:SymbolName" use="required"/>
                 <xs:attribute name="bw_rate" type="m:SymbolName" use="optional"/>

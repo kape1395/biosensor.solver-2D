@@ -40,6 +40,7 @@ libbiosensor_slv_fd_la_SOURCES = \
     bio/slv/fd/im2d/SubstanceGradOnEdge.cxx \
     bio/slv/fd/im2d/SubSolverFactory.cxx \
     bio/slv/fd/im2d/MergeCondition.cxx \
+    bio/slv/fd/im2d/TimeIntegralOnEdge.cxx \
     bio/slv/fd/im2d/WallCondition.cxx
 
 
@@ -72,6 +73,7 @@ EXTRA_DIST = \
     bio/slv/fd/im2d/SubSolverFactory.hxx \
     bio/slv/fd/im2d/MergeCondition.hxx \
     bio/slv/fd/im2d/ReactionMacro.hxx \
+    bio/slv/fd/im2d/TimeIntegralOnEdge.hxx \
     bio/slv/fd/im2d/WallCondition.hxx
 
 
